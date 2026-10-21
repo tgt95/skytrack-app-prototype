@@ -390,14 +390,17 @@ export default function MissionPreview({ mission, onSelectWaypoint, previewPosit
         <span className='ms-preview-map-caption'>Route overview · photo points highlighted</span>
       </div>
 
-      <label className='ms-switchrow ms-preview-demo-toggle'>
+      <label className='flex items-center gap-2 text-sm'>
         <Switch
           checked={showPhotoScanDemo}
           size='sm'
           data-testid='ms-preview-photo-demo-toggle'
+          aria-label='Show photo scan demonstration'
           onCheckedChange={(checked: boolean) => setShowPhotoScanDemo(checked)}
-        ><SwitchThumb size='sm' /></Switch>
-        <span>Show photo scan demonstration</span>
+        >
+          <SwitchThumb />
+        </Switch>
+        Show photo scan demonstration
       </label>
 
       <div className='ms-preview-playback' role='region' aria-label='Route playback'>

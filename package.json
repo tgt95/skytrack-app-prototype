@@ -10,7 +10,8 @@
     "typecheck": "tsc -b --pretty false",
     "lint": "oxlint",
     "format:check": "prettier --check .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ui:update": "node scripts/update-skytrack-ui.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
@@ -19,7 +20,7 @@
     "leaflet-draw": "^1.0.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "skytrack-ui": "file:vendor/skytrack-ui-0.1.4.tgz",
+    "skytrack-ui": "file:vendor/skytrack-ui-0.1.5.tgz",
     "three": "^0.186.1"
   },
   "devDependencies": {
