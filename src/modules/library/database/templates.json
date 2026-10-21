@@ -1,0 +1,62 @@
+[
+  {
+    "id": "t1",
+    "title": "Terrain & Erosion LiDAR Survey",
+    "desc": "Terrain-following LiDAR pass over cliffs for erosion / terrain survey.",
+    "byline": "By SkyTrack Team"
+  },
+  {
+    "id": "t2",
+    "title": "Search & Rescue Sweep",
+    "desc": "Video sweep of canyon/cliff terrain to search for missing persons.",
+    "byline": "By SkyTrack Team"
+  },
+  {
+    "id": "t3",
+    "title": "Heritage Visual Photo Survey",
+    "desc": "Orbit stills of castle walls/courtyard for a visual video survey.",
+    "byline": "By SkyTrack Team"
+  },
+  {
+    "id": "t4",
+    "title": "Heritage Site 3D Documentation",
+    "desc": "Dense LiDAR capture of the castle for heritage 3D documentation.",
+    "byline": "By SkyTrack Team"
+  },
+  {
+    "id": "t5",
+    "title": "Industrial Facility 3D LiDAR Mapping",
+    "desc": "LiDAR lawnmower over material stockpiles for volumetric measurement. (mock completion)",
+    "byline": "By SkyTrack Team"
+  },
+  {
+    "id": "t6",
+    "title": "Plant Equipment Visual Inspection",
+    "desc": "Stills around pipes/stacks/equipment for industrial plant visual inspection. (mock completion)",
+    "byline": "By SkyTrack Team"
+  },
+  {
+    "id": "t7",
+    "title": "Warehouse Fire Suppression Drop",
+    "desc": "Drop firefighting balls on a rack fire inside the warehouse.",
+    "byline": "By SkyTrack Team"
+  },
+  {
+    "id": "t8",
+    "title": "Warehouse Inventory Aisle Scan",
+    "desc": "Low-altitude aisle-by-aisle stills for inventory / rack condition checks.",
+    "byline": "By SkyTrack Team"
+  },
+  {
+    "id": "t9",
+    "title": "Crane & Structure LiDAR Inspection",
+    "desc": "Close LiDAR pass around the tower crane & structure for structural inspection. (mock completion)",
+    "byline": "By SkyTrack Team"
+  },
+  {
+    "id": "t10",
+    "title": "Construction Progress Documentation",
+    "desc": "Orbit/grid stills of the construction site for weekly progress documentation. (mock completion)",
+    "byline": "By SkyTrack Team"
+  }
+]

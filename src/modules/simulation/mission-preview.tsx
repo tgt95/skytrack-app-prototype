@@ -1,0 +1,535 @@
+import { useEffect, useMemo, useState } from 'react'
+import { Button } from 'skytrack-ui/button'
+import { Slider, SliderControl, SliderIndicator, SliderThumb, SliderTrack } from 'skytrack-ui/slider'
+import { Switch, SwitchThumb } from 'skytrack-ui/switch'
+import {
+  Select,
+  SelectIcon,
+  SelectItem,
+  SelectItemIndicator,
+  SelectItemText,
+  SelectList,
+  SelectPopup,
+  SelectPortal,
+  SelectPositioner,
+  SelectTrigger,
+  SelectValue
+} from 'skytrack-ui/select'
+import { getMissionHome, getMissionStart, type StudioMission, type Waypoint } from '../../domain/mission-model'
+import { computeDerivedTransfers } from '../../domain/transfer-planner'
+import { buildSimPlan, samplePlan } from './simulation'
+
+type PreviewEvent = {
+  time: number
+  waypoint: Waypoint
+  label: string
+}
+
+type PreviewRow = {
+  waypoint: Waypoint
+  time: number
+  label: string
+}
+
+type PreviewBuild = { rows: PreviewRow[]; events: PreviewEvent[]; duration: number; transferBlocked: boolean }
+
+const ACTION_DWELL_SECONDS: Record<string, number> = {
+  photo: 1.5,
+  'lidar-scan': 2,
+  'video-start': 0,
+  'video-stop': 0
+}
+
+/* Playback speeds keep the existing time math (seconds per tick scale). */
+const SPEED_OPTIONS = [
+  { value: '0.5', label: '0.5×' },
+  { value: '1', label: '1×' },
+  { value: '2', label: '2×' },
+  { value: '4', label: '4×' },
+  { value: '16', label: '16×' }
+]
+
+function formatTime(seconds: number): string {
+  const safeSeconds = Math.max(0, Math.floor(seconds))
+  const minutes = Math.floor(safeSeconds / 60)
+  const remainder = safeSeconds % 60
+  return `${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`
+}
+
+function waypointSpeed(mission: StudioMission, waypoint: Waypoint): number {
+  const route = mission.routes?.find((item) => item.id === waypoint.routeId)
+  const speed = route?.targetSpeedMS ?? mission.targetSpeedMS
+  return Number.isFinite(speed) && speed > 0 ? speed : 2
+}
+
+function actionDwell(actionKind: string, showPhotoScanDemo: boolean): number {
+  if (actionKind === 'photo' && !showPhotoScanDemo) return 0
+  return ACTION_DWELL_SECONDS[actionKind] ?? 0
+}
+
+function buildPreview(mission: StudioMission, showPhotoScanDemo: boolean): PreviewBuild {
+  const simPlan = buildSimPlan(mission, { includePhotoCaptureDwell: showPhotoScanDemo })
+  if (simPlan) {
+    const waypointById = new Map(mission.waypoints.map((waypoint) => [waypoint.id, waypoint]))
+    const arrivalById = new Map(
+      simPlan.events
+        .filter((event) => event.kind === 'waypoint' && event.waypointId)
+        .map((event) => [event.waypointId!, event.t])
+    )
+    const rows = [...mission.waypoints]
+      .filter((waypoint) => arrivalById.has(waypoint.id))
+      .sort((a, b) => (arrivalById.get(a.id) ?? 0) - (arrivalById.get(b.id) ?? 0))
+      .map((waypoint) => ({
+        waypoint,
+        time: arrivalById.get(waypoint.id) ?? 0,
+        label: `Waypoint ${waypoint.seq}`
+      }))
+    const events = simPlan.events.flatMap((event) => {
+      if ((event.kind !== 'waypoint' && event.kind !== 'action') || !event.waypointId) return []
+      const waypoint = waypointById.get(event.waypointId)
+      return waypoint ? [{ time: event.t, waypoint, label: event.label }] : []
+    })
+    return { rows, events, duration: simPlan.duration, transferBlocked: false }
+  }
+
+  const transferBlocked = computeDerivedTransfers(mission).some((transfer) => (
+    transfer.blockedByAvoidId || transfer.errorMessage
+  ))
+  if (transferBlocked) {
+    const rows = [...mission.waypoints]
+      .sort((a, b) => a.seq - b.seq)
+      .map((waypoint) => ({ waypoint, time: 0, label: `Waypoint ${waypoint.seq}` }))
+    return { rows, events: [], duration: 0, transferBlocked: true }
+  }
+
+  const waypoints = mission.waypoints
+  if (waypoints.length === 0) return { rows: [], events: [], duration: 0, transferBlocked: false }
+
+  let time = 0
+  const rows: PreviewRow[] = []
+  const events: PreviewEvent[] = []
+  const first = waypoints[0]
+  const speed = Math.max(1, mission.targetSpeedMS)
+  const home = getMissionHome(mission)
+  const launch = { ...home, z: Math.max(0, mission.takeoffAltM) }
+  const missionStart = getMissionStart(mission)
+  time += launch.z / speed
+  time += Math.hypot(missionStart.x - launch.x, missionStart.y - launch.y, missionStart.z - launch.z) / speed
+  time += Math.hypot(first.x - missionStart.x, first.y - missionStart.y, first.z - missionStart.z) / speed
+
+  waypoints.forEach((waypoint, index) => {
+    if (index > 0) {
+      const previous = waypoints[index - 1]
+      const distance = Math.hypot(
+        waypoint.x - previous.x,
+        waypoint.y - previous.y,
+        waypoint.z - previous.z
+      )
+      time += distance / waypointSpeed(mission, waypoint)
+    }
+
+    rows.push({ waypoint, time, label: `Waypoint ${waypoint.seq}` })
+    events.push({ time, waypoint, label: `Waypoint ${waypoint.seq} reached` })
+    for (const action of waypoint.actions) {
+      events.push({ time, waypoint, label: `${action.label} · Waypoint ${waypoint.seq}` })
+      time += actionDwell(action.kind, showPhotoScanDemo)
+    }
+  })
+
+  const last = waypoints[waypoints.length - 1]
+  if (mission.returnHomeOnEnd) {
+    time += Math.hypot(last.x - home.x, last.y - home.y) / Math.max(1, mission.targetSpeedMS)
+  }
+  time += Math.max(0, last.z) / Math.max(1, mission.targetSpeedMS)
+
+  return { rows, events, duration: time, transferBlocked: false }
+}
+
+export function previewPositionAt(mission: StudioMission, seconds: number, showPhotoScanDemo = true): { x: number; y: number; z: number } | null {
+  const simPlan = buildSimPlan(mission, { includePhotoCaptureDwell: showPhotoScanDemo })
+  if (simPlan) return samplePlan(simPlan, seconds).pos
+
+  const waypoints = mission.waypoints
+  if (waypoints.length === 0) return null
+
+  const first = waypoints[0]
+  const speed = Math.max(1, mission.targetSpeedMS)
+  const home = getMissionHome(mission)
+  const launch = { ...home, z: Math.max(0, mission.takeoffAltM) }
+  const missionStart = getMissionStart(mission)
+  const takeoffDuration = launch.z / speed
+  let elapsed = 0
+  if (seconds < takeoffDuration) {
+    return { x: home.x, y: home.y, z: launch.z * (seconds / Math.max(takeoffDuration, 1e-9)) }
+  }
+  elapsed += takeoffDuration
+
+  const launchDuration = Math.hypot(missionStart.x - launch.x, missionStart.y - launch.y, missionStart.z - launch.z) / speed
+  if (seconds < elapsed + launchDuration) {
+    const progress = Math.max(0, (seconds - elapsed) / Math.max(launchDuration, 1e-9))
+    return {
+      x: launch.x + (missionStart.x - launch.x) * progress,
+      y: launch.y + (missionStart.y - launch.y) * progress,
+      z: launch.z + (missionStart.z - launch.z) * progress
+    }
+  }
+  elapsed += launchDuration
+
+  const firstLegDuration = Math.hypot(first.x - missionStart.x, first.y - missionStart.y, first.z - missionStart.z) / speed
+  if (seconds < elapsed + firstLegDuration) {
+    const progress = Math.max(0, (seconds - elapsed) / Math.max(firstLegDuration, 1e-9))
+    return {
+      x: missionStart.x + (first.x - missionStart.x) * progress,
+      y: missionStart.y + (first.y - missionStart.y) * progress,
+      z: missionStart.z + (first.z - missionStart.z) * progress
+    }
+  }
+  elapsed += firstLegDuration
+
+  for (let index = 0; index < waypoints.length; index += 1) {
+    const waypoint = waypoints[index]
+    if (index > 0) {
+      const previous = waypoints[index - 1]
+      const travelDuration = Math.hypot(waypoint.x - previous.x, waypoint.y - previous.y, waypoint.z - previous.z)
+        / waypointSpeed(mission, waypoint)
+      if (seconds < elapsed + travelDuration) {
+        const progress = Math.max(0, (seconds - elapsed) / Math.max(travelDuration, 1e-9))
+        return {
+          x: previous.x + (waypoint.x - previous.x) * progress,
+          y: previous.y + (waypoint.y - previous.y) * progress,
+          z: previous.z + (waypoint.z - previous.z) * progress
+        }
+      }
+      elapsed += travelDuration
+    }
+
+    for (const action of waypoint.actions) {
+      const dwell = actionDwell(action.kind, showPhotoScanDemo)
+      if (seconds < elapsed + dwell) return { x: waypoint.x, y: waypoint.y, z: waypoint.z }
+      elapsed += dwell
+    }
+  }
+
+  if (mission.returnHomeOnEnd) {
+    const last = waypoints[waypoints.length - 1]
+    const returnDuration = Math.hypot(last.x - home.x, last.y - home.y)
+      / Math.max(1, mission.targetSpeedMS)
+    if (seconds < elapsed + returnDuration) {
+      const progress = Math.max(0, (seconds - elapsed) / Math.max(returnDuration, 1e-9))
+      return {
+        x: last.x + (home.x - last.x) * progress,
+        y: last.y + (home.y - last.y) * progress,
+        z: last.z
+      }
+    }
+    elapsed += returnDuration
+  }
+
+  const final = waypoints[waypoints.length - 1]
+  const destination = mission.returnHomeOnEnd ? { x: home.x, y: home.y, z: final.z } : final
+  const landingDuration = Math.max(0, destination.z) / Math.max(1, mission.targetSpeedMS)
+  if (seconds < elapsed + landingDuration) {
+    const progress = Math.max(0, (seconds - elapsed) / Math.max(landingDuration, 1e-9))
+    return { x: destination.x, y: destination.y, z: destination.z * (1 - progress) }
+  }
+  return { x: destination.x, y: destination.y, z: 0 }
+}
+
+export function previewPhotoCaptureAt(mission: StudioMission, seconds: number, enabled: boolean): string | null {
+  if (!enabled) return null
+  const simPlan = buildSimPlan(mission, { includePhotoCaptureDwell: enabled })
+  if (simPlan) {
+    const activeCapture = simPlan.events.find((event) => (
+      event.kind === 'action' && event.actionKind === 'photo' && event.waypointId &&
+      seconds >= event.t && seconds < event.t + ACTION_DWELL_SECONDS.photo
+    ))
+    return activeCapture?.waypointId ?? null
+  }
+
+  const waypoints = mission.waypoints
+  if (waypoints.length === 0) return null
+  const first = waypoints[0]
+  const home = getMissionHome(mission)
+  const launch = { ...home, z: Math.max(0, mission.takeoffAltM) }
+  const speed = Math.max(1, mission.targetSpeedMS)
+  const missionStart = getMissionStart(mission)
+  let elapsed = launch.z / speed
+  elapsed += Math.hypot(missionStart.x - launch.x, missionStart.y - launch.y, missionStart.z - launch.z) / speed
+  elapsed += Math.hypot(first.x - missionStart.x, first.y - missionStart.y, first.z - missionStart.z) / speed
+  for (let index = 0; index < waypoints.length; index += 1) {
+    const waypoint = waypoints[index]
+    if (index > 0) {
+      const previous = waypoints[index - 1]
+      elapsed += Math.hypot(waypoint.x - previous.x, waypoint.y - previous.y, waypoint.z - previous.z)
+        / waypointSpeed(mission, waypoint)
+    }
+    for (const action of waypoint.actions) {
+      const dwell = actionDwell(action.kind, enabled)
+      if (action.kind === 'photo' && dwell > 0 && seconds >= elapsed && seconds < elapsed + dwell) return waypoint.id
+      elapsed += dwell
+    }
+  }
+  return null
+}
+
+export interface MissionPreviewProps {
+  mission: StudioMission
+  onSelectWaypoint: (id: string) => void
+  previewPositionRef: { current: { x: number; y: number; z: number } | null }
+  previewCaptureRef: { current: string | null }
+}
+
+export default function MissionPreview({ mission, onSelectWaypoint, previewPositionRef, previewCaptureRef }: MissionPreviewProps) {
+  const [showPhotoScanDemo, setShowPhotoScanDemo] = useState(true)
+  const preview = useMemo(() => buildPreview(mission, showPhotoScanDemo), [mission, showPhotoScanDemo])
+  const [playing, setPlaying] = useState(false)
+  const [time, setTime] = useState(0)
+  const [speed, setSpeed] = useState(1)
+
+  useEffect(() => {
+    setTime((current) => Math.min(current, preview.duration))
+    if (preview.duration === 0) setPlaying(false)
+  }, [preview.duration])
+
+  useEffect(() => {
+    if (time >= preview.duration) setPlaying(false)
+  }, [time, preview.duration])
+
+  useEffect(() => {
+    if (!playing || preview.duration === 0) return
+    const timer = window.setInterval(() => {
+      setTime((current) => {
+        return Math.min(preview.duration, current + 0.1 * speed)
+      })
+    }, 100)
+    return () => window.clearInterval(timer)
+  }, [playing, preview.duration, speed])
+
+  const dronePosition = useMemo(
+    () => preview.transferBlocked ? null : previewPositionAt(mission, time, showPhotoScanDemo),
+    [mission, preview.transferBlocked, time, showPhotoScanDemo]
+  )
+  const activePhotoCaptureId = useMemo(
+    () => preview.transferBlocked ? null : previewPhotoCaptureAt(mission, time, showPhotoScanDemo),
+    [mission, preview.transferBlocked, time, showPhotoScanDemo]
+  )
+  useEffect(() => {
+    previewPositionRef.current = dronePosition
+  }, [dronePosition, previewPositionRef])
+  useEffect(() => {
+    previewCaptureRef.current = activePhotoCaptureId
+  }, [activePhotoCaptureId, previewCaptureRef])
+  useEffect(() => () => {
+    previewPositionRef.current = null
+    previewCaptureRef.current = null
+  }, [previewPositionRef, previewCaptureRef])
+
+  const activeEvent = [...preview.events].reverse().find((event) => event.time <= time)
+  const scrub = preview.duration > 0 ? Math.round((time / preview.duration) * 1000) : 0
+  const activeWaypointId = activeEvent?.waypoint.id ?? null
+  const home = getMissionHome(mission)
+  const boundsPoints = [
+    home,
+    ...mission.waypoints,
+    ...mission.areas.flatMap((area) => area.points)
+  ]
+  const bounds = boundsPoints.length ? {
+    minX: Math.min(...boundsPoints.map((point) => point.x)),
+    maxX: Math.max(...boundsPoints.map((point) => point.x)),
+    minY: Math.min(...boundsPoints.map((point) => point.y)),
+    maxY: Math.max(...boundsPoints.map((point) => point.y))
+  } : { minX: -1, maxX: 1, minY: -1, maxY: 1 }
+  const spanX = Math.max(1, bounds.maxX - bounds.minX)
+  const spanY = Math.max(1, bounds.maxY - bounds.minY)
+  const project = (x: number, y: number) => ({
+    x: 30 + ((x - bounds.minX) / spanX) * 580,
+    y: 24 + ((bounds.maxY - y) / spanY) * 232
+  })
+  const activePosition = dronePosition ? project(dronePosition.x, dronePosition.y) : null
+  const homePosition = project(home.x, home.y)
+
+  return (
+    <section className='ms-preview' aria-label='Mission route preview' data-testid='ms-preview'>
+      <header className='ms-preview-header'>
+        <div>
+          <h2 className='ms-preview-title'>Flight preview</h2>
+          <p className='ms-preview-note'>Approximate route playback · no drone control</p>
+        </div>
+        <span className='ms-preview-duration' aria-label={`Estimated duration ${formatTime(preview.duration)}`}>
+          {formatTime(time)} / {formatTime(preview.duration)}
+        </span>
+      </header>
+
+      <div className='ms-preview-map' role='img' aria-label='Mini map of areas and flight path'>
+        <svg viewBox='0 0 640 280' preserveAspectRatio='xMidYMid meet' aria-hidden='true'>
+          {Array.from({ length: 9 }, (_, index) => <line key={`v${index}`} x1={index * 80} y1='0' x2={index * 80} y2='280' className='ms-preview-grid-line' />)}
+          {Array.from({ length: 5 }, (_, index) => <line key={`h${index}`} x1='0' y1={index * 70} x2='640' y2={index * 70} className='ms-preview-grid-line' />)}
+          {mission.areas.map((area) => (
+            <polygon key={area.id} points={area.points.map((point) => { const p = project(point.x, point.y); return `${p.x},${p.y}` }).join(' ')} className='ms-preview-area' />
+          ))}
+          {preview.rows.map(({ waypoint }, index) => {
+            const point = project(waypoint.x, waypoint.y)
+            const next = preview.rows[index + 1]?.waypoint
+            const nextPoint = next ? project(next.x, next.y) : null
+            return <g key={waypoint.id}>
+              {nextPoint ? <line x1={point.x} y1={point.y} x2={nextPoint.x} y2={nextPoint.y} className='ms-preview-route-line' /> : null}
+              {waypoint.actions.some((action) => action.kind === 'photo') ? <circle cx={point.x} cy={point.y} r='11' className='ms-preview-photo-ring' /> : null}
+              <circle cx={point.x} cy={point.y} r='6' className='ms-preview-waypoint-dot' />
+              <text x={point.x + 9} y={point.y - 8} className='ms-preview-map-label'>{waypoint.seq}</text>
+            </g>
+          })}
+          <g className='ms-preview-home-marker' transform={`translate(${homePosition.x} ${homePosition.y})`}>
+            <circle r='10' />
+            <text x='12' y='4'>HOME</text>
+          </g>
+          {activePosition ? <g className='ms-preview-drone-marker' transform={`translate(${activePosition.x} ${activePosition.y})`}>
+            <circle r='12' />
+            <path d='M0 -8 L5 5 L0 2 L-5 5 Z' />
+          </g> : null}
+        </svg>
+        <span className='ms-preview-map-caption'>Route overview · photo points highlighted</span>
+      </div>
+
+      <label className='ms-switchrow ms-preview-demo-toggle'>
+        <Switch
+          checked={showPhotoScanDemo}
+          size='sm'
+          data-testid='ms-preview-photo-demo-toggle'
+          onCheckedChange={(checked: boolean) => setShowPhotoScanDemo(checked)}
+        ><SwitchThumb size='sm' /></Switch>
+        <span>Show photo scan demonstration</span>
+      </label>
+
+      <div className='ms-preview-playback' role='region' aria-label='Route playback'>
+        <Button
+          type='button'
+          variant='outline'
+          aria-pressed={playing}
+          onClick={() => {
+            if (time >= preview.duration) setTime(0)
+            setPlaying((current) => !current)
+          }}
+          disabled={preview.duration <= 0}
+          aria-label={playing ? 'Pause flight preview' : 'Play flight preview'}
+          data-testid='ms-preview-play'
+        >
+          {playing ? 'Pause' : 'Play'}
+        </Button>
+        <div className='ms-preview-scrub'>
+          <Slider
+            value={scrub}
+            min={0}
+            max={1000}
+            step={1}
+            onValueChange={(next: number | readonly number[]) => {
+              const first = Array.isArray(next) ? next[0] : next
+              if (typeof first !== 'number' || !Number.isFinite(first) || preview.duration <= 0) return
+              setPlaying(false)
+              setTime(Math.min(Math.max((first / 1000) * preview.duration, 0), preview.duration))
+            }}
+          >
+            <SliderControl>
+              <SliderTrack>
+                <SliderIndicator />
+                <SliderThumb aria-label='Preview playback position' />
+              </SliderTrack>
+            </SliderControl>
+          </Slider>
+        </div>
+        <div className='ms-preview-speed'>
+          <Select<string>
+            items={SPEED_OPTIONS}
+            value={String(speed)}
+            onValueChange={(next: unknown) => {
+              const parsed = Number(next)
+              if (SPEED_OPTIONS.some((option) => option.value === String(next)) && Number.isFinite(parsed)) setSpeed(parsed)
+            }}
+          >
+            <SelectTrigger aria-label='Preview playback speed' className='ms-preview-speed-trigger'>
+              <SelectValue />
+              <SelectIcon />
+            </SelectTrigger>
+            <SelectPortal>
+              <SelectPositioner side='bottom' align='end' sideOffset={4}>
+                <SelectPopup>
+                  <SelectList>
+                    {SPEED_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        <SelectItemIndicator />
+                        <SelectItemText>{option.label}</SelectItemText>
+                      </SelectItem>
+                    ))}
+                  </SelectList>
+                </SelectPopup>
+              </SelectPositioner>
+            </SelectPortal>
+          </Select>
+        </div>
+        <span className='ms-preview-time' data-testid='ms-preview-time'>
+          {formatTime(time)} / {formatTime(preview.duration)}
+        </span>
+      </div>
+
+      <p className='ms-preview-event' aria-live='polite' data-testid='ms-preview-current-event'>
+        {preview.transferBlocked
+          ? 'Preview unavailable: an Avoid zone blocks a route transfer. Adjust the route or Avoid zone to preview flight timing.'
+          : activeEvent?.label ?? (preview.rows.length ? 'Take-off at Home' : 'Add waypoints to preview this mission.')}
+      </p>
+
+      <p className='ms-preview-estimate'>For runnable missions, estimate follows the mock flight path from Home, including transfers, Area traversal and landing. {showPhotoScanDemo ? 'Photo adds 1.5 s' : 'Photo demo dwell is skipped'}; LiDAR adds 2 s per action. Other actions add no dwell time.</p>
+
+      <div className='ms-preview-wphead'>
+        <h3 className='ms-preview-wptitle'>Waypoints in flight order</h3>
+        <span className='ms-preview-count'>{preview.rows.length} waypoint{preview.rows.length === 1 ? '' : 's'}</span>
+      </div>
+      <div className='ms-preview-tablewrap'>
+        <table className='ms-preview-table' aria-label='Waypoints in flight order'>
+          <thead>
+            <tr>
+              <th scope='col'>#</th>
+              <th scope='col'>X</th>
+              <th scope='col'>Y</th>
+              <th scope='col'>Z</th>
+              <th scope='col'>Action</th>
+              <th scope='col'>T+</th>
+            </tr>
+          </thead>
+          <tbody>
+            {preview.rows.map(({ waypoint, time: arrivalTime }) => {
+              const isActive = activeWaypointId === waypoint.id
+              const selectRow = () => {
+                onSelectWaypoint(waypoint.id)
+                setPlaying(false)
+                setTime(arrivalTime)
+              }
+              return (
+                <tr
+                  key={waypoint.id}
+                  data-seq={waypoint.seq}
+                  tabIndex={0}
+                  aria-selected={isActive}
+                  className={isActive ? 'is-current' : ''}
+                  data-testid={`ms-preview-waypoint-${waypoint.seq}`}
+                  onClick={selectRow}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault()
+                      selectRow()
+                    }
+                  }}
+                >
+                  <td>{waypoint.seq}</td>
+                  <td>{Math.round(waypoint.x * 10) / 10}</td>
+                  <td>{Math.round(waypoint.y * 10) / 10}</td>
+                  <td>{Math.round(waypoint.z * 10) / 10}</td>
+                  <td>{waypoint.actions.length ? waypoint.actions.map((action) => action.label).join(' · ') : 'Fly to point'}</td>
+                  <td>{formatTime(arrivalTime)}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )
+}

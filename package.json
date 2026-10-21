@@ -1,0 +1,38 @@
+{
+  "name": "skytrack-mission-studio",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "build:pages": "npm run build && node scripts/copy-pages-fallback.mjs",
+    "typecheck": "tsc -b --pretty false",
+    "lint": "oxlint",
+    "format:check": "prettier --check .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
+    "cesium": "^1.119.0",
+    "leaflet": "^1.9.4",
+    "leaflet-draw": "^1.0.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "skytrack-ui": "file:vendor/skytrack-ui-0.1.1.tgz"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/leaflet": "^1.9.22",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "oxlint": "^1.81.0",
+    "prettier": "^3.9.9",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0",
+    "vite-plugin-singlefile": "^2.3.3"
+  }
+}

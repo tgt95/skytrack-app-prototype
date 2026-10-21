@@ -1,0 +1,5652 @@
+@reference "./main.css";
+
+/* index.css — route-local Mission Studio layout. Component visuals come from
+   skytrack-ui; only semantic tokens (var(--*)) are used here, no palette. */
+
+.ms-root {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - 50px);
+  min-height: 560px;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 13px;
+}
+
+.mission-studio-host .sample-header {
+  display: none;
+}
+
+.mission-studio-host .ms-root {
+  height: 100dvh;
+}
+
+.ms-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ------------------------- top bar ------------------------- */
+
+.ms-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  flex: 0 0 auto;
+}
+
+.ms-crumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.ms-crumb-logo {
+  flex: 0 0 auto;
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.ms-crumb-dim {
+  color: var(--muted-foreground);
+}
+
+.ms-crumb-separator {
+  color: var(--muted-foreground);
+}
+
+.ms-crumb-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 320px;
+}
+
+/* Breadcrumb links (P2 slice): logo returns to library home, project name
+   opens its project-detail. Plain-button reset over crumb tokens. */
+.ms-crumb-btn {
+  background: transparent;
+  border: 0;
+  padding: 2px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.ms-crumb-btn:hover {
+  color: var(--primary);
+}
+
+.ms-crumb-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.ms-crumb-home {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ms-stage {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+}
+
+.ms-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.ms-gate {
+  margin: 0;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+  flex: 0 0 auto;
+}
+
+/* ------------------------- body ------------------------- */
+
+.ms-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.ms-rail {
+  flex: 0 0 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-right: 1px solid var(--border);
+  background: var(--card);
+  overflow-y: auto;
+}
+
+.ms-rail-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Bottom-pinned tool cluster: the app tabs stay at the top of the persistent
+   sidebar while the mission tools sit at its bottom on desktop. */
+.ms-rail-bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* The DS Toolbar ships a bordered box; on the rail the tool cluster stays
+   transparent and borderless like before. */
+.ms-rail-bottom.ms-rail-bottom {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+.ms-rail-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.ms-seq-badge:focus-visible,
+.ms-zone-name:focus-visible,
+.ms-event-row:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+/* ------------------------- center ------------------------- */
+
+.ms-center {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.ms-drawbar,
+.ms-simbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  font-size: 12px;
+}
+
+.ms-drawbar-actions,
+.ms-simbar-actions,
+.ms-simbar-state {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ms-drawbar-copy {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  color: var(--muted-foreground);
+}
+
+.ms-zone-shape-toolbar {
+  flex: 0 0 auto;
+}
+
+.ms-zone-shape-toolbar svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Fill-style custom icons (Area) opt out of the stroke treatment above. */
+.ms-zone-shape-toolbar svg.ms-fill-icon {
+  fill: currentColor;
+  stroke: none;
+}
+
+.ms-scene-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--background);
+}
+
+.ms-2d-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.ms-2d-layer.is-hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.ms-3d-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.ms-3d-layer.is-hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.ms-basemap-popup,
+.ms-map-gear-popup {
+  width: 300px;
+  max-height: min(80vh, 560px);
+  overflow-y: auto;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 4px);
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.ms-map-gear-popup {
+  width: 256px;
+}
+
+.ms-map-gear-popup .ms-basemap-title {
+  font-size: 16px;
+}
+
+.ms-map-gear-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ms-basemap-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ms-basemap-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ms-basemap-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 21px;
+  cursor: pointer;
+}
+
+.ms-basemap-group-label {
+  margin: 12px 0 6px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.ms-basemap-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.ms-basemap-option {
+  display: flex;
+  min-width: 0;
+  height: 90px;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 4px;
+  padding: 5px;
+  overflow: hidden;
+  font-size: 12px;
+}
+
+.ms-basemap-thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 52px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 1px);
+  background: var(--muted);
+}
+
+.ms-basemap-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ms-basemap-check {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.ms-map-check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 38px;
+  color: var(--foreground);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ms-recon-control-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 42px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 600;
+
+  >span {
+    flex: 1;
+    min-width: 0;
+  }
+
+  [data-slot='switch'] {
+    flex: 0 0 auto;
+    width: 29px;
+    min-width: 29px;
+  }
+}
+
+.ms-recon-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 8px;
+  padding: 12px 14px;
+  background: color-mix(in srgb, var(--muted) 25%, transparent);
+  border-bottom: 1px solid var(--border);
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  span {
+    color: var(--muted-foreground);
+    font-size: 11px;
+  }
+
+  strong {
+    overflow: hidden;
+    color: var(--foreground);
+    font-size: 12px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  small {
+    grid-column: 1 / -1;
+    color: var(--muted-foreground);
+    font-size: 10px;
+    line-height: 1.4;
+  }
+}
+
+.ms-area-capture-list {
+  border-top: 1px solid var(--border);
+  padding: 0 10px 6px;
+}
+
+.ms-area-capture-rows {
+  max-height: 300px;
+  overflow: auto;
+  border-top: 1px solid var(--border);
+}
+
+.ms-area-capture-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 32px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+.ms-recon-form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+}
+
+.ms-recon-form-field {
+  display: grid;
+  gap: 5px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+/* Planner LiveSlider list rows: no cards, top dividers, 16px labels with the
+   value badge right, slider/ticks below, hint underneath. */
+.ms-recon-slider {
+  display: grid;
+  gap: 8px;
+  padding: 14px 2px 10px;
+  border-top: 1px solid var(--border);
+}
+
+.ms-recon-slider-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--foreground);
+}
+
+.ms-recon-slider-badge {
+  padding: 1px 8px;
+  border-radius: var(--radius);
+  background: var(--muted);
+  color: var(--foreground);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ms-recon-slider-hint {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Marked ticks + labels (Planner LiveSlider pattern): ticks sit on the
+   track, labels in a row below. Track is positioned for absolute ticks. */
+.ms-recon-slider {
+  [data-slot='slider'] {
+    width: 100%;
+  }
+
+  [data-slot='slider-track'] {
+    position: relative;
+  }
+}
+
+.ms-recon-mark-tick {
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 8px;
+  transform: translate(-50%, -50%);
+  background: var(--foreground);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.ms-recon-mark-labels {
+  position: relative;
+  height: 1rem;
+  user-select: none;
+
+  span {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+
+    &:first-child {
+      transform: none;
+    }
+
+    &:last-child {
+      transform: translateX(-100%);
+    }
+  }
+}
+
+.ms-recon-form-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.ms-recon-form-toggle-copy {
+  display: grid;
+  gap: 3px;
+}
+
+.ms-recon-form-help {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+.ms-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  max-width: 960px;
+  margin: 0 auto;
+  color: var(--foreground);
+
+  >* {
+    min-width: 0;
+    box-sizing: border-box;
+  }
+}
+
+.ms-preview-playback {
+  flex-wrap: wrap;
+}
+
+.ms-preview-demo-toggle {
+  align-self: flex-start;
+  color: var(--foreground);
+}
+
+.ms-preview-header {
+  flex-wrap: wrap;
+}
+
+.ms-preview-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ms-preview-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.ms-preview-note,
+.ms-preview-estimate {
+  margin: 4px 0 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.ms-preview-duration {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ms-preview-map {
+  position: relative;
+  min-height: 220px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--muted) 28%, var(--background));
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+  }
+}
+
+.ms-preview-grid-line {
+  stroke: var(--border);
+  stroke-width: 1;
+  opacity: .75;
+}
+
+.ms-preview-area {
+  fill: color-mix(in srgb, var(--primary) 12%, transparent);
+  stroke: var(--primary);
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+}
+
+.ms-preview-route-line {
+  stroke: var(--primary);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.ms-preview-waypoint-dot {
+  fill: var(--primary);
+  stroke: var(--background);
+  stroke-width: 3;
+}
+
+.ms-preview-photo-ring {
+  fill: none;
+  stroke: #21ba91;
+  stroke-width: 2;
+}
+
+.ms-preview-home-marker {
+  circle {
+    fill: var(--card);
+    stroke: var(--primary);
+    stroke-width: 2;
+  }
+
+  text {
+    fill: var(--foreground);
+    font: 700 10px/1 system-ui, sans-serif;
+    paint-order: stroke;
+    stroke: var(--background);
+    stroke-width: 3px;
+  }
+}
+
+.ms-preview-map-label {
+  fill: var(--foreground);
+  font: 700 11px/1 system-ui, sans-serif;
+  paint-order: stroke;
+  stroke: var(--background);
+  stroke-width: 3px;
+}
+
+.ms-preview-drone-marker {
+  circle {
+    fill: #ed6b3c;
+    stroke: #fff;
+    stroke-width: 2;
+  }
+
+  path {
+    fill: #fff;
+  }
+}
+
+.ms-preview-map-caption {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  padding: 4px 7px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  color: var(--muted-foreground);
+  font-size: 10px;
+}
+
+.ms-preview-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Planner-parity playback row: DS play button, scrub slider, speed select,
+   tabular time badge. */
+.ms-preview-playback {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ms-preview-scrub {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ms-preview-speed {
+  flex: 0 0 auto;
+}
+
+.ms-preview-speed-trigger {
+  min-width: 76px;
+}
+
+.ms-preview-time {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ms-preview-wphead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ms-preview-wptitle {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ms-preview-count {
+  padding: 1px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--background);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ms-preview-tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.ms-preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+
+  th,
+  td {
+    padding: 6px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  th {
+    font-size: 11px;
+    color: var(--muted-foreground);
+    background: var(--muted);
+  }
+
+  tbody tr {
+    cursor: pointer;
+
+    &:last-child td {
+      border-bottom: 0;
+    }
+
+    &:hover {
+      background: var(--accent);
+    }
+
+    &.is-current {
+      background: color-mix(in srgb, var(--primary) 9%, var(--card));
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: -2px;
+    }
+  }
+}
+
+.ms-preview-play {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--foreground);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ms-preview-scrubber {
+  flex: 1;
+  accent-color: var(--primary);
+}
+
+.ms-preview-speed-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.ms-preview-speed {
+  min-height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.ms-preview-event {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--card);
+  font-size: 14px;
+}
+
+.ms-preview-progress {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: var(--muted);
+}
+
+.ms-preview-progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary);
+  transition: width .1s linear;
+}
+
+.ms-preview-waypoints {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ms-preview-waypoint-button {
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--foreground);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ms-preview-waypoint-button.is-current {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 9%, var(--card));
+}
+
+.ms-preview-waypoint-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ms-preview-waypoint-meta,
+.ms-preview-waypoint-time {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+.ms-scene {
+  position: absolute;
+  inset: 0;
+}
+
+.ms-scene-host {
+  position: absolute;
+  inset: 0;
+}
+
+.ms-scene-host canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ms-scene-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  background: var(--background);
+  color: var(--foreground);
+  padding: 24px;
+}
+
+.ms-scene-overlay-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ms-scene-overlay-sub {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  max-width: 420px;
+}
+
+.ms-scene-overlay-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ms-scene-fallback {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 8px;
+}
+
+.ms-lidar {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(300px, calc(100% - 86px));
+  height: min(196px, calc(100% - 24px));
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.ms-lidar.is-expanded {
+  width: min(560px, calc(100% - 86px));
+  height: min(340px, calc(100% - 24px));
+}
+
+.ms-lidar-header {
+  flex: 0 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 10px;
+}
+
+.ms-lidar-canvas {
+  display: block;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+}
+
+.ms-lidar-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.ms-lidar-toggle {
+  flex: 0 0 auto;
+}
+
+.ms-control-groups {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 5;
+  /* The stack spans the full map width for right anchoring. Let empty areas
+     pass pointer gestures through to Cesium; only actual controls catch input. */
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  /* Right-anchor every stack so an expanding address toolbar grows leftward
+     and never shifts the zoom/map toolbars below it. */
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.ms-control-groups>* {
+  pointer-events: auto;
+}
+
+.ms-address-search-group {
+  position: relative;
+  align-self: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 100%;
+  gap: 4px;
+}
+
+.ms-address-search-toolbar {
+  width: 42px;
+  min-height: 42px;
+  justify-content: flex-start;
+  overflow: hidden;
+  transition: width 180ms ease;
+}
+
+.ms-address-search-toolbar.is-open {
+  width: 310px;
+  max-width: 100%;
+}
+
+.ms-address-search-items {
+  width: 100%;
+  min-width: 0;
+  gap: 4px;
+}
+
+.ms-address-search-input-wrap {
+  width: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: width 180ms ease, opacity 120ms ease;
+}
+
+.ms-address-search-input-wrap.is-open {
+  width: auto;
+  opacity: 1;
+}
+
+.ms-address-search-input-wrap>[data-slot='combobox-root'] {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+}
+
+.ms-address-search-input {
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  border-color: var(--border);
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.ms-address-suggestions {
+  z-index: 60;
+  width: min(310px, calc(100vw - 32px));
+  max-height: min(280px, 45vh);
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--foreground) 22%, transparent);
+}
+
+.ms-address-suggestions-status {
+  padding: 8px 10px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.ms-address-suggestions-credits {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 6px 10px;
+  border-top: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.ms-address-suggestions-credits a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ms-address-suggestions-credits a:hover {
+  color: var(--foreground);
+  text-decoration: underline;
+}
+
+.ms-address-suggestion-item {
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+  white-space: normal;
+  text-align: left;
+}
+
+.ms-address-search-credit,
+.ms-address-search-status {
+  max-width: min(310px, 100%);
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: right;
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--foreground) 12%, transparent);
+}
+
+/* Out-of-flow status/attribution panel: overlays above the search toolbar so
+   opening the search never shifts the zoom/map toolbars below. */
+.ms-address-search-pop {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  width: min(310px, 100%);
+  max-width: 100%;
+  pointer-events: auto;
+}
+
+.ms-address-search-pop .ms-address-search-credit,
+.ms-address-search-pop .ms-address-search-status {
+  max-width: 100%;
+}
+
+.ms-address-search-credit {
+  color: var(--muted-foreground);
+  text-decoration: none;
+}
+
+.ms-address-search-credit:hover {
+  color: var(--foreground);
+  text-decoration: underline;
+}
+
+.ms-geocoded-origin-credit {
+  position: absolute;
+  left: 112px;
+  bottom: 10px;
+  z-index: 6;
+  max-width: min(310px, calc(100% - 132px));
+  overflow: hidden;
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--foreground) 12%, transparent);
+}
+
+.ms-geocoded-origin-credit:hover {
+  color: var(--foreground);
+  text-decoration: underline;
+}
+
+.ms-2d-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ------------------------- drawing altitude ruler (T-016, ref 03) ------------------------- */
+
+/* Full-height right-edge ruler. The box itself is the only hit target; canvas
+   drag and picking work untouched everywhere else. */
+.ms-alt-ruler {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 6;
+  /* Keep the full-height overlay from intercepting clicks meant for the
+     compass and camera controls. Only the value badge and ruler track below
+     opt back into hit testing. */
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.ms-alt-body {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 6px;
+  min-height: 0;
+}
+
+/* Value badge column: the badge floats at knob height (bottom %), pointing
+   at the knob. Solid fill keeps it legible over the 3D canvas. */
+.ms-alt-badge-slot {
+  position: relative;
+  flex: 0 0 78px;
+  min-height: 0;
+  pointer-events: none;
+}
+
+.ms-alt-badge {
+  position: absolute;
+  left: 0;
+  right: 2px;
+  pointer-events: auto;
+  transform: translateY(50%);
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  padding: 3px 6px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.ms-alt-badge::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid var(--border);
+}
+
+.ms-alt-badge:focus-within {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.ms-alt-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ms-alt-input:focus {
+  outline: none;
+}
+
+.ms-alt-unit {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
+/* Tick track: 1 m minor / 5 m major ticks across the 0–500 m range. */
+.ms-alt-track {
+  position: relative;
+  flex: 0 0 24px;
+  min-height: 64px;
+  pointer-events: auto;
+  cursor: ns-resize;
+  touch-action: none;
+  background: var(--card);
+  border-left: 1px solid var(--border);
+}
+
+.ms-alt-gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 120px;
+  transform: translateY(100%);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--primary) 24%, transparent), transparent);
+  pointer-events: none;
+}
+
+.ms-alt-active-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  transform: translateY(50%);
+  background: var(--primary);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.ms-alt-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ms-alt-ticks::before,
+.ms-alt-ticks::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background-position: right bottom;
+  background-repeat: repeat-y;
+}
+
+.ms-alt-ticks::before {
+  background-image: repeating-linear-gradient(to top,
+      transparent 0,
+      transparent calc(1% - 0.5px),
+      color-mix(in srgb, var(--border) 75%, transparent) calc(1% - 0.5px),
+      color-mix(in srgb, var(--border) 75%, transparent) 1%);
+  mask-image: linear-gradient(to left, #000 0 18px, transparent 18px);
+}
+
+.ms-alt-ticks::after {
+  background-image: repeating-linear-gradient(to top,
+      transparent 0,
+      transparent calc(0.2% - 0.1px),
+      color-mix(in srgb, var(--border) 40%, transparent) calc(0.2% - 0.1px),
+      color-mix(in srgb, var(--border) 40%, transparent) 0.2%);
+  mask-image: linear-gradient(to left, #000 0 9px, transparent 9px);
+}
+
+.ms-alt-knob {
+  position: absolute;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  transform: translate(-50%, 50%);
+  border-radius: 50%;
+  background: var(--background);
+  border: 2px solid var(--primary);
+  cursor: grab;
+  z-index: 2;
+}
+
+.ms-alt-knob:active {
+  cursor: grabbing;
+}
+
+.ms-alt-knob:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.ms-alt-hint {
+  display: none;
+}
+
+/* ------------------------- inspector ------------------------- */
+
+.ms-route-draft {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px 12px;
+}
+
+.ms-zone-draft-wrap {
+  margin: 12px;
+}
+
+.ms-route-draft-head {
+  min-width: 0;
+}
+
+.ms-route-draft-head .ms-inspector-sub {
+  margin: 6px 0 0;
+  line-height: 1.45;
+}
+
+.ms-route-draft-count {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ms-route-draft-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ms-route-draft-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+}
+
+.ms-route-draft-seq {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--muted);
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ms-route-draft-coords {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+  color: var(--foreground);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+
+  span {
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .ms-axis-compact {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+
+    .ms-axis {
+      flex: 0 0 auto;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted-foreground);
+    }
+
+    .ms-axis-input {
+      flex: 1 1 auto;
+      width: 100%;
+      min-width: 0;
+      height: 24px;
+      box-sizing: border-box;
+      padding: 1px 3px;
+      font-size: 11px;
+    }
+  }
+}
+
+.ms-route-draft-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 2px;
+
+  >button {
+    flex: 1 1 110px;
+    min-width: 0;
+  }
+}
+
+.ms-inspector-wrap {
+  flex: 0 0 360px;
+  min-height: 0;
+  border-left: 1px solid var(--border);
+  background: var(--card);
+  overflow-y: auto;
+}
+
+.ms-inspector-wrap.is-code-view {
+  flex-basis: clamp(460px, 38vw, 720px);
+  overflow: hidden;
+}
+
+.ms-inspector {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+
+.ms-inspector-code {
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.ms-inspector-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ms-inspector-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ms-inspector-sub {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.ms-iconrow {
+  display: flex;
+  gap: 4px;
+}
+
+.ms-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+
+  &:not(.ms-object-block) {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.ms-sequence-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ms-card-title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.ms-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+
+.ms-zone-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.ms-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ms-field-label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ms-btnrow {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  gap: 6px;
+  /* [data-slot="button"] {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+  } */
+}
+
+.ms-pane-viewtabs {
+  font-size: 12px;
+}
+
+.ms-end-select {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+}
+
+.ms-route-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ms-route-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.ms-route-stats {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.ms-seq-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+/* Tight sequence (feedback #2): rows touch, sharing one border line. Only the
+   first/last rows keep outer rounding; the selected row paints above. */
+.ms-seq-list>li {
+  position: relative;
+  border-radius: 0;
+
+  &+li {
+    margin-top: -1px;
+  }
+
+  &:first-child {
+    border-top-left-radius: var(--radius);
+    border-top-right-radius: var(--radius);
+  }
+
+  &:last-child {
+    border-bottom-left-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
+  }
+
+  &.is-selected {
+    z-index: 1;
+  }
+}
+
+/* The overlay zone takes no layout space so rows stay touching; its padding
+   is the hover target straddling the seam. The li+li margin above would leave
+   a 6px footprint, so it is fully compensated here. */
+.ms-seq-list {
+  >.ms-insert-action-zone {
+    margin-top: -7px;
+  }
+}
+
+.ms-seq-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 6px;
+  border-radius: var(--radius);
+  background: var(--card);
+  min-width: 0;
+
+  &:not(.ms-end, .ms-seq-trans) {
+    /* border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border); */
+  }
+
+  &.is-selected {
+    border-color: var(--primary);
+    background: var(--accent);
+  }
+
+  >.ms-hint {
+    flex: 1 1 100%;
+  }
+}
+
+.ms-seq-badge {
+  flex: 0 0 auto;
+  min-width: 30px;
+  /* height: 26px; */
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  /* border: 1px solid var(--border); */
+  border-radius: var(--radius);
+  background: oklch(from var(--accent) calc(l / 1.02) c h);
+  color: var(--muted-foreground);
+  cursor: default;
+}
+
+.ms-seq-badge {
+  &.is-wp {
+    cursor: pointer;
+  }
+}
+
+.ms-start,
+.ms-end {
+  .ms-seq-badge {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+}
+
+.ms-seq-fields {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  padding-left: 4px;
+  min-width: 0;
+
+  >.ms-axis-compact {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+/* Compact direct-entry XYZ for sequence rows: a small native number input
+   replaces the stepper NumberField so three values share one row inside the
+   310–360px inspector with no horizontal overflow. Fields flex to zero minimum
+   so the trailing More stays on the same horizontal row as the handle, badge,
+   and X/Y/Z at 1280/1180/980px; action chips and the Add action control wrap
+   to their own lines via flex-basis 100%. */
+.ms-axis-compact {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ms-axis-compact>.ms-axis {
+  flex: 0 0 auto;
+}
+
+.ms-axis-number-field {
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 0;
+
+  [data-slot='number-field-input'] {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+.ms-axis-input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  height: 26px;
+  box-sizing: border-box;
+  padding: 2px 4px;
+  font: inherit;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.ms-axis-input:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.ms-axis {
+  flex: 0 0 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
+.ms-seq-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+  flex: 0 0 auto;
+  align-self: center;
+  margin-left: auto;
+}
+
+.ms-action-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex-basis: 100%;
+}
+
+.ms-action-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+  padding: 1px 2px 1px 6px;
+}
+
+.ms-action-add {
+  flex: 1 1 100%;
+}
+
+.ms-switchrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ms-zone-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ms-zone-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ms-zone-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ms-zone-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 4px 4px 8px;
+  background: var(--card);
+}
+
+.ms-zone-row.is-selected {
+  border-color: var(--primary);
+  background: var(--accent);
+}
+
+.ms-zone-name {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  color: var(--foreground);
+  cursor: pointer;
+  text-align: left;
+}
+
+.ms-issue-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ms-issue {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 8px;
+  background: var(--card);
+}
+
+.ms-issue.is-error {
+  border-color: var(--destructive);
+  color: var(--destructive);
+}
+
+.ms-issue.is-warning {
+  border-color: var(--border);
+  color: var(--muted-foreground);
+}
+
+.ms-issue.is-ok {
+  border-color: var(--primary);
+}
+
+.ms-code {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--foreground);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px;
+  resize: vertical;
+}
+
+.ms-python-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+}
+
+.ms-python-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.ms-python-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ms-python-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 0;
+  border-radius: var(--radius);
+  padding: 6px 8px;
+  color: var(--foreground);
+  background: var(--card);
+  font-size: 13px;
+}
+
+.ms-python-actions button:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.ms-python-ai {
+  position: relative;
+  background: transparent !important;
+}
+
+.ms-python-ai svg:first-child {
+  width: 19px;
+  height: 19px;
+}
+
+.ms-python-ai svg:last-child {
+  width: 10px;
+  height: 10px;
+  margin-left: -10px;
+  margin-top: -12px;
+}
+
+.ms-python-language svg {
+  width: 13px;
+  height: 13px;
+}
+
+.ms-python-editor {
+  --ms-code-canvas: var(--foreground);
+  --ms-code-ink: var(--background);
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--ms-code-canvas);
+  color: var(--ms-code-ink);
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  font-variant-ligatures: none;
+}
+
+.dark .ms-python-editor {
+  --ms-code-canvas: var(--background);
+  --ms-code-ink: var(--foreground);
+}
+
+.ms-python-mirror,
+.ms-python-input {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: auto;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  tab-size: 4;
+}
+
+.ms-python-mirror {
+  padding: 12px 12px 12px 0;
+  pointer-events: none;
+}
+
+.ms-python-line {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  min-height: 1.55em;
+}
+
+.ms-python-number {
+  padding-right: 8px;
+  text-align: right;
+  color: color-mix(in srgb, var(--ms-code-ink) 54%, transparent);
+  user-select: none;
+}
+
+.ms-python-line.is-active .ms-python-number {
+  background: color-mix(in srgb, var(--primary) 22%, var(--ms-code-canvas));
+  color: var(--ms-code-ink);
+}
+
+.ms-python-source {
+  padding-left: 10px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ms-python-token-string {
+  color: color-mix(in srgb, var(--ms-code-ink) 70%, var(--primary));
+}
+
+.ms-python-token-number,
+.ms-python-token-punctuation {
+  color: color-mix(in srgb, var(--ms-code-ink) 60%, var(--primary));
+}
+
+.ms-python-token-keyword {
+  color: color-mix(in srgb, var(--ms-code-ink) 78%, var(--primary));
+}
+
+.ms-python-token-comment {
+  color: color-mix(in srgb, var(--ms-code-ink) 55%, transparent);
+}
+
+.ms-python-input {
+  z-index: 1;
+  display: block;
+  padding: 12px 12px 12px 48px;
+  border: 0;
+  border-radius: 0;
+  resize: none;
+  outline-offset: -2px;
+  background: transparent;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: var(--ms-code-ink);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ms-python-input::selection {
+  background: color-mix(in srgb, var(--primary) 42%, transparent);
+}
+
+.ms-python-limit {
+  margin: 0;
+  padding: 7px 10px;
+  border-top: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.ms-empty {
+  align-items: flex-start;
+}
+
+.ms-empty-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ms-stats {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 10px;
+}
+
+.ms-stat dt {
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+
+.ms-stat dd {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ms-route-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 260px;
+  overflow-y: auto;
+  font-size: 12px;
+}
+
+.ms-route-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 3px 6px;
+  border-radius: var(--radius);
+}
+
+.ms-route-item.is-active {
+  background: var(--accent);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.ms-event-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ms-event-row {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  text-align: left;
+  font-size: 12px;
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.ms-event-row:hover {
+  background: var(--accent);
+}
+
+.ms-event-t {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+
+.ms-console {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 320px;
+  overflow-y: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.ms-runfooter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--card);
+  position: sticky;
+  bottom: 0;
+}
+
+.ms-foot-note {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+
+.ms-shortcuts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ms-shortcut-row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 12px;
+}
+
+.ms-shortcut-row kbd {
+  flex: 0 0 150px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2px 6px;
+}
+
+/* ------------------------- map overlays: World/Map field + drone card ------------------------- */
+
+/* T-015: the World/Map field and the selectable drone card (with a disabled
+   plus placeholder) overlay the map at top-left. The overlay layer itself is
+   pointer-transparent so map drag, waypoint picking, and the orientation cube
+   keep working — only the controls take pointer hits. */
+.ms-map-overlays {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.ms-map-context {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 8px;
+  width: max-content;
+  max-width: min(640px, calc(100% - 24px));
+  pointer-events: none;
+}
+
+.ms-map-context>.ms-drone-card {
+  pointer-events: auto;
+}
+
+/* T-017: World/Map card — reuses .ms-drone-card surface but is narrower
+   with a single centered row (no All routes subline, no divider/plus). */
+.ms-world-card .ms-drone-meta {
+  justify-content: center;
+}
+
+.ms-map-overlays .ms-world-card .ms-drone-trigger {
+  align-self: stretch;
+  height: auto;
+  /* padding: 6px 8px 6px 2px; */
+}
+
+.ms-footprint-opacity-head {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ms-world-type-tabs,
+.ms-recon-pattern-tabs {
+  width: 100%;
+  max-width: none;
+}
+
+.ms-world-type-list,
+.ms-recon-pattern-list {
+  width: 100%;
+}
+
+.ms-world-type-tab {
+  flex: 1 1 0;
+  justify-content: center;
+}
+
+.ms-world-type-panel {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.ms-recon-pattern-panel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.ms-footprint-opacity {
+  margin: 2px 0 0 27px;
+  padding: 0 2px 5px;
+}
+
+.ms-footprint-opacity-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.ms-footprint-opacity-head strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.ms-footprint-opacity [data-slot='slider'] {
+  width: 100%;
+}
+
+/* Focus ring for both card triggers (kept for keyboard access). */
+.ms-drone-card {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2px;
+  pointer-events: auto;
+}
+
+.ms-map-overlays .ms-drone-trigger {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px 2px 2px;
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ms-drone-thumb {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+  color: var(--muted-foreground);
+}
+
+.ms-drone-meta {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+}
+
+.ms-drone-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ms-drone-name {
+  flex: 0 1 auto;
+  font-size: 13px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  max-width: 220px;
+}
+
+.ms-drone-caret {
+  flex: 0 0 auto;
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+.ms-drone-routes {
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+
+.ms-drone-divider {
+  flex: 0 0 auto;
+  align-self: stretch;
+  width: 1px;
+  margin: 4px 8px;
+  background: var(--border);
+}
+
+/* Disabled placeholder: present and reachable by name, never actionable. */
+.ms-drone-add {
+  flex: 0 0 auto;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 16px;
+  cursor: not-allowed;
+}
+
+.ms-drone-add:disabled {
+  opacity: 0.55;
+}
+
+/* ------------------------- stage minibar: anchored band ------------------------- */
+
+/* T-015: the Design/Simulation switch is an anchored full-width band at the
+   top of the center column (in-flow, never floating over the map), matching
+   owner Image #3: visible numbered steps, a connector, and an active
+   underline driven by the single shared stage state. */
+.ms-stage-minibar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: stretch;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+}
+
+.ms-stage-minibar {
+  .ms-stage {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+
+    [data-slot='toggle'] {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: auto;
+      padding: 10px 14px;
+      border-radius: 0;
+      background: transparent;
+      color: var(--muted-foreground);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+
+      &:hover {
+        background: transparent;
+        color: var(--foreground);
+      }
+
+      &:disabled,
+      &[aria-disabled='true'] {
+        opacity: 0.55;
+      }
+
+      &[aria-disabled='true'] {
+        cursor: not-allowed;
+      }
+    }
+
+    [data-pressed='true'],
+    [aria-pressed='true'] {
+      background: transparent;
+      color: var(--foreground);
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        bottom: -1px;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--primary);
+      }
+    }
+  }
+}
+
+.ms-stage-link {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 24px;
+  height: 1px;
+  margin: 0 4px;
+  background: var(--border);
+}
+
+/* Visible 1/2 stepper markers inside the minibar toggles. The Toggle itself
+   already carries the accessible name (aria-label) and pressed state; the
+   number badge is decorative (aria-hidden in JSX) and adapts to it. */
+.ms-stage-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ms-stage [data-pressed='true'] .ms-stage-num,
+.ms-stage [aria-pressed='true'] .ms-stage-num {
+  background: var(--primary);
+  border-color: transparent;
+  color: var(--primary-foreground);
+}
+
+.ms-map-overlays .ms-world-trigger:focus-visible,
+.ms-map-overlays .ms-drone-trigger:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+/* ------------------------- app tabs (Plan / Fly / Report) ------------------------- */
+
+.ms-apptabs {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  border-radius: var(--radius);
+  background: transparent;
+  width: 100%;
+}
+
+.ms-apptabs .ms-apptab {
+  align-self: stretch;
+  width: auto;
+}
+
+.ms-apptab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  /* border: 1px solid transparent; */
+  /* border-radius: var(--radius); */
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 4px;
+  cursor: pointer;
+}
+
+.ms-apptab svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* .ms-apptab:hover {
+  color: var(--foreground);
+  background: var(--accent);
+}
+
+.ms-apptab:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+} */
+
+/* ------------------------- Fly / Report placeholders ------------------------- */
+
+.ms-body-placeholder {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+  padding: 48px 24px;
+  overflow-y: auto;
+}
+
+.ms-placeholder {
+  max-width: 520px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ms-placeholder-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ------------------------- rail divider ------------------------- */
+
+.ms-rail-divider {
+  width: 24px;
+  height: 1px;
+  background: var(--border);
+  flex: 0 0 auto;
+}
+
+/* ------------------------- context bars (Drone / World) ------------------------- */
+
+.ms-contextbar-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 4px 4px 8px;
+}
+
+.ms-contextbar-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+
+.ms-contextbar-trigger {
+  min-width: 150px;
+  max-width: 260px;
+  font-size: 12px;
+}
+
+/* ------------------------- waypoint row: one-line XYZ, handle, more ------------------------- */
+
+.ms-drag-handle {
+  flex: 0 0 auto;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 34px;
+  font-size: 14px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: grab;
+  touch-action: none;
+}
+
+.ms-drag-handle:hover {
+  background: var(--accent);
+  color: var(--foreground);
+}
+
+.ms-drag-handle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.ms-seq-row.is-grabbed {
+  border-color: var(--primary);
+  border-style: dashed;
+}
+
+.ms-seq-row.is-grabbed .ms-drag-handle {
+  color: var(--primary);
+  cursor: grabbing;
+}
+
+.ms-seq-row.is-drop-target {
+  border-color: var(--primary);
+  box-shadow: inset 0 2px 0 var(--primary);
+}
+
+/* ------------------------- status strip ------------------------- */
+
+.ms-status {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--card);
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.ms-status-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ms-status-actions {
+  display: flex;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+/* ------------------------- compass cube ------------------------- */
+
+.ms-compass-cube {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+  user-select: none;
+  touch-action: none;
+}
+
+.ms-scene-wrap.has-alt-ruler .ms-compass-cube,
+.ms-scene-wrap.has-alt-ruler .ms-control-groups {
+  right: 32px;
+}
+
+.ms-compass-cube.is-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.ms-cube-viewport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 400px;
+  cursor: grab;
+}
+
+.ms-cube-viewport:active {
+  cursor: grabbing;
+}
+
+.ms-cube {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.ms-cube-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--foreground);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  user-select: none;
+  backface-visibility: hidden;
+}
+
+.ms-cube-face:hover {
+  background: var(--accent);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.ms-cube-face:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+  z-index: 10;
+}
+
+.ms-cube-face-top {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.ms-cube-face-bottom {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  pointer-events: none;
+}
+
+/* Keyboard view menu: hidden until focus, so waypoint editing tab order is untouched. */
+.ms-cube-kb {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.ms-cube-kb:not(:focus-within) {
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ms-cube-kb-btn {
+  font-size: 11px;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--foreground);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius);
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.ms-cube-kb-btn:hover {
+  background: var(--accent);
+}
+
+.ms-cube-kb-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.ms-cube-kb-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Right pane polish (2026-10-13): even inset + vertical rhythm across the
+   Design inspector. Spacing-only; tokens, markup, and behavior untouched.
+   Compact one-line X/Y/Z fields and their wrap behavior preserved. */
+.ms-inspector {
+  gap: 12px;
+
+  .ms-pane-head {
+    background-color: var(--card);
+  }
+}
+
+.ms-card {
+  padding: 12px;
+  gap: 12px;
+}
+
+.ms-route-head {
+  gap: 4px;
+}
+
+.ms-seq-list {
+  gap: 0;
+}
+
+.ms-seq-row {
+  align-items: center;
+  gap: 8px;
+
+  &:not(.ms-end, .ms-seq-marker) {
+    padding: 4px;
+  }
+  &.ms-seq-trans,
+  &.ms-end,
+  &.ms-seq-marker {
+    padding: 6px 12px;
+    flex-wrap: unset;
+  }
+  &.ms-end,
+  &.ms-seq-marker {
+    background: var(--accent);
+  }
+}
+
+.ms-seq-actions {
+  gap: 4px;
+}
+
+.ms-action-list {
+  gap: 6px;
+}
+
+.ms-action-chip {
+  gap: 4px;
+  padding: 2px 2px 2px 8px;
+}
+
+.ms-zone-group {
+  gap: 8px;
+}
+
+.ms-zone-list {
+  gap: 6px;
+}
+
+.ms-zone-row {
+  padding: 6px 6px 6px 10px;
+}
+
+/* ------------------------- compact desktop ------------------------- */
+
+@media (max-width: 1180px) {
+  .ms-inspector-wrap {
+    flex-basis: 310px;
+  }
+
+  .ms-inspector-wrap.is-code-view {
+    flex-basis: min(45vw, 620px);
+  }
+
+  .ms-crumb-name {
+    max-width: 180px;
+  }
+}
+
+@media (max-width: 980px) {
+  .ms-root {
+    height: auto;
+    min-height: 0;
+  }
+
+  .ms-body {
+    flex-direction: column;
+  }
+
+  .ms-rail {
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 8px 10px;
+    overflow: visible;
+  }
+
+  .ms-apptabs {
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+  }
+
+  .ms-apptab {
+    flex: 0 0 auto;
+    min-width: 76px;
+  }
+
+  .ms-rail-bottom {
+    margin-top: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .ms-rail-group {
+    flex-direction: row;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
+  .ms-rail-divider {
+    width: 1px;
+    height: 24px;
+    flex: 0 0 auto;
+  }
+
+  .ms-center {
+    flex: 0 0 auto;
+  }
+
+  .ms-scene-wrap {
+    flex: 0 0 420px;
+  }
+
+  .ms-inspector-wrap {
+    flex: 0 0 auto;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    overflow: visible;
+  }
+
+  .ms-inspector-wrap.is-code-view {
+    flex-basis: auto;
+    height: 600px;
+  }
+
+  .ms-top {
+    flex-wrap: wrap;
+  }
+
+  .ms-map-context {
+    top: 8px;
+    left: 8px;
+    gap: 6px;
+    max-width: min(520px, calc(100% - 16px));
+    flex-wrap: wrap;
+  }
+
+  .ms-drone-thumb {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+
+  .ms-drone-name {
+    max-width: 140px;
+  }
+
+  .ms-drone-divider {
+    margin: 4px 6px;
+  }
+
+  .ms-drone-add {
+    width: 32px;
+    height: 32px;
+  }
+
+  .ms-stage-minibar {
+    padding: 0 8px;
+  }
+
+  .ms-stage-minibar .ms-stage [data-slot='toggle'] {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .ms-stage-link {
+    width: 24px;
+  }
+
+  /* Keep ruler controls compact while the rail fills the map height. */
+  .ms-alt-ruler {
+    right: 0;
+  }
+
+  .ms-alt-badge-slot {
+    flex-basis: 66px;
+  }
+
+}
+
+/* Per-object mission blocks and derived, non-editable transfer previews. */
+.ms-object-block {
+  padding: 0;
+
+  .ms-route-head {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 12px;
+
+    +.ms-recon-control-row {
+      padding-top: 0;
+    }
+  }
+
+  .ms-route-name {
+    flex: 0 0 auto;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .ms-route-stats {
+    display: block;
+    flex: 1 1 0;
+    margin-left: auto;
+    min-width: 0;
+    overflow: hidden;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ms-hint {
+    padding: 12px;
+  }
+
+  &.is-selected,
+  &.is-editing {
+    border-color: var(--primary);
+  }
+}
+
+.ms-route-block {
+
+  .ms-route-head,
+  .ms-route-name,
+  .ms-route-stats {
+    min-width: 0;
+  }
+
+  .ms-route-head {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .ms-route-name {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .ms-route-stats {
+    display: block;
+    flex: 1 1 0;
+    margin-left: auto;
+    overflow: hidden;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ms-field {
+    display: grid;
+    grid-template-columns: minmax(100px, 1fr) minmax(110px, 1.3fr);
+    align-items: center;
+    gap: 8px;
+
+    >label,
+    [data-slot='field-label'] {
+      white-space: nowrap;
+    }
+  }
+}
+
+.ms-route-title-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.ms-route-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--foreground);
+  flex-shrink: 0;
+}
+
+.ms-route-actions {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.ms-zone-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ms-slider-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.ms-slider-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.ms-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.ms-slider-track-wrap {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.ms-slider-val-box {
+  flex: 0 0 68px;
+}
+
+.ms-insert-action-zone {
+  position: relative;
+  height: 0;
+  padding: 7px 0;
+  margin: -7px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  z-index: 2;
+  list-style: none;
+  overflow: visible;
+}
+
+.ms-insert-action-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  transform: translateY(-50%);
+  background: var(--primary);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+/* Hover add-affordance (feedback #3): circle sits on the line at the left
+   edge of the sequence, full-width violet line behind it. The zone itself
+   takes no layout space so rows stay touching; its padding is the hover
+   target straddling the seam. */
+.ms-insert-action-btn {
+  position: absolute;
+  top: 0;
+  left: 12px;
+  z-index: 3;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  transform: translate(0, -25%);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.ms-insert-action-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+.ms-insert-action-zone:hover .ms-insert-action-line,
+.ms-insert-action-zone:focus-within .ms-insert-action-line {
+  opacity: 0.75;
+}
+
+.ms-insert-action-zone:hover .ms-insert-action-btn,
+.ms-insert-action-zone:focus-within .ms-insert-action-btn {
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+.ms-insert-action-menu {
+  min-width: 210px;
+}
+
+.ms-action-tag-mini {
+  margin-right: 6px;
+  font-size: 13px;
+}
+
+.ms-action-tag-mini svg,
+.ms-action-tag svg {
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+}
+
+/* Action rows sit at the same level as waypoint rows (feedback #2/#3):
+   no indent, same surface, touching borders via the tight list rules. */
+.ms-seq-action-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  margin: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 12px;
+  list-style: none;
+}
+
+.ms-action-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+}
+
+/* Kind-tinted tags, token-only (feedback: no raw values). Camera uses the
+   primary tint, LiDAR stays neutral; the icon already differs per kind. */
+.ms-action-tag.is-camera {
+  background: color-mix(in srgb, var(--primary) 16%, transparent);
+  color: var(--primary);
+  border-color: color-mix(in srgb, var(--primary) 45%, transparent);
+}
+
+.ms-action-tag.is-lidar {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border-color: var(--border);
+}
+
+.ms-action-label {
+  flex: 1 1 auto;
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.ms-avoid-type-toggle {
+  margin-bottom: 10px;
+}
+
+.ms-transfer-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--muted-foreground);
+  background: color-mix(in srgb, var(--primary) 6%, var(--background));
+  font-size: 12px;
+}
+
+/* Pane tab bar (Figma 607:18957): pill Design/Code switch + icon actions. */
+.ms-pane-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+/* Unified pane head (feedback #1/#5): tabs and Mission settings share one
+   card background with a bottom border under the whole block. Only this head
+   block goes edge-to-edge; cards below keep side padding. */
+.ms-pane-head {
+  position: sticky;
+  top: 0;
+  margin: -12px -12px 0;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  z-index: 2;
+}
+
+.ms-pane-head .ms-settings {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.ms-pane-tabs-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ms-vdivider {
+  width: 1px;
+  height: 24px;
+  margin: 0 4px;
+  background: var(--border);
+}
+
+.ms-seq-static-accent {
+  background-color: var(--background);
+  /* border-color: var(--border);
+  color: var(--muted-foreground); */
+}
+
+/* Mission settings section (Figma 607:18957). */
+.ms-settings-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ms-settings-head .ms-card-title {
+  margin: 0;
+}
+
+.ms-settings-spacer {
+  flex: 1 1 auto;
+}
+
+.ms-data-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 32px;
+  font-size: 12px;
+}
+
+.ms-data-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ms-data-right .ms-axis {
+  display: none;
+}
+
+.ms-data-right .ms-axis-number-field {
+  flex: 0 0 64px;
+  width: 64px;
+}
+
+.ms-data-select {
+  min-width: 150px;
+  max-width: 190px;
+  font-size: 12px;
+}
+
+.ms-unit {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+/* Block header mini-stats (Figma 607:18957 info triples). */
+.ms-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ms-stat svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* START / TRANS / END sequence marker rows (Figma 607:18957). */
+.ms-seq-marker .ms-seq-badge,
+.ms-seq-trans .ms-seq-badge {
+  border-color: var(--border);
+  color: var(--muted-foreground);
+  font-size: 10px;
+}
+
+.ms-seq-marker-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.ms-seq-trans {
+  border-style: dashed;
+  background: color-mix(in srgb, var(--primary) 6%, var(--background));
+  /* background: color-mix(in srgb, var(--primary) 6%, var(--background)); */
+}
+
+.ms-seq-dist {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.ms-end-switch {
+  margin-left: auto;
+}
+
+.ms-transfer-preview strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.ms-transfer-preview .ms-issue {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+.ms-sequence-insert {
+  position: relative;
+  z-index: 1;
+  height: 0;
+  margin-top: -6px;
+  overflow: visible;
+  list-style: none;
+}
+
+.ms-sequence-insert-trigger {
+  position: absolute;
+  top: 0;
+  left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--foreground);
+  background: var(--card);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.ms-sequence-insert-trigger svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ms-seq-row:hover+.ms-sequence-insert .ms-sequence-insert-trigger,
+.ms-seq-row:focus-within+.ms-sequence-insert .ms-sequence-insert-trigger,
+.ms-action-seq-row:hover+.ms-sequence-insert .ms-sequence-insert-trigger,
+.ms-action-seq-row:focus-within+.ms-sequence-insert .ms-sequence-insert-trigger,
+.ms-sequence-insert:hover .ms-sequence-insert-trigger,
+.ms-sequence-insert:focus-within .ms-sequence-insert-trigger {
+  opacity: 1;
+}
+
+.ms-sequence-insert-trigger:hover,
+.ms-sequence-insert-trigger:focus-visible {
+  border-color: var(--primary);
+  color: var(--primary);
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+
+@media (max-width: 640px) {
+
+  .ms-route-block .ms-route-head,
+  .ms-object-block .ms-route-head {
+    flex-wrap: wrap;
+  }
+
+  .ms-route-block .ms-route-stats,
+  .ms-object-block .ms-route-stats {
+    margin-left: 0;
+    text-align: left;
+  }
+
+  .ms-route-block .ms-field {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ------------------------- library: Home / Projects / Project-detail (P2 slice) --- */
+
+/* The supplied reference informs navigation and content placement only.
+   Surfaces, colors, focus states, and corner treatment use skytrack-ui tokens. */
+.ms-lib {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.ms-lib-top {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+
+.ms-lib-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.ms-lib-brand img {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.ms-lib-local {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2px 8px;
+  background: var(--background);
+}
+
+.ms-lib-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ms-lib-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.ms-lib-side {
+  flex: 0 0 270px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 8px;
+  border-right: 1px solid var(--sidebar-border);
+  background: var(--sidebar);
+  color: var(--sidebar-foreground);
+  overflow-y: auto;
+}
+
+.ms-lib-navgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ms-lib-navhead {
+  margin: 4px 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
+.ms-lib-navitem {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 12px;
+  width: 100%;
+  min-height: 0;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ms-lib-navitem svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.ms-lib-navitem:hover {
+  background: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
+}
+
+.ms-lib-navitem.is-active {
+  background: oklch(from var(--sidebar-accent) calc(l / 1.03) c h);
+  color: var(--sidebar-accent-foreground);
+  font-weight: 500;
+}
+
+.ms-lib-navitem:focus-visible,
+.ms-lib-card:focus-visible,
+.ms-lib-back:focus-visible,
+.ms-lib-viewall:focus-visible,
+.ms-lib-x:focus-visible,
+.ms-lib-workspace:focus-visible {
+  outline: 2px solid var(--sidebar-ring);
+  outline-offset: 1px;
+}
+
+.ms-lib-side-foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 12px;
+}
+
+.ms-lib-community {
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--card-foreground);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.ms-lib-community-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ms-lib-community-head h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.ms-lib-community p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+
+.ms-lib-x {
+  display: inline-flex;
+  padding: 2px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+
+.ms-lib-workspace {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--sidebar-foreground);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ms-lib-workspace:hover {
+  background: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
+}
+
+.ms-lib-sidebar-divider {
+  height: 1px;
+  margin: 4px 0;
+  background: var(--sidebar-border);
+  flex: 0 0 auto;
+}
+
+.ms-lib-nav-empty {
+  cursor: pointer;
+}
+
+.ms-lib-workspace-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  padding: 0 2px 2px;
+}
+
+.ms-lib-workspace-switcher {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ms-lib-workspace-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--sidebar-foreground);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.ms-lib-workspace-select:hover,
+.ms-lib-workspace-select[data-popup-open] {
+  background: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
+}
+
+.ms-lib-workspace-select:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.ms-lib-workspace-caret {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+}
+
+.ms-lib-workspace-caret svg,
+.ms-lib-profile>svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+.ms-lib-workspace-name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 24px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ms-lib-workspace-role {
+  margin: 2px 0 0 6px;
+}
+
+.ms-lib-workspace-option {
+  width: 100%;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.ms-lib-workspace-option-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ms-lib-workspace-option-role {
+  flex: 0 0 auto;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.ms-lib-workspace-option[data-highlighted] .ms-lib-workspace-option-role {
+  color: inherit;
+}
+
+.ms-lib-workspace-avatar {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius);
+  background: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ms-lib-workspace-settings {
+  margin-top: 4px;
+  color: var(--sidebar-foreground);
+}
+
+.ms-lib-workspace-settings:hover,
+.ms-lib-profile:hover {
+  background: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
+}
+
+.ms-lib-side .ms-lib-admin {
+  display: inline-flex;
+  color: var(--sidebar-accent-foreground);
+  border: 0;
+  background: var(--sidebar-accent);
+  font-size: 12px;
+  padding: 2px 8px;
+}
+
+.ms-lib-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 42px;
+  width: 100%;
+  padding: 6px 10px 6px 6px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--sidebar-foreground);
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ms-lib-profile>svg {
+  margin-left: auto;
+}
+
+.ms-lib-profile-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--sidebar-primary);
+  color: var(--sidebar-primary-foreground);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.ms-lib-account-popup {
+  width: min(344px, calc(100vw - 24px));
+  padding: 8px;
+  border-radius: calc(var(--radius) + 4px);
+}
+
+.ms-lib-account-summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  margin-bottom: 6px;
+  padding: 16px;
+  border-radius: calc(var(--radius) + 2px);
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.ms-lib-account-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--primary);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.ms-lib-account-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ms-lib-account-identity strong {
+  overflow: hidden;
+  font-size: 18px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ms-lib-account-identity span {
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ms-lib-account-popup .ms-lib-account-item {
+  min-height: 44px;
+  gap: 14px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  font-size: 15px;
+}
+
+.ms-lib-account-popup .ms-lib-account-item svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ms-lib-account-popup .ms-lib-account-separator {
+  margin: 8px -8px;
+}
+
+.ms-lib-account-theme-check {
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  color: var(--primary);
+}
+
+.ms-lib-account-dialog {
+  width: min(480px, calc(100vw - 32px));
+}
+
+.ms-lib-account-form,
+.ms-lib-account-settings-content,
+.ms-lib-account-notifications-content,
+.ms-lib-account-switch-content,
+.ms-lib-account-logout-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.ms-lib-account-edit-avatar,
+.ms-lib-account-current-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--sidebar-primary);
+  color: var(--sidebar-primary-foreground);
+  font-size: 21px;
+  font-weight: 650;
+}
+
+.ms-lib-account-note {
+  margin: -6px 0 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.ms-lib-account-readonly {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  cursor: default;
+}
+
+.ms-lib-account-settings-content {
+  gap: 0;
+}
+
+.ms-lib-account-status-row,
+.ms-lib-account-detail,
+.ms-lib-account-email-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+
+.ms-lib-account-detail strong {
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: right;
+}
+
+.ms-lib-account-callout {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--muted);
+  color: var(--foreground);
+  font-size: 13px;
+}
+
+.ms-lib-account-callout strong {
+  font-weight: 600;
+}
+
+.ms-lib-account-callout p {
+  margin: 4px 0 0;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+
+.ms-lib-account-notifications-content h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ms-lib-account-notification-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 58px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ms-lib-account-notification-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.ms-lib-account-notification-copy strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.ms-lib-account-notification-copy span {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ms-lib-account-email-status {
+  border-bottom: 0;
+  color: var(--foreground);
+}
+
+.ms-lib-account-current {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.ms-lib-account-current-avatar {
+  width: 42px;
+  height: 42px;
+  font-size: 17px;
+}
+
+.ms-lib-account-current-identity {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.ms-lib-account-current-identity strong,
+.ms-lib-account-current-identity span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ms-lib-account-current-identity strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ms-lib-account-current-identity span {
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.ms-lib-account-current-check {
+  display: inline-flex;
+  color: var(--primary);
+}
+
+.ms-lib-account-current-check svg {
+  width: 19px;
+  height: 19px;
+}
+
+.ms-lib-account-switch-content .ms-lib-account-callout {
+  margin-top: 0;
+}
+
+.ms-lib-account-callout.is-notice {
+  display: flex;
+  gap: 10px;
+  border-color: color-mix(in oklab, var(--warning), var(--border) 55%);
+}
+
+.ms-lib-account-callout.is-notice > svg {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  color: var(--warning);
+}
+
+@media (max-width: 520px) {
+  .ms-lib-account-dialog {
+    padding: 20px;
+  }
+}
+
+.ms-lib-avatar {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ms-lib-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 16px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.ms-lib-main h1 {
+  margin: 0 0 12px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.ms-lib-main h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ms-lib-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.ms-lib-sub {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.ms-lib-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ms-lib-back:hover {
+  color: var(--primary);
+}
+
+.ms-lib-viewall {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.ms-lib-viewall:hover {
+  color: var(--primary);
+}
+
+.ms-lib-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 16px;
+}
+
+.ms-ai-model-tabs {
+  width: 100%;
+  max-width: none;
+  gap: 12px;
+}
+
+.ms-ai-model-tabs [data-slot='tabs-list'] {
+  gap: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ms-ai-model-tabs [data-slot='tabs-panel'] {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+}
+
+.ms-lib-grid.is-templates {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.ms-lib-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--foreground);
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.ms-lib-card:hover {
+  border-color: var(--primary);
+}
+
+.ms-lib-card.is-current {
+  border-color: var(--primary);
+}
+
+.ms-lib-current {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+  white-space: nowrap;
+}
+
+/* Shared card media ratio across thumbnails and resource-card icon panels. */
+.ms-lib-thumb,
+.ms-lib-resource-icon {
+  aspect-ratio: 4 / 3;
+}
+
+/* Mission thumbnail uses source-backed line art over the token grid. */
+.ms-lib-thumb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  background-color: var(--background);
+  background-image:
+    repeating-linear-gradient(to right, color-mix(in srgb, var(--border) 55%, transparent) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(to bottom, color-mix(in srgb, var(--border) 55%, transparent) 0 1px, transparent 1px 28px);
+  border-bottom: 1px solid var(--border);
+}
+
+button.ms-lib-thumb {
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  appearance: none;
+  cursor: pointer;
+}
+
+.ms-lib-thumb svg {
+  width: 56px;
+  height: 56px;
+  opacity: 0.75;
+}
+
+.ms-lib-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+}
+
+.ms-lib-card-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.ms-lib-card-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.ms-lib-card-meta svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ms-lib-context-row {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ms-lib-context-mode,
+.ms-lib-context-world {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2px 7px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.ms-lib-context-mode {
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+.ms-lib-context-world svg {
+  width: 13px;
+  height: 13px;
+}
+
+.ms-lib-shared-owner {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.ms-lib-shared-owner .ms-lib-avatar {
+  width: 22px;
+  height: 22px;
+}
+
+.ms-lib-shared-context {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+.ms-lib-card.is-readonly {
+  cursor: default;
+}
+
+.ms-lib-resource-card {
+  min-height: 156px;
+}
+
+.ms-lib-managed-resource-card .ms-lib-card-body {
+  flex: 1;
+}
+
+.ms-lib-resource-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+
+.ms-lib-resource-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border-bottom: 1px solid var(--border);
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+
+.ms-lib-resource-icon svg {
+  width: 36px;
+  height: 36px;
+}
+
+.ms-lib-card-edited {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.ms-lib-card-desc {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+
+@media (max-width: 980px) {
+  .ms-lib-side {
+    flex-basis: 64px;
+    align-items: stretch;
+    padding: 12px 6px;
+  }
+
+  .ms-lib-nav-label,
+  .ms-lib-navhead,
+  .ms-lib-community,
+  .ms-lib-workspace .ms-lib-nav-label,
+  .ms-lib-workspace-name,
+  .ms-lib-workspace-role,
+  .ms-lib-profile .ms-lib-nav-label,
+  .ms-lib-sidebar-divider,
+  .ms-lib-workspace-settings {
+    display: none;
+  }
+
+  .ms-lib-workspace-head {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .ms-lib-workspace-select {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .ms-lib-workspace-caret {
+    display: none;
+  }
+
+  .ms-lib-workspace-avatar {
+    display: inline-flex;
+  }
+
+  .ms-lib-navitem {
+    justify-content: center;
+  }
+
+  .ms-lib-main {
+    padding: 12px 12px 24px;
+    gap: 20px;
+  }
+
+  .ms-lib-top {
+    flex-wrap: wrap;
+  }
+}
+
+/* ------------------------- library: entry-point parity additions -------- */
+
+.ms-lib-navitem:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+a.ms-lib-navitem {
+  text-decoration: none;
+}
+
+.ms-lib-external {
+  width: 12px;
+  height: 12px;
+  margin-left: auto;
+  color: var(--muted-foreground);
+  flex: 0 0 auto;
+}
+
+.ms-lib-crumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+
+.ms-lib-crumb-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  padding: 2px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.ms-lib-crumb-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ms-lib-crumb-link:hover {
+  color: var(--primary);
+}
+
+.ms-lib-row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+/* Dashed New Mission / New Project entry card (mirrors NewItemButton). */
+.ms-lib-newitem {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 206px;
+  width: 100%;
+  padding: 16px;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ms-lib-newitem svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ms-lib-newitem:hover {
+  border-color: var(--primary);
+  background: var(--accent);
+}
+
+.ms-lib-card-toprow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ms-lib-card-title.is-link {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.ms-lib-card-title.is-link:hover {
+  color: var(--primary);
+}
+
+.ms-lib-card-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+.ms-lib-link {
+  align-self: flex-start;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--primary);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.ms-lib-link:hover {
+  text-decoration: underline;
+}
+
+.ms-lib-card-badgerow {
+  display: flex;
+}
+
+.ms-lib-inline-icon {
+  width: 12px;
+  height: 12px;
+  vertical-align: -1px;
+}
+
+/* These card types use their own artwork or surface treatment. */
+.ms-lib-thumb.is-template,
+.ms-lib-thumb.is-learn,
+.ms-lib-thumb.is-project {
+  background-image: none;
+}
+
+.ms-lib-thumb.is-mission svg {
+  width: 64px;
+  height: 64px;
+  /* opacity: 0.9; */
+}
+
+.ms-lib-thumb.is-project {
+  color: var(--muted-foreground);
+  background-color: var(--muted);
+}
+
+.ms-lib-thumb.is-project svg {
+  width: 36px;
+  height: 36px;
+}
+
+.ms-template-thumbnail {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+.ms-lib-thumb-art {
+  display: block;
+  width: 72%;
+  height: 56%;
+  border: 1px solid color-mix(in srgb, var(--foreground) 25%, transparent);
+  border-radius: var(--radius);
+  background:
+    repeating-linear-gradient(to right, color-mix(in srgb, var(--foreground) 18%, transparent) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(to bottom, color-mix(in srgb, var(--foreground) 18%, transparent) 0 1px, transparent 1px 16px),
+    color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+
+.ms-lib-thumb.tint-0 {
+  background-color: color-mix(in srgb, var(--primary) 26%, var(--card));
+}
+
+.ms-lib-thumb.tint-1 {
+  background-color: color-mix(in srgb, var(--primary) 16%, var(--muted));
+}
+
+.ms-lib-thumb.tint-2 {
+  background-color: var(--muted);
+}
+
+.ms-lib-thumb.tint-3 {
+  background-color: color-mix(in srgb, var(--accent) 70%, var(--card));
+}
+
+.ms-lib-thumb.tint-4 {
+  background-color: color-mix(in srgb, var(--primary) 10%, var(--card));
+}
+
+.ms-lib-thumb.tint-5 {
+  background-color: color-mix(in srgb, var(--primary) 32%, var(--muted));
+}
+
+.ms-lib-thumb.is-learn {
+  color: var(--primary);
+}
+
+.ms-lib-thumb.is-learn svg {
+  width: 44px;
+  height: 44px;
+  opacity: 0.85;
+}
+
+.ms-lib-thumb.large {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.ms-lib-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 24px;
+  text-align: center;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.ms-lib-empty-icon {
+  display: inline-flex;
+  color: var(--muted-foreground);
+  font-size: 24px;
+}
+
+.ms-lib-empty-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ms-lib-search {
+  max-width: 320px;
+  margin: 12px 0;
+}
+
+.ms-lib-detail {
+  display: grid;
+  grid-template-columns: minmax(280px, 480px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.ms-lib-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ms-lib-detail-body h1 {
+  margin: 0;
+}
+
+.ms-lib-desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.ms-lib-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.ms-lib-select {
+  width: 100%;
+}
+
+.ms-lib-sharelist {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 520px;
+}
+
+.ms-lib-share-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  padding: 10px 12px;
+}
+
+.ms-lib-share-row>span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ms-lib-env,
+.ms-lib-admin {
+  font-size: 10px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0 6px;
+  color: var(--muted-foreground);
+  background: var(--background);
+  white-space: nowrap;
+}
+
+.ms-lib-admin {
+  color: var(--primary);
+}
+
+.ms-lib-newitem:focus-visible,
+.ms-lib-link:focus-visible,
+.ms-lib-crumb-link:focus-visible,
+.ms-lib-card-title.is-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+@media (max-width: 980px) {
+  .ms-lib-detail {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ------------------------- library: Figma Home light pass (195:13546) --- */
+
+/* Library inherits the skytrack-ui light tokens from `:root` (index.tsx drops
+   the route-level forced dark while the library shows, so no local token
+   overrides are needed — same token names, light values, portals included). */
+
+/* Content rhythm follows the supplied hierarchy while shape and color resolve
+   from skytrack-ui tokens. */
+.ms-lib-top {
+  min-height: 48px;
+}
+
+.ms-lib-main h1 {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.ms-lib-grid.is-recent {
+  gap: 8px;
+}
+
+.ms-lib-grid.is-recent .ms-lib-card-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ms-lib-card {
+  border-radius: var(--radius);
+}
+
+.ms-lib-drone-profile-card {
+  position: relative;
+  cursor: default;
+}
+
+.ms-lib-drone-profile-card .ms-lib-card-body {
+  flex: 1;
+}
+
+.ms-lib-drone-component-count {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.ms-lib-drone-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+
+.ms-drone-dialog {
+  max-height: min(95dvh, 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ms-resource-dialog {
+  max-height: min(90dvh, 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ms-resource-note,
+.ms-resource-error {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.ms-resource-note {
+  grid-column: 1 / -1;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--muted);
+}
+
+.ms-resource-error {
+  color: var(--destructive);
+}
+
+.ms-drone-dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 0;
+  overflow: auto;
+}
+
+.ms-drone-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ms-drone-section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ms-drone-section-heading h2 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.ms-drone-section-heading p,
+.ms-drone-empty-components {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.ms-drone-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ms-drone-form-wide {
+  grid-column: 1 / -1;
+}
+
+.ms-drone-components-heading {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.ms-drone-component-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ms-drone-component-row {
+  display: grid;
+  grid-template-columns: 32px minmax(145px, 1.1fr) minmax(155px, 1.3fr) minmax(155px, 1.3fr) 32px;
+  align-items: end;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.ms-drone-component-index {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ms-drone-remove-component {
+  margin-bottom: 1px;
+}
+
+.ms-drone-component-details {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+.ms-drone-component-details summary {
+  width: fit-content;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ms-drone-component-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 12px;
+}
+
+.ms-drone-specifications-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ms-drone-specifications-heading h3 {
+  margin: 0 0 3px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ms-drone-specifications-heading p {
+  max-width: 560px;
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.ms-drone-specification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ms-drone-specification-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 32px;
+  align-items: end;
+  gap: 8px;
+}
+
+.ms-drone-reference-warning {
+  margin: 0 20px 18px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--muted);
+  color: var(--foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.ms-drone-reference-warning p {
+  margin: 0 0 8px;
+}
+
+.ms-drone-reference-warning ul {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.ms-drone-reference-warning li span {
+  margin-left: 6px;
+  color: var(--muted-foreground);
+}
+
+@media (max-width: 720px) {
+  .ms-drone-dialog-body {
+    padding: 4px 14px 8px;
+  }
+
+  .ms-drone-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ms-drone-form-wide {
+    grid-column: auto;
+  }
+
+  .ms-drone-components-heading {
+    align-items: flex-start;
+  }
+
+  .ms-drone-component-row {
+    grid-template-columns: 28px minmax(0, 1fr) 32px;
+  }
+
+  .ms-drone-component-row .ms-drone-group-field,
+  .ms-drone-component-row .ms-drone-purpose-field {
+    grid-column: 2;
+  }
+
+  .ms-drone-component-index {
+    grid-row: 1 / span 3;
+    align-items: flex-start;
+    padding-top: 28px;
+  }
+
+  .ms-drone-specifications-heading {
+    flex-direction: column;
+  }
+
+  .ms-drone-specification-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 32px;
+  }
+
+  .ms-drone-remove-component {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
+/* Recent-mission drone thumbnail: line-art drone on a faint grid, 4:3. */
+.ms-lib-thumb.is-drone {
+  color: var(--muted-foreground);
+}
+
+.ms-lib-thumb.is-drone svg {
+  width: 72px;
+  height: 72px;
+  opacity: 0.8;
+}
+
+/* Default mission thumbnail (Figma 500:14641, local asset). The source is a
+   dark line-art render; in light mode it is inverted to read as dark art on
+   a light ground, approximating the Figma light card. */
+.ms-lib-thumbimg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+}
+
+.ms-lib-thumbimg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+}
+
+.ms-lib-thumb.is-mission .ms-lib-thumbimg svg,
+.ms-lib-thumb.is-drone .ms-lib-thumbimg svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Template photo placeholder: abstract terrain gradients (no photo assets
+   in this slice). */
+.ms-lib-thumb.is-photo {
+  background-image: none;
+  background:
+    linear-gradient(180deg, transparent 0 42%, color-mix(in srgb, var(--primary) 14%, transparent) 42% 100%),
+    linear-gradient(115deg, color-mix(in srgb, var(--primary) 22%, var(--muted)) 0 38%, var(--muted) 38% 62%, color-mix(in srgb, var(--foreground) 10%, var(--muted)) 62% 100%);
+}
+
+.ms-lib-thumb.is-photo .ms-lib-thumb-art {
+  width: 34%;
+  height: 30%;
+  border: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--primary) 55%, transparent) 0 26%, transparent 27%),
+    linear-gradient(180deg, transparent 46%, color-mix(in srgb, var(--primary) 30%, transparent) 46% 54%, transparent 54%),
+    linear-gradient(90deg, transparent 48%, color-mix(in srgb, var(--primary) 30%, transparent) 48% 52%, transparent 52%);
+  opacity: 0.8;
+}
+
+/* ------------------------- create-mission wizard (Figma 631:29818) --- */
+
+.ms-lib-wizard {
+  width: min(512px, calc(100vw - 32px));
+}
+
+/* Wizard step tabs use one library indicator. Connectors sit between tab
+   labels, so the active underline has a single owner. */
+.ms-wizard-tabs {
+  width: 100%;
+  max-width: none;
+}
+
+.ms-wizard-steps {
+  position: relative;
+  width: fit-content;
+  max-width: none;
+  margin: 0 auto;
+  padding: 4px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.ms-wizard-step-slot {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.ms-wizard-connector {
+  display: block;
+  width: 32px;
+  height: 1px;
+  margin: 0 10px;
+  background: var(--border);
+  flex: 0 0 auto;
+}
+
+.ms-wizard-stepbtn {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  padding: 0 0 8px;
+  background: transparent;
+  color: var(--muted-foreground);
+  font: inherit;
+  font-size: 13px;
+}
+
+.ms-wizard-stepbtn:not(:disabled):hover {
+  color: var(--foreground);
+}
+
+button.ms-wizard-stepbtn:focus-visible,
+.ms-wizard-radio-row:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.ms-wizard-stepbtn[data-active] {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.ms-wizard-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ms-wizard-stepbtn[data-active] .ms-wizard-num {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.ms-wizard-mode-tabs {
+  width: 100%;
+  max-width: none;
+}
+
+.ms-wizard-mode-panel,
+.ms-wizard-panel {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.ms-wizard-toggle {
+  width: 170px;
+  align-self: flex-start;
+}
+
+.ms-wizard-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 12px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.ms-wizard-dropzone svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ms-wizard-filebtn {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ms-wizard-filebtn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.ms-wizard-filebtn:focus-within {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.ms-wizard-radio-list {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+}
+
+.ms-wizard-radio-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.ms-wizard-radio-row:hover {
+  border-color: var(--primary);
+}
+
+.ms-wizard-radio-row:focus-within {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+/* skytrack-ui radio sits at the row end (Figma); row text keeps the lead. */
+.ms-wizard-radio-row [role='radio'] {
+  order: 3;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.ms-wizard-thumb {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--muted);
+  overflow: hidden;
+}
+
+.ms-wizard-thumb .ms-lib-thumbimg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.ms-lib-wizard .ms-wizard-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ms-wizard-footer-start,
+.ms-wizard-footer-end {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ms-wizard-row-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.ms-wizard-tags {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.ms-wizard-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--muted);
+  color: var(--muted-foreground);
+}

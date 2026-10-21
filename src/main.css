@@ -1,0 +1,4 @@
+@layer theme, base, components, utilities;
+
+@reference "../../../components/skytrack-ui/src/index.css";
+@import "tailwindcss/utilities.css" layer(utilities) source("./");

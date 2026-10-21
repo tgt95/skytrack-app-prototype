@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "description": "Static drone and payload catalog for the Mission Studio create-mission flow. Physical values include source status so estimates are not mistaken for verified specifications.",
+  "drones": [
+    {
+      "id": "x500-livox",
+      "displayName": "Drone x500 Livox Mid 360",
+      "manufacturer": null,
+      "model": "X500 with Livox Mid-360 payload",
+      "dataStatus": "PARTIAL",
+      "platformType": "multirotor",
+      "capabilities": {
+        "photo": true,
+        "video": false,
+        "lidar": true
+      },
+      "aircraft": {
+        "weightG": null,
+        "maxFlightTimeMin": null,
+        "maxSpeedMps": null
+      },
+      "cameraProfiles": [],
+      "payloads": [
+        {
+          "id": "livox-mid-360",
+          "type": "lidar",
+          "manufacturer": "Livox",
+          "model": "Mid-360",
+          "weightG": 265,
+          "dimensionsMm": {
+            "length": 65,
+            "width": 65,
+            "height": 60
+          },
+          "rangeM": {
+            "at10PercentReflectivity": 40,
+            "at80PercentReflectivity": 70
+          },
+          "fieldOfViewDeg": {
+            "horizontal": 360,
+            "verticalMin": -7,
+            "verticalMax": 52
+          },
+          "pointRatePerSecond": 200000,
+          "sourceUrls": [
+            "https://www.livoxtech.com/jp/mid-360/specs"
+          ]
+        }
+      ],
+      "gimbal": null,
+      "notes": [
+        "The existing Mission Studio mock supports photo capture and LiDAR scan actions, but the photo camera and X500 airframe specifications have not been identified."
+      ]
+    },
+    {
+      "id": "mavic-3e",
+      "displayName": "DJI Mavic 3 Enterprise",
+      "manufacturer": "DJI",
+      "model": "Mavic 3E",
+      "dataStatus": "SOURCE_BACKED_WITH_PLANNER_ESTIMATES",
+      "platformType": "multirotor",
+      "capabilities": {
+        "photo": true,
+        "video": true,
+        "lidar": false
+      },
+      "aircraft": {
+        "weightG": 915,
+        "maxTakeoffWeightG": 1050,
+        "maxFlightTimeMin": 45,
+        "maxSpeedMps": 21,
+        "sourceUrls": [
+          "https://enterprise.dji.com/mavic-3-enterprise/specs"
+        ]
+      },
+      "cameraProfiles": [
+        {
+          "id": "wide",
+          "name": "Wide camera",
+          "sensorFormat": "4/3 CMOS",
+          "resolutionMp": 20,
+          "imageSizePx": {
+            "width": 5280,
+            "height": 3956
+          },
+          "equivalentFocalLengthMm": 24,
+          "physicalSensorDimensionsMm": {
+            "width": 17.3,
+            "height": 13.0,
+            "status": "PLANNER_REFERENCE_UNVERIFIED"
+          },
+          "physicalFocalLengthMm": {
+            "value": 12.3,
+            "status": "PLANNER_REFERENCE_UNVERIFIED"
+          },
+          "shutter": "mechanical",
+          "videoMax": {
+            "width": 3840,
+            "height": 2160,
+            "fps": 30
+          },
+          "sourceUrls": [
+            "https://enterprise.dji.com/mavic-3-enterprise/specs"
+          ]
+        },
+        {
+          "id": "tele",
+          "name": "Tele camera",
+          "sensorFormat": "1/2-inch CMOS",
+          "resolutionMp": 12,
+          "imageSizePx": {
+            "width": 4000,
+            "height": 3000
+          },
+          "equivalentFocalLengthMm": 162,
+          "shutter": "electronic",
+          "sourceUrls": [
+            "https://enterprise.dji.com/mavic-3-enterprise/specs"
+          ]
+        }
+      ],
+      "payloads": [],
+      "gimbal": {
+        "axes": 3,
+        "tiltRangeDeg": {
+          "min": -90,
+          "max": 35
+        },
+        "sourceUrls": [
+          "https://enterprise.dji.com/mavic-3-enterprise/specs"
+        ]
+      },
+      "notes": [
+        "Physical sensor dimensions and physical focal length are carried over from the Planner reference catalog and are marked unverified; use the manufacturer specifications before relying on them for flight or GSD calculations."
+      ]
+    },
+    {
+      "id": "generic-quad",
+      "displayName": "Generic Quad X4",
+      "manufacturer": null,
+      "model": "Generic Quad X4",
+      "dataStatus": "MOCK_REFERENCE",
+      "platformType": "multirotor",
+      "capabilities": {
+        "photo": true,
+        "video": true,
+        "lidar": true
+      },
+      "aircraft": {
+        "weightG": null,
+        "maxFlightTimeMin": null,
+        "maxSpeedMps": null
+      },
+      "cameraProfiles": [],
+      "payloads": [],
+      "gimbal": null,
+      "notes": [
+        "Reference airframe used by the current prototype; capture capabilities are mock behavior and do not describe a specific physical drone."
+      ]
+    }
+  ]
+}

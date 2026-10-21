@@ -1,0 +1,136 @@
+import { useEffect, useState } from 'react'
+import { Button } from 'skytrack-ui/button'
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogClose,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPopup,
+  DialogPortal,
+  DialogTitle
+} from 'skytrack-ui/dialog'
+import { FieldControl, FieldDescription, FieldLabel, FieldRoot } from 'skytrack-ui/field'
+
+export interface ImportedAIModelPackage {
+  name: string
+  fileName: string
+  fileSize: number
+}
+
+function formatFileSize(size: number): string {
+  if (size < 1024 * 1024) return `${Math.max(1, Math.round(size / 1024))} KB`
+  return `${(size / (1024 * 1024)).toFixed(1)} MB`
+}
+
+function nameFromFile(fileName: string): string {
+  return fileName.replace(/\.zip$/i, '').replace(/[_-]+/g, ' ').trim()
+}
+
+export function ImportAIModelDialog({
+  open,
+  existingNames,
+  onClose,
+  onImport
+}: {
+  open: boolean
+  existingNames: string[]
+  onClose: () => void
+  onImport: (model: ImportedAIModelPackage) => boolean
+}) {
+  const [modelName, setModelName] = useState('')
+  const [file, setFile] = useState<File | null>(null)
+  const [fileError, setFileError] = useState('')
+  const [nameError, setNameError] = useState('')
+
+  useEffect(() => {
+    if (!open) return
+    setModelName('')
+    setFile(null)
+    setFileError('')
+    setNameError('')
+  }, [open])
+
+  const pickFile = (candidate?: File) => {
+    if (!candidate) return
+    if (!candidate.name.toLowerCase().endsWith('.zip')) {
+      setFile(null)
+      setFileError('Choose a ZIP file.')
+      return
+    }
+    setFile(candidate)
+    setFileError('')
+    if (!modelName.trim()) setModelName(nameFromFile(candidate.name))
+  }
+
+  const hasDuplicate = Boolean(modelName.trim() && existingNames.some(
+    (name) => name.trim().toLocaleLowerCase() === modelName.trim().toLocaleLowerCase()
+  ))
+
+  const submit = () => {
+    const cleanName = modelName.trim()
+    const duplicate = existingNames.some((name) => name.trim().toLocaleLowerCase() === cleanName.toLocaleLowerCase())
+    setNameError(!cleanName ? 'Enter a model name.' : duplicate ? 'A model with this name already exists in this Workspace.' : '')
+    if (!cleanName || duplicate || !file) {
+      if (!file) setFileError('Choose a ZIP file.')
+      return
+    }
+    if (onImport({ name: cleanName, fileName: file.name, fileSize: file.size })) onClose()
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={(value: boolean) => { if (!value) onClose() }}>
+      <DialogPortal>
+        <DialogBackdrop />
+        <DialogPopup aria-label='Import AI models'>
+          <DialogHeader>
+            <DialogTitle>Import AI models</DialogTitle>
+            <DialogDescription>
+              Import one ONNX model package with its JSON class map into your uploaded models.
+            </DialogDescription>
+          </DialogHeader>
+          <FieldRoot invalid={Boolean(nameError) || hasDuplicate}>
+            <FieldLabel>Model name *</FieldLabel>
+            <FieldControl
+              autoFocus
+              required
+              value={modelName}
+              onValueChange={(value: unknown) => { setModelName(String(value)); setNameError('') }}
+              placeholder='Enter a model name'
+              aria-invalid={Boolean(nameError) || hasDuplicate}
+            />
+            {nameError || hasDuplicate ? <FieldDescription role='alert'>{nameError || 'A model with this name already exists in this Workspace.'}</FieldDescription> : null}
+          </FieldRoot>
+          <FieldRoot invalid={Boolean(fileError)}>
+            <FieldLabel>Model file *</FieldLabel>
+            <FieldControl
+              type='file'
+              required
+              accept='.zip,application/zip'
+              aria-label='Choose model ZIP file'
+              onChange={(event) => {
+                pickFile(event.currentTarget.files?.[0])
+                event.currentTarget.value = ''
+              }}
+            />
+            {file ? (
+              <FieldDescription>Selected: {file.name} ({formatFileSize(file.size)}) <Button type='button' size='sm' variant='outline' onClick={() => { setFile(null); setFileError('') }}>Remove file</Button></FieldDescription>
+            ) : (
+              <FieldDescription>Choose a ZIP file containing one ONNX model and one JSON class map.</FieldDescription>
+            )}
+            {fileError ? <FieldDescription role='alert'>{fileError}</FieldDescription> : null}
+            <FieldDescription>The class order in the ONNX model and JSON file must match.</FieldDescription>
+          </FieldRoot>
+          <DialogDescription>
+            Prototype preview: the ZIP is not uploaded, stored, or checked. Only model details are saved in this browser.
+          </DialogDescription>
+          <DialogFooter>
+            <DialogClose>Cancel</DialogClose>
+            <Button size='sm' variant='default' disabled={!file || hasDuplicate} onClick={submit}>Import model</Button>
+          </DialogFooter>
+        </DialogPopup>
+      </DialogPortal>
+    </Dialog>
+  )
+}
