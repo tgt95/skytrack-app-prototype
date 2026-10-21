@@ -217,7 +217,7 @@ const SHORTCUTS: { keys: string; what: string }[] = [
   { keys: 'Esc', what: 'Close settings, cancel drawing, then clear selection' }
 ]
 
-export default function MissionStudio() {
+export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
   const [mission, setMission] = useState<StudioMission>(() => emptyMission())
   const missionRef = useRef(mission)
   missionRef.current = mission
@@ -2017,6 +2017,7 @@ export default function MissionStudio() {
             : { kind: 'library', section: 'shared' })}
           onOpenMission={openLibraryMission}
           onAnnounce={say}
+          onLogout={onLogout}
         />
       </div>
     )

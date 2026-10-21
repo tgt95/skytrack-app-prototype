@@ -71,6 +71,7 @@ import {
   DotsThreeVerticalIcon,
   DroneIcon,
   DownloadIcon,
+  DiscordLogoIcon,
   FoldersIcon,
   FolderIcon,
   FolderOpenIcon,
@@ -78,20 +79,20 @@ import {
   GlobeHemisphereWestIcon,
   HouseIcon,
   MoonIcon,
+  NotepadIcon,
   PackageIcon,
   PlusIcon,
-  ScrollIcon,
   SignOutIcon,
   ShareNetworkIcon,
   SquaresFourIcon,
   StarIcon,
   SunIcon,
   UserIcon,
-  UsersIcon,
-  XIcon
+  UsersIcon
 } from '@phosphor-icons/react'
 import { Badge } from 'skytrack-ui/badge'
 import { Button } from 'skytrack-ui/button'
+import { Separator } from 'skytrack-ui/separator'
 import { Tabs, TabsIndicator, TabsList, TabsPanel, TabsTab } from 'skytrack-ui/tabs'
 import {
   Tooltip,
@@ -124,17 +125,31 @@ import {
 } from 'skytrack-ui/dialog'
 import { FieldControl, FieldLabel, FieldRoot } from 'skytrack-ui/field'
 import {
+  ToastClose,
+  ToastContent,
+  ToastPortal,
+  ToastProvider,
+  ToastRoot,
+  ToastTitle,
+  ToastViewport,
+  createToastManager,
+  useToastManager
+} from 'skytrack-ui/toast'
+import {
   Menu,
   MenuItem,
   MenuPopup,
   MenuPortal,
   MenuPositioner,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuRadioItemIndicator,
   MenuSeparator,
   MenuSubmenuRoot,
   MenuSubmenuTrigger,
   MenuTrigger
 } from 'skytrack-ui/menu'
-import skytrackLogoFull from '../../assets/skytrack-logo-full.svg'
+import skytrackLogoFull from '../../assets/skytrack-logo-full.svg?raw'
 import MissionThumbnail from './mission-thumbnail'
 import { getTemplateThumbnail } from './template-thumbnails'
 import {
@@ -185,6 +200,22 @@ import {
   type NotificationPreferences
 } from './account-menu-state'
 import { applyThemePreference, readThemePreference, saveThemePreference, type ThemePreference } from '../../theme-preference'
+
+const runEnvironmentToastManager = createToastManager()
+
+function RunEnvironmentToastList() {
+  const { toasts } = useToastManager()
+  return toasts.map((toast) => (
+    <ToastRoot key={toast.id} toast={toast}>
+      <ToastContent>
+        <div className='min-w-0 flex-1'>
+          <ToastTitle />
+        </div>
+        <ToastClose size='icon' variant='ghost' aria-label='Dismiss toast' />
+      </ToastContent>
+    </ToastRoot>
+  ))
+}
 
 export interface LibraryEntry {
   missionId: string
@@ -248,7 +279,8 @@ function LibraryCardFrame({
   actions,
   testId,
   starred,
-  onToggleStar
+  onToggleStar,
+  onOpen
 }: {
   label: string
   className?: string
@@ -257,12 +289,19 @@ function LibraryCardFrame({
   testId?: string
   starred?: boolean
   onToggleStar?: () => void
+  onOpen?: () => void
 }) {
   const cardClassName = ['ms-lib-card', className].filter(Boolean).join(' ')
+  const handleCardClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (!onOpen) return
+    const target = event.target as Element
+    if (target.closest('button, a, input, textarea, select, [role="button"]')) return
+    onOpen()
+  }
 
   return (
     <ContextMenu>
-      <ContextMenuTrigger render={<article className={cardClassName} aria-label={label} />}>
+      <ContextMenuTrigger render={<article className={cardClassName} aria-label={label} onClick={handleCardClick} />}>
         <span className='ms-lib-card-overlay-actions' onClick={(event) => event.stopPropagation()}>
           {onToggleStar ? (
             <Button
@@ -338,7 +377,8 @@ function LibraryPageHeader({
   context,
   actions,
   footer,
-  footerVariant
+  footerVariant,
+  variant
 }: {
   titleId: string
   title: ReactNode
@@ -347,9 +387,16 @@ function LibraryPageHeader({
   actions?: ReactNode
   footer?: ReactNode
   footerVariant?: 'tabs'
+  variant?: 'default' | 'plain'
 }) {
+  const className = [
+    'ms-lib-page-header',
+    footerVariant === 'tabs' ? 'has-tabs' : '',
+    variant === 'plain' ? 'is-plain' : ''
+  ].filter(Boolean).join(' ')
+
   return (
-    <header className={`ms-lib-page-header${footerVariant === 'tabs' ? ' has-tabs' : ''}`}>
+    <header className={className}>
       {context ? <div className='ms-lib-page-header-context'>{context}</div> : null}
       <div className='ms-lib-page-header-row'>
         <div className='ms-lib-page-header-copy'>
@@ -382,6 +429,24 @@ function nextId(prefix: string): string {
   return `${prefix}-local-${Date.now().toString(36)}-${localId}`
 }
 
+function worldSourceSummary(world: WorkspaceWorldRecord): string {
+  if (world.sourceType === 'mission') {
+    if (world.sourceMissionLabel) return `Source 2D mission · ${world.sourceMissionLabel}`
+    return world.sourceMissionId ? 'Source 2D mission linked' : 'No source 2D mission selected'
+  }
+  if (world.sourceType === 'flight-reference') {
+    return world.sourceFlightReference
+      ? `User-entered flight reference · ${world.sourceFlightReference}`
+      : 'No flight reference entered'
+  }
+  return world.status === 'Sample' ? 'Sample terrain · no flight source' : 'No source mission or flight reference'
+}
+
+function worldReconstructionSummary(world: WorkspaceWorldRecord): string {
+  if (world.reconstructionReference.trim()) return '3D reconstruction reference saved'
+  return world.status === 'Sample' ? 'Sample terrain fixture' : 'No 3D reconstruction reference'
+}
+
 export default function StudioLibrary({
   section,
   projectId,
@@ -394,7 +459,8 @@ export default function StudioLibrary({
   onOpenSharedAccounts,
   onOpenSharedProject,
   onOpenMission,
-  onAnnounce
+  onAnnounce,
+  onLogout
 }: {
   section: LibrarySection
   projectId: string | null
@@ -408,6 +474,7 @@ export default function StudioLibrary({
   onOpenSharedProject: (projectId: string | null) => void
   onOpenMission: (entry: LibraryEntry) => void
   onAnnounce: (text: string) => void
+  onLogout: () => void
 }) {
   const [projects, setProjects] = useState<LibProject[]>(loadProjects)
   const [droneProfiles, setDroneProfiles] = useState<WorkspaceDroneProfile[]>(loadDroneProfiles)
@@ -501,13 +568,6 @@ export default function StudioLibrary({
   const [wizardOpen, setWizardOpen] = useState(false)
   const [wizardKey, setWizardKey] = useState(0)
   const [wizardSeed, setWizardSeed] = useState({ projectId: '', title: '' })
-  const [discordClosed, setDiscordClosed] = useState(() => {
-    try {
-      return sessionStorage.getItem('ms-lib-discord-closed') === '1'
-    } catch {
-      return false
-    }
-  })
 
   const updateAccountProfile = (name: string): boolean => {
     const next = { ...accountProfile, name: name.trim() }
@@ -870,16 +930,6 @@ export default function StudioLibrary({
     setShareDlg(null)
   }
 
-  const closeDiscord = () => {
-    setDiscordClosed(true)
-    try {
-      sessionStorage.setItem('ms-lib-discord-closed', '1')
-    } catch {
-      /* storage unavailable: card simply stays dismissed for this view */
-    }
-    onAnnounce('Community card dismissed.')
-  }
-
   const navBtn = (
     item: { id: LibrarySection; label: string; icon: typeof HouseIcon },
     disabled: boolean,
@@ -919,11 +969,17 @@ export default function StudioLibrary({
 
   const missionContext = (mission: Pick<LibMission, 'worldType' | 'world'>) => (
     <span className='ms-lib-context-row'>
-      <span className='ms-lib-context-mode'>{mission.worldType ?? '3D'}</span>
-      <span className='ms-lib-context-world'>
-        <GlobeHemisphereWestIcon aria-hidden='true' />
-        {mission.world ?? 'Blank space'}
-      </span>
+      <Badge count={mission.worldType ?? '3D'} status='outline' />
+      <Badge
+        count={(
+          <span className='inline-flex items-center gap-1'>
+            <GlobeHemisphereWestIcon aria-hidden='true' className='size-3.5 shrink-0' />
+            {mission.world ?? 'Blank space'}
+          </span>
+        )}
+        status='outline'
+        className='text-muted-foreground'
+      />
     </span>
   )
 
@@ -975,6 +1031,7 @@ export default function StudioLibrary({
         actions={missionActions(pid, projectName, m)}
         starred={m.starred}
         onToggleStar={m.viewOnly ? undefined : () => toggleStar(pid, m.id)}
+        onOpen={() => openMission(pid, projectName, m.id)}
       >
         <button
           type='button'
@@ -987,13 +1044,9 @@ export default function StudioLibrary({
         </button>
         <span className='ms-lib-card-body'>
           <span className='ms-lib-card-toprow'>
-            <button
-              type='button'
-              className='ms-lib-card-title is-link'
-              onClick={() => openMission(pid, projectName, m.id)}
-            >
+            <span className='ms-lib-card-title'>
               {m.name} {isCurrent ? <span className='ms-lib-current'>· Current</span> : null}
-            </button>
+            </span>
           </span>
           {m.viewOnly ? (
             <span className='ms-lib-card-badgerow'>
@@ -1032,6 +1085,7 @@ export default function StudioLibrary({
           onSelect: () => setDeleteProject({ projectId: p.id, name: p.name, missionCount: p.missions.length })
         }
       ]}
+      onOpen={() => openProject(p.id)}
     >
       <button
         type='button'
@@ -1044,9 +1098,9 @@ export default function StudioLibrary({
       </button>
       <span className='ms-lib-card-body'>
         <span className='ms-lib-card-toprow'>
-          <button type='button' className='ms-lib-card-title is-link' onClick={() => openProject(p.id)}>
+          <span className='ms-lib-card-title'>
             {p.name}
-          </button>
+          </span>
         </span>
         <span className='ms-lib-card-edited'>
           {p.missions.length} mission{p.missions.length === 1 ? '' : 's'}
@@ -1064,6 +1118,7 @@ export default function StudioLibrary({
         label={t.title}
         testId={testid}
         actions={[{ id: 'open', label: 'Open', group: 'primary', onSelect: onOpen }]}
+        onOpen={onOpen}
       >
         <button
           type='button'
@@ -1075,9 +1130,9 @@ export default function StudioLibrary({
           {thumbnail ? <img src={thumbnail} alt='' aria-hidden='true' className='ms-template-thumbnail' /> : <span className='ms-lib-thumb-art' aria-hidden='true' />}
         </button>
         <span className='ms-lib-card-body'>
-          <button type='button' className='ms-lib-card-title is-link' onClick={onOpen}>
+          <span className='ms-lib-card-title'>
             {t.title}
-          </button>
+          </span>
           <span className='ms-lib-card-desc'>{t.desc}</span>
           {hideMeta ? null : <span className='ms-lib-card-edited'>{t.byline}</span>}
         </span>
@@ -1098,6 +1153,7 @@ export default function StudioLibrary({
         actions={missionActions(pid, projectName, m)}
         starred={m.starred}
         onToggleStar={m.viewOnly ? undefined : () => toggleStar(pid, m.id)}
+        onOpen={() => openMission(pid, projectName, m.id)}
       >
         <button
           type='button'
@@ -1127,6 +1183,7 @@ export default function StudioLibrary({
       label={project.name}
       testId={`ms-lib-shared-project-${project.id}`}
       actions={[{ id: 'open', label: 'Open', group: 'primary', onSelect: () => onOpenSharedProject(project.id) }]}
+      onOpen={() => onOpenSharedProject(project.id)}
     >
       <button
         type='button'
@@ -1139,9 +1196,9 @@ export default function StudioLibrary({
       </button>
       <span className='ms-lib-card-body'>
         <span className='ms-lib-card-toprow'>
-          <button type='button' className='ms-lib-card-title is-link' onClick={() => onOpenSharedProject(project.id)}>
+          <span className='ms-lib-card-title'>
             {project.name}
-          </button>
+          </span>
           <Badge>View only</Badge>
         </span>
         <span className='ms-lib-shared-owner'>
@@ -1189,26 +1246,28 @@ export default function StudioLibrary({
 
   return (
     <div className='ms-lib'>
+      <ToastProvider toastManager={runEnvironmentToastManager}>
+        <ToastPortal>
+          <ToastViewport className='fixed bottom-4 left-4 right-auto mx-0 flex max-w-sm flex-col-reverse'>
+            <RunEnvironmentToastList />
+          </ToastViewport>
+        </ToastPortal>
+      </ToastProvider>
       <p className='ms-sr' role='status' aria-live='polite' data-testid='ms-lib-announce' />
       <header className='ms-lib-top'>
-        <span className='ms-lib-brand'>
-          <img src={skytrackLogoFull} alt='SkyTrack' />
-        </span>
+        <span
+          className='ms-lib-brand'
+          role='img'
+          aria-label='SkyTrack'
+          dangerouslySetInnerHTML={{ __html: skytrackLogoFull }}
+        />
         <span className='ms-lib-top-actions'>
           {/* {section === 'home' && !activeProject ? (
             <Button size='sm' variant='default' data-testid='ms-lib-create' onClick={() => openCreateWizard()}>
               <PlusIcon aria-hidden='true' /> New Mission
             </Button>
           ) : null} */}
-          <Button
-            size='sm'
-            variant='outline'
-            data-testid='ms-lib-restart'
-            title='Mock — no update service in this prototype'
-            onClick={() => onAnnounce('Restart to update is a mock in this prototype. No update was checked.')}
-          >
-            <DownloadIcon aria-hidden='true' /> Restart to update
-          </Button>
+
           {/* <Button
             size='sm'
             variant='ghost'
@@ -1223,66 +1282,106 @@ export default function StudioLibrary({
             <ArrowSquareOutIcon aria-hidden='true' />
           </Button> */}
 
-          <div className='ms-run-environment ml-4'>
+          <div className='ms-run-environment'>
             <span className='ms-run-environment-label'>Environment:</span>
             <TooltipProvider>
               <Tabs
                 className='w-fit'
                 value={runEnvironment}
                 onValueChange={(value: unknown) => {
-                  if (value === 'local') setRunEnvironment('local')
-                  if (value === 'cloud' && canUseCloudSIM) setRunEnvironment('cloud')
+                  const next = value === 'local' ? 'local' : value === 'cloud' && canUseCloudSIM ? 'cloud' : null
+                  if (!next || next === runEnvironment) return
+                  setRunEnvironment(next)
+                  runEnvironmentToastManager.add({
+                    title: `Switched to ${next === 'local' ? 'Local Docker' : 'Cloud'}`
+                  })
                 }}
               >
                 <TabsList variant='filled' aria-label='Running environment'>
-                <Tooltip>
-                  <TooltipTrigger render={<span className='inline-flex' />}>
-                    <TabsTab value='local' size='sm' aria-label='Local Docker'>
-                      <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' aria-hidden='true'>
-                        <circle cx='8' cy='8' r='7' fill='#1794D4' />
-                        <path d='M9 3.5H8V4.5H9V3.5Z' fill='white' />
-                        <path d='M5 5H6V6H5V5Z' fill='white' />
-                        <path d='M3.00077 8.4707C3.08622 9.92135 3.95013 12 6.99999 12C10.4 12 11.9167 9.50001 12.25 8.25001C12.6667 8.25001 13.6 8.00001 14 7.00001C13.75 6.75 12.75 6.75 12.25 7.00001C12.25 6.60001 12 5.75 11.5 5.5C11.1667 5.83333 10.65 6.7 11.25 7.5C11 7.99999 10.3334 8 10 8H3.47145C3.20671 8 2.98521 8.20642 3.00077 8.4707Z' fill='white' />
-                        <path d='M4.5 6.5H3.5V7.5H4.5V6.5Z' fill='white' />
-                        <path d='M5 6.5H6V7.5H5V6.5Z' fill='white' />
-                        <path d='M7.5 6.5H6.5V7.5H7.5V6.5Z' fill='white' />
-                        <path d='M8 6.5H9V7.5H8V6.5Z' fill='white' />
-                        <path d='M10.5 6.5H9.5V7.5H10.5V6.5Z' fill='white' />
-                        <path d='M7.5 5H6.5V6H7.5V5Z' fill='white' />
-                        <path d='M8 5H9V6H8V5Z' fill='white' />
-                      </svg>
-                    </TabsTab>
-                  </TooltipTrigger>
-                  <TooltipPortal>
-                    <TooltipPositioner side='bottom' sideOffset={8}>
-                      <TooltipPopup>
-                        <TooltipArrow />
-                        Uses your computer’s local CPU and memory. Requires Docker to be running.
-                      </TooltipPopup>
-                    </TooltipPositioner>
-                  </TooltipPortal>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger render={<span className='inline-flex' tabIndex={canUseCloudSIM ? undefined : 0} aria-label={!canUseCloudSIM ? 'Cloud SIM access required' : undefined} />}>
-                    <TabsTab value='cloud' size='sm' aria-label='Cloud' disabled={!canUseCloudSIM}>
-                      <CloudIcon aria-hidden='true' size={16} />
-                    </TabsTab>
-                  </TooltipTrigger>
-                  <TooltipPortal>
-                    <TooltipPositioner side='bottom' sideOffset={8}>
-                      <TooltipPopup>
-                        <TooltipArrow />
-                        {!canUseCloudSIM ? 'Cloud SIM access required. ' : ''}
-                        Runs remotely via cloud infrastructure. Requires an active internet connection.
-                      </TooltipPopup>
-                    </TooltipPositioner>
-                  </TooltipPortal>
-                </Tooltip>
-                <TabsIndicator variant='pill' />
+                  <Tooltip>
+                    <TooltipTrigger render={<span className='inline-flex' />}>
+                      <TabsTab value='local' size='sm' aria-label='Local Docker'>
+                        <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' aria-hidden='true'>
+                          <circle cx='8' cy='8' r='7' fill='#1794D4' />
+                          <path d='M9 3.5H8V4.5H9V3.5Z' fill='white' />
+                          <path d='M5 5H6V6H5V5Z' fill='white' />
+                          <path d='M3.00077 8.4707C3.08622 9.92135 3.95013 12 6.99999 12C10.4 12 11.9167 9.50001 12.25 8.25001C12.6667 8.25001 13.6 8.00001 14 7.00001C13.75 6.75 12.75 6.75 12.25 7.00001C12.25 6.60001 12 5.75 11.5 5.5C11.1667 5.83333 10.65 6.7 11.25 7.5C11 7.99999 10.3334 8 10 8H3.47145C3.20671 8 2.98521 8.20642 3.00077 8.4707Z' fill='white' />
+                          <path d='M4.5 6.5H3.5V7.5H4.5V6.5Z' fill='white' />
+                          <path d='M5 6.5H6V7.5H5V6.5Z' fill='white' />
+                          <path d='M7.5 6.5H6.5V7.5H7.5V6.5Z' fill='white' />
+                          <path d='M8 6.5H9V7.5H8V6.5Z' fill='white' />
+                          <path d='M10.5 6.5H9.5V7.5H10.5V6.5Z' fill='white' />
+                          <path d='M7.5 5H6.5V6H7.5V5Z' fill='white' />
+                          <path d='M8 5H9V6H8V5Z' fill='white' />
+                        </svg>
+                      </TabsTab>
+                    </TooltipTrigger>
+                    <TooltipPortal>
+                      <TooltipPositioner side='bottom' sideOffset={8}>
+                        <TooltipPopup>
+                          <TooltipArrow />
+                          Uses your computer’s local CPU and memory. Requires Docker to be running.
+                        </TooltipPopup>
+                      </TooltipPositioner>
+                    </TooltipPortal>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger render={<span className='inline-flex' tabIndex={canUseCloudSIM ? undefined : 0} aria-label={!canUseCloudSIM ? 'Cloud SIM access required' : undefined} />}>
+                      <TabsTab value='cloud' size='sm' aria-label='Cloud' disabled={!canUseCloudSIM}>
+                        <CloudIcon aria-hidden='true' size={16} />
+                      </TabsTab>
+                    </TooltipTrigger>
+                    <TooltipPortal>
+                      <TooltipPositioner side='bottom' sideOffset={8}>
+                        <TooltipPopup>
+                          <TooltipArrow />
+                          {!canUseCloudSIM ? 'Cloud SIM access required. ' : ''}
+                          Runs remotely via cloud infrastructure. Requires an active internet connection.
+                        </TooltipPopup>
+                      </TooltipPositioner>
+                    </TooltipPortal>
+                  </Tooltip>
+                  <TabsIndicator variant='pill' />
                 </TabsList>
               </Tabs>
             </TooltipProvider>
           </div>
+
+          <Separator orientation='vertical' className='mx-1.5 h-auto self-stretch' />
+
+          <Button
+            size='sm'
+            variant='outline'
+            data-testid='ms-lib-restart'
+            title='Mock — no update service in this prototype'
+            onClick={() => onAnnounce('Restart to update is a mock in this prototype. No update was checked.')}
+          >
+            <DownloadIcon aria-hidden='true' /> Restart to update
+          </Button>
+
+
+
+          <Tooltip>
+            <TooltipTrigger render={<span className='inline-flex' />}>
+              <Button
+                size='icon-sm'
+                variant='outline'
+                data-testid='ms-lib-restart'
+                title='Mock — no update service in this prototype'
+                onClick={() => onAnnounce('Join Discord is a mock in this prototype.')}
+              >
+                <DiscordLogoIcon weight='fill' aria-hidden='true' fill='#5865F2' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipPortal>
+              <TooltipPositioner side='bottom' sideOffset={8}>
+                <TooltipPopup>
+                  <TooltipArrow />
+                  Join Discord
+                </TooltipPopup>
+              </TooltipPositioner>
+            </TooltipPortal>
+          </Tooltip>
 
         </span>
       </header>
@@ -1349,13 +1448,23 @@ export default function StudioLibrary({
                 </MenuTrigger>
                 <MenuPortal>
                   <MenuPositioner side='bottom' align='start' sideOffset={4}>
-                    <MenuPopup aria-label='Workspaces'>
-                      {WORKSPACES.map((workspace) => (
-                        <MenuItem key={workspace.id} className='ms-lib-workspace-option' onClick={() => switchWorkspace(workspace.id)}>
-                          <span className='ms-lib-workspace-option-name'>{workspace.name}</span>
-                          <span className='ms-lib-workspace-option-role'>{workspace.role}</span>
-                        </MenuItem>
-                      ))}
+                    <MenuPopup aria-label='Workspaces' className='w-72'>
+                      <MenuRadioGroup
+                        value={activeWorkspace.id}
+                        onValueChange={(value: string | null) => {
+                          if (value) switchWorkspace(value)
+                        }}
+                      >
+                        {WORKSPACES.map((workspace) => (
+                          <MenuRadioItem key={workspace.id} value={workspace.id} inset>
+                            <MenuRadioItemIndicator>
+                              <CheckIcon aria-hidden='true' weight='bold' className='size-3.5' />
+                            </MenuRadioItemIndicator>
+                            <span>{workspace.name}</span>
+                            <span className='ml-auto text-xs text-muted-foreground'>{workspace.role}</span>
+                          </MenuRadioItem>
+                        ))}
+                      </MenuRadioGroup>
                     </MenuPopup>
                   </MenuPositioner>
                 </MenuPortal>
@@ -1384,7 +1493,7 @@ export default function StudioLibrary({
           </div>
 
           <div className='ms-lib-side-foot'>
-            {!discordClosed ? (
+            {/* {!discordClosed ? (
               <section className='ms-lib-community' aria-label='Join our community'>
                 <div className='ms-lib-community-head'>
                   <h2>Join our community</h2>
@@ -1407,7 +1516,7 @@ export default function StudioLibrary({
                   <UsersIcon aria-hidden='true' /> Join Discord
                 </Button>
               </section>
-            ) : null}
+            ) : null} */}
             <button
               type='button'
               data-testid='ms-lib-nav-logs'
@@ -1415,7 +1524,7 @@ export default function StudioLibrary({
               className={`ms-lib-navitem${section === 'logs' ? ' is-active' : ''}`}
               onClick={() => goto('logs')}
             >
-              <ScrollIcon aria-hidden='true' weight={section === 'logs' ? 'fill' : 'regular'} />
+              <NotepadIcon aria-hidden='true' weight={section === 'logs' ? 'fill' : 'regular'} />
               <span className='ms-lib-nav-label'>Logs</span>
             </button>
             <button
@@ -1452,21 +1561,19 @@ export default function StudioLibrary({
                       </span>
                     </div>
                     <MenuItem
-                      className='ms-lib-account-item'
                       data-testid='ms-lib-account-profile'
                       onClick={() => setAccountPanel('profile')}
                     >
                       <UserIcon aria-hidden='true' /> Profile
                     </MenuItem>
                     <MenuItem
-                      className='ms-lib-account-item'
                       data-testid='ms-lib-account-settings'
                       onClick={() => setAccountPanel('settings')}
                     >
                       <GearIcon aria-hidden='true' /> Account settings
                     </MenuItem>
                     <MenuSubmenuRoot>
-                      <MenuSubmenuTrigger className='ms-lib-account-item' data-testid='ms-lib-account-theme'>
+                      <MenuSubmenuTrigger data-testid='ms-lib-account-theme'>
                         <MoonIcon aria-hidden='true' /> Theme
                       </MenuSubmenuTrigger>
                       <MenuPortal>
@@ -1487,7 +1594,6 @@ export default function StudioLibrary({
                     </MenuSubmenuRoot>
                     <MenuSeparator className='ms-lib-account-separator' />
                     <MenuItem
-                      className='ms-lib-account-item'
                       data-testid='ms-lib-account-notifications'
                       onClick={() => setAccountPanel('notifications')}
                     >
@@ -1495,14 +1601,12 @@ export default function StudioLibrary({
                     </MenuItem>
                     <MenuSeparator className='ms-lib-account-separator' />
                     <MenuItem
-                      className='ms-lib-account-item'
                       data-testid='ms-lib-account-switch'
                       onClick={() => setAccountPanel('switch')}
                     >
                       <UsersIcon aria-hidden='true' /> Switch account
                     </MenuItem>
                     <MenuItem
-                      className='ms-lib-account-item'
                       data-testid='ms-lib-account-logout'
                       onClick={() => setAccountPanel('logout')}
                     >
@@ -1558,7 +1662,7 @@ export default function StudioLibrary({
               <LibraryPageHeader
                 titleId='ms-lib-project-title'
                 title={activeProject.name}
-                description={<p className='ms-lib-sub'>{activeProject.missions.length} mission{activeProject.missions.length === 1 ? '' : 's'} · {activeWorkspace.name}</p>}
+                // description={<p className='ms-lib-sub'>{activeProject.missions.length} mission{activeProject.missions.length === 1 ? '' : 's'} · {activeWorkspace.name}</p>}
                 context={<nav className='ms-lib-crumb' aria-label='Breadcrumb'><button type='button' className='ms-lib-crumb-link' onClick={() => onNavigate('projects', null)}>Projects</button><span aria-hidden='true'>›</span><span aria-current='page'>{activeProject.name}</span></nav>}
                 actions={<span className='ms-lib-row-actions'>
                   <Button
@@ -1570,7 +1674,7 @@ export default function StudioLibrary({
                     <PlusIcon aria-hidden='true' /> New Mission
                   </Button>
                   <Menu>
-                    <MenuTrigger aria-label={`More actions for ${activeProject.name}`} render={<Button variant='ghost' size='icon-sm' className='text-muted-foreground' />}>
+                    <MenuTrigger aria-label={`More actions for ${activeProject.name}`} render={<Button variant='outline' size='icon-sm' className='text-muted-foreground' />}>
                       <DotsThreeVerticalIcon aria-hidden='true' />
                     </MenuTrigger>
                     <MenuPortal>
@@ -1609,9 +1713,11 @@ export default function StudioLibrary({
             </section>
           ) : section === 'home' ? (
             <section aria-labelledby='ms-lib-home-title'>
-              <LibraryPageHeader titleId='ms-lib-home-title' title='Home' />
-              <section aria-labelledby='ms-lib-recent-title'>
-                <h1 id='ms-lib-recent-title'>Recent missions</h1>
+              <LibraryPageHeader titleId='ms-lib-home-title' variant='plain' title='Welcome to SkyTrack' />
+              <section aria-labelledby='ms-lib-recent-title' className='mb-8'>
+                <div className='ms-section-header'>
+                  <h2 id='ms-lib-recent-title'>Recent missions</h2>
+                </div>
                 <div className='ms-lib-grid is-recent' role='list' aria-label='Recent missions'>
                   {homeMissions
                     .slice(0, 5)
@@ -1619,7 +1725,7 @@ export default function StudioLibrary({
                 </div>
               </section>
               <section aria-labelledby='ms-lib-templates-title'>
-                <div className='ms-lib-row'>
+                <div className='ms-section-header'>
                   <h2 id='ms-lib-templates-title'>Mission templates</h2>
                   <button
                     type='button'
@@ -1693,8 +1799,9 @@ export default function StudioLibrary({
                     <span className='ms-lib-card-body'>
                       <span className='ms-lib-card-title'>{world.name}</span>
                       <span className='ms-lib-card-desc'>3D World · {world.location || 'Location not specified'}</span>
-                      <span className='ms-lib-card-edited'>{world.status}{world.sourceType === 'mission' && world.sourceMissionLabel ? ` · Source: ${world.sourceMissionLabel}` : world.sourceType === 'flight-reference' && world.sourceFlightReference ? ` · Source: ${world.sourceFlightReference}` : ''}</span>
-                      {world.reconstructionReference ? <span className='ms-lib-card-edited'>Reconstruction reference saved</span> : null}
+                      <Badge count={world.status} status='secondary' size='sm' className='self-start' />
+                      <span className='ms-lib-card-edited'>{worldSourceSummary(world)}</span>
+                      <span className='ms-lib-card-edited'>{worldReconstructionSummary(world)}</span>
                     </span>
                   </LibraryCardFrame>
                 ))}
@@ -1854,7 +1961,7 @@ export default function StudioLibrary({
                     </div>
                   )}
                   footerVariant='tabs'
-                  footer={<TabsList variant='filled' className='w-full max-w-lg' aria-label='AI model categories'><TabsTab variant='filled' value='workspace'>Workspace ({workspaceAIModels.length})</TabsTab><TabsTab variant='filled' value='uploaded'>Uploaded by you ({uploadedAIModels.length})</TabsTab><TabsIndicator variant='pill' /></TabsList>}
+                  footer={<TabsList variant='standard' aria-label='AI model categories'><TabsTab variant='standard' value='workspace'>Workspace ({workspaceAIModels.length})</TabsTab><TabsTab variant='standard' value='uploaded'>Uploaded by you ({uploadedAIModels.length})</TabsTab><TabsIndicator variant='underline' /></TabsList>}
                 />
                 <TabsPanel className='ms-ai-model-panel' value='workspace'>
                   {workspaceAIModels.length === 0 ? <LibraryEmptyState title='No Workspace models yet' description='SkyTrack models shared with this Workspace will appear here.' /> : (
@@ -2119,6 +2226,7 @@ export default function StudioLibrary({
         onClose={() => setAccountPanel(null)}
         onSaveProfile={updateAccountProfile}
         onChangeNotifications={updateNotificationPreferences}
+        onLogout={onLogout}
       />
     </div>
   )

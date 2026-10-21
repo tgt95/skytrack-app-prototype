@@ -9,6 +9,8 @@ npm ci
 npm run dev
 ```
 
+Set `VITE_LOGIN_PASSWORD` in `.env` before starting the dev server. The GitHub Pages workflow reads the same value from the repository's `VITE_LOGIN_PASSWORD` Actions secret. The login form checks the password against this value; the username field is temporarily commented out. After sign-in, this browser stores a session flag in `localStorage` until logout or site data is cleared. Vite embeds `VITE_` variables in browser code, so this prototype gate is not secure authentication; use only a demo password that is safe to expose.
+
 Build and typecheck:
 
 ```bash

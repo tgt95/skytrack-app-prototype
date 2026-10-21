@@ -25,7 +25,8 @@ export function AccountMenuDialogs({
   notifications,
   onClose,
   onSaveProfile,
-  onChangeNotifications
+  onChangeNotifications,
+  onLogout
 }: {
   panel: AccountMenuPanel | null
   profile: AccountProfile
@@ -33,6 +34,7 @@ export function AccountMenuDialogs({
   onClose: () => void
   onSaveProfile: (name: string) => boolean
   onChangeNotifications: (next: NotificationPreferences) => void
+  onLogout: () => void
 }) {
   const [name, setName] = useState(profile.name)
   const [addAccountMessage, setAddAccountMessage] = useState(false)
@@ -66,7 +68,7 @@ export function AccountMenuDialogs({
             {panel === 'settings' ? <DialogDescription>Review the account and security details available in this preview.</DialogDescription> : null}
             {panel === 'notifications' ? <DialogDescription>Choose which activity preferences to save for this browser.</DialogDescription> : null}
             {panel === 'switch' ? <DialogDescription>Choose an account connected to this preview.</DialogDescription> : null}
-            {panel === 'logout' ? <DialogDescription>Review what sign-out means in this local preview.</DialogDescription> : null}
+            {panel === 'logout' ? <DialogDescription>Sign out of Mission Studio?</DialogDescription> : null}
           </DialogHeader>
 
           {panel === 'profile' ? (
@@ -167,8 +169,8 @@ export function AccountMenuDialogs({
               <div className='ms-lib-account-callout is-notice'>
                 <WarningCircleIcon aria-hidden='true' />
                 <div>
-                  <strong>Sign-out is not connected</strong>
-                  <p>This preview has no authentication session to end. Your projects and missions stay saved in this browser.</p>
+                  <strong>You’ll return to sign in</strong>
+                  <p>Saved projects and missions stay in this browser. Unsaved changes in this session will be discarded.</p>
                 </div>
               </div>
             </div>
@@ -183,7 +185,10 @@ export function AccountMenuDialogs({
                 </Button>
               </>
             ) : panel === 'logout' ? (
-              <DialogClose>Got it</DialogClose>
+              <>
+                <DialogClose>Cancel</DialogClose>
+                <Button size='sm' variant='default' onClick={onLogout}>Log out</Button>
+              </>
             ) : (
               <DialogClose>Close</DialogClose>
             )}

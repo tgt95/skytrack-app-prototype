@@ -34,6 +34,7 @@ jobs:
         run: npm run build:pages
         env:
           VITE_BASE_PATH: /skytrack-app-prototype/
+          VITE_LOGIN_PASSWORD: ${{ secrets.VITE_LOGIN_PASSWORD }}
       - name: Configure GitHub Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
       - name: Upload Pages artifact
