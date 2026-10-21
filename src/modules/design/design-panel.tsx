@@ -322,6 +322,7 @@ function CompactAxisField({
   min,
   max,
   step,
+  inputSize = 'compact',
   onChange
 }: {
   label: string
@@ -330,6 +331,7 @@ function CompactAxisField({
   min: number
   max: number
   step: number
+  inputSize?: 'compact' | 'xs'
   onChange: (v: number) => void
 }) {
   const [text, setText] = useState<string | null>(null)
@@ -363,7 +365,7 @@ function CompactAxisField({
         }}
       >
         <NumberFieldInput
-          size='compact'
+          size={inputSize}
           aria-label={label}
           value={display}
           onChange={(event) => {
@@ -893,6 +895,32 @@ export default function DesignPanel(props: DesignPanelProps) {
     const routeActions = routeWaypoints.reduce((sum, wp) => sum + wp.actions.length, 0)
     const speed = route.targetSpeedMS ?? mission.targetSpeedMS
     const recon = routeRecon(route.id)
+    const speedRow = (
+      <div className={worldType === '2D' ? 'ms-recon-control-row ms-target-speed-row' : 'ms-data-row'}>
+        <span id={`ms-speed-label-${route.id}`}>Target speed</span>
+        <span className='ms-data-right'>
+          <CompactAxisField label={`${route.label} target speed in meters per second`} short='' value={speed} min={0.5} max={15} step={0.5} inputSize='xs'
+            onChange={(v) => onUpdateMission({ ...mission, routes: routes.map((item) => item.id === route.id ? { ...item, targetSpeedMS: Math.min(15, Math.max(0.5, v)) } : item) })} />
+          <span className='ms-unit' aria-hidden='true'>m/s</span>
+          <Button
+            size='icon-xs'
+            variant='ghost'
+            aria-label={`Reset ${route.label} target speed to mission default`}
+            title='Reset to mission default speed'
+            onClick={() => onUpdateMission({
+              ...mission, routes: routes.map((item) => {
+                if (item.id !== route.id) return item
+                const { targetSpeedMS, ...rest } = item
+                void targetSpeedMS
+                return rest
+              })
+            }, `${route.label} target speed reset to mission default.`)}
+          >
+            <ArrowCounterClockwiseIcon aria-hidden='true' />
+          </Button>
+        </span>
+      </div>
+    )
     return {
       id: route.id, node: (
         <Fragment key={route.id}>
@@ -952,47 +980,29 @@ export default function DesignPanel(props: DesignPanelProps) {
                 </Button>
               </div>
             </div>
-            {worldType === '2D' ? <>
-              <div className='ms-recon-control-row'>
-                <span>Reconnaissance flight</span>
-                <Switch
-                  checked={recon.enabled}
-                  size='sm'
-                  aria-label={`${route.label} reconnaissance flight`}
-                  onCheckedChange={() => toggleRouteRecon(route.id, recon)}
-                ><SwitchThumb size='sm' /></Switch>
-                <Button variant='ghost' size='icon-sm' aria-label={`Reconnaissance settings for ${route.label}`} onClick={() => openReconSettings('route', route.id, recon)}>
-                  <GearIcon aria-hidden='true' />
-                </Button>
+            {worldType === '2D' ? (
+              <div className='ms-recon-control-group'>
+                <div className='ms-recon-control-row'>
+                  <span>Reconnaissance flight</span>
+                  <Switch
+                    checked={recon.enabled}
+                    size='sm'
+                    aria-label={`${route.label} reconnaissance flight`}
+                    onCheckedChange={() => toggleRouteRecon(route.id, recon)}
+                  ><SwitchThumb size='sm' /></Switch>
+                  <Button variant='ghost' size='icon-sm' aria-label={`Reconnaissance settings for ${route.label}`} onClick={() => openReconSettings('route', route.id, recon)}>
+                    <GearIcon aria-hidden='true' />
+                  </Button>
+                </div>
+                {!isCollapsed(`route:${route.id}`) ? speedRow : null}
               </div>
-              {recon.enabled ? captureSummary(routeWaypoints, recon, routeLength) : null}
-            </> : null}
+            ) : null}
+            {worldType === '2D' && recon.enabled ? (
+              captureSummary(routeWaypoints, recon, routeLength)
+            ) : null}
             {isCollapsed(`route:${route.id}`) ? null : (
               <>
-                <div className='ms-data-row'>
-                  <span id={`ms-speed-label-${route.id}`}>Target speed</span>
-                  <span className='ms-data-right'>
-                    <CompactAxisField label={`${route.label} target speed in meters per second`} short='' value={speed} min={0.5} max={15} step={0.5}
-                      onChange={(v) => onUpdateMission({ ...mission, routes: routes.map((item) => item.id === route.id ? { ...item, targetSpeedMS: Math.min(15, Math.max(0.5, v)) } : item) })} />
-                    <span className='ms-unit' aria-hidden='true'>m/s</span>
-                    <Button
-                      size='icon-sm'
-                      variant='ghost'
-                      aria-label={`Reset ${route.label} target speed to mission default`}
-                      title='Reset to mission default speed'
-                      onClick={() => onUpdateMission({
-                        ...mission, routes: routes.map((item) => {
-                          if (item.id !== route.id) return item
-                          const { targetSpeedMS, ...rest } = item
-                          void targetSpeedMS
-                          return rest
-                        })
-                      }, `${route.label} target speed reset to mission default.`)}
-                    >
-                      <ArrowCounterClockwiseIcon aria-hidden='true' />
-                    </Button>
-                  </span>
-                </div>
+                {worldType === '2D' ? null : speedRow}
                 <ol className='ms-seq-list'>
                   <li className='ms-seq-row ms-seq-marker' aria-label={`Sequence start for ${route.label}`}>
                     <Badge count='START' status='outline' size='sm' className='ms-seq-static-accent' />
@@ -1119,55 +1129,57 @@ export default function DesignPanel(props: DesignPanelProps) {
                 </Button>
               </div>
             </div>
-            {worldType === '2D' ? <>
-              <div className='ms-recon-control-row'>
-                <span>Reconnaissance flight</span>
-                <Switch
-                  checked={recon.enabled}
-                  size='sm'
-                  aria-label={`${area.label} reconnaissance flight`}
-                  onCheckedChange={() => onUpdateMission({ ...mission, areas: mission.areas.map((item) => item.id === area.id ? { ...item, reconnaissance: { ...recon, enabled: !recon.enabled } } : item) }, `${area.label} reconnaissance ${recon.enabled ? 'off' : 'on'}.`)}
-                ><SwitchThumb size='sm' /></Switch>
-                <Button variant='ghost' size='icon-sm' aria-label={`Reconnaissance settings for ${area.label}`} onClick={() => openReconSettings('area', area.id, recon)}>
-                  <GearIcon aria-hidden='true' />
-                </Button>
+            {worldType === '2D' ? (
+              <div className='ms-recon-control-group'>
+                <div className='ms-recon-control-row'>
+                  <span>Reconnaissance flight</span>
+                  <Switch
+                    checked={recon.enabled}
+                    size='sm'
+                    aria-label={`${area.label} reconnaissance flight`}
+                    onCheckedChange={() => onUpdateMission({ ...mission, areas: mission.areas.map((item) => item.id === area.id ? { ...item, reconnaissance: { ...recon, enabled: !recon.enabled } } : item) }, `${area.label} reconnaissance ${recon.enabled ? 'off' : 'on'}.`)}
+                  ><SwitchThumb size='sm' /></Switch>
+                  <Button variant='ghost' size='icon-sm' aria-label={`Reconnaissance settings for ${area.label}`} onClick={() => openReconSettings('area', area.id, recon)}>
+                    <GearIcon aria-hidden='true' />
+                  </Button>
+                </div>
               </div>
-              {recon.enabled ? (
-                <>
-                  {captureSummary(areaWp, recon, areaLength, true)}
-                  <p className='ms-hint'>
-                    Photo spacing {getAreaPhotoSpacingM(area).toFixed(1)} m · lane spacing {getAreaScanSpacingM(area).toFixed(1)} m. Camera footprint uses a mock square FOV on flat ground; terrain is omitted and footprints disappear if any image corner faces the horizon.
-                  </p>
-                  <Accordion multiple className='ms-area-capture-list' aria-label={`${area.label} waypoint camera settings`}>
-                    <AccordionItem value='camera-settings' className='border-b-0'>
-                      <AccordionHeader>
-                        <AccordionTrigger variant='compact'>Camera settings by waypoint ({areaWp.reduce((count, waypoint) => count + waypoint.actions.filter((action) => action.kind === 'photo').length, 0)})</AccordionTrigger>
-                      </AccordionHeader>
-                      <AccordionPanel>
-                        <div className='ms-area-capture-rows'>
-                          {areaWp.flatMap((waypoint) => waypoint.actions.filter((action) => action.kind === 'photo').map((action) => (
-                            <label className='ms-area-capture-row' key={action.id}>
-                              <span>Waypoint {waypoint.seq} · Take photo</span>
-                              <span>Gimbal pitch</span>
-                              <NumberField
-                                value={action.gimbalPitchDeg ?? recon.gimbalPitchDeg}
-                                min={-90}
-                                max={0}
-                                step={1}
-                                onValueChange={(value) => { if (typeof value === 'number' && Number.isFinite(value)) updateActionPitch(waypoint.id, action.id, value) }}
-                              >
-                                <NumberFieldInput aria-label={`Gimbal pitch at waypoint ${waypoint.seq}`} />
-                              </NumberField>
-                              <span>°</span>
-                            </label>
-                          )))}
-                        </div>
-                      </AccordionPanel>
-                    </AccordionItem>
-                  </Accordion>
-                </>
-              ) : null}
-            </> : null}
+            ) : null}
+            {worldType === '2D' && recon.enabled ? (
+              <>
+                {captureSummary(areaWp, recon, areaLength, true)}
+                <p className='ms-hint'>
+                  Photo spacing {getAreaPhotoSpacingM(area).toFixed(1)} m · lane spacing {getAreaScanSpacingM(area).toFixed(1)} m. Camera footprint uses a mock square FOV on flat ground; terrain is omitted and footprints disappear if any image corner faces the horizon.
+                </p>
+                <Accordion multiple className='ms-area-capture-list' aria-label={`${area.label} waypoint camera settings`}>
+                  <AccordionItem value='camera-settings' className='border-b-0'>
+                    <AccordionHeader>
+                      <AccordionTrigger variant='compact'>Camera settings by waypoint ({areaWp.reduce((count, waypoint) => count + waypoint.actions.filter((action) => action.kind === 'photo').length, 0)})</AccordionTrigger>
+                    </AccordionHeader>
+                    <AccordionPanel>
+                      <div className='ms-area-capture-rows'>
+                        {areaWp.flatMap((waypoint) => waypoint.actions.filter((action) => action.kind === 'photo').map((action) => (
+                          <label className='ms-area-capture-row' key={action.id}>
+                            <span>Waypoint {waypoint.seq} · Take photo</span>
+                            <span>Gimbal pitch</span>
+                            <NumberField
+                              value={action.gimbalPitchDeg ?? recon.gimbalPitchDeg}
+                              min={-90}
+                              max={0}
+                              step={1}
+                              onValueChange={(value) => { if (typeof value === 'number' && Number.isFinite(value)) updateActionPitch(waypoint.id, action.id, value) }}
+                            >
+                              <NumberFieldInput aria-label={`Gimbal pitch at waypoint ${waypoint.seq}`} />
+                            </NumberField>
+                            <span>°</span>
+                          </label>
+                        )))}
+                      </div>
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              </>
+            ) : null}
             {isCollapsed(`area:${area.id}`) ? null : (
               <>
                 {isEditing ? (

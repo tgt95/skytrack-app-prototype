@@ -87,7 +87,7 @@ export function ImportAIModelDialog({
           <DialogHeader>
             <DialogTitle>Import AI models</DialogTitle>
             <DialogDescription>
-              Import one ONNX model package with its JSON class map into your uploaded models.
+              Import one ONNX model package with its JSON class map into your uploaded models. Prototype preview only: ZIP bytes are not uploaded, stored, parsed, or checked for compatibility. Only model details are saved in this browser; no inference or deployment runs.
             </DialogDescription>
           </DialogHeader>
           <FieldRoot invalid={Boolean(nameError) || hasDuplicate}>
@@ -122,9 +122,6 @@ export function ImportAIModelDialog({
             {fileError ? <FieldDescription role='alert'>{fileError}</FieldDescription> : null}
             <FieldDescription>The class order in the ONNX model and JSON file must match.</FieldDescription>
           </FieldRoot>
-          <DialogDescription>
-            Prototype preview: the ZIP is not uploaded, stored, or checked. Only model details are saved in this browser.
-          </DialogDescription>
           <DialogFooter>
             <DialogClose>Cancel</DialogClose>
             <Button size='sm' variant='default' disabled={!file || hasDuplicate} onClick={submit}>Import model</Button>

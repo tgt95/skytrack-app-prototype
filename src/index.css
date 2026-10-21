@@ -36,8 +36,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 8px 12px;
+  gap: 0.75rem;
+  padding: 8px 0.75rem;
   border-bottom: 1px solid var(--border);
   background: var(--card);
   flex: 0 0 auto;
@@ -120,8 +120,8 @@
 
 .ms-gate {
   margin: 0;
-  padding: 6px 12px;
-  font-size: 12px;
+  padding: 6px 0.75rem;
+  font-size: 0.75rem;
   color: var(--muted-foreground);
   background: var(--background);
   border-bottom: 1px solid var(--border);
@@ -141,7 +141,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   padding: 8px 0;
   border-right: 1px solid var(--border);
   background: var(--card);
@@ -206,10 +206,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 6px 12px;
+  padding: 6px 0.75rem;
   border-bottom: 1px solid var(--border);
   background: var(--card);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-drawbar-actions,
@@ -224,7 +224,7 @@
 .ms-drawbar-copy {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   min-width: 0;
   color: var(--muted-foreground);
 }
@@ -335,7 +335,7 @@
 }
 
 .ms-basemap-group-label {
-  margin: 12px 0 6px;
+  margin: 0.75rem 0 6px;
   color: var(--muted-foreground);
   font-size: 11px;
   font-weight: 600;
@@ -359,7 +359,7 @@
   gap: 4px;
   padding: 5px;
   overflow: hidden;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-basemap-thumb {
@@ -404,15 +404,18 @@
   cursor: pointer;
 }
 
+.ms-recon-control-group {
+  border-bottom: 1px solid var(--border);
+}
+
 .ms-recon-control-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   min-height: 42px;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border);
+  padding: 8px 0.75rem;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 
   >span {
@@ -427,11 +430,15 @@
   }
 }
 
+.ms-target-speed-row > .ms-data-right {
+  flex: 0 0 auto;
+}
+
 .ms-recon-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px 8px;
-  padding: 12px 14px;
+  gap: 0.75rem 8px;
+  padding: 0.75rem 14px;
   background: color-mix(in srgb, var(--muted) 25%, transparent);
   border-bottom: 1px solid var(--border);
 
@@ -450,7 +457,7 @@
   strong {
     overflow: hidden;
     color: var(--foreground);
-    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -495,7 +502,7 @@
   display: grid;
   gap: 5px;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 /* Planner LiveSlider list rows: no cards, top dividers, 16px labels with the
@@ -529,7 +536,7 @@
 .ms-recon-slider-hint {
   margin: 0;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.6;
 }
 
@@ -630,7 +637,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .ms-preview-title {
@@ -643,7 +650,7 @@
 .ms-preview-estimate {
   margin: 4px 0 0;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-preview-duration {
@@ -751,7 +758,7 @@
 .ms-preview-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 /* Planner-parity playback row: DS play button, scrub slider, speed select,
@@ -777,7 +784,7 @@
 
 .ms-preview-time {
   flex: 0 0 auto;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-foreground);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -816,7 +823,7 @@
 .ms-preview-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 0.75rem;
 
   th,
   td {
@@ -875,7 +882,7 @@
   align-items: center;
   gap: 6px;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-preview-speed {
@@ -888,7 +895,7 @@
 
 .ms-preview-event {
   margin: 0;
-  padding: 12px;
+  padding: 0.75rem;
   border: 1px solid var(--border);
   border-radius: 7px;
   background: var(--card);
@@ -924,7 +931,7 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 9px 12px;
+  padding: 9px 0.75rem;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--card);
@@ -987,7 +994,7 @@
 
 .ms-scene-overlay-sub {
   margin: 0 0 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-foreground);
   max-width: 420px;
 }
@@ -999,12 +1006,12 @@
 
 .ms-scene-fallback {
   position: absolute;
-  left: 12px;
-  bottom: 12px;
+  left: 0.75rem;
+  bottom: 0.75rem;
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-foreground);
   background: var(--card);
   border: 1px solid var(--border);
@@ -1014,8 +1021,8 @@
 
 .ms-lidar {
   position: absolute;
-  left: 12px;
-  bottom: 12px;
+  left: 0.75rem;
+  bottom: 0.75rem;
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -1059,9 +1066,9 @@
 
 .ms-control-groups {
   position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
   z-index: 5;
   /* The stack spans the full map width for right anchoring. Let empty areas
      pass pointer gestures through to Cesium; only actual controls catch input. */
@@ -1151,7 +1158,7 @@
 .ms-address-suggestions-status {
   padding: 8px 10px;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-address-suggestions-credits {
@@ -1254,7 +1261,7 @@
 }
 
 .ms-2d-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.02em;
 }
@@ -1336,7 +1343,7 @@
   border: 0;
   padding: 0;
   color: var(--foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   text-align: right;
   font-variant-numeric: tabular-nums;
@@ -1450,13 +1457,13 @@
 .ms-route-draft {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
   min-width: 0;
-  padding: 14px 12px;
+  padding: 14px 0.75rem;
 }
 
 .ms-zone-draft-wrap {
-  margin: 12px;
+  margin: 0.75rem;
 }
 
 .ms-route-draft-head {
@@ -1471,7 +1478,7 @@
 .ms-route-draft-count {
   margin: 0;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.4;
 }
 
@@ -1504,7 +1511,7 @@
   border-radius: 50%;
   background: var(--muted);
   color: var(--foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
@@ -1576,7 +1583,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 12px;
+  padding: 0.75rem;
 }
 
 .ms-inspector-code {
@@ -1600,7 +1607,7 @@
 
 .ms-inspector-sub {
   margin: 2px 0 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-foreground);
 }
 
@@ -1615,7 +1622,7 @@
   background: var(--background);
 
   &:not(.ms-object-block) {
-    padding: 12px;
+    padding: 0.75rem;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -1625,7 +1632,7 @@
 .ms-sequence-blocks {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
   min-width: 0;
 }
 
@@ -1637,7 +1644,7 @@
 
 .ms-hint {
   margin: 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-foreground);
   line-height: 1.5;
 }
@@ -1658,7 +1665,7 @@
 }
 
 .ms-field-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
@@ -1675,13 +1682,13 @@
 }
 
 .ms-pane-viewtabs {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-end-select {
   flex: 1 1 auto;
   min-width: 0;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-route-head {
@@ -1696,7 +1703,7 @@
 }
 
 .ms-route-stats {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-foreground);
 }
 
@@ -1804,7 +1811,7 @@
   flex: 1 1 0;
   display: flex;
   flex-direction: row;
-  gap: 12px;
+  gap: 0.75rem;
   padding-left: 4px;
   min-width: 0;
 
@@ -1850,7 +1857,7 @@
   box-sizing: border-box;
   padding: 2px 4px;
   font: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
   color: var(--foreground);
   background: var(--background);
@@ -1864,7 +1871,7 @@
 }
 
 .ms-axis {
-  flex: 0 0 12px;
+  flex: 0 0 0.75rem;
   font-size: 11px;
   font-weight: 600;
   color: var(--muted-foreground);
@@ -1922,7 +1929,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
@@ -1955,7 +1962,7 @@
   background: none;
   border: none;
   padding: 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--foreground);
   cursor: pointer;
   text-align: left;
@@ -1972,7 +1979,7 @@
 
 .ms-issue {
   margin: 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.5;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -1998,7 +2005,7 @@
   width: 100%;
   box-sizing: border-box;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.5;
   color: var(--foreground);
   background: var(--card);
@@ -2023,7 +2030,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 0.75rem;
   padding: 8px 10px;
   border-bottom: 1px solid var(--border);
   font-weight: 600;
@@ -2068,7 +2075,7 @@
   width: 10px;
   height: 10px;
   margin-left: -10px;
-  margin-top: -12px;
+  margin-top: -0.75rem;
 }
 
 .ms-python-language svg {
@@ -2085,7 +2092,7 @@
   background: var(--ms-code-canvas);
   color: var(--ms-code-ink);
   font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.55;
   font-variant-ligatures: none;
 }
@@ -2111,7 +2118,7 @@
 }
 
 .ms-python-mirror {
-  padding: 12px 12px 12px 0;
+  padding: 0.75rem 0.75rem 0.75rem 0;
   pointer-events: none;
 }
 
@@ -2159,7 +2166,7 @@
 .ms-python-input {
   z-index: 1;
   display: block;
-  padding: 12px 12px 12px 48px;
+  padding: 0.75rem 0.75rem 0.75rem 48px;
   border: 0;
   border-radius: 0;
   resize: none;
@@ -2209,7 +2216,7 @@
 
 .ms-stat dd {
   margin: 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2224,7 +2231,7 @@
   gap: 2px;
   max-height: 260px;
   overflow-y: auto;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-route-item {
@@ -2256,7 +2263,7 @@
   gap: 8px;
   align-items: baseline;
   text-align: left;
-  font-size: 12px;
+  font-size: 0.75rem;
   background: var(--background);
   color: var(--foreground);
   border: 1px solid var(--border);
@@ -2295,7 +2302,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  padding: 10px 12px;
+  padding: 10px 0.75rem;
   border-top: 1px solid var(--border);
   background: var(--card);
   position: sticky;
@@ -2322,7 +2329,7 @@
   display: flex;
   gap: 10px;
   align-items: baseline;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-shortcut-row kbd {
@@ -2379,7 +2386,7 @@
 
 .ms-footprint-opacity-head {
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
@@ -2693,7 +2700,7 @@
   /* border: 1px solid transparent; */
   /* border-radius: var(--radius); */
   background: transparent;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   padding: 6px 4px;
   cursor: pointer;
@@ -2775,7 +2782,7 @@
 .ms-contextbar-trigger {
   min-width: 150px;
   max-width: 260px;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 /* ------------------------- waypoint row: one-line XYZ, handle, more ------------------------- */
@@ -2830,10 +2837,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 4px 12px;
+  padding: 4px 0.75rem;
   border-top: 1px solid var(--border);
   background: var(--card);
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-foreground);
 }
 
@@ -2853,8 +2860,8 @@
 
 .ms-compass-cube {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 0.75rem;
+  right: 0.75rem;
   z-index: 5;
   user-select: none;
   touch-action: none;
@@ -2982,7 +2989,7 @@
    Design inspector. Spacing-only; tokens, markup, and behavior untouched.
    Compact one-line X/Y/Z fields and their wrap behavior preserved. */
 .ms-inspector {
-  gap: 12px;
+  gap: 0.75rem;
 
   .ms-pane-head {
     background-color: var(--card);
@@ -2990,8 +2997,8 @@
 }
 
 .ms-card {
-  padding: 12px;
-  gap: 12px;
+  padding: 0.75rem;
+  gap: 0.75rem;
 }
 
 .ms-route-head {
@@ -3009,12 +3016,14 @@
   &:not(.ms-end, .ms-seq-marker) {
     padding: 4px;
   }
+
   &.ms-seq-trans,
   &.ms-end,
   &.ms-seq-marker {
-    padding: 6px 12px;
+    padding: 6px 0.75rem;
     flex-wrap: unset;
   }
+
   &.ms-end,
   &.ms-seq-marker {
     background: var(--accent);
@@ -3172,7 +3181,7 @@
 
   .ms-stage-minibar .ms-stage [data-slot='toggle'] {
     padding: 8px 10px;
-    font-size: 12px;
+    font-size: 0.75rem;
   }
 
   .ms-stage-link {
@@ -3199,10 +3208,12 @@
     align-items: center;
     gap: 8px;
     min-width: 0;
-    padding: 12px;
+    padding: 0.75rem;
 
-    +.ms-recon-control-row {
-      padding-top: 0;
+    +.ms-recon-control-group {
+      > .ms-recon-control-row:first-child {
+        padding-top: 0;
+      }
     }
   }
 
@@ -3224,7 +3235,7 @@
   }
 
   .ms-hint {
-    padding: 12px;
+    padding: 0.75rem;
   }
 
   &.is-selected,
@@ -3245,7 +3256,7 @@
     flex-direction: row;
     align-items: center;
     gap: 8px;
-    padding: 12px;
+    padding: 0.75rem;
   }
 
   .ms-route-name {
@@ -3314,7 +3325,7 @@
 }
 
 .ms-slider-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--foreground);
 }
@@ -3370,7 +3381,7 @@
 .ms-insert-action-btn {
   position: absolute;
   top: 0;
-  left: 12px;
+  left: 0.75rem;
   z-index: 3;
   width: 16px;
   height: 16px;
@@ -3389,8 +3400,8 @@
 }
 
 .ms-insert-action-btn svg {
-  width: 12px;
-  height: 12px;
+  width: 0.75rem;
+  height: 0.75rem;
 }
 
 .ms-insert-action-zone:hover .ms-insert-action-line,
@@ -3431,7 +3442,7 @@
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  font-size: 12px;
+  font-size: 0.75rem;
   list-style: none;
 }
 
@@ -3482,7 +3493,7 @@
   border-radius: var(--radius);
   color: var(--muted-foreground);
   background: color-mix(in srgb, var(--primary) 6%, var(--background));
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 /* Pane tab bar (Figma 607:18957): pill Design/Code switch + icon actions. */
@@ -3491,7 +3502,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 8px 0.75rem;
 }
 
 /* Unified pane head (feedback #1/#5): tabs and Mission settings share one
@@ -3500,7 +3511,7 @@
 .ms-pane-head {
   position: sticky;
   top: 0;
-  margin: -12px -12px 0;
+  margin: -0.75rem -0.75rem 0;
   background: var(--card);
   border-bottom: 1px solid var(--border);
   z-index: 2;
@@ -3553,7 +3564,7 @@
   justify-content: space-between;
   gap: 8px;
   min-height: 32px;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-data-right {
@@ -3575,11 +3586,11 @@
 .ms-data-select {
   min-width: 150px;
   max-width: 190px;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-unit {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-foreground);
 }
 
@@ -3588,7 +3599,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-foreground);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -3610,7 +3621,7 @@
 .ms-seq-marker-label {
   flex: 1 1 auto;
   min-width: 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-foreground);
 }
 
@@ -3729,9 +3740,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 0.75rem;
   min-height: 48px;
-  padding: 8px 12px;
+  padding: 8px 0.75rem;
   border-bottom: 1px solid var(--border);
   background: var(--card);
 }
@@ -3746,8 +3757,7 @@
 
 .ms-lib-brand img {
   display: block;
-  width: 24px;
-  height: 24px;
+  height: 1.5rem;
 }
 
 .ms-lib-local {
@@ -3778,7 +3788,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 12px 8px;
+  padding: 0.75rem 8px;
   border-right: 1px solid var(--sidebar-border);
   background: var(--sidebar);
   color: var(--sidebar-foreground);
@@ -3802,10 +3812,10 @@
   display: flex;
   align-items: center;
   flex: 0 0 auto;
-  gap: 12px;
+  gap: 0.75rem;
   width: 100%;
   min-height: 0;
-  padding: 8px 12px;
+  padding: 8px 0.75rem;
   border-radius: var(--radius);
   background: transparent;
   color: var(--muted-foreground);
@@ -3846,7 +3856,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding-top: 12px;
+  padding-top: 0.75rem;
 }
 
 .ms-lib-community {
@@ -4047,14 +4057,14 @@
   color: var(--sidebar-accent-foreground);
   border: 0;
   background: var(--sidebar-accent);
-  font-size: 12px;
+  font-size: 0.75rem;
   padding: 2px 8px;
 }
 
 .ms-lib-profile {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   min-height: 42px;
   width: 100%;
   padding: 6px 10px 6px 6px;
@@ -4144,7 +4154,7 @@
 .ms-lib-account-popup .ms-lib-account-item {
   min-height: 44px;
   gap: 14px;
-  padding: 8px 12px;
+  padding: 8px 0.75rem;
   border-radius: var(--radius);
   font-size: 15px;
 }
@@ -4198,7 +4208,7 @@
 .ms-lib-account-note {
   margin: -6px 0 0;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.5;
 }
 
@@ -4218,7 +4228,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 0.75rem;
   min-height: 44px;
   border-bottom: 1px solid var(--border);
   color: var(--muted-foreground);
@@ -4234,7 +4244,7 @@
 
 .ms-lib-account-callout {
   margin-top: 14px;
-  padding: 12px 14px;
+  padding: 0.75rem 14px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--muted);
@@ -4282,7 +4292,7 @@
 
 .ms-lib-account-notification-copy span {
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.4;
 }
 
@@ -4294,9 +4304,9 @@
 .ms-lib-account-current {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   min-width: 0;
-  padding: 12px;
+  padding: 0.75rem;
   border: 1px solid var(--primary);
   border-radius: var(--radius);
   background: var(--card);
@@ -4330,7 +4340,7 @@
 
 .ms-lib-account-current-identity span {
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-lib-account-current-check {
@@ -4353,7 +4363,7 @@
   border-color: color-mix(in oklab, var(--warning), var(--border) 55%);
 }
 
-.ms-lib-account-callout.is-notice > svg {
+.ms-lib-account-callout.is-notice>svg {
   width: 19px;
   height: 19px;
   flex: 0 0 auto;
@@ -4391,23 +4401,105 @@
 }
 
 .ms-lib-main h1 {
-  margin: 0 0 12px;
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
 }
 
 .ms-lib-main h2 {
   margin: 0;
-  font-size: 15px;
+  font-size: 1.125rem;
   font-weight: 700;
+}
+
+.ms-lib-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: -16px -24px 20px;
+  padding: 20px 24px 16px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+.ms-lib-page-header.has-tabs {
+  padding-bottom: 0;
+}
+
+.ms-lib-page-header-context {
+  min-width: 0;
+}
+
+.ms-lib-page-header-context>.ms-lib-crumb,
+.ms-lib-page-header-context>.ms-lib-back {
+  margin-bottom: 0;
+}
+
+.ms-lib-page-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ms-lib-page-header-copy {
+  min-width: 0;
+}
+
+.ms-lib-page-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.ms-lib-page-header-description {
+  margin-top: 4px;
+}
+
+.ms-lib-page-header-description> :first-child {
+  margin-top: 0;
+}
+
+.ms-lib-page-header-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.ms-ai-model-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ms-run-environment {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ms-run-environment-label {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.ms-lib-page-header-footer {
+  min-width: 0;
+}
+
+.ms-lib-page-header-footer>.ms-lib-search {
+  max-width: 480px;
 }
 
 .ms-lib-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .ms-lib-sub {
@@ -4416,11 +4508,17 @@
   color: var(--muted-foreground);
 }
 
+.ms-lib-main[data-section='worlds'] .ms-lib-sub,
+.ms-lib-main[data-section='drones'] .ms-lib-sub,
+.ms-lib-main[data-section='aimodels'] .ms-lib-sub {
+  display: none;
+}
+
 .ms-lib-back {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;
   padding: 4px 0;
   border: 0;
   background: transparent;
@@ -4462,12 +4560,11 @@
 .ms-ai-model-tabs {
   width: 100%;
   max-width: none;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
-.ms-ai-model-tabs [data-slot='tabs-list'] {
-  gap: 20px;
-  border-bottom: 1px solid var(--border);
+.ms-ai-model-tabs:has([data-slot='tabs-indicator']) [data-slot='tabs-list'] {
+  margin-left: -12px;
 }
 
 .ms-ai-model-tabs [data-slot='tabs-panel'] {
@@ -4485,6 +4582,7 @@
 }
 
 .ms-lib-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -4500,6 +4598,41 @@
 
 .ms-lib-card:hover {
   border-color: var(--primary);
+}
+
+.ms-lib-card-overlay-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: inline-flex;
+  gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.ms-lib-card:hover .ms-lib-card-overlay-actions,
+.ms-lib-card:focus-within .ms-lib-card-overlay-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ms-lib-card-overlay-actions [aria-pressed='true'] svg {
+  color: var(--favorite);
+}
+
+@media (hover: none) {
+  .ms-lib-card-overlay-actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-lib-card-overlay-actions {
+    transition: none;
+  }
 }
 
 .ms-lib-card.is-current {
@@ -4552,7 +4685,7 @@ button.ms-lib-thumb {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 12px;
+  padding: 0.75rem;
 }
 
 .ms-lib-card-title {
@@ -4565,7 +4698,7 @@ button.ms-lib-thumb {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-foreground);
 }
 
@@ -4610,7 +4743,7 @@ button.ms-lib-thumb {
   align-items: center;
   gap: 7px;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-lib-shared-owner .ms-lib-avatar {
@@ -4640,7 +4773,7 @@ button.ms-lib-thumb {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 0 12px 12px;
+  padding: 0 0.75rem 0.75rem;
 }
 
 .ms-lib-resource-icon {
@@ -4659,12 +4792,12 @@ button.ms-lib-thumb {
 }
 
 .ms-lib-card-edited {
-  font-size: 12px;
+  font-size: 0.875rem;
   color: var(--muted-foreground);
 }
 
 .ms-lib-card-desc {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-foreground);
   line-height: 1.5;
 }
@@ -4673,7 +4806,7 @@ button.ms-lib-thumb {
   .ms-lib-side {
     flex-basis: 64px;
     align-items: stretch;
-    padding: 12px 6px;
+    padding: 0.75rem 6px;
   }
 
   .ms-lib-nav-label,
@@ -4711,8 +4844,17 @@ button.ms-lib-thumb {
   }
 
   .ms-lib-main {
-    padding: 12px 12px 24px;
+    padding: 0.75rem 0.75rem 24px;
     gap: 20px;
+  }
+
+  .ms-lib-page-header {
+    margin: -0.75rem -0.75rem 16px;
+    padding: 16px 12px 12px;
+  }
+
+  .ms-lib-page-header-row {
+    flex-wrap: wrap;
   }
 
   .ms-lib-top {
@@ -4732,8 +4874,8 @@ a.ms-lib-navitem {
 }
 
 .ms-lib-external {
-  width: 12px;
-  height: 12px;
+  width: 0.75rem;
+  height: 0.75rem;
   margin-left: auto;
   color: var(--muted-foreground);
   flex: 0 0 auto;
@@ -4743,7 +4885,7 @@ a.ms-lib-navitem {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 0.25rem;
   font-size: 13px;
   color: var(--muted-foreground);
 }
@@ -4843,7 +4985,7 @@ a.ms-lib-navitem {
   padding: 0;
   background: transparent;
   color: var(--primary);
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
   border-radius: var(--radius);
 }
@@ -4857,8 +4999,8 @@ a.ms-lib-navitem {
 }
 
 .ms-lib-inline-icon {
-  width: 12px;
-  height: 12px;
+  width: 0.75rem;
+  height: 0.75rem;
   vertical-align: -1px;
 }
 
@@ -4950,29 +5092,39 @@ a.ms-lib-navitem {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 0;
   padding: 48px 24px;
   text-align: center;
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  background: var(--card);
+  background: oklch(from var(--muted) calc(l * 1.01) c h);
 }
 
 .ms-lib-empty-icon {
   display: inline-flex;
   color: var(--muted-foreground);
-  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 12px;
+}
+
+.ms-lib-empty-icon svg {
+  width: 40px;
+  height: 40px;
 }
 
 .ms-lib-empty-title {
-  margin: 0;
-  font-size: 14px;
+  margin: 0 0 8px;
+  font-size: 1rem;
   font-weight: 600;
+}
+
+.ms-lib-empty>.ms-hint {
+  font-size: 0.875rem;
+  margin: 0;
 }
 
 .ms-lib-search {
   max-width: 320px;
-  margin: 12px 0;
+  margin: 0.75rem 0;
 }
 
 .ms-lib-detail {
@@ -5002,7 +5154,7 @@ a.ms-lib-navitem {
 .ms-lib-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
   padding: 4px 0;
 }
 
@@ -5027,7 +5179,7 @@ a.ms-lib-navitem {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--card);
-  padding: 10px 12px;
+  padding: 10px 0.75rem;
 }
 
 .ms-lib-share-row>span:last-child {
@@ -5078,11 +5230,6 @@ a.ms-lib-navitem {
   min-height: 48px;
 }
 
-.ms-lib-main h1 {
-  font-size: 18px;
-  margin-bottom: 4px;
-}
-
 .ms-lib-grid.is-recent {
   gap: 8px;
 }
@@ -5117,7 +5264,7 @@ a.ms-lib-navitem {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 0 12px 12px;
+  padding: 0 0.75rem 0.75rem;
 }
 
 .ms-drone-dialog {
@@ -5138,13 +5285,13 @@ a.ms-lib-navitem {
 .ms-resource-error {
   margin: 0;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.5;
 }
 
 .ms-resource-note {
   grid-column: 1 / -1;
-  padding: 10px 12px;
+  padding: 10px 0.75rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--muted);
@@ -5165,7 +5312,7 @@ a.ms-lib-navitem {
 .ms-drone-form-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .ms-drone-section-heading {
@@ -5184,14 +5331,14 @@ a.ms-lib-navitem {
 .ms-drone-empty-components {
   margin: 0;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.5;
 }
 
 .ms-drone-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .ms-drone-form-wide {
@@ -5244,7 +5391,7 @@ a.ms-lib-navitem {
 .ms-drone-component-details summary {
   width: fit-content;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 
@@ -5252,19 +5399,19 @@ a.ms-lib-navitem {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-top: 12px;
+  padding-top: 0.75rem;
 }
 
 .ms-drone-specifications-heading {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .ms-drone-specifications-heading h3 {
   margin: 0 0 3px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
@@ -5291,12 +5438,12 @@ a.ms-lib-navitem {
 
 .ms-drone-reference-warning {
   margin: 0 20px 18px;
-  padding: 12px;
+  padding: 0.75rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--muted);
   color: var(--foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.5;
 }
 
@@ -5528,12 +5675,12 @@ button.ms-wizard-stepbtn:focus-visible,
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 20px 12px;
+  padding: 20px 0.75rem;
   border: 1px dashed var(--border);
   border-radius: var(--radius);
   background: var(--muted);
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ms-wizard-dropzone svg {
@@ -5543,12 +5690,12 @@ button.ms-wizard-stepbtn:focus-visible,
 
 .ms-wizard-filebtn {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 6px 0.75rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--card);
   color: var(--foreground);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -5577,7 +5724,7 @@ button.ms-wizard-stepbtn:focus-visible,
   gap: 10px;
   width: 100%;
   box-sizing: border-box;
-  padding: 10px 12px;
+  padding: 10px 0.75rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--card);

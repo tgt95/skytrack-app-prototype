@@ -4,7 +4,7 @@
      /shared-with-me, /templates, /template/:templateId,
      /mission/:missionId, /shared-accounts/:missionId
      (renderer asset index-DPH7FYaV.js in /tmp/skytrack-asar-inspect.4JSf7T).
-   - Sidebar: Home; group "Projects": Workspace Projects, Starred Missions
+   - Sidebar: Home; group "Projects": Projects, Starred Missions
      (disabled when none), Shared with me (disabled when none); group
      "Resources": Learn (external https://getskytrack.com/help/category/
      get-builders-insights), Mission templates, Documentation (disabled).
@@ -25,8 +25,8 @@
      (maxLength 120, autofocus, Enter submits), Cancel + "Save" (disabled
      when empty/unchanged), success surfaced as live-region announce text
      "Mission has been updated".
-   - Projects: breadcrumb Home › Workspace Projects; PageTitle "Workspace
-     Projects" + primary "+ New Project" (entry projects_header);
+   - Projects: project-detail breadcrumb Projects › project name; Projects
+     page title + primary "+ New Project" (entry projects_header);
      ProjectCardItem grid; project detail breadcrumb adds the project name,
      header + New Mission button (entry project_detail), new missions
      prepend, empty project shows a dashed NewItemButton "New Mission".
@@ -55,7 +55,7 @@
    mock) and sidebar brand (full SkyTrack logo).
    Success feedback uses the parent live-region announce, not Toast UI. */
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
   ArrowLeftIcon,
   ArrowSquareOutIcon,
@@ -64,13 +64,16 @@ import {
   CaretDownIcon,
   CaretRightIcon,
   CheckIcon,
+  CloudIcon,
   ClockIcon,
   DesktopIcon,
+  DotsThreeIcon,
   DotsThreeVerticalIcon,
   DroneIcon,
   DownloadIcon,
   FoldersIcon,
   FolderIcon,
+  FolderOpenIcon,
   GearIcon,
   GlobeHemisphereWestIcon,
   HouseIcon,
@@ -90,6 +93,24 @@ import {
 import { Badge } from 'skytrack-ui/badge'
 import { Button } from 'skytrack-ui/button'
 import { Tabs, TabsIndicator, TabsList, TabsPanel, TabsTab } from 'skytrack-ui/tabs'
+import {
+  Tooltip,
+  TooltipArrow,
+  TooltipPopup,
+  TooltipPortal,
+  TooltipPositioner,
+  TooltipProvider,
+  TooltipTrigger
+} from 'skytrack-ui/tooltip'
+import {
+  ContextMenu,
+  ContextMenuItem,
+  ContextMenuPopup,
+  ContextMenuPortal,
+  ContextMenuPositioner,
+  ContextMenuSeparator,
+  ContextMenuTrigger
+} from 'skytrack-ui/context-menu'
 import {
   Dialog,
   DialogBackdrop,
@@ -113,11 +134,10 @@ import {
   MenuSubmenuTrigger,
   MenuTrigger
 } from 'skytrack-ui/menu'
-import skytrackLogo from '../../assets/skytrack-logo.svg'
+import skytrackLogoFull from '../../assets/skytrack-logo-full.svg'
 import MissionThumbnail from './mission-thumbnail'
 import { getTemplateThumbnail } from './template-thumbnails'
 import {
-  exportProjects,
   loadProjects,
   saveProjects,
   cloneMissionSnapshotIdentity,
@@ -192,6 +212,157 @@ const LEARN_FEATURED = {
   url: 'https://getskytrack.com/en/resources/how-to-use-simulation-effectively-when-building-autonomous-missions-en-394'
 }
 
+type LibraryCardAction = {
+  id: string
+  label: string
+  onSelect: () => void
+  group: 'primary' | 'common' | 'destructive'
+  destructive?: boolean
+}
+
+function renderLibraryCardActions(actions: LibraryCardAction[], contextMenu = false) {
+  return actions.flatMap((action, index) => {
+    const previousAction = actions[index - 1]
+    const separator = previousAction && previousAction.group !== action.group
+      ? contextMenu
+        ? <ContextMenuSeparator key={`separator-${action.id}`} />
+        : <MenuSeparator key={`separator-${action.id}`} />
+      : null
+    const item = contextMenu ? (
+      <ContextMenuItem key={action.id} variant={action.destructive ? 'destructive' : 'default'} onClick={action.onSelect}>
+        {action.label}
+      </ContextMenuItem>
+    ) : (
+      <MenuItem key={action.id} variant={action.destructive ? 'destructive' : 'default'} onClick={action.onSelect}>
+        {action.label}
+      </MenuItem>
+    )
+    return separator ? [separator, item] : [item]
+  })
+}
+
+function LibraryCardFrame({
+  label,
+  className,
+  children,
+  actions,
+  testId,
+  starred,
+  onToggleStar
+}: {
+  label: string
+  className?: string
+  children: ReactNode
+  actions: LibraryCardAction[]
+  testId?: string
+  starred?: boolean
+  onToggleStar?: () => void
+}) {
+  const cardClassName = ['ms-lib-card', className].filter(Boolean).join(' ')
+
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger render={<article className={cardClassName} aria-label={label} />}>
+        <span className='ms-lib-card-overlay-actions' onClick={(event) => event.stopPropagation()}>
+          {onToggleStar ? (
+            <Button
+              type='button'
+              variant='outline'
+              size='icon-sm'
+              data-testid={testId ? `${testId}-star` : undefined}
+              aria-label={`${starred ? 'Unstar' : 'Star'} ${label}`}
+              aria-pressed={starred}
+              onClick={onToggleStar}
+            >
+              <StarIcon aria-hidden='true' weight={starred ? 'fill' : 'regular'} />
+            </Button>
+          ) : null}
+          {actions.length > 0 ? (
+            <Menu>
+              <MenuTrigger
+                aria-label={`More actions for ${label}`}
+                data-testid={testId ? `${testId}-more` : undefined}
+                render={<Button type='button' variant='outline' size='icon-sm' />}
+              >
+                <DotsThreeIcon aria-hidden='true' />
+              </MenuTrigger>
+              <MenuPortal>
+                <MenuPositioner side='bottom' align='end' sideOffset={4}>
+                  <MenuPopup aria-label={`Actions for ${label}`}>
+                    {renderLibraryCardActions(actions)}
+                  </MenuPopup>
+                </MenuPositioner>
+              </MenuPortal>
+            </Menu>
+          ) : null}
+        </span>
+        {children}
+      </ContextMenuTrigger>
+      {actions.length > 0 ? (
+        <ContextMenuPortal>
+          <ContextMenuPositioner>
+            <ContextMenuPopup aria-label={`Actions for ${label}`}>
+              {renderLibraryCardActions(actions, true)}
+            </ContextMenuPopup>
+          </ContextMenuPositioner>
+        </ContextMenuPortal>
+      ) : null}
+    </ContextMenu>
+  )
+}
+
+function LibraryEmptyState({
+  title,
+  description,
+  icon
+}: {
+  title: ReactNode
+  description: ReactNode
+  icon?: ReactNode
+}) {
+  return (
+    <div className='ms-lib-empty' role='status'>
+      <span className='ms-lib-empty-icon' aria-hidden='true'>
+        {icon ?? <FolderOpenIcon />}
+      </span>
+      <p className='ms-lib-empty-title'>{title}</p>
+      <p className='ms-hint text-base'>{description}</p>
+    </div>
+  )
+}
+
+function LibraryPageHeader({
+  titleId,
+  title,
+  description,
+  context,
+  actions,
+  footer,
+  footerVariant
+}: {
+  titleId: string
+  title: ReactNode
+  description?: ReactNode
+  context?: ReactNode
+  actions?: ReactNode
+  footer?: ReactNode
+  footerVariant?: 'tabs'
+}) {
+  return (
+    <header className={`ms-lib-page-header${footerVariant === 'tabs' ? ' has-tabs' : ''}`}>
+      {context ? <div className='ms-lib-page-header-context'>{context}</div> : null}
+      <div className='ms-lib-page-header-row'>
+        <div className='ms-lib-page-header-copy'>
+          <h1 id={titleId}>{title}</h1>
+          {description ? <div className='ms-lib-page-header-description'>{description}</div> : null}
+        </div>
+        {actions ? <div className='ms-lib-page-header-actions'>{actions}</div> : null}
+      </div>
+      {footer ? <div className='ms-lib-page-header-footer'>{footer}</div> : null}
+    </header>
+  )
+}
+
 function getUserInitial(name: string): string {
   const firstWord = name.trim().split(/\s+/u)[0]
   return firstWord?.[0]?.toLocaleUpperCase() ?? '?'
@@ -242,12 +413,17 @@ export default function StudioLibrary({
   const [droneProfiles, setDroneProfiles] = useState<WorkspaceDroneProfile[]>(loadDroneProfiles)
   const [workspaceResources, setWorkspaceResources] = useState<WorkspaceResourceState>(loadWorkspaceResources)
   const [aiModelCategory, setAIModelCategory] = useState('workspace')
+  const [runEnvironment, setRunEnvironment] = useState<'local' | 'cloud'>('local')
   const [accountProfile, setAccountProfile] = useState<AccountProfile>(readAccountProfile)
   const [notificationPreferences, setNotificationPreferences] = useState<NotificationPreferences>(readNotificationPreferences)
   const [accountPanel, setAccountPanel] = useState<AccountMenuPanel | null>(null)
   const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference)
   const [activeWorkspaceId, setActiveWorkspaceId] = useState(readActiveWorkspaceId)
   const activeWorkspace = getWorkspace(activeWorkspaceId)
+  const canUseCloudSIM = activeWorkspace.role === 'Admin'
+  useEffect(() => {
+    if (!canUseCloudSIM) setRunEnvironment('local')
+  }, [activeWorkspace.id, canUseCloudSIM])
   const workspaceProjects = useMemo(
     () => projects.filter((project) => (project.workspaceId ?? DEFAULT_WORKSPACE_ID) === activeWorkspace.id),
     [activeWorkspace.id, projects]
@@ -751,10 +927,55 @@ export default function StudioLibrary({
     </span>
   )
 
+  const missionActions = (pid: string, projectName: string, m: LibMission): LibraryCardAction[] => {
+    const actions: LibraryCardAction[] = [
+      { id: 'open', label: 'Open', group: 'primary', onSelect: () => openMission(pid, projectName, m.id) }
+    ]
+    if (!m.viewOnly) {
+      actions.push(
+        {
+          id: 'star',
+          label: m.starred ? 'Unstar' : 'Star',
+          group: 'common',
+          onSelect: () => toggleStar(pid, m.id)
+        },
+        {
+          id: 'rename',
+          label: 'Rename',
+          group: 'common',
+          onSelect: () => setMissionDlg({ mode: 'rename', projectId: pid, missionId: m.id, initialName: m.name })
+        },
+        { id: 'clone', label: 'Clone', group: 'common', onSelect: () => setCloneTarget({ missionId: m.id, name: m.name }) },
+        {
+          id: 'share',
+          label: 'Share',
+          group: 'common',
+          onSelect: () => setShareDlg({ projectId: pid, missionId: m.id, name: m.name })
+        },
+        {
+          id: 'delete',
+          label: 'Delete',
+          group: 'destructive',
+          destructive: true,
+          onSelect: () => setDeleteMission({ projectId: pid, missionId: m.id, name: m.name })
+        }
+      )
+    }
+    return actions
+  }
+
   const missionCard = (pid: string, projectName: string, m: LibMission, testid: string) => {
     const isCurrent = current?.projectId === pid && current?.mission === m.name
     return (
-      <article key={m.id} className={`ms-lib-card${isCurrent ? ' is-current' : ''}`} aria-label={m.name}>
+      <LibraryCardFrame
+        key={m.id}
+        label={m.name}
+        className={isCurrent ? 'is-current' : undefined}
+        testId={testid}
+        actions={missionActions(pid, projectName, m)}
+        starred={m.starred}
+        onToggleStar={m.viewOnly ? undefined : () => toggleStar(pid, m.id)}
+      >
         <button
           type='button'
           className='ms-lib-thumb is-mission'
@@ -773,52 +994,6 @@ export default function StudioLibrary({
             >
               {m.name} {isCurrent ? <span className='ms-lib-current'>· Current</span> : null}
             </button>
-            <span className='ms-lib-card-tools'>
-              <Menu>
-                <MenuTrigger
-                  aria-label={`More actions for ${m.name}`}
-                  data-testid={`${testid}-more`}
-                  render={<Button variant='ghost' size='icon-sm' className='text-muted-foreground' />}
-                >
-                  <DotsThreeVerticalIcon aria-hidden='true' />
-                </MenuTrigger>
-                <MenuPortal>
-                  <MenuPositioner side='bottom' align='end' sideOffset={4}>
-                    <MenuPopup aria-label={`Actions for ${m.name}`}>
-                      <MenuItem onClick={() => openMission(pid, projectName, m.id)}>Open</MenuItem>
-                      {!m.viewOnly ? (
-                        <MenuItem onClick={() => toggleStar(pid, m.id)}>
-                          <StarIcon aria-hidden='true' weight={m.starred ? 'fill' : 'regular'} />
-                          {m.starred ? 'Unstar' : 'Star'}
-                        </MenuItem>
-                      ) : null}
-                      {!m.viewOnly ? (
-                        <MenuItem
-                          onClick={() =>
-                            setMissionDlg({ mode: 'rename', projectId: pid, missionId: m.id, initialName: m.name })
-                          }
-                        >
-                          Rename
-                        </MenuItem>
-                      ) : null}
-                      {!m.viewOnly ? (
-                        <MenuItem onClick={() => setCloneTarget({ missionId: m.id, name: m.name })}>Clone</MenuItem>
-                      ) : null}
-                      {!m.viewOnly ? (
-                        <MenuItem onClick={() => setShareDlg({ projectId: pid, missionId: m.id, name: m.name })}>
-                          Share
-                        </MenuItem>
-                      ) : null}
-                      {!m.viewOnly ? (
-                        <MenuItem onClick={() => setDeleteMission({ projectId: pid, missionId: m.id, name: m.name })}>
-                          Delete
-                        </MenuItem>
-                      ) : null}
-                    </MenuPopup>
-                  </MenuPositioner>
-                </MenuPortal>
-              </Menu>
-            </span>
           </span>
           {m.viewOnly ? (
             <span className='ms-lib-card-badgerow'>
@@ -837,12 +1012,27 @@ export default function StudioLibrary({
             </button>
           ) : null}
         </span>
-      </article>
+      </LibraryCardFrame>
     )
   }
 
   const projectCard = (p: LibProject) => (
-    <article key={p.id} className='ms-lib-card' aria-label={p.name}>
+    <LibraryCardFrame
+      key={p.id}
+      label={p.name}
+      testId={`ms-lib-project-${p.id}`}
+      actions={[
+        { id: 'open', label: 'Open', group: 'primary', onSelect: () => openProject(p.id) },
+        { id: 'rename', label: 'Rename', group: 'common', onSelect: () => setProjectDlg({ mode: 'rename', projectId: p.id, initialName: p.name }) },
+        {
+          id: 'delete',
+          label: 'Delete',
+          group: 'destructive',
+          destructive: true,
+          onSelect: () => setDeleteProject({ projectId: p.id, name: p.name, missionCount: p.missions.length })
+        }
+      ]}
+    >
       <button
         type='button'
         className='ms-lib-thumb is-project'
@@ -857,35 +1047,24 @@ export default function StudioLibrary({
           <button type='button' className='ms-lib-card-title is-link' onClick={() => openProject(p.id)}>
             {p.name}
           </button>
-          <Menu>
-            <MenuTrigger aria-label={`More actions for ${p.name}`} render={<Button variant='ghost' size='icon-sm' className='text-muted-foreground' />}>
-              <DotsThreeVerticalIcon aria-hidden='true' />
-            </MenuTrigger>
-            <MenuPortal>
-              <MenuPositioner side='bottom' align='end' sideOffset={4}>
-                <MenuPopup aria-label={`Actions for ${p.name}`}>
-                  <MenuItem onClick={() => openProject(p.id)}>Open</MenuItem>
-                  <MenuItem onClick={() => setProjectDlg({ mode: 'rename', projectId: p.id, initialName: p.name })}>
-                    Rename
-                  </MenuItem>
-                  <MenuItem onClick={() => setDeleteProject({ projectId: p.id, name: p.name, missionCount: p.missions.length })}>Delete</MenuItem>
-                </MenuPopup>
-              </MenuPositioner>
-            </MenuPortal>
-          </Menu>
         </span>
         <span className='ms-lib-card-edited'>
           {p.missions.length} mission{p.missions.length === 1 ? '' : 's'}
         </span>
       </span>
-    </article>
+    </LibraryCardFrame>
   )
 
   const templateCard = (t: LibTemplate, testid: string, onOpen: () => void, hideMeta?: boolean) => {
     const tint = `tint-${t.id.charCodeAt(1) % 6}`
     const thumbnail = getTemplateThumbnail(t.id)
     return (
-      <article key={t.id} className='ms-lib-card' aria-label={t.title}>
+      <LibraryCardFrame
+        key={t.id}
+        label={t.title}
+        testId={testid}
+        actions={[{ id: 'open', label: 'Open', group: 'primary', onSelect: onOpen }]}
+      >
         <button
           type='button'
           className={`ms-lib-thumb is-template is-photo ${tint}`}
@@ -902,17 +1081,24 @@ export default function StudioLibrary({
           <span className='ms-lib-card-desc'>{t.desc}</span>
           {hideMeta ? null : <span className='ms-lib-card-edited'>{t.byline}</span>}
         </span>
-      </article>
+      </LibraryCardFrame>
     )
   }
 
   /* Figma Home (195:13546) recent-mission card: drone thumbnail, mission
-     title, design-type row, edited time. Opens the mission like missionCard
-     but without star/menu chrome. */
+     title, design-type row, edited time. */
   const recentCard = (pid: string, projectName: string, m: LibMission, testid: string) => {
     const isCurrent = current?.projectId === pid && current?.mission === m.name
     return (
-      <article key={m.id} className={`ms-lib-card${isCurrent ? ' is-current' : ''}`} aria-label={`${projectName} | ${m.name}`}>
+      <LibraryCardFrame
+        key={m.id}
+        label={`${projectName} | ${m.name}`}
+        className={isCurrent ? 'is-current' : undefined}
+        testId={testid}
+        actions={missionActions(pid, projectName, m)}
+        starred={m.starred}
+        onToggleStar={m.viewOnly ? undefined : () => toggleStar(pid, m.id)}
+      >
         <button
           type='button'
           className='ms-lib-thumb is-drone'
@@ -931,12 +1117,17 @@ export default function StudioLibrary({
           </span>
           <span className='ms-lib-card-edited'>{m.editedAgo}</span>
         </span>
-      </article>
+      </LibraryCardFrame>
     )
   }
 
   const sharedProjectCard = (project: (typeof SHARED_PROJECTS)[number]) => (
-    <article key={project.id} className='ms-lib-card' aria-label={project.name}>
+    <LibraryCardFrame
+      key={project.id}
+      label={project.name}
+      testId={`ms-lib-shared-project-${project.id}`}
+      actions={[{ id: 'open', label: 'Open', group: 'primary', onSelect: () => onOpenSharedProject(project.id) }]}
+    >
       <button
         type='button'
         className='ms-lib-thumb is-project'
@@ -960,7 +1151,7 @@ export default function StudioLibrary({
         <span className='ms-lib-card-edited'>{project.missions.length} mission{project.missions.length === 1 ? '' : 's'} · {project.sharedAgo}</span>
         <span className='ms-lib-shared-context'>{project.missions.map((mission) => `${mission.worldType} · ${mission.world}`).join(' / ')}</span>
       </span>
-    </article>
+    </LibraryCardFrame>
   )
 
   const sharedMissionCard = (mission: (typeof SHARED_PROJECTS)[number]['missions'][number]) => (
@@ -977,16 +1168,6 @@ export default function StudioLibrary({
         <span className='ms-lib-card-edited'>{mission.editedAgo}</span>
       </span>
     </article>
-  )
-
-  const emptyState = (title: string, desc: string) => (
-    <div className='ms-lib-empty' role='status'>
-      <span className='ms-lib-empty-icon' aria-hidden='true'>
-        <PackageIcon />
-      </span>
-      <p className='ms-lib-empty-title'>{title}</p>
-      <p className='ms-hint'>{desc}</p>
-    </div>
   )
 
   const openTemplateDetail = (id: string) => {
@@ -1011,15 +1192,14 @@ export default function StudioLibrary({
       <p className='ms-sr' role='status' aria-live='polite' data-testid='ms-lib-announce' />
       <header className='ms-lib-top'>
         <span className='ms-lib-brand'>
-          <img src={skytrackLogo} alt='' width={24} height={24} />
-          <span>SkyTrack</span>
+          <img src={skytrackLogoFull} alt='SkyTrack' />
         </span>
         <span className='ms-lib-top-actions'>
-          {section === 'home' && !activeProject ? (
+          {/* {section === 'home' && !activeProject ? (
             <Button size='sm' variant='default' data-testid='ms-lib-create' onClick={() => openCreateWizard()}>
               <PlusIcon aria-hidden='true' /> New Mission
             </Button>
-          ) : null}
+          ) : null} */}
           <Button
             size='sm'
             variant='outline'
@@ -1029,7 +1209,7 @@ export default function StudioLibrary({
           >
             <DownloadIcon aria-hidden='true' /> Restart to update
           </Button>
-          <Button
+          {/* <Button
             size='sm'
             variant='ghost'
             data-testid='ms-lib-export'
@@ -1041,7 +1221,69 @@ export default function StudioLibrary({
             }}
           >
             <ArrowSquareOutIcon aria-hidden='true' />
-          </Button>
+          </Button> */}
+
+          <div className='ms-run-environment ml-4'>
+            <span className='ms-run-environment-label'>Environment:</span>
+            <TooltipProvider>
+              <Tabs
+                className='w-fit'
+                value={runEnvironment}
+                onValueChange={(value: unknown) => {
+                  if (value === 'local') setRunEnvironment('local')
+                  if (value === 'cloud' && canUseCloudSIM) setRunEnvironment('cloud')
+                }}
+              >
+                <TabsList variant='filled' aria-label='Running environment'>
+                <Tooltip>
+                  <TooltipTrigger render={<span className='inline-flex' />}>
+                    <TabsTab value='local' size='sm' aria-label='Local Docker'>
+                      <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' aria-hidden='true'>
+                        <circle cx='8' cy='8' r='7' fill='#1794D4' />
+                        <path d='M9 3.5H8V4.5H9V3.5Z' fill='white' />
+                        <path d='M5 5H6V6H5V5Z' fill='white' />
+                        <path d='M3.00077 8.4707C3.08622 9.92135 3.95013 12 6.99999 12C10.4 12 11.9167 9.50001 12.25 8.25001C12.6667 8.25001 13.6 8.00001 14 7.00001C13.75 6.75 12.75 6.75 12.25 7.00001C12.25 6.60001 12 5.75 11.5 5.5C11.1667 5.83333 10.65 6.7 11.25 7.5C11 7.99999 10.3334 8 10 8H3.47145C3.20671 8 2.98521 8.20642 3.00077 8.4707Z' fill='white' />
+                        <path d='M4.5 6.5H3.5V7.5H4.5V6.5Z' fill='white' />
+                        <path d='M5 6.5H6V7.5H5V6.5Z' fill='white' />
+                        <path d='M7.5 6.5H6.5V7.5H7.5V6.5Z' fill='white' />
+                        <path d='M8 6.5H9V7.5H8V6.5Z' fill='white' />
+                        <path d='M10.5 6.5H9.5V7.5H10.5V6.5Z' fill='white' />
+                        <path d='M7.5 5H6.5V6H7.5V5Z' fill='white' />
+                        <path d='M8 5H9V6H8V5Z' fill='white' />
+                      </svg>
+                    </TabsTab>
+                  </TooltipTrigger>
+                  <TooltipPortal>
+                    <TooltipPositioner side='bottom' sideOffset={8}>
+                      <TooltipPopup>
+                        <TooltipArrow />
+                        Uses your computer’s local CPU and memory. Requires Docker to be running.
+                      </TooltipPopup>
+                    </TooltipPositioner>
+                  </TooltipPortal>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger render={<span className='inline-flex' tabIndex={canUseCloudSIM ? undefined : 0} aria-label={!canUseCloudSIM ? 'Cloud SIM access required' : undefined} />}>
+                    <TabsTab value='cloud' size='sm' aria-label='Cloud' disabled={!canUseCloudSIM}>
+                      <CloudIcon aria-hidden='true' size={16} />
+                    </TabsTab>
+                  </TooltipTrigger>
+                  <TooltipPortal>
+                    <TooltipPositioner side='bottom' sideOffset={8}>
+                      <TooltipPopup>
+                        <TooltipArrow />
+                        {!canUseCloudSIM ? 'Cloud SIM access required. ' : ''}
+                        Runs remotely via cloud infrastructure. Requires an active internet connection.
+                      </TooltipPopup>
+                    </TooltipPositioner>
+                  </TooltipPortal>
+                </Tooltip>
+                <TabsIndicator variant='pill' />
+                </TabsList>
+              </Tabs>
+            </TooltipProvider>
+          </div>
+
         </span>
       </header>
 
@@ -1275,19 +1517,19 @@ export default function StudioLibrary({
 
         <main
           className='ms-lib-main'
+          data-section={section}
           aria-label={
             sharedView ? 'Shared accounts' : activeSharedProject ? 'Shared project detail' : activeProject ? 'Project detail' : section === 'home' ? 'Home' : 'Library'
           }
         >
           {sharedView ? (
             <section aria-labelledby='ms-lib-shared-title'>
-              <button type='button' className='ms-lib-back' onClick={() => onOpenSharedAccounts(null)}>
-                <ArrowLeftIcon aria-hidden='true' /> Back
-              </button>
-              <h1 id='ms-lib-shared-title'>Shared accounts</h1>
-              <p className='ms-lib-sub'>
-                {sharedView.mission} · {sharedView.project}
-              </p>
+              <LibraryPageHeader
+                titleId='ms-lib-shared-title'
+                title='Shared accounts'
+                description={<p className='ms-lib-sub'>{sharedView.mission} · {sharedView.project}</p>}
+                context={<button type='button' className='ms-lib-back' onClick={() => onOpenSharedAccounts(null)}><ArrowLeftIcon aria-hidden='true' /> Back</button>}
+              />
               <ul className='ms-lib-sharelist'>
                 <li className='ms-lib-share-row'>
                   <span className='ms-lib-avatar' aria-hidden='true'>GT</span>
@@ -1300,43 +1542,25 @@ export default function StudioLibrary({
             </section>
           ) : activeSharedProject ? (
             <section aria-labelledby='ms-lib-shared-project-title'>
-              <button type='button' className='ms-lib-back' onClick={() => onOpenSharedProject(null)}>
-                <ArrowLeftIcon aria-hidden='true' /> Shared with me
-              </button>
-              <div className='ms-lib-row'>
-                <div>
-                  <h1 id='ms-lib-shared-project-title'>{activeSharedProject.name}</h1>
-                  <p className='ms-lib-sub'>
-                    Owned by {activeSharedProject.owner} · {activeSharedProject.workspace} · {activeSharedProject.sharedAgo}
-                  </p>
-                </div>
-                <Badge>View only</Badge>
-              </div>
+              <LibraryPageHeader
+                titleId='ms-lib-shared-project-title'
+                title={activeSharedProject.name}
+                description={<p className='ms-lib-sub'>Owned by {activeSharedProject.owner} · {activeSharedProject.workspace} · {activeSharedProject.sharedAgo}</p>}
+                context={<button type='button' className='ms-lib-back' onClick={() => onOpenSharedProject(null)}><ArrowLeftIcon aria-hidden='true' /> Shared with me</button>}
+                actions={<Badge>View only</Badge>}
+              />
               <div className='ms-lib-grid' aria-label={`Missions in ${activeSharedProject.name}`}>
                 {activeSharedProject.missions.map((mission) => sharedMissionCard(mission))}
               </div>
             </section>
           ) : activeProject ? (
             <section aria-labelledby='ms-lib-project-title'>
-              <nav className='ms-lib-crumb' aria-label='Breadcrumb'>
-                <button type='button' className='ms-lib-crumb-link' onClick={() => goto('home')}>
-                  <HouseIcon aria-hidden='true' /> Home
-                </button>
-                <span aria-hidden='true'>›</span>
-                <button type='button' className='ms-lib-crumb-link' onClick={() => onNavigate('projects', null)}>
-                  Workspace Projects
-                </button>
-                <span aria-hidden='true'>›</span>
-                <span aria-current='page'>{activeProject.name}</span>
-              </nav>
-              <div className='ms-lib-row'>
-                <div>
-                  <h1 id='ms-lib-project-title'>{activeProject.name}</h1>
-                  <p className='ms-lib-sub'>
-                    {activeProject.missions.length} mission{activeProject.missions.length === 1 ? '' : 's'} · {activeWorkspace.name}
-                  </p>
-                </div>
-                <span className='ms-lib-row-actions'>
+              <LibraryPageHeader
+                titleId='ms-lib-project-title'
+                title={activeProject.name}
+                description={<p className='ms-lib-sub'>{activeProject.missions.length} mission{activeProject.missions.length === 1 ? '' : 's'} · {activeWorkspace.name}</p>}
+                context={<nav className='ms-lib-crumb' aria-label='Breadcrumb'><button type='button' className='ms-lib-crumb-link' onClick={() => onNavigate('projects', null)}>Projects</button><span aria-hidden='true'>›</span><span aria-current='page'>{activeProject.name}</span></nav>}
+                actions={<span className='ms-lib-row-actions'>
                   <Button
                     size='sm'
                     variant='default'
@@ -1366,8 +1590,8 @@ export default function StudioLibrary({
                       </MenuPositioner>
                     </MenuPortal>
                   </Menu>
-                </span>
-              </div>
+                </span>}
+              />
               {activeProject.missions.length === 0 ? (
                 <div className='ms-lib-grid'>
                   <button type='button' className='ms-lib-newitem' onClick={() => openCreateWizard(activeProject.id)}>
@@ -1384,7 +1608,8 @@ export default function StudioLibrary({
               )}
             </section>
           ) : section === 'home' ? (
-            <>
+            <section aria-labelledby='ms-lib-home-title'>
+              <LibraryPageHeader titleId='ms-lib-home-title' title='Home' />
               <section aria-labelledby='ms-lib-recent-title'>
                 <h1 id='ms-lib-recent-title'>Recent missions</h1>
                 <div className='ms-lib-grid is-recent' role='list' aria-label='Recent missions'>
@@ -1414,12 +1639,12 @@ export default function StudioLibrary({
                   )}
                 </div>
               </section>
-            </>
+            </section>
           ) : section === 'recent' ? (
             <section aria-labelledby='ms-lib-recent-page-title'>
-              <h1 id='ms-lib-recent-page-title'>Recent</h1>
+              <LibraryPageHeader titleId='ms-lib-recent-page-title' title='Recent' />
               {homeMissions.length === 0 ? (
-                emptyState('No recent missions', 'Missions in this Workspace will appear here.')
+                <LibraryEmptyState title='No recent missions' description='Missions in this Workspace will appear here.' />
               ) : (
                 <div className='ms-lib-grid is-recent' aria-label='Recent missions'>
                   {homeMissions.map((entry) => recentCard(entry.projectId, entry.project, entry.mission, `ms-lib-recent-page-${entry.mission.id}`))}
@@ -1428,27 +1653,23 @@ export default function StudioLibrary({
             </section>
           ) : section === 'projects' ? (
             <section aria-labelledby='ms-lib-projects-title'>
-              <div className='ms-lib-row'>
-                <h1 id='ms-lib-projects-title'>Projects</h1>
-                <Button size='sm' variant='default' onClick={() => setProjectDlg({ mode: 'create' })}>
-                  <PlusIcon aria-hidden='true' /> New Project
-                </Button>
-              </div>
+              <LibraryPageHeader
+                titleId='ms-lib-projects-title'
+                title='Projects'
+                actions={<Button size='sm' variant='default' onClick={() => setProjectDlg({ mode: 'create' })}><PlusIcon aria-hidden='true' /> New Project</Button>}
+              />
               <div className='ms-lib-grid' aria-label={`${activeWorkspace.name} Projects`}>
                 {workspaceProjects.map((p) => projectCard(p))}
               </div>
             </section>
           ) : section === 'worlds' ? (
             <section aria-labelledby='ms-lib-worlds-title'>
-              <div className='ms-lib-row'>
-                <div>
-                  <h1 id='ms-lib-worlds-title'>Worlds</h1>
-                  <p className='ms-lib-sub'>3D reconstruction references and sample terrain for {activeWorkspace.name}.</p>
-                </div>
-                <Button size='sm' variant='default' onClick={() => setWorldEditor({ mode: 'create', profile: newWorkspaceWorld(nextId('world'), activeWorkspace.id) })}>
-                  <PlusIcon aria-hidden='true' /> Add World
-                </Button>
-              </div>
+              <LibraryPageHeader
+                titleId='ms-lib-worlds-title'
+                title='Worlds'
+                description={<p className='ms-lib-sub'>3D reconstruction references and sample terrain for {activeWorkspace.name}.</p>}
+                actions={<Button size='sm' variant='default' onClick={() => setWorldEditor({ mode: 'create', profile: newWorkspaceWorld(nextId('world'), activeWorkspace.id) })}><PlusIcon aria-hidden='true' /> Add World</Button>}
+              />
               <div className='ms-lib-grid is-resource-grid' aria-label={`${activeWorkspace.name} Worlds`}>
                 <article className='ms-lib-card ms-lib-resource-card is-readonly'>
                   <span className='ms-lib-resource-icon'><GlobeHemisphereWestIcon aria-hidden='true' /></span>
@@ -1459,7 +1680,15 @@ export default function StudioLibrary({
                   </span>
                 </article>
                 {workspaceWorlds.map((world) => (
-                  <article key={world.id} className='ms-lib-card ms-lib-resource-card ms-lib-managed-resource-card'>
+                  <LibraryCardFrame
+                    key={world.id}
+                    label={world.name}
+                    className='ms-lib-resource-card ms-lib-managed-resource-card'
+                    actions={[
+                      { id: 'edit', label: 'Edit', group: 'primary', onSelect: () => setWorldEditor({ mode: 'edit', profile: world }) },
+                      { id: 'delete', label: 'Delete', group: 'destructive', destructive: true, onSelect: () => setDeleteWorldId(world.id) }
+                    ]}
+                  >
                     <span className='ms-lib-resource-icon'><GlobeHemisphereWestIcon aria-hidden='true' /></span>
                     <span className='ms-lib-card-body'>
                       <span className='ms-lib-card-title'>{world.name}</span>
@@ -1467,40 +1696,30 @@ export default function StudioLibrary({
                       <span className='ms-lib-card-edited'>{world.status}{world.sourceType === 'mission' && world.sourceMissionLabel ? ` · Source: ${world.sourceMissionLabel}` : world.sourceType === 'flight-reference' && world.sourceFlightReference ? ` · Source: ${world.sourceFlightReference}` : ''}</span>
                       {world.reconstructionReference ? <span className='ms-lib-card-edited'>Reconstruction reference saved</span> : null}
                     </span>
-                    <span className='ms-lib-resource-actions'>
-                      <Button className='w-full flex-auto' size='sm' variant='outline' onClick={() => setWorldEditor({ mode: 'edit', profile: world })}>Edit</Button>
-                      <Menu>
-                        <MenuTrigger aria-label={`More actions for ${world.name}`} render={<Button variant='outline' size='icon-sm' className='text-muted-foreground' />}>
-                          <DotsThreeVerticalIcon aria-hidden='true' />
-                        </MenuTrigger>
-                        <MenuPortal>
-                          <MenuPositioner side='bottom' align='end' sideOffset={4}>
-                            <MenuPopup aria-label={`Actions for ${world.name}`}>
-                              <MenuItem onClick={() => setDeleteWorldId(world.id)}>Delete</MenuItem>
-                            </MenuPopup>
-                          </MenuPositioner>
-                        </MenuPortal>
-                      </Menu>
-                    </span>
-                  </article>
+                  </LibraryCardFrame>
                 ))}
               </div>
-              {workspaceWorlds.length === 0 ? emptyState('No Worlds yet', 'Add a 3D reconstruction record or use a sample fixture.') : null}
+              {workspaceWorlds.length === 0 ? <LibraryEmptyState title='No Worlds yet' description='Add a 3D reconstruction record or use a sample fixture.' /> : null}
             </section>
           ) : section === 'drones' ? (
             <section aria-labelledby='ms-lib-drones-title'>
-              <div className='ms-lib-row'>
-                <div>
-                  <h1 id='ms-lib-drones-title'>{activeWorkspace.name} Drones</h1>
-                  <p className='ms-lib-sub'>Reference builds and hardware profiles for this Workspace.</p>
-                </div>
-                <Button size='sm' variant='default' onClick={() => setDroneEditor({ mode: 'create', profile: newDroneProfile(nextId('drone'), activeWorkspace.id) })}>
-                  <PlusIcon aria-hidden='true' /> Add Drone
-                </Button>
-              </div>
-              <div className='ms-lib-grid is-resource-grid' aria-label={`${activeWorkspace.name} Drones`}>
+              <LibraryPageHeader
+                titleId='ms-lib-drones-title'
+                title='Drones'
+                description={<p className='ms-lib-sub'>Reference builds and hardware profiles for this Workspace.</p>}
+                actions={<Button size='sm' variant='default' onClick={() => setDroneEditor({ mode: 'create', profile: newDroneProfile(nextId('drone'), activeWorkspace.id) })}><PlusIcon aria-hidden='true' /> Add Drone</Button>}
+              />
+              <div className='ms-lib-grid is-resource-grid' aria-label='Drones'>
                 {workspaceDrones.map((drone) => (
-                  <article key={drone.id} className='ms-lib-card ms-lib-resource-card ms-lib-drone-profile-card'>
+                  <LibraryCardFrame
+                    key={drone.id}
+                    label={drone.name}
+                    className='ms-lib-resource-card ms-lib-drone-profile-card'
+                    actions={[
+                      { id: 'edit', label: 'Edit', group: 'primary', onSelect: () => setDroneEditor({ mode: 'edit', profile: drone }) },
+                      { id: 'delete', label: 'Delete', group: 'destructive', destructive: true, onSelect: () => setDeleteDroneId(drone.id) }
+                    ]}
+                  >
                     <span className='ms-lib-resource-icon'><DroneIcon aria-hidden='true' /></span>
                     <span className='ms-lib-card-body'>
                       <span className='ms-lib-card-title'>{drone.name}</span>
@@ -1508,30 +1727,15 @@ export default function StudioLibrary({
                       <span className='ms-lib-card-edited'>{drone.flightControllerModel || 'Flight controller not specified'}</span>
                       <span className='ms-lib-drone-component-count'>{drone.components.length} hardware components</span>
                     </span>
-                    <span className='ms-lib-drone-card-actions'>
-                      <Button className='w-full flex-auto' size='sm' variant='outline' onClick={() => setDroneEditor({ mode: 'edit', profile: drone })}>Edit</Button>
-                      <Menu>
-                        <MenuTrigger aria-label={`More actions for ${drone.name}`} render={<Button variant='outline' size='icon-sm' className='text-muted-foreground' />}>
-                          <DotsThreeVerticalIcon aria-hidden='true' />
-                        </MenuTrigger>
-                        <MenuPortal>
-                          <MenuPositioner side='bottom' align='end' sideOffset={4}>
-                            <MenuPopup aria-label={`Actions for ${drone.name}`}>
-                              <MenuItem onClick={() => setDeleteDroneId(drone.id)}>Delete</MenuItem>
-                            </MenuPopup>
-                          </MenuPositioner>
-                        </MenuPortal>
-                      </Menu>
-                    </span>
-                  </article>
+                  </LibraryCardFrame>
                 ))}
               </div>
             </section>
           ) : section === 'starred' ? (
             <section aria-labelledby='ms-lib-starred-title'>
-              <h1 id='ms-lib-starred-title'>Starred missions</h1>
+              <LibraryPageHeader titleId='ms-lib-starred-title' title='Starred missions' />
               {starredMissions.length === 0 ? (
-                emptyState('No starred missions yet', 'Star a mission from a project to keep it close at hand.')
+                <LibraryEmptyState title='No starred missions yet' description='Star a mission from a project to keep it close at hand.' />
               ) : (
                 <div className='ms-lib-grid' aria-label='Starred missions'>
                   {starredMissions.map((e) =>
@@ -1542,8 +1746,7 @@ export default function StudioLibrary({
             </section>
           ) : section === 'shared' ? (
             <section aria-labelledby='ms-lib-sharedme-title'>
-              <h1 id='ms-lib-sharedme-title'>Shared with me</h1>
-              <p className='ms-lib-sub'>Projects shared by people in other Workspaces.</p>
+              <LibraryPageHeader titleId='ms-lib-sharedme-title' title='Shared with me' description={<p className='ms-lib-sub'>Projects shared by people in other Workspaces.</p>} />
               <div className='ms-lib-grid' aria-label='Projects shared with me'>
                 {SHARED_PROJECTS.map((project) => sharedProjectCard(project))}
               </div>
@@ -1551,45 +1754,30 @@ export default function StudioLibrary({
           ) : section === 'templates' ? (
             activeTemplate ? (
               <section aria-labelledby='ms-lib-template-title'>
-                <button type='button' className='ms-lib-back' onClick={() => onOpenTemplate(null)}>
-                  <ArrowLeftIcon aria-hidden='true' /> Mission templates
-                </button>
+                <LibraryPageHeader
+                  titleId='ms-lib-template-title'
+                  title={activeTemplate.title}
+                  description={<p className='ms-lib-sub'>{activeTemplate.byline} · full template content arrives with backend templates</p>}
+                  context={<button type='button' className='ms-lib-back' onClick={() => onOpenTemplate(null)}><ArrowLeftIcon aria-hidden='true' /> Mission templates</button>}
+                  actions={<Button size='sm' variant='default' onClick={() => useTemplate(activeTemplate)}>Use template</Button>}
+                />
                 <div className='ms-lib-detail'>
                   <span className={`ms-lib-thumb is-template large tint-${activeTemplate.id.charCodeAt(1) % 6}`} aria-hidden='true'>
                     <img src={getTemplateThumbnail(activeTemplate.id)} alt='' className='ms-template-thumbnail' />
                   </span>
                   <div className='ms-lib-detail-body'>
-                    <h1 id='ms-lib-template-title'>{activeTemplate.title}</h1>
-                    <p className='ms-lib-sub'>
-                      {activeTemplate.byline} · full template content arrives with backend templates
-                    </p>
                     <p className='ms-lib-desc'>{activeTemplate.desc}</p>
-                    <span className='ms-lib-row-actions'>
-                      <Button size='sm' variant='default' onClick={() => useTemplate(activeTemplate)}>
-                        Use template
-                      </Button>
-                      <Button size='sm' variant='outline' onClick={() => onOpenTemplate(null)}>
-                        Back
-                      </Button>
-                    </span>
                   </div>
                 </div>
               </section>
             ) : (
               <section aria-labelledby='ms-lib-templates-page-title'>
-                <h1 id='ms-lib-templates-page-title'>Mission templates</h1>
-                <p className='ms-lib-sub'>Learn SkyTrack with Mission templates</p>
-                <div className='ms-lib-search'>
-                  <FieldRoot name='template-search'>
-                    <FieldLabel className='ms-sr'>Search templates</FieldLabel>
-                    <FieldControl
-                      value={query}
-                      onValueChange={(v) => setQuery(typeof v === 'string' ? v : '')}
-                      placeholder='Search templates'
-                      aria-label='Search templates'
-                    />
-                  </FieldRoot>
-                </div>
+                <LibraryPageHeader
+                  titleId='ms-lib-templates-page-title'
+                  title='Mission templates'
+                  description={<p className='ms-lib-sub'>Learn SkyTrack with Mission templates</p>}
+                  footer={<div className='ms-lib-search'><FieldRoot name='template-search'><FieldLabel className='ms-sr'>Search templates</FieldLabel><FieldControl value={query} onValueChange={(v) => setQuery(typeof v === 'string' ? v : '')} placeholder='Search templates' aria-label='Search templates' /></FieldRoot></div>}
+                />
                 {debouncedQuery.trim() !== '' ? (
                   <p className='ms-lib-sub' role='status'>
                     {filteredTemplates.length} result{filteredTemplates.length === 1 ? '' : 's'} for &ldquo;
@@ -1597,7 +1785,7 @@ export default function StudioLibrary({
                   </p>
                 ) : null}
                 {filteredTemplates.length === 0 ? (
-                  emptyState('No templates found', `No templates match "${debouncedQuery.trim()}" in this mock list.`)
+                  <LibraryEmptyState title='No templates found' description={`No templates match "${debouncedQuery.trim()}" in this mock list.`} />
                 ) : (
                   <div className='ms-lib-grid is-templates' aria-label='Mission templates'>
                     {filteredTemplates.map((t) =>
@@ -1609,10 +1797,17 @@ export default function StudioLibrary({
             )
           ) : section === 'learn' ? (
             <section aria-labelledby='ms-lib-learn-page-title'>
-              <h1 id='ms-lib-learn-page-title'>Learn</h1>
-              <p className='ms-lib-sub'>Guides from the SkyTrack help center open in a new tab.</p>
+              <LibraryPageHeader titleId='ms-lib-learn-page-title' title='Learn' description={<p className='ms-lib-sub'>Guides from the SkyTrack help center open in a new tab.</p>} />
               <div className='ms-lib-grid is-templates'>
-                <article className='ms-lib-card' aria-label={LEARN_FEATURED.title}>
+                <LibraryCardFrame
+                  label={LEARN_FEATURED.title}
+                  actions={[{
+                    id: 'open',
+                    label: 'Open',
+                    group: 'primary',
+                    onSelect: () => window.open(LEARN_FEATURED.url, '_blank', 'noopener,noreferrer')
+                  }]}
+                >
                   <span className='ms-lib-thumb is-learn tint-3' aria-hidden='true'>
                     <BookOpenIcon />
                   </span>
@@ -1622,8 +1817,16 @@ export default function StudioLibrary({
                     </a>
                     <span className='ms-lib-card-desc'>{LEARN_FEATURED.desc}</span>
                   </span>
-                </article>
-                <article className='ms-lib-card' aria-label='SkyTrack help center'>
+                </LibraryCardFrame>
+                <LibraryCardFrame
+                  label='SkyTrack help center'
+                  actions={[{
+                    id: 'open',
+                    label: 'Open',
+                    group: 'primary',
+                    onSelect: () => window.open(LEARN_URL, '_blank', 'noopener,noreferrer')
+                  }]}
+                >
                   <span className='ms-lib-thumb is-learn tint-1' aria-hidden='true'>
                     <BookOpenIcon />
                   </span>
@@ -1635,28 +1838,26 @@ export default function StudioLibrary({
                       Browse all builder guides. The full article list is a mock in this slice.
                     </span>
                   </span>
-                </article>
+                </LibraryCardFrame>
               </div>
             </section>
           ) : section === 'aimodels' ? (
             <section aria-labelledby='ms-lib-aimodels-title'>
-              <div className='ms-lib-row'>
-                <div>
-                  <h1 id='ms-lib-aimodels-title'>AI models</h1>
-                  <p className='ms-lib-sub'>Import model packages for this Workspace. Models are not run or deployed.</p>
-                </div>
-                <Button size='sm' variant='default' onClick={() => setImportModelOpen(true)}>
-                  <PlusIcon aria-hidden='true' /> Import model
-                </Button>
-              </div>
               <Tabs className='ms-ai-model-tabs' value={aiModelCategory} onValueChange={(value: unknown) => setAIModelCategory(String(value))}>
-                <TabsList variant='standard' aria-label='AI model categories'>
-                  <TabsTab variant='standard' value='workspace'>Workspace ({workspaceAIModels.length})</TabsTab>
-                  <TabsTab variant='standard' value='uploaded'>Uploaded by you ({uploadedAIModels.length})</TabsTab>
-                  <TabsIndicator variant='underline' />
-                </TabsList>
+                <LibraryPageHeader
+                  titleId='ms-lib-aimodels-title'
+                  title='AI models'
+                  description={<p className='ms-lib-sub'>Import model packages for this Workspace. Models are not run or deployed.</p>}
+                  actions={(
+                    <div className='ms-ai-model-header-actions'>
+                      <Button size='sm' variant='default' onClick={() => setImportModelOpen(true)}><PlusIcon aria-hidden='true' /> Import model</Button>
+                    </div>
+                  )}
+                  footerVariant='tabs'
+                  footer={<TabsList variant='filled' className='w-full max-w-lg' aria-label='AI model categories'><TabsTab variant='filled' value='workspace'>Workspace ({workspaceAIModels.length})</TabsTab><TabsTab variant='filled' value='uploaded'>Uploaded by you ({uploadedAIModels.length})</TabsTab><TabsIndicator variant='pill' /></TabsList>}
+                />
                 <TabsPanel className='ms-ai-model-panel' value='workspace'>
-                  {workspaceAIModels.length === 0 ? emptyState('No Workspace models yet', 'SkyTrack models shared with this Workspace will appear here.') : (
+                  {workspaceAIModels.length === 0 ? <LibraryEmptyState title='No Workspace models yet' description='SkyTrack models shared with this Workspace will appear here.' /> : (
                     <div className='ms-lib-grid is-resource-grid is-ai-models' aria-label={`${activeWorkspace.name} AI models`}>
                       {workspaceAIModels.map((model) => (
                         <article key={model.id} className='ms-lib-card ms-lib-resource-card ms-lib-managed-resource-card'>
@@ -1673,31 +1874,25 @@ export default function StudioLibrary({
                   )}
                 </TabsPanel>
                 <TabsPanel className='ms-ai-model-panel' value='uploaded'>
-                  {uploadedAIModels.length === 0 ? emptyState('No uploaded models yet', 'Import a model package to add it to your personal list.') : (
+                  {uploadedAIModels.length === 0 ? <LibraryEmptyState title='No uploaded models yet' description='Import a model package to add it to your personal list.' /> : (
                     <div className='ms-lib-grid is-resource-grid is-ai-models' aria-label='AI models uploaded by you'>
                       {uploadedAIModels.map((model) => (
-                        <article key={model.id} className='ms-lib-card ms-lib-resource-card ms-lib-managed-resource-card'>
+                        <LibraryCardFrame
+                          key={model.id}
+                          label={model.name}
+                          className='ms-lib-resource-card ms-lib-managed-resource-card'
+                          testId={`ms-lib-ai-model-${model.id}`}
+                          actions={[
+                            { id: 'remove', label: 'Remove', group: 'destructive', destructive: true, onSelect: () => setDeleteModelId(model.id) }
+                          ]}
+                        >
                           <span className='ms-lib-resource-icon'><PackageIcon aria-hidden='true' /></span>
                           <span className='ms-lib-card-body'>
                             <span className='ms-lib-card-title'>{model.name}</span>
                             <span className='ms-lib-card-desc'>{model.packageFileName || model.assetReference}</span>
                             <span className='ms-lib-card-edited'>{model.packageFileSize ? `${(model.packageFileSize / (1024 * 1024)).toFixed(1)} MB` : 'Package size unavailable'} · {model.status}</span>
                           </span>
-                          <span className='ms-lib-resource-actions'>
-                            <Menu>
-                              <MenuTrigger aria-label={`More actions for ${model.name}`} render={<Button variant='outline' size='icon-sm' className='text-muted-foreground' />}>
-                                <DotsThreeVerticalIcon aria-hidden='true' />
-                              </MenuTrigger>
-                              <MenuPortal>
-                                <MenuPositioner side='bottom' align='end' sideOffset={4}>
-                                  <MenuPopup aria-label={`Actions for ${model.name}`}>
-                                    <MenuItem onClick={() => setDeleteModelId(model.id)}>Remove</MenuItem>
-                                  </MenuPopup>
-                                </MenuPositioner>
-                              </MenuPortal>
-                            </Menu>
-                          </span>
-                        </article>
+                        </LibraryCardFrame>
                       ))}
                     </div>
                   )}
@@ -1706,17 +1901,17 @@ export default function StudioLibrary({
             </section>
           ) : section === 'logs' ? (
             <section aria-labelledby='ms-lib-logs-title'>
-              <h1 id='ms-lib-logs-title'>Logs</h1>
-              {emptyState('No logs yet', 'Flight and build logs will appear here (mock).')}
+              <LibraryPageHeader titleId='ms-lib-logs-title' title='Logs' />
+              <LibraryEmptyState title='No logs yet' description='Flight and build logs will appear here (mock).' />
             </section>
           ) : section === 'notifications' ? (
             <section aria-labelledby='ms-lib-notifications-title'>
-              <h1 id='ms-lib-notifications-title'>Notifications</h1>
-              {emptyState('No notifications yet', 'Workspace updates and mission activity will appear here (mock).')}
+              <LibraryPageHeader titleId='ms-lib-notifications-title' title='Notifications' />
+              <LibraryEmptyState title='No notifications yet' description='Workspace updates and mission activity will appear here (mock).' />
             </section>
           ) : (
             <section className='ms-placeholder' aria-label={`${section} placeholder`}>
-              <h1 className='ms-placeholder-title'>{section}</h1>
+              <LibraryPageHeader titleId='ms-lib-placeholder-title' title={section} />
               <p className='ms-hint'>This section is not part of the captured app shell. It stays a placeholder in this slice.</p>
               <Button size='sm' variant='outline' onClick={() => goto('home')}>
                 Back to Home
