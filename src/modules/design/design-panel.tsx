@@ -1,6 +1,7 @@
 /* design-panel.tsx — right inspector for the Design stage: route card,
    waypoint/END sequence, zones, validation, mission props, code view. */
 
+import { SkyTooltip } from '../../shared/sky-tooltip'
 import {
   ArrowCounterClockwiseIcon,
   ArrowLeftIcon,
@@ -21,11 +22,11 @@ import {
   SparkleIcon,
   TrashIcon
 } from '@phosphor-icons/react'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useState, type DragEvent } from 'react'
 import { Accordion, AccordionHeader, AccordionItem, AccordionPanel, AccordionTrigger } from 'skytrack-ui/accordion'
 import { Badge } from 'skytrack-ui/badge'
 import { Button } from 'skytrack-ui/button'
-import { Menu, MenuItem, MenuPopup, MenuPortal, MenuPositioner, MenuTrigger } from 'skytrack-ui/menu'
+import { Menu, MenuItem, MenuPopup, MenuPortal, MenuPositioner, MenuSubmenuRoot, MenuSubmenuTrigger, MenuTrigger } from 'skytrack-ui/menu'
 import { NumberField, NumberFieldInput } from 'skytrack-ui/number-field'
 import {
   Select,
@@ -58,7 +59,6 @@ import {
   actionLabel,
   dist3,
   DEFAULT_RECON_FLIGHT_SETTINGS,
-  getAreaPhotoSpacingM,
   getAreaScanSpacingM,
   getMockReconGsdCmPerPx,
   getMissionSequence,
@@ -88,6 +88,36 @@ const ACTION_OPTIONS: { value: CameraActionKind; label: string }[] = [
   { value: 'video-stop', label: 'Camera Stop recording' },
   { value: 'lidar-scan', label: 'LiDAR scan' }
 ]
+
+const SEQUENCE_DRAG_MIME = 'application/x-skytrack-sequence-item'
+type SequenceDragItem =
+  | { kind: 'waypoint'; id: string; routeId: string }
+  | { kind: 'action'; id: string; waypointId: string; routeId: string }
+type SequenceDropPosition = 'before' | 'after'
+
+function sequenceDropPosition(event: DragEvent<HTMLElement>): SequenceDropPosition {
+  const bounds = event.currentTarget.getBoundingClientRect()
+  return event.clientY < bounds.top + bounds.height / 2 ? 'before' : 'after'
+}
+
+function hasSequenceDrag(event: DragEvent<HTMLElement>): boolean {
+  return Array.from(event.dataTransfer.types).includes(SEQUENCE_DRAG_MIME)
+}
+
+function readSequenceDragItem(event: DragEvent<HTMLElement>): SequenceDragItem | null {
+  try {
+    const value = JSON.parse(event.dataTransfer.getData(SEQUENCE_DRAG_MIME)) as SequenceDragItem
+    if (value && (value.kind === 'waypoint' || value.kind === 'action')) return value
+  } catch {
+    // Ignore malformed or external drag payloads.
+  }
+  return null
+}
+
+function writeSequenceDragItem(event: DragEvent<HTMLElement>, item: SequenceDragItem) {
+  event.dataTransfer.setData(SEQUENCE_DRAG_MIME, JSON.stringify(item))
+  event.dataTransfer.effectAllowed = 'move'
+}
 
 function polygonArea(points: { x: number; y: number }[]): number {
   if (points.length < 3) return 0
@@ -238,12 +268,12 @@ function ActionInsertAffordance(props: {
     <li className='ms-insert-action-zone' data-testid={`ms-insert-action-${wpId}-${actionIndex}`}>
       <div className='ms-insert-action-line' aria-hidden='true' />
       <Menu>
-        <MenuTrigger
+        <SkyTooltip><MenuTrigger
           className='ms-insert-action-btn'
           aria-label={`Insert drone action at waypoint ${wpSeq} position ${actionIndex + 1}`}
         >
           <PlusIcon aria-hidden='true' />
-        </MenuTrigger>
+        </MenuTrigger></SkyTooltip>
         <MenuPortal>
           <MenuPositioner side='bottom' align='center' sideOffset={4}>
             <MenuPopup className='ms-insert-action-menu'>
@@ -266,23 +296,107 @@ function ActionInsertAffordance(props: {
   )
 }
 
+function SequenceActionBadge({ kind }: { kind: CameraActionKind }) {
+  const isLidar = kind === 'lidar-scan'
+  const description = {
+    photo: 'Captures a photo.',
+    'video-start': 'Starts camera recording.',
+    'video-stop': 'Stops camera recording.',
+    'lidar-scan': 'Scans the area with LiDAR.'
+  }[kind]
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger render={<span className='inline-flex' tabIndex={0} />}>
+          <Badge
+            count={isLidar ? <ScanIcon aria-hidden='true' /> : <CameraIcon aria-hidden='true' />}
+            status='outline'
+            size='sm'
+          />
+        </TooltipTrigger>
+        <TooltipPortal>
+          <TooltipPositioner side='left' sideOffset={8}>
+            <TooltipPopup>
+              <TooltipArrow />
+              {description}
+            </TooltipPopup>
+          </TooltipPositioner>
+        </TooltipPortal>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}
+
 function SequenceActionRow(props: {
   action: { id: string; kind: CameraActionKind; label: string; gimbalPitchDeg?: number }
   wpId: string
   wpSeq: number
+  routeId: string
+  index: number
   inheritedPitch: number
+  onMoveAction: (fromWpId: string, actionId: string, toWpId: string, toActionId?: string, position?: SequenceDropPosition) => void
+  onReorderWaypoint: (id: string, toIndex: number) => void
   onDeleteAction: (wpId: string, actionId: string) => void
   onSetPitch: (wpId: string, actionId: string, pitch: number) => void
 }) {
-  const { action, wpId, wpSeq, inheritedPitch, onDeleteAction, onSetPitch } = props
-  const isLidar = action.kind === 'lidar-scan'
+  const { action, wpId, wpSeq, routeId, index, inheritedPitch, onMoveAction, onReorderWaypoint, onDeleteAction, onSetPitch } = props
+  const [dropPosition, setDropPosition] = useState<SequenceDropPosition | null>(null)
+  const [dragging, setDragging] = useState(false)
+
+  const handleDrop = (event: DragEvent<HTMLLIElement>) => {
+    event.preventDefault()
+    setDropPosition(null)
+    const item = readSequenceDragItem(event)
+    if (!item || item.routeId !== routeId) return
+    const position = sequenceDropPosition(event)
+    if (item.kind === 'waypoint') {
+      onReorderWaypoint(item.id, index + (position === 'after' ? 1 : 0))
+    } else {
+      onMoveAction(item.waypointId, item.id, wpId, action.id, position)
+    }
+  }
+
   return (
-    <li className='ms-seq-action-row' data-testid={`ms-action-row-${action.id}`}>
-      <span className={`ms-action-tag${isLidar ? ' is-lidar' : ' is-camera'}`}>{isLidar ? <ScanIcon aria-hidden='true' /> : <CameraIcon aria-hidden='true' />}{isLidar ? ' LiDAR' : ' Camera'}</span>
+    <li
+      className={`ms-seq-action-row${dropPosition ? ` is-drop-${dropPosition}` : ''}${dragging ? ' is-grabbed' : ''}`}
+      data-testid={`ms-action-row-${action.id}`}
+      onDragOver={(event) => {
+        if (!hasSequenceDrag(event)) return
+        event.preventDefault()
+        event.dataTransfer.dropEffect = 'move'
+        setDropPosition(sequenceDropPosition(event))
+      }}
+      onDragLeave={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setDropPosition(null)
+      }}
+      onDrop={handleDrop}
+    >
+      <SkyTooltip><Button
+        type='button'
+        variant='ghost'
+        size='icon-xs'
+        className='ms-drag-handle ms-action-drag-handle'
+        draggable
+        aria-label={`Drag to reorder ${action.label} at waypoint ${wpSeq}`}
+        data-testid={`ms-action-handle-${action.id}`}
+        onDragStart={(event) => {
+          event.stopPropagation()
+          writeSequenceDragItem(event, { kind: 'action', id: action.id, waypointId: wpId, routeId })
+          setDragging(true)
+        }}
+        onDragEnd={() => {
+          setDragging(false)
+          setDropPosition(null)
+        }}
+      >
+        <DotsSixVerticalIcon aria-hidden='true' />
+      </Button></SkyTooltip>
+      <SequenceActionBadge kind={action.kind} />
       <span className='ms-action-label'>{action.label}</span>
       {action.kind === 'photo' ? (
         <label className='ms-action-camera-angle'>
-          <span>Gimbal pitch</span>
+          <span>Pitch</span>
           <NumberField
             value={action.gimbalPitchDeg ?? inheritedPitch}
             min={-90}
@@ -292,19 +406,19 @@ function SequenceActionRow(props: {
               if (typeof value === 'number' && Number.isFinite(value)) onSetPitch(wpId, action.id, value)
             }}
           >
-            <NumberFieldInput aria-label={`Gimbal pitch at waypoint ${wpSeq}`} />
+            <NumberFieldInput className='text-right' aria-label={`Gimbal pitch at waypoint ${wpSeq}`} />
           </NumberField>
           <span>°</span>
         </label>
       ) : null}
-      <Button
+      <SkyTooltip><Button
         size='icon-sm'
         variant='ghost'
         aria-label={`Remove ${action.label} from waypoint ${wpSeq}`}
         onClick={() => onDeleteAction(wpId, action.id)}
       >
         <TrashIcon aria-hidden='true' />
-      </Button>
+      </Button></SkyTooltip>
     </li>
   )
 }
@@ -414,6 +528,7 @@ export interface DesignPanelProps {
   onDeleteWaypoint: (id: string) => void
   onMoveWaypoint: (id: string, dir: -1 | 1) => void
   onReorderWaypoint: (id: string, toIndex: number) => void
+  onMoveAction: (fromWpId: string, actionId: string, toWpId: string, toActionId?: string, position?: SequenceDropPosition) => void
   onInsertActionAt: (wpId: string, actionIndex: number, kind: CameraActionKind) => void
   onDeleteAction: (wpId: string, actionId: string) => void
   onAddZone: (kind: 'area' | 'avoid') => void
@@ -436,6 +551,7 @@ export interface DesignPanelProps {
    history in the parent only on drop. */
 function WaypointRow(props: {
   wp: Waypoint
+  routeId: string
   index: number
   total: number
   grabbed: boolean
@@ -448,17 +564,18 @@ function WaypointRow(props: {
   onDropPreviewWaypoint: (id: string) => void
   onCancelPreviewWaypoint: (id: string) => void
   onReorderWaypoint: (id: string, toIndex: number) => void
+  onMoveAction: (fromWpId: string, actionId: string, toWpId: string, toActionId?: string, position?: SequenceDropPosition) => void
   onDeleteWaypoint: (id: string) => void
   onAnnounce: (text: string) => void
 }) {
   const {
-    wp, index, total, grabbed, mission, selected,
+    wp, routeId, index, total, grabbed, mission, selected,
     onSelect, onUpdateMission,
     onPickUpWaypoint, onPreviewMoveWaypoint, onDropPreviewWaypoint, onCancelPreviewWaypoint,
-    onReorderWaypoint,
+    onReorderWaypoint, onMoveAction,
     onDeleteWaypoint
   } = props
-  const [dropTarget, setDropTarget] = useState(false)
+  const [dropPosition, setDropPosition] = useState<SequenceDropPosition | null>(null)
 
   const patchWaypoint = (patch: { x?: number; y?: number; z?: number }) => {
     onUpdateMission({
@@ -500,23 +617,32 @@ function WaypointRow(props: {
 
   return (
     <li
-      className={`ms-seq-row${selected ? ' is-selected' : ''}${dropTarget ? ' is-drop-target' : ''}${grabbed ? ' is-grabbed' : ''}`}
+      className={`ms-seq-row${selected ? ' is-selected' : ''}${dropPosition ? ` is-drop-${dropPosition}` : ''}${grabbed ? ' is-grabbed' : ''}`}
       data-testid={`ms-wp-${wp.seq}`}
       data-wp-id={wp.id}
       onDragOver={(event) => {
+        if (!hasSequenceDrag(event)) return
         event.preventDefault()
         event.dataTransfer.dropEffect = 'move'
-        setDropTarget(true)
+        setDropPosition(sequenceDropPosition(event))
       }}
-      onDragLeave={() => setDropTarget(false)}
+      onDragLeave={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setDropPosition(null)
+      }}
       onDrop={(event) => {
         event.preventDefault()
-        setDropTarget(false)
-        const id = event.dataTransfer.getData('text/plain')
-        if (id) onReorderWaypoint(id, index)
+        setDropPosition(null)
+        const item = readSequenceDragItem(event)
+        if (!item || item.routeId !== routeId) return
+        const position = sequenceDropPosition(event)
+        if (item.kind === 'waypoint') {
+          onReorderWaypoint(item.id, index + (position === 'after' ? 1 : 0))
+        } else {
+          onMoveAction(item.waypointId, item.id, wp.id)
+        }
       }}
     >
-      <Button
+      <SkyTooltip><Button
         type='button'
         variant='ghost'
         size='icon-xs'
@@ -528,14 +654,14 @@ function WaypointRow(props: {
         aria-grabbed={grabbed}
         data-testid={`ms-wp-handle-${wp.seq}`}
         onDragStart={(event) => {
-          event.dataTransfer.setData('text/plain', wp.id)
-          event.dataTransfer.effectAllowed = 'move'
+          event.stopPropagation()
+          writeSequenceDragItem(event, { kind: 'waypoint', id: wp.id, routeId })
         }}
-        onDragEnd={() => setDropTarget(false)}
+        onDragEnd={() => setDropPosition(null)}
         onKeyDown={onHandleKeyDown}
       >
         <DotsSixVerticalIcon aria-hidden='true' />
-      </Button>
+      </Button></SkyTooltip>
       <button
         type='button'
         className='ms-seq-badge is-wp'
@@ -554,7 +680,7 @@ function WaypointRow(props: {
           onChange={(v) => patchWaypoint({ z: v })} />
       </div>
       <div className='ms-seq-actions'>
-        <Button
+        <SkyTooltip><Button
           size='icon-sm'
           variant='ghost'
           aria-label={`Delete waypoint ${wp.seq}`}
@@ -562,7 +688,7 @@ function WaypointRow(props: {
           onClick={() => onDeleteWaypoint(wp.id)}
         >
           <TrashIcon aria-hidden='true' />
-        </Button>
+        </Button></SkyTooltip>
       </div>
     </li>
   )
@@ -592,10 +718,10 @@ export default function DesignPanel(props: DesignPanelProps) {
     onCommitPreview,
     onCancelPreview,
     onDetailEditStateChange,
-    onAddWaypoint,
     onDeleteRoute,
     onDeleteWaypoint,
     onReorderWaypoint,
+    onMoveAction,
     onInsertActionAt,
     onDeleteAction,
     onDeleteZone,
@@ -792,7 +918,7 @@ export default function DesignPanel(props: DesignPanelProps) {
     const minutes = Math.max(0, (pathLength / Math.max(0.5, settings.flightSpeedMS) + captureCount) / 60)
     const batteryPct = Math.min(99, Math.round(minutes / 27 * 100))
     const gsd = getMockReconGsdCmPerPx(settings.altitudeM)
-    const estimateNote = `* Mock payload (17.3 mm sensor, 12.3 mm focal length, 5280 px) and fixed 27-minute battery. This segment estimate excludes Home launch, transfers, and return; Preview includes the full route at mock mission speed.${altitudeAgl ? ' Area AGL uses flat z=0; terrain is omitted.' : ''} Planning estimates only.`
+    const estimateNote = `* Payload (17.3 mm sensor, 12.3 mm focal length, 5280 px) and fixed 27-minute battery. This segment estimate excludes Home launch, transfers, and return; Preview includes the full route at mock mission speed.${altitudeAgl ? ' Area AGL uses flat z=0; terrain is omitted.' : ''} Planning estimates only.`
     return (
       <div className='ms-recon-summary' aria-label='Capture summary'>
         <div><span>GSD estimate*</span><strong>{gsd.toFixed(1)} cm/px</strong></div>
@@ -865,9 +991,9 @@ export default function DesignPanel(props: DesignPanelProps) {
       <div className={`ms-inspector${codeView ? ' ms-inspector-code' : ''}`} data-testid='ms-design-panel'>
         <section aria-label='Reconnaissance flight settings'>
           <div className='flex items-center gap-1 mb-1'>
-            <Button size='icon-sm' variant='ghost' aria-label='Back to design' onClick={cancelReconSettings}>
+            <SkyTooltip><Button size='icon-sm' variant='ghost' aria-label='Back to design' onClick={cancelReconSettings}>
               <ArrowLeftIcon aria-hidden='true' />
-            </Button>
+            </Button></SkyTooltip>
             <span className='ms-route-name'>{reconTarget.kind === 'area' ? 'Area reconnaissance settings' : 'Route reconnaissance settings'}</span>
           </div>
           <p className='ms-hint'>Configure this prototype capture plan. Terrain and camera metrics are estimates.</p>
@@ -893,6 +1019,7 @@ export default function DesignPanel(props: DesignPanelProps) {
     )
     const routeLength = routeWaypoints.slice(1).reduce((sum, wp, index) => sum + dist3(routeWaypoints[index], wp), 0)
     const routeActions = routeWaypoints.reduce((sum, wp) => sum + wp.actions.length, 0)
+    const latestWaypoint = routeWaypoints.at(-1)
     const speed = route.targetSpeedMS ?? mission.targetSpeedMS
     const recon = routeRecon(route.id)
     const speedRow = (
@@ -902,7 +1029,7 @@ export default function DesignPanel(props: DesignPanelProps) {
           <CompactAxisField label={`${route.label} target speed in meters per second`} short='' value={speed} min={0.5} max={15} step={0.5} inputSize='xs'
             onChange={(v) => onUpdateMission({ ...mission, routes: routes.map((item) => item.id === route.id ? { ...item, targetSpeedMS: Math.min(15, Math.max(0.5, v)) } : item) })} />
           <span className='ms-unit' aria-hidden='true'>m/s</span>
-          <Button
+          <SkyTooltip><Button
             size='icon-xs'
             variant='ghost'
             aria-label={`Reset ${route.label} target speed to mission default`}
@@ -917,7 +1044,7 @@ export default function DesignPanel(props: DesignPanelProps) {
             }, `${route.label} target speed reset to mission default.`)}
           >
             <ArrowCounterClockwiseIcon aria-hidden='true' />
-          </Button>
+          </Button></SkyTooltip>
         </span>
       </div>
     )
@@ -931,36 +1058,54 @@ export default function DesignPanel(props: DesignPanelProps) {
                 <span className='ms-route-name'>{route.label}</span>
               </div>
               <span className='ms-route-stats'>
-                <span
+                <SkyTooltip><span
                   className='ms-stat'
                   title='Waypoint-to-waypoint route length; excludes Home launch and return, transfers, and Area scan legs.'
                   aria-label={`Waypoint-to-waypoint route length ${routeLength.toFixed(1)} meters; excludes Home launch and return, transfers, and Area scan legs`}
-                ><RulerIcon aria-hidden='true' />{routeLength.toFixed(1)} m</span>
+                ><RulerIcon aria-hidden='true' />{routeLength.toFixed(1)} m</span></SkyTooltip>
                 <span aria-hidden='true'>·</span>
-                <span className='ms-stat'><GitMergeIcon aria-hidden='true' />{routeWaypoints.length}</span>
+                <SkyTooltip><span className='ms-stat' aria-label={`${routeWaypoints.length} waypoints in ${route.label}`}><GitMergeIcon aria-hidden='true' />{routeWaypoints.length}</span></SkyTooltip>
                 <span aria-hidden='true'>·</span>
-                <span className='ms-stat'><HandIcon aria-hidden='true' />{routeActions}</span>
+                <SkyTooltip><span className='ms-stat' aria-label={`${routeActions} drone actions in ${route.label}`}><HandIcon aria-hidden='true' />{routeActions}</span></SkyTooltip>
               </span>
               <div className='ms-route-actions'>
-                <Button
-                  size='icon-sm'
-                  variant='ghost'
-                  aria-label={`Add waypoint to ${route.label}`}
-                  onClick={() => onAddWaypoint(route.id)}
-                >
-                  <PlusIcon aria-hidden='true' />
-                </Button>
                 <Menu>
-                  <MenuTrigger
+                  <SkyTooltip><MenuTrigger
                     aria-label={`More options for ${route.label}`}
                     className='border-0 bg-transparent p-0'
                     render={<Button variant='ghost' size='icon-sm' />}
                   >
                     <DotsThreeIcon aria-hidden='true' />
-                  </MenuTrigger>
+                  </MenuTrigger></SkyTooltip>
                   <MenuPortal>
                     <MenuPositioner side='bottom' align='end' sideOffset={4}>
                       <MenuPopup>
+                        {latestWaypoint ? (
+                          <MenuSubmenuRoot>
+                            <MenuSubmenuTrigger aria-label={`Add action to latest waypoint in ${route.label}`}>
+                              <PlusIcon aria-hidden='true' /> Add action
+                            </MenuSubmenuTrigger>
+                            <MenuPortal>
+                              <MenuPositioner side='right' align='start' sideOffset={4}>
+                                <MenuPopup className='ms-insert-action-menu'>
+                                  {ACTION_OPTIONS.map((option) => (
+                                    <MenuItem
+                                      key={option.value}
+                                      onClick={() => onInsertActionAt(latestWaypoint.id, latestWaypoint.actions.length, option.value)}
+                                    >
+                                      <span className='ms-action-tag-mini'>
+                                        {option.value === 'lidar-scan' ? <ScanIcon aria-hidden='true' /> : <CameraIcon aria-hidden='true' />}
+                                      </span>
+                                      <span>{option.label}</span>
+                                    </MenuItem>
+                                  ))}
+                                </MenuPopup>
+                              </MenuPositioner>
+                            </MenuPortal>
+                          </MenuSubmenuRoot>
+                        ) : (
+                          <MenuItem disabled><PlusIcon aria-hidden='true' /> Add action</MenuItem>
+                        )}
                         <MenuItem onClick={() => onDeleteRoute(route.id)}>
                           <TrashIcon aria-hidden='true' /> Delete route
                         </MenuItem>
@@ -968,7 +1113,7 @@ export default function DesignPanel(props: DesignPanelProps) {
                     </MenuPositioner>
                   </MenuPortal>
                 </Menu>
-                <Button
+                <SkyTooltip><Button
                   variant='ghost'
                   size='icon-sm'
                   aria-expanded={!isCollapsed(`route:${route.id}`)}
@@ -977,7 +1122,7 @@ export default function DesignPanel(props: DesignPanelProps) {
                   onClick={() => toggleCollapsed(`route:${route.id}`)}
                 >
                   {isCollapsed(`route:${route.id}`) ? <CaretDownIcon aria-hidden='true' /> : <CaretUpIcon aria-hidden='true' />}
-                </Button>
+                </Button></SkyTooltip>
               </div>
             </div>
             {worldType === '2D' ? (
@@ -990,9 +1135,9 @@ export default function DesignPanel(props: DesignPanelProps) {
                     aria-label={`${route.label} reconnaissance flight`}
                     onCheckedChange={() => toggleRouteRecon(route.id, recon)}
                   ><SwitchThumb size='sm' /></Switch>
-                  <Button variant='ghost' size='icon-sm' aria-label={`Reconnaissance settings for ${route.label}`} onClick={() => openReconSettings('route', route.id, recon)}>
+                  <SkyTooltip><Button variant='ghost' size='icon-sm' aria-label={`Reconnaissance settings for ${route.label}`} onClick={() => openReconSettings('route', route.id, recon)}>
                     <GearIcon aria-hidden='true' />
-                  </Button>
+                  </Button></SkyTooltip>
                 </div>
                 {!isCollapsed(`route:${route.id}`) ? speedRow : null}
               </div>
@@ -1014,6 +1159,7 @@ export default function DesignPanel(props: DesignPanelProps) {
                       <Fragment key={wp.id}>
                         <WaypointRow
                           wp={wp}
+                          routeId={route.id}
                           index={index}
                           total={orderedWaypoints.length}
                           grabbed={grabValid?.id === wp.id}
@@ -1026,6 +1172,7 @@ export default function DesignPanel(props: DesignPanelProps) {
                           onDropPreviewWaypoint={dropPreviewWaypoint}
                           onCancelPreviewWaypoint={cancelPreviewWaypoint}
                           onReorderWaypoint={onReorderWaypoint}
+                          onMoveAction={onMoveAction}
                           onDeleteWaypoint={onDeleteWaypoint}
                           onAnnounce={onAnnounce}
                         />
@@ -1041,6 +1188,10 @@ export default function DesignPanel(props: DesignPanelProps) {
                               action={action}
                               wpId={wp.id}
                               wpSeq={wp.seq}
+                              routeId={route.id}
+                              index={index}
+                              onMoveAction={onMoveAction}
+                              onReorderWaypoint={onReorderWaypoint}
                               onDeleteAction={onDeleteAction}
                               inheritedPitch={routeRecon(route.id).gimbalPitchDeg}
                               onSetPitch={updateActionPitch}
@@ -1088,19 +1239,19 @@ export default function DesignPanel(props: DesignPanelProps) {
                 <span className='ms-route-name'>{area.label}</span>
               </div>
               <span className='ms-route-stats'>
-                <span className='ms-stat'><RulerIcon aria-hidden='true' />{areaM2 > 0 ? `${areaM2} m²` : `${area.points.length} pts`}</span>
+                <SkyTooltip><span className='ms-stat' aria-label={areaM2 > 0 ? `${areaM2} square meters` : `${area.points.length} outline points`}><RulerIcon aria-hidden='true' />{areaM2 > 0 ? `${areaM2} m²` : `${area.points.length} pts`}</span></SkyTooltip>
                 <span aria-hidden='true'>·</span>
-                <span className='ms-stat'><GitMergeIcon aria-hidden='true' />{areaWp.length}</span>
+                <SkyTooltip><span className='ms-stat' aria-label={`${areaWp.length} generated waypoints in ${area.label}`}><GitMergeIcon aria-hidden='true' />{areaWp.length}</span></SkyTooltip>
                 <span aria-hidden='true'>·</span>
-                <span className='ms-stat'><HandIcon aria-hidden='true' />{areaActionCount}</span>
+                <SkyTooltip><span className='ms-stat' aria-label={`${areaActionCount} generated drone actions in ${area.label}`}><HandIcon aria-hidden='true' />{areaActionCount}</span></SkyTooltip>
               </span>
               <div className='ms-route-actions'>
                 <Menu>
-                  <MenuTrigger
+                  <SkyTooltip><MenuTrigger
                     aria-label={`More options for ${area.label}`}
                     className='border-0 bg-transparent p-0'
                     render={<Button variant='ghost' size='icon-sm' />}
-                  ><DotsThreeIcon aria-hidden='true' /></MenuTrigger>
+                  ><DotsThreeIcon aria-hidden='true' /></MenuTrigger></SkyTooltip>
                   <MenuPortal><MenuPositioner side='bottom' align='end' sideOffset={4}><MenuPopup>
                     <MenuItem onClick={() => {
                       if (editingAvoidId) onCancelPreview()
@@ -1118,7 +1269,7 @@ export default function DesignPanel(props: DesignPanelProps) {
                     <MenuItem onClick={() => onDeleteZone('area', area.id)}><TrashIcon aria-hidden='true' /> Delete area</MenuItem>
                   </MenuPopup></MenuPositioner></MenuPortal>
                 </Menu>
-                <Button
+                <SkyTooltip><Button
                   variant='ghost'
                   size='icon-sm'
                   aria-expanded={!isCollapsed(`area:${area.id}`)}
@@ -1126,7 +1277,7 @@ export default function DesignPanel(props: DesignPanelProps) {
                   onClick={() => toggleCollapsed(`area:${area.id}`)}
                 >
                   {isCollapsed(`area:${area.id}`) ? <CaretDownIcon aria-hidden='true' /> : <CaretUpIcon aria-hidden='true' />}
-                </Button>
+                </Button></SkyTooltip>
               </div>
             </div>
             {worldType === '2D' ? (
@@ -1139,42 +1290,46 @@ export default function DesignPanel(props: DesignPanelProps) {
                     aria-label={`${area.label} reconnaissance flight`}
                     onCheckedChange={() => onUpdateMission({ ...mission, areas: mission.areas.map((item) => item.id === area.id ? { ...item, reconnaissance: { ...recon, enabled: !recon.enabled } } : item) }, `${area.label} reconnaissance ${recon.enabled ? 'off' : 'on'}.`)}
                   ><SwitchThumb size='sm' /></Switch>
-                  <Button variant='ghost' size='icon-sm' aria-label={`Reconnaissance settings for ${area.label}`} onClick={() => openReconSettings('area', area.id, recon)}>
+                  <SkyTooltip><Button variant='ghost' size='icon-sm' aria-label={`Reconnaissance settings for ${area.label}`} onClick={() => openReconSettings('area', area.id, recon)}>
                     <GearIcon aria-hidden='true' />
-                  </Button>
+                  </Button></SkyTooltip>
                 </div>
               </div>
             ) : null}
             {worldType === '2D' && recon.enabled ? (
               <>
                 {captureSummary(areaWp, recon, areaLength, true)}
-                <p className='ms-hint'>
+                {/* <p className='ms-hint'>
                   Photo spacing {getAreaPhotoSpacingM(area).toFixed(1)} m · lane spacing {getAreaScanSpacingM(area).toFixed(1)} m. Camera footprint uses a mock square FOV on flat ground; terrain is omitted and footprints disappear if any image corner faces the horizon.
-                </p>
+                </p> */}
                 <Accordion multiple className='ms-area-capture-list' aria-label={`${area.label} waypoint camera settings`}>
                   <AccordionItem value='camera-settings' className='border-b-0'>
                     <AccordionHeader>
                       <AccordionTrigger variant='compact'>Camera settings by waypoint ({areaWp.reduce((count, waypoint) => count + waypoint.actions.filter((action) => action.kind === 'photo').length, 0)})</AccordionTrigger>
                     </AccordionHeader>
                     <AccordionPanel>
-                      <div className='ms-area-capture-rows'>
+                      <ol className='ms-area-capture-rows ms-seq-list'>
                         {areaWp.flatMap((waypoint) => waypoint.actions.filter((action) => action.kind === 'photo').map((action) => (
-                          <label className='ms-area-capture-row' key={action.id}>
-                            <span>Waypoint {waypoint.seq} · Take photo</span>
-                            <span>Gimbal pitch</span>
-                            <NumberField
-                              value={action.gimbalPitchDeg ?? recon.gimbalPitchDeg}
-                              min={-90}
-                              max={0}
-                              step={1}
-                              onValueChange={(value) => { if (typeof value === 'number' && Number.isFinite(value)) updateActionPitch(waypoint.id, action.id, value) }}
-                            >
-                              <NumberFieldInput aria-label={`Gimbal pitch at waypoint ${waypoint.seq}`} />
-                            </NumberField>
-                            <span>°</span>
-                          </label>
+                          <li className='ms-seq-action-row ms-area-capture-row' key={action.id}>
+                            <span className='ms-seq-badge' aria-label={`Waypoint ${waypoint.seq}`}>{waypoint.seq}</span>
+                            <SequenceActionBadge kind='photo' />
+                            <span className='ms-action-label'>Photo capture</span>
+                            <label className='ms-action-camera-angle'>
+                              <span>Pitch</span>
+                              <NumberField
+                                value={action.gimbalPitchDeg ?? recon.gimbalPitchDeg}
+                                min={-90}
+                                max={0}
+                                step={1}
+                                onValueChange={(value) => { if (typeof value === 'number' && Number.isFinite(value)) updateActionPitch(waypoint.id, action.id, value) }}
+                              >
+                                <NumberFieldInput className='text-right' aria-label={`Pitch at waypoint ${waypoint.seq}`} />
+                              </NumberField>
+                              <span>°</span>
+                            </label>
+                          </li>
                         )))}
-                      </div>
+                      </ol>
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
@@ -1345,7 +1500,7 @@ export default function DesignPanel(props: DesignPanelProps) {
                 </Tooltip>
               </TooltipProvider>
               <span className='ms-settings-spacer' />
-              <Button
+              <SkyTooltip><Button
                 size='icon-xs'
                 variant='ghost'
                 aria-expanded={settingsOpen}
@@ -1354,7 +1509,7 @@ export default function DesignPanel(props: DesignPanelProps) {
                 onClick={() => setSettingsOpen((v) => !v)}
               >
                 {settingsOpen ? <CaretUpIcon aria-hidden='true' /> : <CaretDownIcon aria-hidden='true' />}
-              </Button>
+              </Button></SkyTooltip>
             </div>
             {settingsOpen ? (
               <>
@@ -1439,9 +1594,9 @@ export default function DesignPanel(props: DesignPanelProps) {
           <div className='ms-python-head'>
             <label htmlFor={codeLang === 'json' ? 'ms-json-editor' : 'ms-code-editor'}>{codeLang === 'json' ? 'Mission JSON' : 'Mission script'}</label>
             <div className='ms-python-actions'>
-              <Button className='ms-python-ai' size='icon-xs' variant='ghost' disabled title='AI script assistance unavailable in this prototype' aria-label='AI script assistance unavailable in this prototype'>
+              <SkyTooltip><Button className='ms-python-ai' size='icon-xs' variant='ghost' disabled title='AI script assistance unavailable in this prototype' aria-label='AI script assistance unavailable in this prototype'>
                 <BrainIcon aria-hidden='true' /><SparkleIcon aria-hidden='true' />
-              </Button>
+              </Button></SkyTooltip>
               <div role='group' aria-label='Code language'>
                 <Button
                   size='sm'
@@ -1541,11 +1696,11 @@ export default function DesignPanel(props: DesignPanelProps) {
                   <span className='ms-route-stats'><Badge count={zone.type === 'privacy' ? 'People / Privacy' : 'Obstacle'} status='secondary' size='sm' /></span>
                   <div className='ms-route-actions'>
                     <Menu>
-                      <MenuTrigger
+                      <SkyTooltip><MenuTrigger
                         aria-label={`More options for ${zone.label}`}
                         className='border-0 bg-transparent p-0'
                         render={<Button variant='ghost' size='icon-sm' />}
-                      ><DotsThreeIcon aria-hidden='true' /></MenuTrigger>
+                      ><DotsThreeIcon aria-hidden='true' /></MenuTrigger></SkyTooltip>
                       <MenuPortal><MenuPositioner side='bottom' align='end' sideOffset={4}><MenuPopup>
                         <MenuItem onClick={() => {
                           if (editingAreaId) onCancelPreview()

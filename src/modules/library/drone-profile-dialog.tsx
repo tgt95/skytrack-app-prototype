@@ -1,3 +1,4 @@
+import { SkyTooltip } from '../../shared/sky-tooltip'
 import { useEffect, useState } from 'react'
 import { PlusIcon, TrashIcon, XIcon } from '@phosphor-icons/react'
 import { Button } from 'skytrack-ui/button'
@@ -349,9 +350,9 @@ export default function DroneProfileDialog({
                         <FieldLabel>Role / note</FieldLabel>
                         <FieldControl value={item.purpose} onValueChange={(value: unknown) => patchComponent(item.id, { purpose: String(value) })} placeholder='Optional' />
                       </FieldRoot>
-                      <Button type='button' variant='ghost' size='icon-sm' className='ms-drone-remove-component' aria-label={`Remove component ${item.name || index + 1}`} onClick={() => removeComponent(item.id)}>
+                      <SkyTooltip><Button type='button' variant='ghost' size='icon-sm' className='ms-drone-remove-component' aria-label={`Remove component ${item.name || index + 1}`} onClick={() => removeComponent(item.id)}>
                         <TrashIcon aria-hidden='true' />
-                      </Button>
+                      </Button></SkyTooltip>
                       <details className='ms-drone-component-details'>
                         <summary>Specifications &amp; source</summary>
                         <div className='ms-drone-component-detail-body'>
@@ -381,7 +382,7 @@ export default function DroneProfileDialog({
                                 <div className='ms-drone-specification-row' key={specification.id}>
                                   <TextField label='Specification' value={specification.label} onChange={(label) => patchSpecification(item.id, specification.id, { label })} placeholder='e.g. Capacity' />
                                   <TextField label='Value' value={specification.value} onChange={(value) => patchSpecification(item.id, specification.id, { value })} placeholder='e.g. 5300 mAh' />
-                                  <Button type='button' variant='ghost' size='icon-sm' aria-label={`Remove specification ${specification.label || 'row'}`} onClick={() => removeSpecification(item.id, specification.id)}><TrashIcon aria-hidden='true' /></Button>
+                                  <SkyTooltip><Button type='button' variant='ghost' size='icon-sm' aria-label={`Remove specification ${specification.label || 'row'}`} onClick={() => removeSpecification(item.id, specification.id)}><TrashIcon aria-hidden='true' /></Button></SkyTooltip>
                                 </div>
                               ))}
                             </div>

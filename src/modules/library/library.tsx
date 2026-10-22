@@ -55,6 +55,7 @@
    mock) and sidebar brand (full SkyTrack logo).
    Success feedback uses the parent live-region announce, not Toast UI. */
 
+import { SkyTooltip } from '../../shared/sky-tooltip'
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
   ArrowLeftIcon,
@@ -304,7 +305,7 @@ function LibraryCardFrame({
       <ContextMenuTrigger render={<article className={cardClassName} aria-label={label} onClick={handleCardClick} />}>
         <span className='ms-lib-card-overlay-actions' onClick={(event) => event.stopPropagation()}>
           {onToggleStar ? (
-            <Button
+            <SkyTooltip><Button
               type='button'
               variant='outline'
               size='icon-sm'
@@ -314,17 +315,17 @@ function LibraryCardFrame({
               onClick={onToggleStar}
             >
               <StarIcon aria-hidden='true' weight={starred ? 'fill' : 'regular'} />
-            </Button>
+            </Button></SkyTooltip>
           ) : null}
           {actions.length > 0 ? (
             <Menu>
-              <MenuTrigger
+              <SkyTooltip><MenuTrigger
                 aria-label={`More actions for ${label}`}
                 data-testid={testId ? `${testId}-more` : undefined}
                 render={<Button type='button' variant='outline' size='icon-sm' />}
               >
                 <DotsThreeIcon aria-hidden='true' />
-              </MenuTrigger>
+              </MenuTrigger></SkyTooltip>
               <MenuPortal>
                 <MenuPositioner side='bottom' align='end' sideOffset={4}>
                   <MenuPopup aria-label={`Actions for ${label}`}>
@@ -1050,7 +1051,7 @@ export default function StudioLibrary({
           </span>
           {m.viewOnly ? (
             <span className='ms-lib-card-badgerow'>
-              <Badge>View only</Badge>
+              <Badge count='View only' />
             </span>
           ) : null}
           {missionContext(m)}
@@ -1199,7 +1200,7 @@ export default function StudioLibrary({
           <span className='ms-lib-card-title'>
             {project.name}
           </span>
-          <Badge>View only</Badge>
+          <Badge count='View only' />
         </span>
         <span className='ms-lib-shared-owner'>
           <span className='ms-lib-avatar' aria-hidden='true'>{project.ownerInitials}</span>
@@ -1219,7 +1220,7 @@ export default function StudioLibrary({
       <span className='ms-lib-card-body'>
         <span className='ms-lib-card-toprow'>
           <span className='ms-lib-card-title'>{mission.name}</span>
-          <Badge>View only</Badge>
+          <Badge count='View only' />
         </span>
         {missionContext(mission)}
         <span className='ms-lib-card-edited'>{mission.editedAgo}</span>
@@ -1470,10 +1471,10 @@ export default function StudioLibrary({
                 </MenuPortal>
               </Menu>
               <div className='ms-lib-workspace-role'>
-                <span className='ms-lib-admin'>{activeWorkspace.role}</span>
+                <Badge count={activeWorkspace.role} status='default' />
               </div>
             </div>
-            <Button
+            <SkyTooltip><Button
               type='button'
               size='icon-xs'
               variant='ghost'
@@ -1483,7 +1484,7 @@ export default function StudioLibrary({
               onClick={() => onAnnounce(`Workspace settings for ${activeWorkspace.name} are a mock.`)}
             >
               <GearIcon aria-hidden='true' />
-            </Button>
+            </Button></SkyTooltip>
           </div>
           <div className='ms-lib-navgroup' role='group' aria-label={`${activeWorkspace.name} resources`}>
             {navBtn({ id: 'projects', label: 'Projects', icon: FoldersIcon }, false, '')}
@@ -1549,7 +1550,7 @@ export default function StudioLibrary({
                 <CaretDownIcon aria-hidden='true' />
               </MenuTrigger>
               <MenuPortal>
-                <MenuPositioner side='right' align='end' sideOffset={8}>
+                <MenuPositioner side='right' align='end' sideOffset={-2}>
                   <MenuPopup className='ms-lib-account-popup' aria-label={`${accountProfile.name} account settings`}>
                     <div className='ms-lib-account-summary'>
                       <span className='ms-lib-account-avatar' aria-hidden='true'>
@@ -1560,6 +1561,7 @@ export default function StudioLibrary({
                         <span>{accountProfile.email}</span>
                       </span>
                     </div>
+                    <MenuSeparator className='ms-lib-account-separator' />
                     <MenuItem
                       data-testid='ms-lib-account-profile'
                       onClick={() => setAccountPanel('profile')}
@@ -1651,7 +1653,7 @@ export default function StudioLibrary({
                 title={activeSharedProject.name}
                 description={<p className='ms-lib-sub'>Owned by {activeSharedProject.owner} · {activeSharedProject.workspace} · {activeSharedProject.sharedAgo}</p>}
                 context={<button type='button' className='ms-lib-back' onClick={() => onOpenSharedProject(null)}><ArrowLeftIcon aria-hidden='true' /> Shared with me</button>}
-                actions={<Badge>View only</Badge>}
+                actions={<Badge count='View only' />}
               />
               <div className='ms-lib-grid' aria-label={`Missions in ${activeSharedProject.name}`}>
                 {activeSharedProject.missions.map((mission) => sharedMissionCard(mission))}
@@ -1674,9 +1676,9 @@ export default function StudioLibrary({
                     <PlusIcon aria-hidden='true' /> New Mission
                   </Button>
                   <Menu>
-                    <MenuTrigger aria-label={`More actions for ${activeProject.name}`} render={<Button variant='outline' size='icon-sm' className='text-muted-foreground' />}>
+                    <SkyTooltip><MenuTrigger aria-label={`More actions for ${activeProject.name}`} render={<Button variant='outline' size='icon-sm' className='text-muted-foreground' />}>
                       <DotsThreeVerticalIcon aria-hidden='true' />
-                    </MenuTrigger>
+                    </MenuTrigger></SkyTooltip>
                     <MenuPortal>
                       <MenuPositioner side='bottom' align='end' sideOffset={4}>
                         <MenuPopup aria-label={`Actions for ${activeProject.name}`}>

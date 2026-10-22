@@ -1,6 +1,7 @@
 /* lidar-preview.tsx — deterministic mock LiDAR corner preview.
    Points derive from the same sim clock; nothing is sensed. */
 
+import { SkyTooltip } from '../../shared/sky-tooltip'
 import { useEffect, useRef, useState } from 'react'
 import { ArrowsInSimpleIcon, ArrowsOutSimpleIcon } from '@phosphor-icons/react'
 import { Button } from 'skytrack-ui/button'
@@ -124,7 +125,7 @@ export default function LidarPreview({
     <div className={`ms-lidar${expanded ? ' is-expanded' : ''}`}>
       <div className='ms-lidar-header'>
         <span className='ms-lidar-tag'>LiDAR · mock</span>
-        <Button
+        <SkyTooltip><Button
           type='button'
           size='icon-sm'
           variant='ghost'
@@ -134,7 +135,7 @@ export default function LidarPreview({
           onClick={toggleSize}
         >
           {expanded ? <ArrowsInSimpleIcon aria-hidden='true' /> : <ArrowsOutSimpleIcon aria-hidden='true' />}
-        </Button>
+        </Button></SkyTooltip>
       </div>
       <canvas
         ref={canvasRef}

@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type FormEvent } from 'react'
 import { Button } from 'skytrack-ui/button'
 import { FieldLabel, FieldRoot } from 'skytrack-ui/field'
 import { Input } from 'skytrack-ui/input'
@@ -19,6 +19,7 @@ export default function MissionStudioApp() {
   const [isDarkTheme, setIsDarkTheme] = useState(() =>
     document.documentElement.classList.contains('dark'),
   )
+  const loginCardRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -28,6 +29,60 @@ export default function MissionStudioApp() {
     motionQuery.addEventListener('change', syncMotionPreference)
     return () => motionQuery.removeEventListener('change', syncMotionPreference)
   }, [])
+
+  useLayoutEffect(() => {
+    if (authenticated) return
+
+    const card = loginCardRef.current
+    const drone = card?.querySelector<HTMLElement>('.ms-login-drone')
+    const contour = card?.querySelector<SVGSVGElement>('.ms-login-card-contour')
+    const path = contour?.querySelector('path')
+    if (!card || !drone || !contour || !path) return
+
+    const updateContour = () => {
+      const contourRect = contour.getBoundingClientRect()
+      const droneRect = drone.getBoundingClientRect()
+      const width = contourRect.width
+      if (!width || !droneRect.width || !droneRect.height) return
+
+      const centerX = droneRect.left + droneRect.width / 2 - contourRect.left
+      const centerY = droneRect.top + droneRect.height / 2 - contourRect.top
+      const radius = Math.min(droneRect.width, droneRect.height) / 2 + 2
+      const angle = Math.PI / 6
+      const rightX = centerX + radius * Math.cos(angle)
+      const leftX = centerX - radius * Math.cos(angle)
+      const arcY = centerY + radius * Math.sin(angle)
+      const tangentX = -Math.sin(angle)
+      const tangentY = Math.cos(angle)
+      const handle = Math.min(20, radius * 0.18)
+      const shoulderRun = Math.max(24, handle * 1.5)
+      const corner = Number.parseFloat(window.getComputedStyle(card).borderTopRightRadius) || 8
+      const bottom = centerY + radius
+      const height = Math.ceil(bottom + 2)
+
+      contour.setAttribute('viewBox', `0 0 ${width} ${height}`)
+      contour.style.height = `${height}px`
+      path.setAttribute(
+        'd',
+        [
+          `M ${width} ${corner}`,
+          `A ${corner} ${corner} 0 0 0 ${width - corner} 0`,
+          `H ${rightX + shoulderRun}`,
+          `C ${rightX + shoulderRun - handle} 0 ${rightX - tangentX * handle} ${arcY - tangentY * handle} ${rightX} ${arcY}`,
+          `A ${radius} ${radius} 0 0 1 ${leftX} ${arcY}`,
+          `C ${leftX + tangentX * handle} ${arcY - tangentY * handle} ${leftX - shoulderRun + handle} 0 ${leftX - shoulderRun} 0`,
+          `H ${corner}`,
+          `A ${corner} ${corner} 0 0 0 0 ${corner}`,
+        ].join(' '),
+      )
+    }
+
+    updateContour()
+    const observer = new ResizeObserver(updateContour)
+    observer.observe(card)
+    observer.observe(drone)
+    return () => observer.disconnect()
+  }, [authenticated])
 
   useEffect(() => {
     const root = document.documentElement
@@ -77,8 +132,17 @@ export default function MissionStudioApp() {
           aria-labelledby="ms-login-title"
         >
           <div className="ms-login-content">
-            <div className="ms-login-card">
+            <div className="ms-login-card" ref={loginCardRef}>
               <LoginDrone isDark={isDarkTheme} reducedMotion={prefersReducedMotion} />
+              {/* <svg
+                className="ms-login-card-contour"
+                viewBox="0 0 400 96"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d="M400 8 A8 8 0 0 0 392 0 H322 C314 0 295.8 30.07 291.8 37 A106 106 0 0 1 108.2 37 C104.2 30.07 86 0 78 0 H8 A8 8 0 0 0 0 8" />
+              </svg> */}
               <div
                 className="ms-login-brand"
                 role="img"

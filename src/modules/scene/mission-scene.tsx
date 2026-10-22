@@ -574,6 +574,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(function 
           navigationInstructionsInitiallyVisible: false,
           requestRenderMode: true,
           maximumRenderTimeChange: Number.POSITIVE_INFINITY,
+          msaaSamples: 4,
           showRenderLoopErrors: false
         })
         /* Cesium mouse events are local to the canvas's visual bounding rect.
@@ -597,6 +598,8 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(function 
         }
         viewerRef.current = viewer
         cesiumRef.current = Cesium
+        viewer.scene.postProcessStages.fxaa.enabled = !viewer.scene.msaaSupported
+        viewer.resolutionScale = 1
         viewer.scene.globe.baseColor = safeColor(Cesium, themeColor('--muted'), '--muted', 1)
         // Match the sky clear color to the globe base so the horizon has no
         // visible color seam against the Mission Studio scene background.

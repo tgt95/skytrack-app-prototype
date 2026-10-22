@@ -1,5 +1,6 @@
 /* Leaf controls for mission design and map interaction. Keep state transitions in the route shell. */
 
+import { SkyTooltip } from '../../shared/sky-tooltip'
 import { useRef, useState } from 'react'
 import { CheckIcon } from '@phosphor-icons/react'
 import { Button } from 'skytrack-ui/button'
@@ -29,7 +30,7 @@ export function ToolButton({
   const fullLabel = hint ? `${label} — ${hint}` : label
   if (disabled) {
     return (
-      <ToolbarButton
+      <SkyTooltip><ToolbarButton
         type='button'
         render={<Toggle variant='brand' pressed={active} />}
         size='icon'
@@ -39,7 +40,7 @@ export function ToolButton({
         disabled
       >
         {children}
-      </ToolbarButton>
+      </ToolbarButton></SkyTooltip>
     )
   }
   return (

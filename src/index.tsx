@@ -2,10 +2,10 @@
    Full-height desktop shell: top bar + stage switch, left rail, center 3D scene,
    right inspector, bottom status strip. Design + deterministic mock Simulation. */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { SkyTooltip } from './shared/sky-tooltip'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react'
 import {
   CaretDownIcon,
-  CheckIcon,
   ChartPieIcon,
   CrosshairIcon,
   HandIcon,
@@ -30,6 +30,7 @@ import {
   XIcon
 } from '@phosphor-icons/react'
 import { Button } from 'skytrack-ui/button'
+import { Badge } from 'skytrack-ui/badge'
 import { CheckboxIndicator, CheckboxRoot } from 'skytrack-ui/checkbox'
 import {
   Popover,
@@ -71,18 +72,7 @@ import { ToggleGroup } from 'skytrack-ui/toggle-group'
 import { Slider, SliderControl, SliderIndicator, SliderThumb, SliderTrack } from 'skytrack-ui/slider'
 import { Tabs, TabsIndicator, TabsList, TabsPanel, TabsTab } from 'skytrack-ui/tabs'
 import { Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator } from 'skytrack-ui/toolbar'
-import {
-  Combobox,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxItemIndicator,
-  ComboboxList,
-  ComboboxPopup,
-  ComboboxPortal,
-  ComboboxPositioner,
-  ComboboxStatus
-} from 'skytrack-ui/combobox'
+import { Input } from 'skytrack-ui/input'
 import {
   Tooltip,
   TooltipArrow,
@@ -103,7 +93,6 @@ import LidarPreview from './modules/scene/lidar-preview'
 import {
   VEHICLES,
   WORLDS,
-  DEFAULT_AREA_RECON_FLIGHT_SETTINGS,
   DEFAULT_RECON_FLIGHT_SETTINGS,
   actionLabel,
   countDetours,
@@ -197,24 +186,59 @@ function sceneGateReason(readiness: SceneReadiness): string | null {
   return null
 }
 
-const SHORTCUTS: { keys: string; what: string }[] = [
-  { keys: '1 / 2', what: 'Design / Simulation stage' },
-  { keys: 'A / R / N / H', what: 'Area / Route / Avoid-zone / Home tool (Design)' },
-  { keys: 'C', what: 'Toggle Design / Code view (Design)' },
-  { keys: 'Space', what: 'Start / Abort mock simulation (Simulation)' },
-  { keys: 'P', what: 'Pause / Resume mock simulation (Simulation)' },
-  { keys: 'D / E', what: 'Mission details / Events tab (Simulation)' },
-  { keys: 'L', what: 'Go to Console tab, Code mode only (Simulation)' },
-  { keys: 'V', what: 'Toggle mock LiDAR preview (Simulation)' },
-  { keys: '+ / −', what: 'Zoom 3D scene' },
-  { keys: '0', what: 'Reset camera' },
-  { keys: 'F', what: 'Focus vehicle / selected point' },
-  { keys: '\\', what: 'Collapse / expand inspector' },
-  { keys: 'Delete', what: 'Delete selection (Design)' },
-  { keys: 'Z + drag · ⇧ + drag · drag', what: 'Waypoint altitude (Z or Shift, ground-clamped) · move waypoint, Z kept (Design)' },
-  { keys: 'Ctrl/⌘+S', what: 'Save local state' },
-  { keys: 'Ctrl/⌘+Z · ⇧+Ctrl/⌘+Z', what: 'Undo / redo design edit' },
-  { keys: 'Esc', what: 'Close settings, cancel drawing, then clear selection' }
+function MapControlTooltip({ label, trigger, children }: { label: string; trigger: ReactElement; children?: ReactNode }) {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger render={trigger}>{children}</TooltipTrigger>
+        <TooltipPortal>
+          <TooltipPositioner side='left' sideOffset={8}>
+            <TooltipPopup><TooltipArrow />{label}</TooltipPopup>
+          </TooltipPositioner>
+        </TooltipPortal>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}
+
+const SHORTCUT_GROUPS: { title: string; shortcuts: { keys: string; what: string }[] }[] = [
+  {
+    title: 'Workspace & tools',
+    shortcuts: [
+      { keys: '1 / 2', what: 'Design / Simulation stage' },
+      { keys: 'A / R / N / H', what: 'Area / Route / Avoid-zone / Home tool (Design)' },
+      { keys: 'C', what: 'Toggle Design / Code view (Design)' },
+      { keys: 'Esc', what: 'Close settings, cancel drawing, then clear selection' }
+    ]
+  },
+  {
+    title: 'Simulation',
+    shortcuts: [
+      { keys: 'Space', what: 'Start / Abort mock simulation' },
+      { keys: 'P', what: 'Pause / Resume mock simulation' },
+      { keys: 'D / E', what: 'Mission details / Events tab' },
+      { keys: 'L', what: 'Go to Console tab, Code mode only' },
+      { keys: 'V', what: 'Toggle mock LiDAR preview' }
+    ]
+  },
+  {
+    title: 'Scene & view',
+    shortcuts: [
+      { keys: '+ / −', what: 'Zoom 3D scene' },
+      { keys: '0', what: 'Reset camera' },
+      { keys: 'F', what: 'Focus vehicle / selected point' },
+      { keys: '\\', what: 'Collapse / expand inspector' }
+    ]
+  },
+  {
+    title: 'Editing & history',
+    shortcuts: [
+      { keys: 'Delete', what: 'Delete selection (Design)' },
+      { keys: 'Z + drag · ⇧ + drag · drag', what: 'Waypoint altitude (Z or Shift, ground-clamped) · move waypoint, Z kept (Design)' },
+      { keys: 'Ctrl/⌘+S', what: 'Save local state' },
+      { keys: 'Ctrl/⌘+Z · ⇧+Ctrl/⌘+Z', what: 'Undo / redo design edit' }
+    ]
+  }
 ]
 
 export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
@@ -293,7 +317,9 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
   const [addressSuggestions, setAddressSuggestions] = useState<GeocodeResult[]>([])
   const [addressSuggestionBusy, setAddressSuggestionBusy] = useState(false)
   const [addressSuggestionsOpen, setAddressSuggestionsOpen] = useState(false)
+  const [activeAddressSuggestionIndex, setActiveAddressSuggestionIndex] = useState(-1)
   const [addressSuggestionResolvedQuery, setAddressSuggestionResolvedQuery] = useState<string | null>(null)
+  const [addressIsComposing, setAddressIsComposing] = useState(false)
   /* Search-result pin (label aid at the selected site): selecting an address
      moves the mission origin to the result, so overlays relocate there too
      and the pin marks the same site. Cleared when the search closes or the
@@ -382,7 +408,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
 
   const sceneRef = useRef<MissionSceneHandle>(null)
   const synchronizedOriginRef = useRef(missionOrigin(mission))
-  const addressInputRef = useRef<HTMLInputElement>(null)
+  const addressCompositionRef = useRef(false)
   const addressTriggerRef = useRef<HTMLButtonElement>(null)
   const restoreAddressFocusRef = useRef(false)
   /* In-flight search lifecycle: AbortController cancels the fetch, and the
@@ -598,8 +624,16 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
   useEffect(() => {
     suggestionAbortRef.current?.abort()
     suggestionAbortRef.current = null
+    if (addressIsComposing || addressCompositionRef.current) {
+      suggestionSeqRef.current += 1
+      setAddressSuggestionBusy(false)
+      return
+    }
     const query = addressQuery.trim()
     setAddressSuggestionResolvedQuery(null)
+    setAddressSuggestions([])
+    setAddressSuggestionsOpen(false)
+    setActiveAddressSuggestionIndex(-1)
     if (!addressSearchOpen || query.length < 3 || selectedSuggestionQueryRef.current === query) {
       selectedSuggestionQueryRef.current = null
       setAddressSuggestions([])
@@ -619,11 +653,13 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
           setAddressSuggestions(results)
           setAddressSuggestionResolvedQuery(query)
           setAddressSuggestionsOpen(true)
+          setActiveAddressSuggestionIndex(-1)
         })
         .catch((error: unknown) => {
           if (controller.signal.aborted || suggestionSeqRef.current !== requestId) return
           setAddressSuggestions([])
           setAddressSuggestionsOpen(false)
+          setActiveAddressSuggestionIndex(-1)
           setAddressSearchStatus(error instanceof Error ? error.message : 'Address suggestions are unavailable. Try again.')
         })
         .finally(() => {
@@ -637,10 +673,14 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
       window.clearTimeout(timer)
       controller.abort()
     }
-  }, [addressQuery, addressSearchOpen, currentGeoOrigin.lat, currentGeoOrigin.lng])
+  }, [addressQuery, addressIsComposing, addressSearchOpen, currentGeoOrigin.lat, currentGeoOrigin.lng])
 
   useEffect(() => {
-    if (addressSearchOpen) addressInputRef.current?.focus()
+    if (!addressSearchOpen) return
+    /* The toolbar trigger can reclaim focus at the end of its click. Focus
+       after that event settles so the first typed character reaches the input. */
+    const timer = window.setTimeout(() => document.getElementById('ms-address-search-input')?.focus({ preventScroll: true }), 0)
+    return () => window.clearTimeout(timer)
   }, [addressSearchOpen])
 
   useEffect(() => {
@@ -1285,7 +1325,6 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
         const area: MissionArea = {
           id: uid('area'), label, points, shape, center: circleCenter, radiusM: circleRadiusM,
           ...draftAreaSettings,
-          ...(mission.worldType === '2D' ? { reconnaissance: { ...DEFAULT_AREA_RECON_FLIGHT_SETTINGS } } : {}),
           baseAltM
         }
         area.scanLines = generateAreaScan(area)
@@ -1389,6 +1428,50 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
     [commit, detourNote, mission, refreshDetours]
   )
 
+  const onMoveAction = useCallback(
+    (fromWpId: string, actionId: string, toWpId: string, toActionId?: string, position: 'before' | 'after' = 'after') => {
+      const sourceWaypoint = mission.waypoints.find((waypoint) => waypoint.id === fromWpId)
+      const targetWaypoint = mission.waypoints.find((waypoint) => waypoint.id === toWpId)
+      if (!sourceWaypoint || !targetWaypoint) return
+      const routes = getMissionRoutes(mission)
+      const sourceRouteId = sourceWaypoint.routeId ?? routes[0]?.id
+      const targetRouteId = targetWaypoint.routeId ?? routes[0]?.id
+      if (sourceRouteId !== targetRouteId) return
+
+      const sourceActions = [...sourceWaypoint.actions]
+      const sourceIndex = sourceActions.findIndex((action) => action.id === actionId)
+      if (sourceIndex < 0) return
+      const [movingAction] = sourceActions.splice(sourceIndex, 1)
+      const targetActions = fromWpId === toWpId ? sourceActions : [...targetWaypoint.actions]
+      let insertionIndex = targetActions.length
+
+      if (toActionId) {
+        if (toActionId === actionId) return
+        insertionIndex = targetActions.findIndex((action) => action.id === toActionId)
+        if (insertionIndex < 0) return
+        if (position === 'after') insertionIndex += 1
+      }
+      targetActions.splice(insertionIndex, 0, movingAction)
+
+      if (
+        fromWpId === toWpId
+        && sourceWaypoint.actions.every((action, index) => action.id === targetActions[index]?.id)
+      ) return
+
+      const waypoints = mission.waypoints.map((waypoint) => {
+        if (fromWpId === toWpId && waypoint.id === fromWpId) return { ...waypoint, actions: targetActions }
+        if (waypoint.id === fromWpId) return { ...waypoint, actions: sourceActions }
+        if (waypoint.id === toWpId) return { ...waypoint, actions: targetActions }
+        return waypoint
+      })
+      commit(
+        { ...mission, waypoints },
+        `${movingAction.label} moved to waypoint ${targetWaypoint.seq}.`
+      )
+    },
+    [commit, mission]
+  )
+
   /* Context-bar selectors: change only the selected mission value through the
      established update path. Geometry, undo history, selection and camera are
      untouched; dirty tracking and validation behave like any other edit. */
@@ -1423,12 +1506,6 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
       const nextMissionBase = {
         ...mission,
         worldType,
-        ...(worldType === '2D' ? {
-          areas: mission.areas.map((area) => ({
-            ...area,
-            reconnaissance: area.reconnaissance ?? { ...DEFAULT_AREA_RECON_FLIGHT_SETTINGS }
-          }))
-        } : {}),
         ...(worldType === '2D'
           ? { world: WORLDS[0], worldId: undefined }
           : {
@@ -1879,11 +1956,11 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
           break
         case '+':
         case '=':
-          sceneRef.current?.zoomBy(-1)
+          sceneRef.current?.zoomBy(1)
           break
         case '-':
         case '_':
-          sceneRef.current?.zoomBy(1)
+          sceneRef.current?.zoomBy(-1)
           break
         case '0':
           sceneRef.current?.resetCamera()
@@ -1931,6 +2008,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
     gotoStage,
     lidarOn,
     mission.waypoints,
+    mission.worldType,
     openCodeView,
     pending.length,
     pendingShape,
@@ -2032,7 +2110,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
       {/* ------------------------- top bar ------------------------- */}
       <header className='ms-top'>
         <nav className='ms-crumb' aria-label='Breadcrumb'>
-          <button
+          <SkyTooltip><button
             type='button'
             className='ms-crumb-btn ms-crumb-home'
             data-testid='ms-crumb-home'
@@ -2040,8 +2118,8 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
             aria-label='Back to library home'
             title='Back to library home'
           >
-            <img src={skytrackLogo} alt='SkyTrack' width={20} height={20} className='ms-crumb-logo' />
-          </button>
+            <img src={skytrackLogo} alt='SkyTrack' className='ms-crumb-logo' />
+          </button></SkyTooltip>
           <span aria-hidden='true' className='ms-crumb-separator'> / </span>
           {libraryEntry ? (
             <>
@@ -2316,7 +2394,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
                       </SelectPortal>
                     </Select>
                     <span className='ms-drone-divider' aria-hidden='true' />
-                    <button
+                    <SkyTooltip><button
                       type='button'
                       className='ms-drone-add'
                       data-testid='ms-drone-add'
@@ -2325,7 +2403,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
                       title='Add drone (unavailable in prototype)'
                     >
                       <PlusIcon aria-hidden='true' />
-                    </button>
+                    </button></SkyTooltip>
                   </div>
                   {/* World trigger opens one picker for mission type + world. */}
                   <div className='ms-drone-card ms-world-card' data-testid='ms-drone-card'>
@@ -2419,106 +2497,136 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
                   <div className='ms-address-search-group'>
                     <Toolbar orientation='horizontal' aria-label='Address search' className={`ms-address-search-toolbar${addressSearchOpen ? ' is-open' : ''}`}>
                       <ToolbarGroup className='ms-address-search-items'>
-                        <ToolbarButton
-                          ref={addressTriggerRef}
-                          type='button'
-                          size='icon'
-                          aria-label={addressSearchOpen ? 'Search address' : 'Open address search'}
-                          aria-expanded={addressSearchOpen}
-                          aria-controls={addressSearchOpen ? 'ms-address-search-input' : undefined}
-                          title={addressSearchOpen ? 'Search address' : 'Open address search'}
-                          disabled={addressSearching || (addressSearchOpen && !addressQuery.trim())}
-                          onClick={() => {
-                            if (addressSearchOpen) void searchAddress()
-                            else {
-                              setAddressSearchStatus('')
-                              setAddressSearchOpen(true)
-                            }
-                          }}
+                        <MapControlTooltip
+                          label={addressSearchOpen ? 'Search address' : 'Search map by address'}
+                          trigger={(
+                            <ToolbarButton
+                              ref={addressTriggerRef}
+                              type='button'
+                              size='icon'
+                              aria-label={addressSearchOpen ? 'Search address' : 'Open address search'}
+                              aria-expanded={addressSearchOpen}
+                              aria-controls={addressSearchOpen ? 'ms-address-search-input' : undefined}
+                              disabled={addressSearching}
+                              onClick={() => {
+                                if (addressSearchOpen) {
+                                  if (addressQuery.trim()) void searchAddress()
+                                }
+                                else {
+                                  setAddressSearchStatus('')
+                                  setAddressSearchOpen(true)
+                                }
+                              }}
+                            />
+                          )}
                         >
                           <MagnifyingGlassIcon aria-hidden='true' />
-                        </ToolbarButton>
+                        </MapControlTooltip>
                         {addressSearchOpen ? (
                           <div className='ms-address-search-input-wrap is-open'>
-                            <Combobox
-                              items={addressSuggestions}
-                              itemToStringLabel={(item: GeocodeResult) => item.displayName}
-                              filter={null}
-                              open={addressSuggestionsOpen}
-                              onOpenChange={setAddressSuggestionsOpen}
-                              inputValue={addressQuery}
-                              onInputValueChange={(value: string) => {
-                                setAddressQuery(value)
+                            <Input
+                              id='ms-address-search-input'
+                              role='combobox'
+                              aria-autocomplete='list'
+                              aria-expanded={addressSuggestionsOpen}
+                              aria-controls={addressSuggestionsOpen ? 'ms-address-suggestions-list' : undefined}
+                              aria-activedescendant={activeAddressSuggestionIndex >= 0 ? `ms-address-suggestion-${activeAddressSuggestionIndex}` : undefined}
+                              autoFocus
+                              type='text'
+                              inputMode='search'
+                              autoComplete='off'
+                              aria-label='Search map by address'
+                              placeholder='Search address'
+                              value={addressQuery}
+                              onChange={(event) => {
+                                setAddressQuery(event.currentTarget.value)
                                 setAddressSearchStatus('')
                               }}
-                              onValueChange={selectAddressSuggestion}
-                            >
-                              <ComboboxInput
-                                ref={addressInputRef}
-                                id='ms-address-search-input'
-                                type='search'
-                                autoComplete='off'
-                                aria-label='Search map by address'
-                                placeholder='Search address'
-                                onKeyDown={(event) => {
-                                  if (event.key === 'Enter' && (!addressSuggestionsOpen || !event.currentTarget.getAttribute('aria-activedescendant'))) {
-                                    event.preventDefault()
-                                    void searchAddress()
-                                  } else if (event.key === 'Escape' && !addressSuggestionsOpen) {
-                                    event.preventDefault()
-                                    event.stopPropagation()
+                              onCompositionStart={() => {
+                                addressCompositionRef.current = true
+                                setAddressIsComposing(true)
+                              }}
+                              onCompositionEnd={(event) => {
+                                addressCompositionRef.current = false
+                                setAddressIsComposing(false)
+                                setAddressQuery(event.currentTarget.value)
+                                setAddressSearchStatus('')
+                              }}
+                              onKeyDown={(event) => {
+                                if (addressCompositionRef.current || event.nativeEvent.isComposing || event.nativeEvent.keyCode === 229) return
+                                if (event.key === 'ArrowDown' && addressSuggestions.length) {
+                                  event.preventDefault()
+                                  setAddressSuggestionsOpen(true)
+                                  setActiveAddressSuggestionIndex((index) => (index + 1) % addressSuggestions.length)
+                                } else if (event.key === 'ArrowUp' && addressSuggestions.length) {
+                                  event.preventDefault()
+                                  setAddressSuggestionsOpen(true)
+                                  setActiveAddressSuggestionIndex((index) => index <= 0 ? addressSuggestions.length - 1 : index - 1)
+                                } else if (event.key === 'Enter') {
+                                  event.preventDefault()
+                                  if (addressSuggestionsOpen && activeAddressSuggestionIndex >= 0) selectAddressSuggestion(addressSuggestions[activeAddressSuggestionIndex])
+                                  else void searchAddress()
+                                } else if (event.key === 'Escape') {
+                                  event.preventDefault()
+                                  event.stopPropagation()
+                                  if (addressSuggestionsOpen) setAddressSuggestionsOpen(false)
+                                  else {
                                     closeAddressSearch({ focusTrigger: true })
                                     say('Address search closed.')
                                   }
-                                }}
-                                className='ms-address-search-input'
-                              />
-                              <ComboboxPortal>
-                                <ComboboxPositioner side='top' align='end' sideOffset={6}>
-                                  <ComboboxPopup className='ms-address-suggestions' aria-busy={addressSuggestionBusy || undefined}>
-                                    <ComboboxStatus>
-                                      {addressSuggestionBusy ? <div className='ms-address-suggestions-status' role='status'>Searching places…</div> : null}
-                                    </ComboboxStatus>
-                                    <ComboboxEmpty>
-                                      {addressSuggestionResolvedQuery === addressQuery.trim() && addressQuery.trim().length >= 3 && !addressSuggestionBusy
-                                        ? <div className='ms-address-suggestions-status'>No matching places.</div>
-                                        : null}
-                                    </ComboboxEmpty>
-                                    <ComboboxList>
-                                      {(item: GeocodeResult) => (
-                                        <ComboboxItem key={`${item.lat},${item.lon}`} value={item} className='ms-address-suggestion-item'>
-                                          <ComboboxItemIndicator><CheckIcon aria-hidden='true' /></ComboboxItemIndicator>
-                                          <span>{item.displayName}</span>
-                                        </ComboboxItem>
-                                      )}
-                                    </ComboboxList>
-                                    <div className='ms-address-suggestions-credits' aria-label='Search attribution'>
-                                      {addressCredits.map((credit, index) => (
-                                        <a key={`${credit.href}-${index}`} href={credit.href} target='_blank' rel='noreferrer'>{credit.label}</a>
-                                      ))}
-                                    </div>
-                                  </ComboboxPopup>
-                                </ComboboxPositioner>
-                              </ComboboxPortal>
-                            </Combobox>
+                                }
+                              }}
+                              className='ms-address-search-input'
+                            />
                           </div>
                         ) : null}
                         {addressSearchOpen ? (
-                          <ToolbarButton
-                            type='button'
-                            size='icon'
-                            aria-label='Close address search'
-                            title='Close address search'
-                            onClick={() => {
-                              closeAddressSearch({ focusTrigger: true })
-                              say('Address search closed.')
-                            }}
-                          >
+                          <MapControlTooltip label='Close address search' trigger={(
+                            <ToolbarButton
+                              type='button'
+                              size='icon'
+                              aria-label='Close address search'
+                              onClick={() => {
+                                closeAddressSearch({ focusTrigger: true })
+                                say('Address search closed.')
+                              }}
+                            />
+                          )}>
                             <XIcon aria-hidden='true' />
-                          </ToolbarButton>
+                          </MapControlTooltip>
                         ) : null}
                       </ToolbarGroup>
                     </Toolbar>
+                    {addressSearchOpen && addressSuggestionsOpen ? (
+                      <div className='ms-address-suggestions' aria-busy={addressSuggestionBusy || undefined}>
+                        {addressSuggestionBusy ? <div className='ms-address-suggestions-status' role='status'>Searching places…</div> : null}
+                        {addressSuggestions.length ? (
+                          <div id='ms-address-suggestions-list' role='listbox'>
+                            {addressSuggestions.map((item, index) => (
+                              <button
+                                key={`${item.lat},${item.lon}`}
+                                id={`ms-address-suggestion-${index}`}
+                                type='button'
+                                role='option'
+                                aria-selected={index === activeAddressSuggestionIndex}
+                                className={`ms-address-suggestion-item${index === activeAddressSuggestionIndex ? ' is-active' : ''}`}
+                                onMouseDown={(event) => event.preventDefault()}
+                                onClick={() => selectAddressSuggestion(item)}
+                              >
+                                <span>{item.displayName}</span>
+                              </button>
+                            ))}
+                          </div>
+                        ) : addressSuggestionResolvedQuery === addressQuery.trim() && addressQuery.trim().length >= 3 && !addressSuggestionBusy ? (
+                          <div className='ms-address-suggestions-status'>No matching places.</div>
+                        ) : null}
+                        <div className='ms-address-suggestions-credits' aria-label='Search attribution'>
+                          {addressCredits.map((credit, index) => (
+                            <a key={`${credit.href}-${index}`} href={credit.href} target='_blank' rel='noreferrer'>{credit.label}</a>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
                     {/* Out-of-flow panel: status + attribution overlay above the
                       toolbar and never shift the zoom/map toolbars below. */}
                     {addressSearchOpen && !addressSuggestionsOpen ? (
@@ -2532,29 +2640,30 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
                   </div>
                 ) : null}
                 <Toolbar orientation='vertical' aria-label='Camera controls'>
-                  <ToolbarButton type='button' size='icon' aria-label='Zoom in' title='Zoom in' onClick={() => sceneRef.current?.zoomBy(-1)}>
+                  <MapControlTooltip label='Zoom in' trigger={<ToolbarButton type='button' size='icon' aria-label='Zoom in' onClick={() => sceneRef.current?.zoomBy(1)} />}>
                     <MagnifyingGlassPlusIcon aria-hidden='true' />
-                  </ToolbarButton>
-                  <ToolbarButton type='button' size='icon' aria-label='Zoom out' title='Zoom out' onClick={() => sceneRef.current?.zoomBy(1)}>
+                  </MapControlTooltip>
+                  <MapControlTooltip label='Zoom out' trigger={<ToolbarButton type='button' size='icon' aria-label='Zoom out' onClick={() => sceneRef.current?.zoomBy(-1)} />}>
                     <MagnifyingGlassMinusIcon aria-hidden='true' />
-                  </ToolbarButton>
-                  <ToolbarButton type='button' size='icon' aria-label='Reset camera' title='Reset camera' onClick={() => sceneRef.current?.resetCamera()}>
+                  </MapControlTooltip>
+                  <MapControlTooltip label='Reset camera' trigger={<ToolbarButton type='button' size='icon' aria-label='Reset camera' onClick={() => sceneRef.current?.resetCamera()} />}>
                     <CrosshairIcon aria-hidden='true' />
-                  </ToolbarButton>
-                  <ToolbarSeparator orientation='horizontal' />
-                  <ToolbarButton type='button' size='icon' aria-label='Top-down 2D view' title='Top-down 2D view' onClick={() => { sceneRef.current?.snapTopDown(); say('Top-down 2D view.') }}>
+                  </MapControlTooltip>
+                  <ToolbarSeparator className='mx-0' />
+                  <MapControlTooltip label='Top-down 2D view' trigger={<ToolbarButton type='button' size='icon' aria-label='Top-down 2D view' onClick={() => { sceneRef.current?.snapTopDown(); say('Top-down 2D view.') }} />}>
                     <span className='ms-2d-label' aria-hidden='true'>2D</span>
-                  </ToolbarButton>
+                  </MapControlTooltip>
                 </Toolbar>
                 {stage === 'design' ? (
                   <Toolbar orientation='vertical' aria-label='Map settings'>
                     <Popover>
+                    <MapControlTooltip label='Map display settings' trigger={(
                       <PopoverTrigger
                         aria-label='Map display settings'
-                        title='Map display settings'
                         data-testid='ms-map-gear-trigger'
                         render={<ToolbarButton type='button' size='icon'><GearIcon aria-hidden='true' /></ToolbarButton>}
                       />
+                    )} />
                       <PopoverPortal>
                         <PopoverPositioner side='left' align='end' sideOffset={8}>
                           <PopoverPopup className='ms-map-gear-popup'>
@@ -2596,19 +2705,20 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
                     </Popover>
                     {mission.worldType === '2D' || mission.world !== 'Blank space' ? (
                       <Popover>
-                        <PopoverTrigger
-                          aria-label='Basemap settings'
-                          title='Basemap settings'
-                          data-testid='ms-basemap-trigger'
-                          render={<ToolbarButton type='button' size='icon'><StackIcon aria-hidden='true' /></ToolbarButton>}
-                        />
+                        <MapControlTooltip label='Basemap settings' trigger={(
+                          <PopoverTrigger
+                            aria-label='Basemap settings'
+                            data-testid='ms-basemap-trigger'
+                            render={<ToolbarButton type='button' size='icon'><StackIcon aria-hidden='true' /></ToolbarButton>}
+                          />
+                        )} />
                         <PopoverPortal>
                           <PopoverPositioner side='left' align='end' sideOffset={8}>
                             <PopoverPopup className='ms-basemap-popup' data-testid='ms-basemap-popup'>
                               <PopoverArrow />
                               <div className='ms-basemap-heading'>
                                 <PopoverTitle className='ms-basemap-title'>Basemap</PopoverTitle>
-                                <PopoverClose aria-label='Close basemap settings' title='Close' className='ms-basemap-close'>×</PopoverClose>
+                                <SkyTooltip><PopoverClose aria-label='Close basemap settings' title='Close' className='ms-basemap-close'>×</PopoverClose></SkyTooltip>
                               </div>
                               <BasemapPickerGrid value={basemapStyle} onChange={setBasemapStyle} testidPrefix='ms-basemap' />
                             </PopoverPopup>
@@ -2773,6 +2883,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
                 }}
                 onMoveWaypoint={onMoveWaypoint}
                 onReorderWaypoint={onReorderWaypoint}
+                onMoveAction={onMoveAction}
                 onInsertActionAt={onInsertActionAt}
                 onDeleteAction={onDeleteAction}
                 onAddZone={onAddZone}
@@ -2875,7 +2986,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
                 onValueChange={(value) => {
                   if (value === '2D' || value === '3D') onSelectWorldType(value)
                 }}
-                className='ms-world-type-tabs'
+                className='ms-world-type-tabs gap-4'
               >
                 <TabsList variant='filled' className='ms-world-type-list' aria-label='Mission type'>
                   <TabsTab value='2D' variant='filled' className='ms-world-type-tab'>
@@ -2885,10 +2996,11 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
                     3D Mission
                   </TabsTab>
                 </TabsList>
-                <TabsPanel value='2D' className='ms-world-type-panel'>
+                <TabsPanel value='2D' className='ms-world-type-panel pb-2'>
+                  <span className='text-sm text-muted-foreground'>Photogrammetry missions use reconnaissance planning</span>
                   <span className='ms-sr'>2D photogrammetry does not require selecting a World.</span>
                 </TabsPanel>
-                <TabsPanel value='3D' className='ms-world-type-panel'>
+                <TabsPanel value='3D' className='ms-world-type-panel  pb-2'>
                   <FieldRoot className='ms-field'>
                     <FieldLabel>World</FieldLabel>
                     <Select<string>
@@ -3014,19 +3126,26 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
       <Dialog open={shortcutsOpen} onOpenChange={(v: boolean) => setShortcutsOpen(v)}>
         <DialogPortal>
           <DialogBackdrop />
-          <DialogPopup aria-label='Keyboard shortcuts'>
+          <DialogPopup aria-label='Keyboard shortcuts' className='ms-shortcuts-dialog'>
             <DialogHeader>
               <DialogTitle>Keyboard shortcuts</DialogTitle>
               <DialogDescription>Shortcuts are ignored while typing in fields or the code editor.</DialogDescription>
             </DialogHeader>
-            <ul className='ms-shortcuts'>
-              {SHORTCUTS.map((s) => (
-                <li key={s.keys} className='ms-shortcut-row'>
-                  <kbd>{s.keys}</kbd>
-                  <span>{s.what}</span>
-                </li>
+            <div className='ms-shortcut-groups'>
+              {SHORTCUT_GROUPS.map((group) => (
+                <section key={group.title} className='ms-shortcut-group' aria-labelledby={`ms-shortcuts-${group.title.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}`}>
+                  <h3 id={`ms-shortcuts-${group.title.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}`} className='ms-shortcut-group-title'>{group.title}</h3>
+                  <ul className='ms-shortcuts'>
+                    {group.shortcuts.map((s) => (
+                      <li key={s.keys} className='ms-shortcut-row'>
+                        <span>{s.what}</span>
+                        <Badge count={s.keys} status='outline' />
+                      </li>
+                    ))}
+                  </ul>
+                </section>
               ))}
-            </ul>
+            </div>
             <DialogFooter>
               <DialogClose>Close</DialogClose>
             </DialogFooter>

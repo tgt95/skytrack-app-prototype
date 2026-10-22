@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button } from 'skytrack-ui/button'
+import { Badge } from 'skytrack-ui/badge'
 import { Slider, SliderControl, SliderIndicator, SliderThumb, SliderTrack } from 'skytrack-ui/slider'
 import { Switch, SwitchThumb } from 'skytrack-ui/switch'
 import {
@@ -350,7 +351,7 @@ export default function MissionPreview({ mission, onSelectWaypoint, previewPosit
 
   return (
     <section className='ms-preview' aria-label='Mission route preview' data-testid='ms-preview'>
-      <header className='ms-preview-header'>
+      {/* <header className='ms-preview-header'>
         <div>
           <h2 className='ms-preview-title'>Flight preview</h2>
           <p className='ms-preview-note'>Approximate route playback · no drone control</p>
@@ -358,7 +359,7 @@ export default function MissionPreview({ mission, onSelectWaypoint, previewPosit
         <span className='ms-preview-duration' aria-label={`Estimated duration ${formatTime(preview.duration)}`}>
           {formatTime(time)} / {formatTime(preview.duration)}
         </span>
-      </header>
+      </header> */}
 
       <div className='ms-preview-map' role='img' aria-label='Mini map of areas and flight path'>
         <svg viewBox='0 0 640 280' preserveAspectRatio='xMidYMid meet' aria-hidden='true'>
@@ -481,57 +482,59 @@ export default function MissionPreview({ mission, onSelectWaypoint, previewPosit
 
       <p className='ms-preview-estimate'>For runnable missions, estimate follows the mock flight path from Home, including transfers, Area traversal and landing. {showPhotoScanDemo ? 'Photo adds 1.5 s' : 'Photo demo dwell is skipped'}; LiDAR adds 2 s per action. Other actions add no dwell time.</p>
 
-      <div className='ms-preview-wphead'>
-        <h3 className='ms-preview-wptitle'>Waypoints in flight order</h3>
-        <span className='ms-preview-count'>{preview.rows.length} waypoint{preview.rows.length === 1 ? '' : 's'}</span>
-      </div>
-      <div className='ms-preview-tablewrap'>
-        <table className='ms-preview-table' aria-label='Waypoints in flight order'>
-          <thead>
-            <tr>
-              <th scope='col'>#</th>
-              <th scope='col'>X</th>
-              <th scope='col'>Y</th>
-              <th scope='col'>Z</th>
-              <th scope='col'>Action</th>
-              <th scope='col'>T+</th>
-            </tr>
-          </thead>
-          <tbody>
-            {preview.rows.map(({ waypoint, time: arrivalTime }) => {
-              const isActive = activeWaypointId === waypoint.id
-              const selectRow = () => {
-                onSelectWaypoint(waypoint.id)
-                setPlaying(false)
-                setTime(arrivalTime)
-              }
-              return (
-                <tr
-                  key={waypoint.id}
-                  data-seq={waypoint.seq}
-                  tabIndex={0}
-                  aria-selected={isActive}
-                  className={isActive ? 'is-current' : ''}
-                  data-testid={`ms-preview-waypoint-${waypoint.seq}`}
-                  onClick={selectRow}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                      event.preventDefault()
-                      selectRow()
-                    }
-                  }}
-                >
-                  <td>{waypoint.seq}</td>
-                  <td>{Math.round(waypoint.x * 10) / 10}</td>
-                  <td>{Math.round(waypoint.y * 10) / 10}</td>
-                  <td>{Math.round(waypoint.z * 10) / 10}</td>
-                  <td>{waypoint.actions.length ? waypoint.actions.map((action) => action.label).join(' · ') : 'Fly to point'}</td>
-                  <td>{formatTime(arrivalTime)}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+      <div className='flex flex-col gap-2'>
+        <div className='flex justify-between gap-2'>
+          <div className='font-medium'>Waypoints in flight order</div>
+          <Badge count={`${preview.rows.length} waypoint${preview.rows.length === 1 ? '' : 's'}`} status='outline' />
+        </div>
+        <div className='ms-preview-tablewrap'>
+          <table className='ms-preview-table' aria-label='Waypoints in flight order'>
+            <thead>
+              <tr>
+                <th scope='col'>#</th>
+                <th scope='col'>X</th>
+                <th scope='col'>Y</th>
+                <th scope='col'>Z</th>
+                <th scope='col'>Action</th>
+                <th scope='col'>T+</th>
+              </tr>
+            </thead>
+            <tbody>
+              {preview.rows.map(({ waypoint, time: arrivalTime }) => {
+                const isActive = activeWaypointId === waypoint.id
+                const selectRow = () => {
+                  onSelectWaypoint(waypoint.id)
+                  setPlaying(false)
+                  setTime(arrivalTime)
+                }
+                return (
+                  <tr
+                    key={waypoint.id}
+                    data-seq={waypoint.seq}
+                    tabIndex={0}
+                    aria-selected={isActive}
+                    className={isActive ? 'is-current' : ''}
+                    data-testid={`ms-preview-waypoint-${waypoint.seq}`}
+                    onClick={selectRow}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault()
+                        selectRow()
+                      }
+                    }}
+                  >
+                    <td>{waypoint.seq}</td>
+                    <td>{Math.round(waypoint.x * 10) / 10}</td>
+                    <td>{Math.round(waypoint.y * 10) / 10}</td>
+                    <td>{Math.round(waypoint.z * 10) / 10}</td>
+                    <td>{waypoint.actions.length ? waypoint.actions.map((action) => action.label).join(' · ') : 'Fly to point'}</td>
+                    <td>{formatTime(arrivalTime)}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   )
