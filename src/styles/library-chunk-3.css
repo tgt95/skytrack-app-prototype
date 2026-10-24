@@ -1,361 +1,52 @@
 /* ------------------------- library: entry-point parity additions -------- */
 
 .ms-lib-navitem:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
-a.ms-lib-navitem {
-  text-decoration: none;
-}
-
-.ms-lib-external {
-  width: 0.75rem;
-  height: 0.75rem;
-  margin-left: auto;
-  color: var(--muted-foreground);
-  flex: 0 0 auto;
-}
-
-.ms-lib-crumb {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.25rem;
-  font-size: 0.8125rem;
-  color: var(--muted-foreground);
-}
-
-.ms-lib-crumb-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  border: 0;
-  padding: 0.125rem;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  border-radius: var(--radius);
-}
-
-.ms-lib-crumb-link svg {
-  width: 0.875rem;
-  height: 0.875rem;
-}
-
-.ms-lib-crumb-link:hover {
-  color: var(--primary);
-}
-
-.ms-lib-row-actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  flex: 0 0 auto;
+  @apply opacity-[0.45] cursor-not-allowed;
 }
 
 /* Dashed New Mission / New Project entry card (mirrors NewItemButton). */
-.ms-lib-newitem {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 12.875rem;
-  width: 100%;
-  padding: 1rem;
-  border: 0.09375rem dashed var(--border);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--primary);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.ms-lib-newitem svg {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-.ms-lib-newitem:hover {
-  border-color: var(--primary);
-  background: var(--accent);
-}
-
-.ms-lib-card-toprow {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.ms-lib-card-title.is-link {
-  border: 0;
-  padding: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-align: left;
-  cursor: pointer;
-  border-radius: var(--radius);
-}
-
-.ms-lib-card-title.is-link:hover {
-  color: var(--primary);
-}
-
-.ms-lib-card-tools {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.125rem;
-  flex: 0 0 auto;
-}
-
-.ms-lib-link {
-  align-self: flex-start;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  color: var(--primary);
-  font-size: 0.75rem;
-  cursor: pointer;
-  border-radius: var(--radius);
-}
-
-.ms-lib-link:hover {
-  text-decoration: underline;
-}
-
-.ms-lib-card-badgerow {
-  display: flex;
-}
-
-.ms-lib-inline-icon {
-  width: 0.75rem;
-  height: 0.75rem;
-  vertical-align: -0.0625rem;
-}
 
 /* These card types use their own artwork or surface treatment. */
 .ms-lib-thumb.is-template,
 .ms-lib-thumb.is-learn,
 .ms-lib-thumb.is-project {
-  background-image: none;
-}
-
-.ms-lib-thumb.is-mission svg {
-  width: 4rem;
-  height: 4rem;
-  /* opacity: 0.9; */
+  @apply bg-none;
 }
 
 .ms-lib-thumb.is-project {
-  color: var(--muted-foreground);
-  background-color: var(--muted);
-}
-
-.ms-lib-thumb.is-project svg {
-  width: 2.25rem;
-  height: 2.25rem;
+  @apply text-(--muted-foreground) bg-(--muted);
 }
 
 .ms-template-thumbnail {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-}
-
-.ms-lib-thumb-art {
-  display: block;
-  width: 72%;
-  height: 56%;
-  border: 0.0625rem solid color-mix(in srgb, var(--foreground) 25%, transparent);
-  border-radius: var(--radius);
-  background:
-    repeating-linear-gradient(to right,
-      color-mix(in srgb, var(--foreground) 18%, transparent) 0 0.0625rem,
-      transparent 0.0625rem 1.375rem),
-    repeating-linear-gradient(to bottom,
-      color-mix(in srgb, var(--foreground) 18%, transparent) 0 0.0625rem,
-      transparent 0.0625rem 1rem),
-    color-mix(in srgb, var(--foreground) 8%, transparent);
+  @apply absolute inset-0 block w-full h-full object-cover rounded-[inherit];
 }
 
 .ms-lib-thumb.tint-0 {
-  background-color: color-mix(in srgb, var(--primary) 26%, var(--card));
-}
-
-.ms-lib-thumb.tint-1 {
-  background-color: color-mix(in srgb, var(--primary) 16%, var(--muted));
+  @apply bg-[color-mix(in_srgb,var(--primary)_26%,var(--card))];
 }
 
 .ms-lib-thumb.tint-2 {
-  background-color: var(--muted);
-}
-
-.ms-lib-thumb.tint-3 {
-  background-color: color-mix(in srgb, var(--accent) 70%, var(--card));
+  @apply bg-(--muted);
 }
 
 .ms-lib-thumb.tint-4 {
-  background-color: color-mix(in srgb, var(--primary) 10%, var(--card));
+  @apply bg-[color-mix(in_srgb,var(--primary)_10%,var(--card))];
 }
 
 .ms-lib-thumb.tint-5 {
-  background-color: color-mix(in srgb, var(--primary) 32%, var(--muted));
+  @apply bg-[color-mix(in_srgb,var(--primary)_32%,var(--muted))];
 }
 
 .ms-lib-thumb.is-learn {
-  color: var(--primary);
-}
-
-.ms-lib-thumb.is-learn svg {
-  width: 2.75rem;
-  height: 2.75rem;
-  opacity: 0.85;
-}
-
-.ms-lib-thumb.large {
-  border: 0.0625rem solid var(--border);
-  border-radius: var(--radius);
-}
-
-.ms-lib-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  padding: 3rem 1.5rem;
-  text-align: center;
-  background: oklch(from var(--muted) calc(l * 1.01) c h);
-}
-
-.ms-lib-empty-icon {
-  display: inline-flex;
-  color: var(--muted-foreground);
-  width: 2.5rem;
-  height: 2.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.ms-lib-empty-icon svg {
-  width: 2.5rem;
-  height: 2.5rem;
-}
-
-.ms-lib-empty-title {
-  margin: 0 0 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.ms-lib-empty>.ms-hint {
-  font-size: 0.875rem;
-  margin: 0;
-}
-
-.ms-lib-search {
-  max-width: 20rem;
-  margin: 0.75rem 0;
-}
-
-.ms-lib-detail {
-  display: grid;
-  grid-template-columns: minmax(17.5rem, 30rem) minmax(0, 1fr);
-  gap: 1.25rem;
-  align-items: start;
-}
-
-.ms-lib-detail-body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  min-width: 0;
-}
-
-.ms-lib-detail-body h1 {
-  margin: 0;
-}
-
-.ms-lib-desc {
-  margin: 0;
-  font-size: 0.8125rem;
-  line-height: 1.6;
+  @apply text-(--primary);
 }
 
 .ms-lib-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 0.25rem 0;
+  @apply flex flex-col gap-[0.75rem] p-[0.25rem_0];
 }
 
 .ms-lib-select {
-  width: 100%;
-}
-
-.ms-lib-sharelist {
-  list-style: none;
-  margin: 1rem 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  max-width: 32.5rem;
-}
-
-.ms-lib-share-row {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  border: 0.0625rem solid var(--border);
-  border-radius: var(--radius);
-  background: var(--card);
-  padding: 0.625rem 0.75rem;
-}
-
-.ms-lib-share-row>span:last-child {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-}
-
-.ms-lib-env,
-.ms-lib-admin {
-  font-size: 0.625rem;
-  font-weight: 600;
-  border: 0.0625rem solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 0 0.375rem;
-  color: var(--muted-foreground);
-  background: var(--background);
-  white-space: nowrap;
-}
-
-.ms-lib-admin {
-  color: var(--primary);
-}
-
-.ms-lib-newitem:focus-visible,
-.ms-lib-link:focus-visible,
-.ms-lib-crumb-link:focus-visible,
-.ms-lib-card-title.is-link:focus-visible {
-  outline: 0.125rem solid var(--primary);
-  outline-offset: 0.0625rem;
-}
-
-@media (max-width: 61.25rem) {
-  .ms-lib-detail {
-    grid-template-columns: 1fr;
-  }
+  @apply w-full;
 }
 
 /* ------------------------- library: Figma Home light pass (195:13546) --- */
@@ -366,348 +57,62 @@ a.ms-lib-navitem {
 
 /* Content rhythm follows the supplied hierarchy while shape and color resolve
    from skytrack-ui tokens. */
-.ms-lib-grid.is-recent {
-  /* gap: 0.5rem; */
-}
 
-.ms-lib-grid.is-recent .ms-lib-card-title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.ms-lib-drone-profile-card {
-  position: relative;
-  cursor: default;
-}
-
-.ms-lib-drone-profile-card .ms-lib-card-body {
-  flex: 1;
-}
-
-.ms-lib-drone-component-count {
-  color: var(--muted-foreground);
-  font-size: 0.6875rem;
-  line-height: 1.45;
-}
-
-.ms-lib-drone-card-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0 0.75rem 0.75rem;
-}
-
-.ms-drone-dialog {
-  max-height: min(95dvh, 100%);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.ms-resource-dialog {
-  max-height: min(90dvh, 100%);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.ms-resource-note,
-.ms-resource-error {
-  margin: 0;
-  color: var(--muted-foreground);
-  font-size: 0.75rem;
-  line-height: 1.5;
+.ms-resource-note {
+  @apply m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.5];
 }
 
 .ms-resource-note {
-  grid-column: 1 / -1;
-  padding: 0.625rem 0.75rem;
-  border: 0.0625rem solid var(--border);
-  border-radius: var(--radius);
-  background: var(--muted);
-}
-
-.ms-resource-error {
-  color: var(--destructive);
+  @apply col-span-full p-[0.625rem_0.75rem] [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-(--muted);
 }
 
 .ms-drone-dialog-body {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  min-height: 0;
-  overflow: auto;
+  @apply flex flex-col gap-[1.5rem] min-h-0 overflow-auto;
 }
 
 .ms-drone-form-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  @apply flex flex-col gap-[0.75rem];
 }
 
 .ms-drone-section-heading {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1875rem;
+  @apply flex flex-col gap-[0.1875rem];
 }
 
-.ms-drone-section-heading h2 {
-  margin: 0;
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.ms-drone-section-heading p,
 .ms-drone-empty-components {
-  margin: 0;
-  color: var(--muted-foreground);
-  font-size: 0.75rem;
-  line-height: 1.5;
+  @apply m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.5];
 }
 
 .ms-drone-form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
+  @apply grid grid-cols-2 gap-[0.75rem];
 }
 
 .ms-drone-form-wide {
-  grid-column: 1 / -1;
-}
-
-.ms-drone-components-heading {
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.875rem;
-}
-
-.ms-drone-component-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.ms-drone-component-row {
-  display: grid;
-  grid-template-columns:
-    2rem minmax(9.0625rem, 1.1fr) minmax(9.6875rem, 1.3fr) minmax(9.6875rem, 1.3fr) 2rem;
-  align-items: end;
-  gap: 0.5rem;
-  padding: 0.625rem;
-  border: 0.0625rem solid var(--border);
-  border-radius: var(--radius);
-  background: var(--card);
-}
-
-.ms-drone-component-index {
-  display: flex;
-  align-items: center;
-  height: 2.25rem;
-  color: var(--muted-foreground);
-  font-size: 0.6875rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.ms-drone-remove-component {
-  margin-bottom: 0.0625rem;
-}
-
-.ms-drone-component-details {
-  grid-column: 1 / -1;
-  border-top: 0.0625rem solid var(--border);
-  padding-top: 0.5rem;
-}
-
-.ms-drone-component-details summary {
-  width: fit-content;
-  color: var(--muted-foreground);
-  font-size: 0.75rem;
-  cursor: pointer;
-}
-
-.ms-drone-component-detail-body {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding-top: 0.75rem;
-}
-
-.ms-drone-specifications-heading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.ms-drone-specifications-heading h3 {
-  margin: 0 0 0.1875rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.ms-drone-specifications-heading p {
-  max-width: 35rem;
-  margin: 0;
-  color: var(--muted-foreground);
-  font-size: 0.6875rem;
-  line-height: 1.45;
-}
-
-.ms-drone-specification-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.ms-drone-specification-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 2rem;
-  align-items: end;
-  gap: 0.5rem;
+  @apply col-span-full;
 }
 
 .ms-drone-reference-warning {
-  margin: 0 1.25rem 1.125rem;
-  padding: 0.75rem;
-  border: 0.0625rem solid var(--border);
-  border-radius: var(--radius);
-  background: var(--muted);
-  color: var(--foreground);
-  font-size: 0.75rem;
-  line-height: 1.5;
-}
-
-.ms-drone-reference-warning p {
-  margin: 0 0 0.5rem;
-}
-
-.ms-drone-reference-warning ul {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3125rem;
-  margin: 0;
-  padding-left: 1.125rem;
-}
-
-.ms-drone-reference-warning li span {
-  margin-left: 0.375rem;
-  color: var(--muted-foreground);
+  @apply m-[0_1.25rem_1.125rem] p-[0.75rem] [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-(--muted) text-(--foreground) text-[0.75rem] leading-[1.5];
 }
 
 @media (max-width: 45rem) {
   .ms-drone-dialog-body {
-    padding: 0.25rem 0.875rem 0.5rem;
+    @apply p-[0.25rem_0.875rem_0.5rem];
   }
 
   .ms-drone-form-grid {
-    grid-template-columns: minmax(0, 1fr);
+    @apply grid-cols-[minmax(0,1fr)];
   }
 
   .ms-drone-form-wide {
-    grid-column: auto;
-  }
-
-  .ms-drone-components-heading {
-    align-items: flex-start;
-  }
-
-  .ms-drone-component-row {
-    grid-template-columns: 1.75rem minmax(0, 1fr) 2rem;
-  }
-
-  .ms-drone-component-row .ms-drone-group-field,
-  .ms-drone-component-row .ms-drone-purpose-field {
-    grid-column: 2;
-  }
-
-  .ms-drone-component-index {
-    grid-row: 1 / span 3;
-    align-items: flex-start;
-    padding-top: 1.75rem;
-  }
-
-  .ms-drone-specifications-heading {
-    flex-direction: column;
-  }
-
-  .ms-drone-specification-row {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 2rem;
-  }
-
-  .ms-drone-remove-component {
-    grid-column: 3;
-    grid-row: 1;
+    @apply col-auto;
   }
 }
 
 /* Recent-mission drone thumbnail: line-art drone on a faint grid, 4:3. */
-.ms-lib-thumb.is-drone {
-  color: var(--muted-foreground);
-}
-
-.ms-lib-thumb.is-drone svg {
-  width: 4.5rem;
-  height: 4.5rem;
-  opacity: 0.8;
-}
 
 /* Default mission thumbnail (Figma 500:14641, local asset). The source is a
    dark line-art render; in light mode it is inverted to read as dark art on
    a light ground, approximating the Figma light card. */
-.ms-lib-thumbimg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  border-radius: inherit;
-}
-
-.ms-lib-thumbimg svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  border-radius: inherit;
-}
-
-.ms-lib-thumb.is-mission .ms-lib-thumbimg svg,
-.ms-lib-thumb.is-drone .ms-lib-thumbimg svg {
-  width: 100%;
-  height: 100%;
-}
 
 /* Template photo placeholder: abstract terrain gradients (no photo assets
    in this slice). */
-.ms-lib-thumb.is-photo {
-  background-image: none;
-  background:
-    linear-gradient(180deg,
-      transparent 0 42%,
-      color-mix(in srgb, var(--primary) 14%, transparent) 42% 100%),
-    linear-gradient(115deg,
-      color-mix(in srgb, var(--primary) 22%, var(--muted)) 0 38%,
-      var(--muted) 38% 62%,
-      color-mix(in srgb, var(--foreground) 10%, var(--muted)) 62% 100%);
-}
-
-.ms-lib-thumb.is-photo .ms-lib-thumb-art {
-  width: 34%;
-  height: 30%;
-  border: 0;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 50% 42%,
-      color-mix(in srgb, var(--primary) 55%, transparent) 0 26%,
-      transparent 27%),
-    linear-gradient(180deg,
-      transparent 46%,
-      color-mix(in srgb, var(--primary) 30%, transparent) 46% 54%,
-      transparent 54%),
-    linear-gradient(90deg,
-      transparent 48%,
-      color-mix(in srgb, var(--primary) 30%, transparent) 48% 52%,
-      transparent 52%);
-  opacity: 0.8;
-}
-

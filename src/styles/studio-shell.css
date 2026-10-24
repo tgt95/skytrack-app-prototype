@@ -1,159 +1,41 @@
 /* ------------------------- top bar ------------------------- */
 
-.ms-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  border-bottom: 0.0625rem solid var(--border);
-  background: var(--card);
-  flex: 0 0 auto;
-}
-
-.ms-crumb {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 0;
-  flex: 1 1 auto;
-  overflow: hidden;
-  font-size: 0.8125rem;
-}
-
-.ms-crumb-logo {
-  flex: 0 0 auto;
-  display: block;
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
 .ms-crumb-dim {
-  color: var(--muted-foreground);
+  @apply text-(--muted-foreground);
 }
 
 .ms-crumb-separator {
-  color: var(--muted-foreground);
+  @apply text-(--muted-foreground);
 }
 
 .ms-crumb-name {
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 20rem;
+  @apply font-semibold overflow-hidden text-ellipsis whitespace-nowrap max-w-[20rem];
 }
 
 /* Breadcrumb links (P2 slice): logo returns to library home, project name
    opens its project-detail. Plain-button reset over crumb tokens. */
 .ms-crumb-btn {
-  background: transparent;
-  border: 0;
+  @apply bg-transparent [border:0];
   /* padding: 0.125rem; */
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  border-radius: var(--radius);
+  @apply [font:inherit] text-inherit cursor-pointer rounded-(--radius);
 }
 
 .ms-crumb-btn:hover {
-  color: var(--primary);
+  @apply text-(--primary);
 }
 
 .ms-crumb-btn:focus-visible {
-  outline: 0.125rem solid var(--primary);
-  outline-offset: 0.0625rem;
-}
-
-.ms-crumb-home {
-  display: inline-flex;
-  align-items: center;
-}
-
-.ms-stage {
-  display: flex;
-  gap: 0.125rem;
-  padding: 0.125rem;
-  border: 0.0625rem solid var(--border);
-  border-radius: var(--radius);
-  background: var(--background);
-}
-
-.ms-top-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  flex: 0 0 auto;
-}
-
-.ms-gate {
-  margin: 0;
-  padding: 0.375rem 0.75rem;
-  font-size: 0.75rem;
-  color: var(--muted-foreground);
-  background: var(--background);
-  border-bottom: 0.0625rem solid var(--border);
-  flex: 0 0 auto;
+  @apply [outline:0.125rem_solid_var(--primary)] outline-offset-1;
 }
 
 /* ------------------------- body ------------------------- */
 
-.ms-body {
-  display: flex;
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-.ms-rail {
-  flex: 0 0 3.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
-  border-right: 0.0625rem solid var(--border);
-  background: var(--card);
-  overflow-y: auto;
-}
-
-.ms-rail-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
 /* Bottom-pinned tool cluster: the app tabs stay at the top of the persistent
    sidebar while the mission tools sit at its bottom on desktop. */
-.ms-rail-bottom {
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.625rem;
-}
 
 /* The DS Toolbar ships a bordered box; on the rail the tool cluster stays
    transparent and borderless like before. */
-.ms-rail-bottom.ms-rail-bottom {
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  padding: 0;
-}
 
-.ms-rail-label {
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--muted-foreground);
+.ms-seq-badge:focus-visible {
+  @apply [outline:0.125rem_solid_var(--primary)] outline-offset-1;
 }
-
-.ms-seq-badge:focus-visible,
-.ms-zone-name:focus-visible,
-.ms-event-row:focus-visible {
-  outline: 0.125rem solid var(--primary);
-  outline-offset: 0.0625rem;
-}
-

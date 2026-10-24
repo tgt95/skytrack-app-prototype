@@ -26,13 +26,13 @@
   {
     "id": "t5",
     "title": "Industrial Facility 3D LiDAR Mapping",
-    "desc": "LiDAR lawnmower over material stockpiles for volumetric measurement. (mock completion)",
+    "desc": "LiDAR lawnmower over material stockpiles for volumetric measurement.",
     "byline": "By SkyTrack Team"
   },
   {
     "id": "t6",
     "title": "Plant Equipment Visual Inspection",
-    "desc": "Stills around pipes/stacks/equipment for industrial plant visual inspection. (mock completion)",
+    "desc": "Stills around pipes/stacks/equipment for industrial plant visual inspection.",
     "byline": "By SkyTrack Team"
   },
   {
@@ -50,13 +50,13 @@
   {
     "id": "t9",
     "title": "Crane & Structure LiDAR Inspection",
-    "desc": "Close LiDAR pass around the tower crane & structure for structural inspection. (mock completion)",
+    "desc": "Close LiDAR pass around the tower crane & structure for structural inspection.",
     "byline": "By SkyTrack Team"
   },
   {
     "id": "t10",
     "title": "Construction Progress Documentation",
-    "desc": "Orbit/grid stills of the construction site for weekly progress documentation. (mock completion)",
+    "desc": "Orbit/grid stills of the construction site for weekly progress documentation.",
     "byline": "By SkyTrack Team"
   }
 ]

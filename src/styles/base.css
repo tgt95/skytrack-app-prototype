@@ -2,43 +2,14 @@
    skytrack-ui; only semantic tokens (var(--*)) are used here, no palette. */
 
 .ms-root {
-  display: flex;
-  flex-direction: column;
-  height: calc(100dvh - 3.125rem);
-  min-height: 35rem;
-  background: var(--background);
-  color: var(--foreground);
-  font-size: 0.8125rem;
+  @apply flex flex-col h-[calc(100dvh-3.125rem)] min-h-[35rem] bg-(--background) text-(--foreground) text-[0.8125rem];
 }
 
 /* Keep dialog actions compact and aligned to the right at every viewport. */
-[data-slot='dialog-footer'] {
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-[data-slot='dialog-footer'] > [data-slot='button'],
-[data-slot='dialog-footer'] > [data-slot='dialog-close'] {
-  width: auto;
-  flex: 0 0 auto;
-}
-
-.mission-studio-host .sample-header {
-  display: none;
-}
-
-.mission-studio-host .ms-root {
-  height: 100dvh;
+[data-slot="dialog-footer"] {
+  @apply flex-row flex-wrap items-center justify-end;
 }
 
 .ms-sr {
-  position: absolute;
-  width: 0.0625rem;
-  height: 0.0625rem;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
+  @apply absolute w-px h-px overflow-hidden [clip:rect(0_0_0_0)] whitespace-nowrap;
 }
-

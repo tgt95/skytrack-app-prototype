@@ -1,6 +1,6 @@
 /* Local syntax-highlighted Python draft editor. Script contents remain a non-executing UI draft. */
 
-import { useRef, useState } from 'react'
+import { useRef, useState } from "react";
 
 export const PYTHON_SAMPLE = `"""This sample demonstrates how to control a drone using Python. You can customize the flight scenario by adding additional steps."""
 
@@ -26,60 +26,116 @@ def main() -> None:
         drone.run()
 
 if __name__ == "__main__":
-    main()`
+    main()`;
 
 function pythonTokens(line: string) {
-  const pattern = /("""[^"\n]*"""|"[^"\n]*"|'[^'\n]*'|#.*$|\b(?:from|import|def|yield|with|as|if|None)\b|\b\d+(?:\.\d+)?\b|[()[\],:=])/g
-  const parts: React.ReactNode[] = []
-  let start = 0
+  const pattern =
+    /("""[^"\n]*"""|"[^"\n]*"|'[^'\n]*'|#.*$|\b(?:from|import|def|yield|with|as|if|None)\b|\b\d+(?:\.\d+)?\b|[()[\],:=])/g;
+  const parts: React.ReactNode[] = [];
+  let start = 0;
   for (const match of line.matchAll(pattern)) {
-    const index = match.index ?? 0
-    if (index > start) parts.push(line.slice(start, index))
-    const token = match[0]
-    const kind = token.startsWith('#') ? 'comment'
-      : token.startsWith('"') || token.startsWith("'") ? 'string'
-        : /^\d/.test(token) ? 'number'
-          : /^[a-zA-Z]/.test(token) ? 'keyword' : 'punctuation'
-    parts.push(<span className={`ms-python-token-${kind}`} key={index}>{token}</span>)
-    start = index + token.length
+    const index = match.index ?? 0;
+    if (index > start) parts.push(line.slice(start, index));
+    const token = match[0];
+    const kind = token.startsWith("#")
+      ? "comment"
+      : token.startsWith('"') || token.startsWith("'")
+        ? "string"
+        : /^\d/.test(token)
+          ? "number"
+          : /^[a-zA-Z]/.test(token)
+            ? "keyword"
+            : "punctuation";
+    parts.push(
+      <span className={`ms-python-token-${kind}`} key={index}>
+        {token}
+      </span>,
+    );
+    start = index + token.length;
   }
-  if (start < line.length) parts.push(line.slice(start))
-  return parts
+  if (start < line.length) parts.push(line.slice(start));
+  return parts;
 }
 
-export function PythonEditor({ value, onChange }: { value: string; onChange: (value: string) => void }) {
-  const mirrorRef = useRef<HTMLDivElement>(null)
-  const [activeLine, setActiveLine] = useState(1)
-  const lines = value.split('\n')
+export function PythonEditor({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const mirrorRef = useRef<HTMLDivElement>(null);
+  const [activeLine, setActiveLine] = useState(1);
+  const lines = value.split("\n");
 
   return (
-    <div className='ms-python-editor'>
-      <div className='ms-python-mirror' ref={mirrorRef} aria-hidden='true'>
+    <div
+      className={
+        ' [--ms-code-canvas:var(--foreground)] [--ms-code-ink:var(--background)] relative flex-[1_1_auto] min-h-0 bg-(--ms-code-canvas) text-(--ms-code-ink) font-["IBM_Plex_Mono",ui-monospace,SFMono-Regular,Menlo,monospace] text-[0.75rem] leading-[1.55] [font-variant-ligatures:none] in-[.dark]:[--ms-code-canvas:var(--background)] in-[.dark]:[--ms-code-ink:var(--foreground)]'
+      }
+      data-testid="ms-python-editor"
+    >
+      <div
+        className=" absolute inset-0 box-border w-full h-full m-0 overflow-auto [font:inherit] leading-[inherit] tracking-[inherit] tab-4 p-[0.75rem_0.75rem_0.75rem_0] pointer-events-none"
+        ref={mirrorRef}
+        aria-hidden="true"
+        data-testid="ms-python-mirror"
+      >
         {lines.map((line, index) => (
-          <div className={`ms-python-line${activeLine === index + 1 ? ' is-active' : ''}`} key={index}>
-            <span className='ms-python-number'>{index + 1}</span>
-            <span className='ms-python-source'>{pythonTokens(line) || ' '}</span>
+          <div
+            className={[
+              `ms-python-line${activeLine === index + 1 ? " is-active" : ""}`,
+              "grid grid-cols-[2.375rem_minmax(0,1fr)] min-h-[1.55em]",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            key={index}
+          >
+            <span
+              className=" pr-[0.5rem] text-right text-[color-mix(in_srgb,var(--ms-code-ink)_54%,transparent)] [user-select:none] [.ms-python-line.is-active_&]:bg-[color-mix(in_srgb,var(--primary)_22%,var(--ms-code-canvas))] [.ms-python-line.is-active_&]:text-(--ms-code-ink)"
+              data-testid="ms-python-number"
+            >
+              {index + 1}
+            </span>
+            <span
+              data-testid="ms-python-source"
+              className="pl-[0.625rem] whitespace-pre-wrap wrap-anywhere"
+            >
+              {pythonTokens(line) || " "}
+            </span>
           </div>
         ))}
       </div>
       <textarea
-        id='ms-code-editor'
-        className='ms-python-input'
-        aria-label='Python mission script draft'
-        aria-describedby='ms-code-limit'
+        id="ms-code-editor"
+        className=" absolute inset-0 box-border w-full h-full m-0 overflow-auto [font:inherit] leading-[inherit] tracking-[inherit] tab-4 z-1 block p-[0.75rem_0.75rem_0.75rem_3rem] [border:0] rounded-none resize-none -outline-offset-2 bg-transparent text-transparent [-webkit-text-fill-color:transparent] caret-(--ms-code-ink) whitespace-pre-wrap wrap-anywhere [&::selection]:bg-[color-mix(in_srgb,var(--primary)_42%,transparent)]"
+        aria-label="Python mission script draft"
+        aria-describedby="ms-code-limit"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         onScroll={(event) => {
           if (mirrorRef.current) {
-            mirrorRef.current.scrollTop = event.currentTarget.scrollTop
-            mirrorRef.current.scrollLeft = event.currentTarget.scrollLeft
+            mirrorRef.current.scrollTop = event.currentTarget.scrollTop;
+            mirrorRef.current.scrollLeft = event.currentTarget.scrollLeft;
           }
         }}
-        onClick={(event) => setActiveLine(event.currentTarget.value.slice(0, event.currentTarget.selectionStart).split('\n').length)}
-        onKeyUp={(event) => setActiveLine(event.currentTarget.value.slice(0, event.currentTarget.selectionStart).split('\n').length)}
+        onClick={(event) =>
+          setActiveLine(
+            event.currentTarget.value
+              .slice(0, event.currentTarget.selectionStart)
+              .split("\n").length,
+          )
+        }
+        onKeyUp={(event) =>
+          setActiveLine(
+            event.currentTarget.value
+              .slice(0, event.currentTarget.selectionStart)
+              .split("\n").length,
+          )
+        }
         spellCheck={false}
-        wrap='soft'
+        wrap="soft"
       />
     </div>
-  )
+  );
 }

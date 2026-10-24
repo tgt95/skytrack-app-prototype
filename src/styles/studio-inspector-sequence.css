@@ -1,339 +1,60 @@
 /* Per-object mission blocks and derived, non-editable transfer previews. */
 .ms-object-block {
-  padding: 0;
+  @apply p-0;
 
-  .ms-route-head {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-    min-width: 0;
-    padding: 0.75rem;
-
-    +.ms-recon-control-group {
-      >.ms-recon-control-row:first-child {
-        padding-top: 0;
-      }
-    }
-  }
-
-  .ms-route-name {
-    flex: 0 0 auto;
-    min-width: 0;
-    white-space: nowrap;
-  }
-
-  .ms-route-stats {
-    display: block;
-    flex: 1 1 0;
-    margin-left: auto;
-    min-width: 0;
-    overflow: hidden;
-    text-align: right;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .ms-hint {
-    padding: 0.75rem;
-  }
-
-  &.is-selected,
   &.is-editing {
-    border-color: var(--primary);
-  }
-}
-
-.ms-route-block {
-
-  .ms-route-head,
-  .ms-route-name,
-  .ms-route-stats {
-    min-width: 0;
-  }
-
-  .ms-route-head {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem;
-  }
-
-  .ms-route-name {
-    flex: 0 0 auto;
-    white-space: nowrap;
-  }
-
-  .ms-route-stats {
-    display: block;
-    flex: 1 1 0;
-    margin-left: auto;
-    overflow: hidden;
-    text-align: right;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .ms-field {
-    display: grid;
-    grid-template-columns: minmax(6.25rem, 1fr) minmax(6.875rem, 1.3fr);
-    align-items: center;
-    gap: 0.5rem;
-
-    >label,
-    [data-slot="field-label"] {
-      white-space: nowrap;
-    }
+    @apply border-(--primary);
   }
 }
 
 .ms-route-title-group {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  flex: 0 0 auto;
-  min-width: 0;
-  white-space: nowrap;
+  @apply flex items-center gap-[0.375rem] flex-[0_0_auto] min-w-0 whitespace-nowrap;
 }
 
 .ms-route-icon {
-  width: 1rem;
-  height: 1rem;
-  color: var(--foreground);
-  flex-shrink: 0;
+  @apply w-[1rem] h-[1rem] text-(--foreground) shrink-0;
 }
 
 .ms-route-actions {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-.ms-zone-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.ms-slider-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  margin-bottom: 0.5rem;
-}
-
-.ms-slider-label {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--foreground);
-}
-
-.ms-slider-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-}
-
-.ms-slider-track-wrap {
-  flex: 1 1 auto;
-  display: flex;
-  align-items: center;
-  min-width: 0;
-}
-
-.ms-slider-val-box {
-  flex: 0 0 4.25rem;
-}
-
-.ms-insert-action-zone {
-  position: relative;
-  height: 0;
-  padding: 0.4375rem 0;
-  margin: -0.4375rem 0;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  z-index: 2;
-  list-style: none;
-  overflow: visible;
-}
-
-.ms-insert-action-line {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 0.125rem;
-  transform: translateY(-50%);
-  background: var(--primary);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 120ms ease;
+  @apply flex items-center gap-0 ml-auto shrink-0;
 }
 
 /* Hover add-affordance (feedback #3): circle sits on the line at the left
    edge of the sequence, full-width violet line behind it. The zone itself
    takes no layout space so rows stay touching; its padding is the hover
    target straddling the seam. */
-.ms-insert-action-btn {
-  position: absolute;
-  top: 0;
-  left: 0.75rem;
-  z-index: 3;
-  width: 1rem;
-  height: 1rem;
-  padding: 0;
-  transform: translate(0, -25%);
-  border-radius: var(--radius);
-  background: var(--card);
-  color: var(--primary);
-  border: 0.09375rem solid var(--primary);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  cursor: pointer;
-  transition:
-    opacity 120ms ease,
-    transform 120ms ease;
-}
-
-.ms-insert-action-btn svg {
-  width: 0.75rem;
-  height: 0.75rem;
-}
-
-.ms-insert-action-zone:hover .ms-insert-action-line,
-.ms-insert-action-zone:focus-within .ms-insert-action-line {
-  opacity: 0.75;
-}
-
-.ms-insert-action-zone:hover .ms-insert-action-btn,
-.ms-insert-action-zone:focus-within .ms-insert-action-btn {
-  opacity: 1;
-  transform: scale(1.08);
-}
 
 .ms-insert-action-menu {
-  min-width: 13.125rem;
-}
-
-.ms-action-tag-mini {
-  margin-right: 0.375rem;
-  font-size: 0.8125rem;
-}
-
-.ms-action-tag-mini svg {
-  width: 0.875rem;
-  height: 0.875rem;
-  vertical-align: -0.125rem;
+  @apply min-w-[13.125rem];
 }
 
 /* Action rows sit at the same level as waypoint rows (feedback #2/#3):
    no indent, same surface, touching borders via the tight list rules. */
 .ms-seq-action-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.3125rem 0 0.3125rem 0.25rem;
-  margin: 0;
-  background: var(--card);
-  border: 0.0625rem solid var(--border);
-  border-radius: var(--radius);
-  font-size: 0.75rem;
-  list-style: none;
-}
-
-.ms-seq-action-row > button:last-child {
-  margin-right: 0.25rem;
+  @apply flex items-center gap-[0.5rem] p-[0.3125rem_0_0.3125rem_0.25rem] bg-(--card) [border:0.0625rem_solid_var(--border)] text-[0.75rem] [list-style:none];
 }
 
 .ms-seq-action-row.is-grabbed {
-  border-color: var(--primary);
-  border-style: dashed;
-}
-
-.ms-seq-action-row.is-grabbed .ms-action-drag-handle {
-  color: var(--primary);
-  cursor: grabbing;
+  @apply border-(--primary) border-dashed;
 }
 
 .ms-action-label {
-  flex: 1 1 auto;
-  color: var(--foreground);
-  font-weight: 500;
+  @apply flex-[1_1_auto] text-(--foreground) font-medium;
 }
 
 .ms-action-camera-angle {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  white-space: nowrap;
-
-  >span:first-child {
-    color: var(--muted-foreground);
-  }
+  @apply flex items-center gap-[0.25rem] whitespace-nowrap;
 }
 
 .ms-avoid-type-toggle {
-  margin-bottom: 0.625rem;
-}
-
-.ms-transfer-preview {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  padding: 0.5rem 0.625rem;
-  border: 0.0625rem dashed var(--border);
-  border-radius: var(--radius);
-  color: var(--muted-foreground);
-  background: color-mix(in srgb, var(--primary) 6%, var(--background));
-  font-size: 0.75rem;
+  @apply mb-[0.625rem];
 }
 
 /* Pane tab bar (Figma 607:18957): pill Design/Code switch + icon actions. */
-.ms-pane-tabs {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-}
 
 /* Unified pane head (feedback #1/#5): tabs and Mission settings share one
    card background with a bottom border under the whole block. Only this head
    block goes edge-to-edge; cards below keep side padding. */
-.ms-pane-head {
-  position: sticky;
-  top: 0;
-  margin: -0.75rem -0.75rem 0;
-  background: var(--card);
-  border-bottom: 0.0625rem solid var(--border);
-  z-index: 2;
-}
-
-.ms-pane-head .ms-settings {
-  margin: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-
-.ms-pane-tabs-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.125rem;
-}
-
-.ms-vdivider {
-  width: 0.0625rem;
-  height: 1.5rem;
-  margin: 0 0.25rem;
-  background: var(--border);
-}
 
 /* .ms-seq-static-accent {
   background-color: var(--background);
@@ -342,184 +63,22 @@
 } */
 
 /* Mission settings section (Figma 607:18957). */
-.ms-settings-head {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.ms-settings-head .ms-card-title {
-  margin: 0;
-}
-
-.ms-settings-spacer {
-  flex: 1 1 auto;
-}
 
 .ms-data-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  min-height: 2rem;
-  font-size: 0.75rem;
-}
-
-.ms-data-right {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  min-width: 0;
-}
-
-.ms-data-right .ms-axis {
-  display: none;
-}
-
-.ms-data-right .ms-axis-number-field {
-  flex: 0 0 4rem;
-  width: 4rem;
+  @apply flex items-center justify-between gap-[0.5rem] min-h-[2rem] text-[0.75rem];
 }
 
 .ms-data-select {
-  min-width: 9.375rem;
-  max-width: 11.875rem;
-  font-size: 0.75rem;
-}
-
-.ms-unit {
-  font-size: 0.75rem;
-  color: var(--muted-foreground);
+  @apply min-w-[9.375rem] max-w-[11.875rem] text-[0.75rem];
 }
 
 /* Block header mini-stats (Figma 607:18957 info triples). */
 .ms-stat {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.75rem;
-  color: var(--muted-foreground);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.ms-stat svg {
-  width: 0.875rem;
-  height: 0.875rem;
+  @apply inline-flex items-center gap-[0.25rem] text-[0.75rem] text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap;
 }
 
 /* START / TRANS / END sequence marker rows (Figma 607:18957). */
-.ms-seq-marker .ms-seq-badge,
-.ms-seq-trans .ms-seq-badge {
-  border-color: var(--border);
-  color: var(--muted-foreground);
-  font-size: 0.625rem;
-}
 
 .ms-seq-marker-label {
-  flex: 1 1 auto;
-  min-width: 0;
-  font-size: 0.75rem;
-  color: var(--muted-foreground);
+  @apply flex-[1_1_auto] min-w-0 text-[0.75rem] text-(--muted-foreground);
 }
-
-.ms-seq-trans {
-  border-style: dashed;
-  background: color-mix(in srgb, var(--primary) 6%, var(--background));
-  /* background: color-mix(in srgb, var(--primary) 6%, var(--background)); */
-}
-
-.ms-seq-dist {
-  flex: 0 0 auto;
-  font-size: 0.6875rem;
-  color: var(--muted-foreground);
-  font-variant-numeric: tabular-nums;
-}
-
-.ms-end-switch {
-  margin-left: auto;
-}
-
-.ms-transfer-preview strong {
-  color: var(--foreground);
-  font-weight: 600;
-}
-
-.ms-transfer-preview .ms-issue {
-  flex-basis: 100%;
-  margin: 0;
-}
-
-.ms-sequence-insert {
-  position: relative;
-  z-index: 1;
-  height: 0;
-  margin-top: -0.375rem;
-  overflow: visible;
-  list-style: none;
-}
-
-.ms-sequence-insert-trigger {
-  position: absolute;
-  top: 0;
-  left: 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3125rem;
-  height: 1.5rem;
-  padding: 0 0.5rem;
-  border: 0.0625rem solid var(--border);
-  border-radius: 62.4375rem;
-  color: var(--foreground);
-  background: var(--card);
-  font: inherit;
-  font-size: 0.6875rem;
-  cursor: pointer;
-  opacity: 0;
-  transform: translateY(-50%);
-  transition:
-    opacity 120ms ease,
-    border-color 120ms ease,
-    color 120ms ease;
-}
-
-.ms-sequence-insert-trigger svg {
-  width: 0.875rem;
-  height: 0.875rem;
-}
-
-.ms-seq-row:hover+.ms-sequence-insert .ms-sequence-insert-trigger,
-.ms-seq-row:focus-within+.ms-sequence-insert .ms-sequence-insert-trigger,
-.ms-action-seq-row:hover+.ms-sequence-insert .ms-sequence-insert-trigger,
-.ms-action-seq-row:focus-within+.ms-sequence-insert .ms-sequence-insert-trigger,
-.ms-sequence-insert:hover .ms-sequence-insert-trigger,
-.ms-sequence-insert:focus-within .ms-sequence-insert-trigger {
-  opacity: 1;
-}
-
-.ms-sequence-insert-trigger:hover,
-.ms-sequence-insert-trigger:focus-visible {
-  border-color: var(--primary);
-  color: var(--primary);
-  outline: 0.125rem solid var(--ring);
-  outline-offset: 0.0625rem;
-}
-
-@media (max-width: 40rem) {
-
-  .ms-route-block .ms-route-head,
-  .ms-object-block .ms-route-head {
-    flex-wrap: wrap;
-  }
-
-  .ms-route-block .ms-route-stats,
-  .ms-object-block .ms-route-stats {
-    margin-left: 0;
-    text-align: left;
-  }
-
-  .ms-route-block .ms-field {
-    grid-template-columns: 1fr;
-  }
-}
-

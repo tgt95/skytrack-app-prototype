@@ -1,30 +1,58 @@
-import { NumberField, NumberFieldInput } from 'skytrack-ui/number-field'
-import { Slider, SliderControl, SliderIndicator, SliderThumb, SliderTrack } from 'skytrack-ui/slider'
+import { NumberField, NumberFieldInput } from "skytrack-ui/number-field";
+import {
+  Slider,
+  SliderControl,
+  SliderIndicator,
+  SliderThumb,
+  SliderTrack,
+} from "skytrack-ui/slider";
 
 export interface SliderFieldProps {
-  label: string
-  value: number
-  min: number
-  max: number
-  step: number
-  unit: string
-  onChange: (value: number) => void
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  unit: string;
+  onChange: (value: number) => void;
 }
 
-export default function SliderField({ label, value, min, max, step, unit, onChange }: SliderFieldProps) {
+export default function SliderField({
+  label,
+  value,
+  min,
+  max,
+  step,
+  unit,
+  onChange,
+}: SliderFieldProps) {
   return (
-    <div className='ms-slider-field'>
-      <div className='ms-slider-label'>{label}</div>
-      <div className='ms-slider-row'>
-        <div className='ms-slider-track-wrap'>
+    <div
+      className=" flex flex-col gap-[0.25rem] mb-[0.5rem]"
+      data-testid="ms-slider-field"
+    >
+      <div
+        className=" text-[0.75rem] font-medium text-(--foreground)"
+        data-testid="ms-slider-label"
+      >
+        {label}
+      </div>
+      <div
+        className=" flex items-center gap-[0.5rem] w-full"
+        data-testid="ms-slider-row"
+      >
+        <div
+          className=" flex-[1_1_auto] flex items-center min-w-0"
+          data-testid="ms-slider-track-wrap"
+        >
           <Slider
             value={value}
             min={min}
             max={max}
             step={step}
             onValueChange={(next) => {
-              const first = typeof next === 'number' ? next : next[0]
-              if (typeof first === 'number') onChange(first)
+              const first = typeof next === "number" ? next : next[0];
+              if (typeof first === "number") onChange(first);
             }}
           >
             <SliderControl>
@@ -35,15 +63,16 @@ export default function SliderField({ label, value, min, max, step, unit, onChan
             </SliderControl>
           </Slider>
         </div>
-        <div className='ms-slider-val-box'>
+        <div className=" flex-[0_0_4.25rem]" data-testid="ms-slider-val-box">
           <NumberField
             value={value}
             min={min}
             max={max}
             step={step}
-            className='w-full'
+            className="w-full"
             onValueChange={(next) => {
-              if (typeof next === 'number' && Number.isFinite(next)) onChange(Math.min(max, Math.max(min, next)))
+              if (typeof next === "number" && Number.isFinite(next))
+                onChange(Math.min(max, Math.max(min, next)));
             }}
           >
             <NumberFieldInput aria-label={`${label} ${unit}`} />
@@ -51,5 +80,5 @@ export default function SliderField({ label, value, min, max, step, unit, onChan
         </div>
       </div>
     </div>
-  )
+  );
 }

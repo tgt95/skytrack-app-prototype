@@ -1,27 +1,26 @@
-import { useState } from 'react'
-import { createPortal } from 'react-dom'
-import { CodeIcon } from '@phosphor-icons/react'
-import { Button } from 'skytrack-ui/button'
+import { useState } from "react";
+import { createPortal } from "react-dom";
+import { CodeIcon } from "@phosphor-icons/react";
+import { Button } from "skytrack-ui/button";
 import {
   Drawer,
   DrawerBackdrop,
   DrawerPopup,
   DrawerPortal,
   DrawerViewport,
-} from 'skytrack-ui/drawer'
-import DevScenarioDrawer from './dev-scenario-drawer'
-import './dev-scenario-tool.css'
+} from "skytrack-ui/drawer";
+import DevScenarioDrawer from "./dev-scenario-drawer";
 
 export default function DevScenarioTool() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <>
       {createPortal(
         <Button
-          className="ms-dev-tool-trigger"
-          size="icon"
-          variant="default"
+          className="fixed right-1 bottom-1 z-2147483646 size-[2.75rem] max-[40rem]:right-0.5 max-[40rem]:bottom-0.5"
+          size="icon-xs"
+          variant="secondary"
           aria-label="Open Dev Tool"
           aria-haspopup="dialog"
           aria-expanded={open}
@@ -34,18 +33,18 @@ export default function DevScenarioTool() {
       )}
 
       <Drawer open={open} onOpenChange={setOpen} swipeDirection="right">
-        <DrawerPortal
-          className="ms-dev-tool-portal"
-          style={{ position: 'fixed', inset: 0, zIndex: 2_147_483_647 }}
-        >
-          <DrawerBackdrop className="ms-dev-tool-backdrop" />
-          <DrawerViewport side="right" className="ms-dev-tool-viewport">
-            <DrawerPopup side="right" className="ms-dev-tool-popup">
+        <DrawerPortal className="fixed inset-0 z-2147483647">
+          <DrawerBackdrop className="z-2147483646" />
+          <DrawerViewport
+            side="right"
+            className="z-2147483647 pointer-events-none"
+          >
+            <DrawerPopup side="right" className="pointer-events-auto">
               <DevScenarioDrawer />
             </DrawerPopup>
           </DrawerViewport>
         </DrawerPortal>
       </Drawer>
     </>
-  )
+  );
 }

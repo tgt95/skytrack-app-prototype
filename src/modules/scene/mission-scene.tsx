@@ -1,440 +1,764 @@
 /* Route-local Cesium host; authored geometry uses the mission's local ENU anchor. */
 
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import type { MissionSceneHandle, MissionSceneProps } from './mission-scene-types'
-export type { MissionSceneHandle, SceneReadiness } from './mission-scene-types'
-import type { Viewer } from 'cesium'
-import { Button } from 'skytrack-ui/button'
-import { missionOrigin, type SceneTool, type StudioMission } from '../../domain/mission-model'
-import { BASEMAPS } from './basemaps'
-import { MissionCompassCube, type MissionCubeSnap } from './mission-compass-cube'
-import { removeSceneEntitiesInLayer } from './scene-entity-ownership'
-import { syncDraftOverlay } from './scene-draft-sync'
-import { syncCommittedMissionEntities } from './sync-committed-layer'
-import { syncCaptureEntities } from './sync-capture-layer'
-import { createMissionSceneHandle } from './mission-scene-handle'
-import { startMissionSceneRuntime } from './scene-viewer-runtime'
-import { fitMission } from './scene-camera-gestures'
-
-type CesiumNS = typeof import('cesium')
-
-
 import {
-  enuToLngLat, syncSearchMarkerEntities
-} from './mission-scene-helpers'
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+import type {
+  MissionSceneHandle,
+  MissionSceneProps,
+} from "./mission-scene-types";
+export type { MissionSceneHandle, SceneReadiness } from "./mission-scene-types";
+import type { Viewer } from "cesium";
+import { Button } from "skytrack-ui/button";
+import {
+  missionOrigin,
+  type SceneTool,
+  type StudioMission,
+} from "../../domain/mission-model";
+import { BASEMAPS } from "./basemaps";
+import {
+  MissionCompassCube,
+  type MissionCubeSnap,
+} from "./mission-compass-cube";
+import { removeSceneEntitiesInLayer } from "./scene-entity-ownership";
+import { syncDraftOverlay } from "./scene-draft-sync";
+import { syncCommittedMissionEntities } from "./sync-committed-layer";
+import { syncCaptureEntities } from "./sync-capture-layer";
+import { createMissionSceneHandle } from "./mission-scene-handle";
+import { startMissionSceneRuntime } from "./scene-viewer-runtime";
+import { fitMission } from "./scene-camera-gestures";
 
-const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(function MissionScene(
-  { mission, tool, selection, simActive, clockRef, previewPositionRef, previewCaptureRef, plan, reducedMotion, showPhotoMarkers = true, showCameraFootprint = false, footprintOpacity = 42, showAreaSurface = false, basemap = 'satellite', searchMarker = null, pendingPoints, pendingShape, draftCursor, closeDraftAtStart, draftAreaSettings, draftAvoidSettings, drawingAltM, planeVisible, onPickWaypoint, onPickZone, onClearSelection, onScenePoint, onDraftHover, onClosePending, onInsertWaypoint, onRemoveWaypoint, onWaypointAltitudeChange, onWaypointPositionChange, onAvoidHeightChange, onPendingPositionChange, onPendingAltitudeChange, onInsertPendingPoint, onRemovePendingPoint, onReadinessChange },
-  ref
-) {
-  const selectedPhotoWaypointId = selection?.kind === 'waypoint'
-    && mission.waypoints.find((waypoint) => waypoint.id === selection.id)?.actions.some((action) => action.kind === 'photo')
-    ? selection.id
-    : null
-  const focusedPhotoWaypointId = showPhotoMarkers ? selectedPhotoWaypointId : null
-  const hostRef = useRef<HTMLDivElement>(null)
-  const viewerRef = useRef<Viewer | null>(null)
-  const cesiumRef = useRef<CesiumNS | null>(null)
-  const editControlsRef = useRef<{ hasActiveEditDrag(): boolean; escAbortEdits(): void } | null>(null)
-  const toolRef = useRef(tool)
-  toolRef.current = tool
-  const missionRef = useRef(mission)
-  missionRef.current = mission
-  const selectionRef = useRef(selection)
-  selectionRef.current = selection
-  const simActiveRef = useRef(simActive)
-  simActiveRef.current = simActive
-  const planRef = useRef(plan)
-  planRef.current = plan
-  const reducedRef = useRef(reducedMotion)
-  reducedRef.current = reducedMotion
-  const pendingPointsRef = useRef(pendingPoints)
-  pendingPointsRef.current = pendingPoints
-  const pendingShapeRef = useRef(pendingShape)
-  pendingShapeRef.current = pendingShape
-  const pickRef = useRef({
-    onPickWaypoint,
-    onPickZone,
-    onClearSelection,
-    onScenePoint,
-    onDraftHover,
-    onClosePending,
-    onInsertWaypoint,
-    onRemoveWaypoint,
-    onWaypointAltitudeChange,
-    onWaypointPositionChange,
-    onAvoidHeightChange,
-    onPendingPositionChange,
-    onPendingAltitudeChange,
-    onInsertPendingPoint,
-    onRemovePendingPoint
-  })
-  pickRef.current = {
-    onPickWaypoint,
-    onPickZone,
-    onClearSelection,
-    onScenePoint,
-    onDraftHover,
-    onClosePending,
-    onInsertWaypoint,
-    onRemoveWaypoint,
-    onWaypointAltitudeChange,
-    onWaypointPositionChange,
-    onAvoidHeightChange,
-    onPendingPositionChange,
-    onPendingAltitudeChange,
-    onInsertPendingPoint,
-    onRemovePendingPoint
-  }
-  const readinessRef = useRef(onReadinessChange)
-  readinessRef.current = onReadinessChange
-  /* Keep high-frequency ruler values fresh without re-subscribing Cesium handlers. */
-  const drawAltRef = useRef(drawingAltM)
-  drawAltRef.current = drawingAltM
-  const planeVisibleRef = useRef(planeVisible)
-  planeVisibleRef.current = planeVisible
-  /* Compact/expanded wireframes support hovered capture-frustum emphasis. */
-  const hoveredPhotoRef = useRef<string | null>(null)
-  const selectedPhotoRef = useRef<string | null>(selectedPhotoWaypointId)
-  selectedPhotoRef.current = selectedPhotoWaypointId
-  const renderedPreviewCaptureRef = useRef<string | null>(null)
-  /* Capture-layer ownership and last mission snapshot for preview invalidation. */
-  const renderedPreviewMissionRef = useRef<StudioMission | null>(null)
-  const frustumGeomRef = useRef(new Map<string, { compactBase: import('cesium').Cartesian3[]; expandedBase: import('cesium').Cartesian3[]; compactRays: import('cesium').Cartesian3[]; expandedRays: import('cesium').Cartesian3[] }>())
-  const worldTerrainTrianglesRef = useRef<Array<readonly [import('cesium').Cartesian3, import('cesium').Cartesian3, import('cesium').Cartesian3]>>([])
-  const showPhotoMarkersRef = useRef(showPhotoMarkers)
-  showPhotoMarkersRef.current = showPhotoMarkers
-  /* Frustums show camera volume; the separate footprint toggle adds ground quads. */
-  /* Z-only drag starts on LEFT_DOWN after a plain Z hold outside text inputs. */
-  const zHeldRef = useRef(false)
-  const zdragRef = useRef<{ id: string; startY: number; startZ: number } | null>(null)
-  const zdragInputsRef = useRef(true)
-  /* Hovered entity wins; otherwise ray-match authored segments. Delete is click-again. */
-  const hoverRef = useRef<{ insert: number | null; pendingInsert: number | null }>({ insert: null, pendingInsert: null })
-  const hoveredWaypointRef = useRef<string | null>(null)
-  /* Pointer handler owns the ground guide; committed sync hides deleted or re-aims moved waypoints. */
-  const revalidateWaypointGroundGuideRef = useRef<(mission: StudioMission) => void>(() => undefined)
-  /* Waypoint drag previews XY or latched Shift-Z; commit once on pointerup. */
-  const wpDragRef = useRef<{
-    id: string
-    mode: 'xy' | 'z'
-    startClientX: number
-    startClientY: number
-    startX: number
-    startY: number
-    startZ: number
-    moved: boolean
-  } | null>(null)
-  /* Pending route drag previews XY or Shift-Z and commits once to the pane. */
-  const pendingDragRef = useRef<{
-    index: number
-    mode: 'xy' | 'z'
-    startClientX: number
-    startClientY: number
-    startX: number
-    startY: number
-    startZ: number
-    currentX: number
-    currentY: number
-    currentZ: number
-    moved: boolean
-  } | null>(null)
-  /* Draft click-again delete requires the same point and <=4 px travel; drags never delete. */
-  const pendingDownRef = useRef<{ index: number; x: number; y: number; tool: SceneTool } | null>(null)
-  const pendingClickArmRef = useRef<{ index: number; toolRev: number } | null>(null)
-  const wpDownRef = useRef<{ id: string; x: number; y: number; tool: SceneTool } | null>(null)
-  /* Selection-time tool/revisions prevent a tool switch from arming click-again delete. */
-  const selectMetaRef = useRef<{ id: string; tool: SceneTool; rev: number; selRev: number } | null>(null)
-  const topDownRef = useRef<() => void>(() => undefined)
-  /* Restore an uncommitted Z preview; refs keep the callback fresh for both callers. */
-  const abortZdragLocal = () => {
-    const viewer = viewerRef.current
-    const Cesium = cesiumRef.current
-    const zdrag = zdragRef.current
-    if (!viewer || !Cesium || viewer.isDestroyed() || !zdrag) return
-    const wp = missionRef.current.waypoints.find((w) => w.id === zdrag.id)
-    if (wp) {
-      const g = enuToLngLat(wp.x, wp.y, missionOrigin(missionRef.current))
-      const entity = viewer.entities.getById(`ms-wp-${zdrag.id}`)
-      const pos = entity?.position as unknown as { setValue?: (v: import('cesium').Cartesian3) => void } | undefined
-      if (pos && typeof pos.setValue === 'function') {
-        pos.setValue(Cesium.Cartesian3.fromDegrees(g.lng, g.lat, wp.z))
-      }
-    }
-    hoverRef.current = { insert: null, pendingInsert: null }
-    viewer.scene.screenSpaceCameraController.enableInputs = zdragInputsRef.current
-    zdragRef.current = null
-    zHeldRef.current = false
-    viewer.scene.requestRender()
-  }
-  /* Restore the waypoint preview without commit; finishCamDrag restores camera inputs. */
-  const abortWpDragLocal = () => {
-    const viewer = viewerRef.current
-    const Cesium = cesiumRef.current
-    const wd = wpDragRef.current
-    wpDragRef.current = null
-    if (!viewer || !Cesium || viewer.isDestroyed() || !wd || !wd.moved) return
-    const g = enuToLngLat(wd.startX, wd.startY, missionOrigin(missionRef.current))
-    const entity = viewer.entities.getById(`ms-wp-${wd.id}`)
-    const pos = entity?.position as unknown as { setValue?: (v: import('cesium').Cartesian3) => void } | undefined
-    if (pos && typeof pos.setValue === 'function') {
-      pos.setValue(Cesium.Cartesian3.fromDegrees(g.lng, g.lat, wd.startZ))
-    }
-    viewer.scene.requestRender()
-  }
-  const abortPendingDragLocal = () => {
-    const viewer = viewerRef.current
-    const Cesium = cesiumRef.current
-    const pd = pendingDragRef.current
-    pendingDragRef.current = null
-    if (!viewer || !Cesium || viewer.isDestroyed() || !pd || !pd.moved) return
-    const g = enuToLngLat(pd.startX, pd.startY, missionOrigin(missionRef.current))
-    const entity = viewer.entities.getById(`ms-pending-${pd.index}`)
-    const pos = entity?.position as unknown as { setValue?: (v: import('cesium').Cartesian3) => void } | undefined
-    if (pos && typeof pos.setValue === 'function') {
-      pos.setValue(Cesium.Cartesian3.fromDegrees(g.lng, g.lat, pd.startZ))
-    }
-    const lineEntity = viewer.entities.getById('ms-pending-line')
-    if (lineEntity && pendingPointsRef.current.length >= 2) {
-      const flat: number[] = []
-      const defAlt = Math.max(drawAltRef.current, missionRef.current.takeoffAltM, 0.5)
-      pendingPointsRef.current.forEach((p) => {
-        const pz = typeof p.z === 'number' ? p.z : defAlt
-        const ptG = enuToLngLat(p.x, p.y, missionOrigin(missionRef.current))
-        flat.push(ptG.lng, ptG.lat, pz)
-      })
-      const poly = lineEntity.polyline as unknown as { positions?: { setValue?: (v: import('cesium').Cartesian3[]) => void } } | undefined
-      if (poly && poly.positions && typeof poly.positions.setValue === 'function') {
-        poly.positions.setValue(Cesium.Cartesian3.fromDegreesArrayHeights(flat))
-      }
-    }
-    viewer.scene.requestRender()
-  }
+type CesiumNS = typeof import("cesium");
 
-  /* Selection breaks disarm click-again delete; reselecting starts a fresh first click. */
-  const toolRevRef = useRef(0)
-  const selRevRef = useRef(0)
-  const selKeyRef = useRef<string | null>(null)
-  useEffect(() => {
-    toolRevRef.current += 1
-    pendingClickArmRef.current = null
-    pendingDownRef.current = null
-  }, [tool])
-  useEffect(() => {
-    // Equal waypoint selection is continuous; redundant updates don't disarm its click.
-    const key = selection?.kind === 'waypoint' ? selection.id : null
-    if (key === selKeyRef.current) return
-    selKeyRef.current = key
-    selRevRef.current += 1
-    if (key !== null) {
-      selectMetaRef.current = { id: key, tool, rev: toolRevRef.current, selRev: selRevRef.current }
-    } else {
-      selectMetaRef.current = null
-    }
-  }, [selection, tool])
+import { enuToLngLat, syncSearchMarkerEntities } from "./mission-scene-helpers";
 
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [retryCount, setRetryCount] = useState(0)
-  const [without3d, setWithout3d] = useState(false)
-
-  useEffect(() => {
-    const viewer = viewerRef.current
-    if (!viewer || viewer.isDestroyed() || status !== 'ready') return
-    if (mission.worldType !== '2D' && mission.world === 'Blank space') {
-      viewer.imageryLayers.removeAll()
-      viewer.scene.requestRender()
-      return
-    }
-    let cancelled = false
-    /* Blank space stays imagery-free; other Worlds use one imagery layer over local terrain. */
-    const imageryUrl = BASEMAPS[basemap].url.replace(/\/tile\/\{z\}\/\{y\}\/\{x\}$/, '')
-    void import('cesium').then(async (Cesium) => {
-      const provider = await Cesium.ArcGisMapServerImageryProvider.fromUrl(imageryUrl, { enablePickFeatures: false })
-      if (cancelled || viewer.isDestroyed()) return
-      viewer.imageryLayers.removeAll()
-      viewer.imageryLayers.addImageryProvider(provider)
-      viewer.scene.requestRender()
-    }).catch(() => {
-      /* Keep the last imagery or token-based globe visible when the basemap is offline. */
-    })
-    return () => { cancelled = true }
-  }, [status, basemap, mission.worldType, mission.world])
-  /* Search pin is independently owned and never affects mission state or camera fitting. */
-  useEffect(() => {
-    const viewer = viewerRef.current
-    const Cesium = cesiumRef.current
-    if (!viewer || !Cesium || viewer.isDestroyed() || status !== 'ready') return
-    syncSearchMarkerEntities(viewer, Cesium, searchMarker)
-  }, [status, searchMarker])
-  /* Compass cube orientation updates on camera change, gestures, and snaps. */
-  const [orientation, setOrientation] = useState({ heading: 0.6, pitch: -0.62 })
-  const snapFnRef = useRef<(snap: MissionCubeSnap) => void>(() => undefined)
-  const orbitByRef = useRef<(dx: number, dy: number) => void>(() => undefined)
-  const orbitEndRef = useRef<() => void>(() => undefined)
-  const gestureModeRef = useRef('none')
-  const handleCubeSnap = useCallback((snap: MissionCubeSnap) => snapFnRef.current(snap), [])
-  const handleCubeOrbitBy = useCallback((dx: number, dy: number) => orbitByRef.current(dx, dy), [])
-  const handleCubeOrbitEnd = useCallback(() => orbitEndRef.current(), [])
-  /* Drain bounded frames after sync; Cesium builds primitives over several frames. */
-  const settleRef = useRef(0)
-
-  const fitRef = useRef(fitMission)
-  fitRef.current = fitMission
-
-  const worldViewRef = useRef({ world: mission.world, worldType: mission.worldType })
-  useEffect(() => {
-    const previous = worldViewRef.current
-    worldViewRef.current = { world: mission.world, worldType: mission.worldType }
-    if (previous.world === mission.world && previous.worldType === mission.worldType) return
-    const viewer = viewerRef.current
-    const Cesium = cesiumRef.current
-    if (!viewer || !Cesium || viewer.isDestroyed() || status !== 'ready') return
-    // Named 3D fixtures center around Home; reframing never changes mission data.
-    fitRef.current(viewer, Cesium, missionRef.current)
-  }, [mission.world, mission.worldType, status])
-
-  useImperativeHandle(ref, () => createMissionSceneHandle({
-    viewerRef, cesiumRef, fitRef, missionRef, planRef, reducedRef, clockRef, topDownRef, zdragRef, wpDragRef, pendingDragRef, editControlsRef,
-    abortPendingDrag: abortPendingDragLocal, abortWpDrag: abortWpDragLocal, abortZdrag: abortZdragLocal
-  }))
-
-  /* ------------------------- viewer lifecycle ------------------------- */
-  useEffect(() => startMissionSceneRuntime({
-    hostRef, viewerRef, cesiumRef, missionRef, simActiveRef, planRef, reducedRef, gestureModeRef,
-    snapFnRef, orbitByRef, orbitEndRef, topDownRef, renderedPreviewCaptureRef, renderedPreviewMissionRef,
-    settleRef, previewCaptureRef, previewPositionRef, clockRef,
-    editControlsRef,
-    editState: {
-      missionRef, toolRef, selectionRef, simActiveRef, pickRef, drawAltRef, pendingPointsRef, pendingShapeRef,
-      hoverRef, hoveredWaypointRef, hoveredPhotoRef, selectedPhotoRef, showPhotoMarkersRef, frustumGeomRef,
-      zHeldRef, zdragRef, zdragInputsRef, wpDragRef, pendingDragRef,
-      pendingDownRef, pendingClickArmRef, wpDownRef, selectMetaRef, toolRevRef, selRevRef,
-      worldTerrainTrianglesRef,
-      abortZdrag: abortZdragLocal,
-      abortWpDrag: abortWpDragLocal,
-      abortPendingDrag: abortPendingDragLocal
+const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
+  function MissionScene(
+    {
+      mission,
+      tool,
+      selection,
+      simActive,
+      clockRef,
+      previewPositionRef,
+      previewCaptureRef,
+      plan,
+      reducedMotion,
+      showPhotoMarkers = true,
+      showCameraFootprint = false,
+      footprintOpacity = 42,
+      showAreaSurface = false,
+      basemap = "satellite",
+      searchMarker = null,
+      pendingPoints,
+      pendingShape,
+      draftCursor,
+      closeDraftAtStart,
+      draftAreaSettings,
+      draftAvoidSettings,
+      drawingAltM,
+      planeVisible,
+      onPickWaypoint,
+      onPickZone,
+      onClearSelection,
+      onScenePoint,
+      onDraftHover,
+      onClosePending,
+      onInsertWaypoint,
+      onRemoveWaypoint,
+      onWaypointAltitudeChange,
+      onWaypointPositionChange,
+      onAvoidHeightChange,
+      onPendingPositionChange,
+      onPendingAltitudeChange,
+      onInsertPendingPoint,
+      onRemovePendingPoint,
+      onReadinessChange,
     },
-    readinessRef, setStatus, setErrorMessage, setOrientation, fitRef, revalidateWaypointGroundGuideRef,
-    createViewer: (Cesium, host) => new Cesium.Viewer(host, {
-      animation: false,
-      baseLayer: false,
-      baseLayerPicker: false,
-      fullscreenButton: false,
-      geocoder: false,
-      homeButton: false,
-      infoBox: false,
-      sceneModePicker: false,
-      selectionIndicator: false,
-      timeline: false,
-      navigationHelpButton: false,
-      navigationInstructionsInitiallyVisible: false,
-      requestRenderMode: true,
-      maximumRenderTimeChange: Number.POSITIVE_INFINITY,
-      msaaSamples: 4,
-      showRenderLoopErrors: false
-    }),
-    destroyViewer: (viewer) => { if (!viewer.isDestroyed()) viewer.destroy() }
-  }), [retryCount])
+    ref,
+  ) {
+    const selectedPhotoWaypointId =
+      selection?.kind === "waypoint" &&
+      mission.waypoints
+        .find((waypoint) => waypoint.id === selection.id)
+        ?.actions.some((action) => action.kind === "photo")
+        ? selection.id
+        : null;
+    const focusedPhotoWaypointId = showPhotoMarkers
+      ? selectedPhotoWaypointId
+      : null;
+    const hostRef = useRef<HTMLDivElement>(null);
+    const viewerRef = useRef<Viewer | null>(null);
+    const cesiumRef = useRef<CesiumNS | null>(null);
+    const editControlsRef = useRef<{
+      hasActiveEditDrag(): boolean;
+      escAbortEdits(): void;
+    } | null>(null);
+    const toolRef = useRef(tool);
+    toolRef.current = tool;
+    const missionRef = useRef(mission);
+    missionRef.current = mission;
+    const selectionRef = useRef(selection);
+    selectionRef.current = selection;
+    const simActiveRef = useRef(simActive);
+    simActiveRef.current = simActive;
+    const planRef = useRef(plan);
+    planRef.current = plan;
+    const reducedRef = useRef(reducedMotion);
+    reducedRef.current = reducedMotion;
+    const pendingPointsRef = useRef(pendingPoints);
+    pendingPointsRef.current = pendingPoints;
+    const pendingShapeRef = useRef(pendingShape);
+    pendingShapeRef.current = pendingShape;
+    const pickRef = useRef({
+      onPickWaypoint,
+      onPickZone,
+      onClearSelection,
+      onScenePoint,
+      onDraftHover,
+      onClosePending,
+      onInsertWaypoint,
+      onRemoveWaypoint,
+      onWaypointAltitudeChange,
+      onWaypointPositionChange,
+      onAvoidHeightChange,
+      onPendingPositionChange,
+      onPendingAltitudeChange,
+      onInsertPendingPoint,
+      onRemovePendingPoint,
+    });
+    pickRef.current = {
+      onPickWaypoint,
+      onPickZone,
+      onClearSelection,
+      onScenePoint,
+      onDraftHover,
+      onClosePending,
+      onInsertWaypoint,
+      onRemoveWaypoint,
+      onWaypointAltitudeChange,
+      onWaypointPositionChange,
+      onAvoidHeightChange,
+      onPendingPositionChange,
+      onPendingAltitudeChange,
+      onInsertPendingPoint,
+      onRemovePendingPoint,
+    };
+    const readinessRef = useRef(onReadinessChange);
+    readinessRef.current = onReadinessChange;
+    /* Keep high-frequency ruler values fresh without re-subscribing Cesium handlers. */
+    const drawAltRef = useRef(drawingAltM);
+    drawAltRef.current = drawingAltM;
+    const planeVisibleRef = useRef(planeVisible);
+    planeVisibleRef.current = planeVisible;
+    /* Compact/expanded wireframes support hovered capture-frustum emphasis. */
+    const hoveredPhotoRef = useRef<string | null>(null);
+    const selectedPhotoRef = useRef<string | null>(selectedPhotoWaypointId);
+    selectedPhotoRef.current = selectedPhotoWaypointId;
+    const renderedPreviewCaptureRef = useRef<string | null>(null);
+    /* Capture-layer ownership and last mission snapshot for preview invalidation. */
+    const renderedPreviewMissionRef = useRef<StudioMission | null>(null);
+    const frustumGeomRef = useRef(
+      new Map<
+        string,
+        {
+          compactBase: import("cesium").Cartesian3[];
+          expandedBase: import("cesium").Cartesian3[];
+          compactRays: import("cesium").Cartesian3[];
+          expandedRays: import("cesium").Cartesian3[];
+        }
+      >(),
+    );
+    const worldTerrainTrianglesRef = useRef<
+      Array<
+        readonly [
+          import("cesium").Cartesian3,
+          import("cesium").Cartesian3,
+          import("cesium").Cartesian3,
+        ]
+      >
+    >([]);
+    const showPhotoMarkersRef = useRef(showPhotoMarkers);
+    showPhotoMarkersRef.current = showPhotoMarkers;
+    /* Frustums show camera volume; the separate footprint toggle adds ground quads. */
+    /* Z-only drag starts on LEFT_DOWN after a plain Z hold outside text inputs. */
+    const zHeldRef = useRef(false);
+    const zdragRef = useRef<{
+      id: string;
+      startY: number;
+      startZ: number;
+    } | null>(null);
+    const zdragInputsRef = useRef(true);
+    /* Hovered entity wins; otherwise ray-match authored segments. Delete is click-again. */
+    const hoverRef = useRef<{
+      insert: number | null;
+      pendingInsert: number | null;
+    }>({ insert: null, pendingInsert: null });
+    const hoveredWaypointRef = useRef<string | null>(null);
+    /* Pointer handler owns the ground guide; committed sync hides deleted or re-aims moved waypoints. */
+    const revalidateWaypointGroundGuideRef = useRef<
+      (mission: StudioMission) => void
+    >(() => undefined);
+    /* Waypoint drag previews XY or latched Shift-Z; commit once on pointerup. */
+    const wpDragRef = useRef<{
+      id: string;
+      mode: "xy" | "z";
+      startClientX: number;
+      startClientY: number;
+      startX: number;
+      startY: number;
+      startZ: number;
+      moved: boolean;
+    } | null>(null);
+    /* Pending route drag previews XY or Shift-Z and commits once to the pane. */
+    const pendingDragRef = useRef<{
+      index: number;
+      mode: "xy" | "z";
+      startClientX: number;
+      startClientY: number;
+      startX: number;
+      startY: number;
+      startZ: number;
+      currentX: number;
+      currentY: number;
+      currentZ: number;
+      moved: boolean;
+    } | null>(null);
+    /* Draft click-again delete requires the same point and <=4 px travel; drags never delete. */
+    const pendingDownRef = useRef<{
+      index: number;
+      x: number;
+      y: number;
+      tool: SceneTool;
+    } | null>(null);
+    const pendingClickArmRef = useRef<{
+      index: number;
+      toolRev: number;
+    } | null>(null);
+    const wpDownRef = useRef<{
+      id: string;
+      x: number;
+      y: number;
+      tool: SceneTool;
+    } | null>(null);
+    /* Selection-time tool/revisions prevent a tool switch from arming click-again delete. */
+    const selectMetaRef = useRef<{
+      id: string;
+      tool: SceneTool;
+      rev: number;
+      selRev: number;
+    } | null>(null);
+    const topDownRef = useRef<() => void>(() => undefined);
+    /* Restore an uncommitted Z preview; refs keep the callback fresh for both callers. */
+    const abortZdragLocal = () => {
+      const viewer = viewerRef.current;
+      const Cesium = cesiumRef.current;
+      const zdrag = zdragRef.current;
+      if (!viewer || !Cesium || viewer.isDestroyed() || !zdrag) return;
+      const wp = missionRef.current.waypoints.find((w) => w.id === zdrag.id);
+      if (wp) {
+        const g = enuToLngLat(wp.x, wp.y, missionOrigin(missionRef.current));
+        const entity = viewer.entities.getById(`ms-wp-${zdrag.id}`);
+        const pos = entity?.position as unknown as
+          { setValue?: (v: import("cesium").Cartesian3) => void } | undefined;
+        if (pos && typeof pos.setValue === "function") {
+          pos.setValue(Cesium.Cartesian3.fromDegrees(g.lng, g.lat, wp.z));
+        }
+      }
+      hoverRef.current = { insert: null, pendingInsert: null };
+      viewer.scene.screenSpaceCameraController.enableInputs =
+        zdragInputsRef.current;
+      zdragRef.current = null;
+      zHeldRef.current = false;
+      viewer.scene.requestRender();
+    };
+    /* Restore the waypoint preview without commit; finishCamDrag restores camera inputs. */
+    const abortWpDragLocal = () => {
+      const viewer = viewerRef.current;
+      const Cesium = cesiumRef.current;
+      const wd = wpDragRef.current;
+      wpDragRef.current = null;
+      if (!viewer || !Cesium || viewer.isDestroyed() || !wd || !wd.moved)
+        return;
+      const g = enuToLngLat(
+        wd.startX,
+        wd.startY,
+        missionOrigin(missionRef.current),
+      );
+      const entity = viewer.entities.getById(`ms-wp-${wd.id}`);
+      const pos = entity?.position as unknown as
+        { setValue?: (v: import("cesium").Cartesian3) => void } | undefined;
+      if (pos && typeof pos.setValue === "function") {
+        pos.setValue(Cesium.Cartesian3.fromDegrees(g.lng, g.lat, wd.startZ));
+      }
+      viewer.scene.requestRender();
+    };
+    const abortPendingDragLocal = () => {
+      const viewer = viewerRef.current;
+      const Cesium = cesiumRef.current;
+      const pd = pendingDragRef.current;
+      pendingDragRef.current = null;
+      if (!viewer || !Cesium || viewer.isDestroyed() || !pd || !pd.moved)
+        return;
+      const g = enuToLngLat(
+        pd.startX,
+        pd.startY,
+        missionOrigin(missionRef.current),
+      );
+      const entity = viewer.entities.getById(`ms-pending-${pd.index}`);
+      const pos = entity?.position as unknown as
+        { setValue?: (v: import("cesium").Cartesian3) => void } | undefined;
+      if (pos && typeof pos.setValue === "function") {
+        pos.setValue(Cesium.Cartesian3.fromDegrees(g.lng, g.lat, pd.startZ));
+      }
+      const lineEntity = viewer.entities.getById("ms-pending-line");
+      if (lineEntity && pendingPointsRef.current.length >= 2) {
+        const flat: number[] = [];
+        const defAlt = Math.max(
+          drawAltRef.current,
+          missionRef.current.takeoffAltM,
+          0.5,
+        );
+        pendingPointsRef.current.forEach((p) => {
+          const pz = typeof p.z === "number" ? p.z : defAlt;
+          const ptG = enuToLngLat(p.x, p.y, missionOrigin(missionRef.current));
+          flat.push(ptG.lng, ptG.lat, pz);
+        });
+        const poly = lineEntity.polyline as unknown as
+          | {
+              positions?: {
+                setValue?: (v: import("cesium").Cartesian3[]) => void;
+              };
+            }
+          | undefined;
+        if (
+          poly &&
+          poly.positions &&
+          typeof poly.positions.setValue === "function"
+        ) {
+          poly.positions.setValue(
+            Cesium.Cartesian3.fromDegreesArrayHeights(flat),
+          );
+        }
+      }
+      viewer.scene.requestRender();
+    };
 
-  /* ------------------------- entity sync ------------------------- */
-  /* Draft plane/points sync alone on ruler changes; preview heights match commit rules. */
+    /* Selection breaks disarm click-again delete; reselecting starts a fresh first click. */
+    const toolRevRef = useRef(0);
+    const selRevRef = useRef(0);
+    const selKeyRef = useRef<string | null>(null);
+    useEffect(() => {
+      toolRevRef.current += 1;
+      pendingClickArmRef.current = null;
+      pendingDownRef.current = null;
+    }, [tool]);
+    useEffect(() => {
+      // Equal waypoint selection is continuous; redundant updates don't disarm its click.
+      const key = selection?.kind === "waypoint" ? selection.id : null;
+      if (key === selKeyRef.current) return;
+      selKeyRef.current = key;
+      selRevRef.current += 1;
+      if (key !== null) {
+        selectMetaRef.current = {
+          id: key,
+          tool,
+          rev: toolRevRef.current,
+          selRev: selRevRef.current,
+        };
+      } else {
+        selectMetaRef.current = null;
+      }
+    }, [selection, tool]);
 
-  useEffect(() => {
-    const viewer = viewerRef.current
-    const Cesium = cesiumRef.current
-    if (!viewer || !Cesium || viewer.isDestroyed() || status !== 'ready') return
-    hoverRef.current = { insert: null, pendingInsert: null }
-    worldTerrainTrianglesRef.current = syncCommittedMissionEntities({ viewer, Cesium, mission, selection, simActive, showAreaSurface, focusedPhotoWaypointId })
-    viewer.scene.requestRender()
-    settleRef.current = 90
-    if (hostRef.current) hostRef.current.dataset.entities = String(viewer.entities.values.length)
-    revalidateWaypointGroundGuideRef.current(mission)
-  }, [mission, selection, simActive, status, showAreaSurface])
+    const [status, setStatus] = useState<"loading" | "ready" | "error">(
+      "loading",
+    );
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [retryCount, setRetryCount] = useState(0);
+    const [without3d, setWithout3d] = useState(false);
 
-  /* Draft cursor/ruler changes refresh only draft-owned entities. */
-  useEffect(() => {
-    const viewer = viewerRef.current
-    const Cesium = cesiumRef.current
-    if (!viewer || !Cesium || viewer.isDestroyed() || status !== 'ready') return
-    /* Replace draft-owned plane/points only; other entity layers must survive. */
-    removeSceneEntitiesInLayer(viewer.entities, 'draft')
-    syncDraftOverlay(viewer, Cesium, mission, pendingPoints, tool, pendingShape, draftCursor, closeDraftAtStart, draftAreaSettings, draftAvoidSettings, drawingAltM, planeVisible)
-    viewer.scene.requestRender()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mission, pendingPoints, tool, drawingAltM, planeVisible, pendingShape, draftCursor, closeDraftAtStart, draftAreaSettings, draftAvoidSettings, status])
+    useEffect(() => {
+      const viewer = viewerRef.current;
+      if (!viewer || viewer.isDestroyed() || status !== "ready") return;
+      if (mission.worldType !== "2D" && mission.world === "Blank space") {
+        viewer.imageryLayers.removeAll();
+        viewer.scene.requestRender();
+        return;
+      }
+      let cancelled = false;
+      /* Blank space stays imagery-free; other Worlds use one imagery layer over local terrain. */
+      const imageryUrl = BASEMAPS[basemap].url.replace(
+        /\/tile\/\{z\}\/\{y\}\/\{x\}$/,
+        "",
+      );
+      void import("cesium")
+        .then(async (Cesium) => {
+          const provider = await Cesium.ArcGisMapServerImageryProvider.fromUrl(
+            imageryUrl,
+            { enablePickFeatures: false },
+          );
+          if (cancelled || viewer.isDestroyed()) return;
+          viewer.imageryLayers.removeAll();
+          viewer.imageryLayers.addImageryProvider(provider);
+          viewer.scene.requestRender();
+        })
+        .catch(() => {
+          /* Keep the last imagery or token-based globe visible when the basemap is offline. */
+        });
+      return () => {
+        cancelled = true;
+      };
+    }, [status, basemap, mission.worldType, mission.world]);
+    /* Search pin is independently owned and never affects mission state or camera fitting. */
+    useEffect(() => {
+      const viewer = viewerRef.current;
+      const Cesium = cesiumRef.current;
+      if (!viewer || !Cesium || viewer.isDestroyed() || status !== "ready")
+        return;
+      syncSearchMarkerEntities(viewer, Cesium, searchMarker);
+    }, [status, searchMarker]);
+    /* Compass cube orientation updates on camera change, gestures, and snaps. */
+    const [orientation, setOrientation] = useState({
+      heading: 0.6,
+      pitch: -0.62,
+    });
+    const snapFnRef = useRef<(snap: MissionCubeSnap) => void>(() => undefined);
+    const orbitByRef = useRef<(dx: number, dy: number) => void>(
+      () => undefined,
+    );
+    const orbitEndRef = useRef<() => void>(() => undefined);
+    const gestureModeRef = useRef("none");
+    const handleCubeSnap = useCallback(
+      (snap: MissionCubeSnap) => snapFnRef.current(snap),
+      [],
+    );
+    const handleCubeOrbitBy = useCallback(
+      (dx: number, dy: number) => orbitByRef.current(dx, dy),
+      [],
+    );
+    const handleCubeOrbitEnd = useCallback(() => orbitEndRef.current(), []);
+    /* Drain bounded frames after sync; Cesium builds primitives over several frames. */
+    const settleRef = useRef(0);
 
-  useEffect(() => {
-    const viewer = viewerRef.current
-    const Cesium = cesiumRef.current
-    if (!viewer || !Cesium || viewer.isDestroyed()) return
-    hoveredPhotoRef.current = null
-    frustumGeomRef.current = syncCaptureEntities({
-      viewer, Cesium, mission, focusedPhotoWaypointId, showPhotoMarkers, showCameraFootprint, footprintOpacity
-    })
-    settleRef.current = 90
-    viewer.scene.requestRender()
-  }, [mission, selection, showPhotoMarkers, showCameraFootprint, footprintOpacity, status])
+    const fitRef = useRef(fitMission);
+    fitRef.current = fitMission;
 
-  return (
-    <div className='ms-scene' data-testid='ms-scene'>
-      <div ref={hostRef} className='ms-scene-host' aria-hidden={status !== 'ready'} />
-      {status === 'ready' && !without3d ? (
-        <MissionCompassCube
-          heading={orientation.heading}
-          pitch={orientation.pitch}
-          interactive
-          onSnap={handleCubeSnap}
-          onOrbitBy={handleCubeOrbitBy}
-          onOrbitEnd={handleCubeOrbitEnd}
+    const worldViewRef = useRef({
+      world: mission.world,
+      worldType: mission.worldType,
+    });
+    useEffect(() => {
+      const previous = worldViewRef.current;
+      worldViewRef.current = {
+        world: mission.world,
+        worldType: mission.worldType,
+      };
+      if (
+        previous.world === mission.world &&
+        previous.worldType === mission.worldType
+      )
+        return;
+      const viewer = viewerRef.current;
+      const Cesium = cesiumRef.current;
+      if (!viewer || !Cesium || viewer.isDestroyed() || status !== "ready")
+        return;
+      // Named 3D fixtures center around Home; reframing never changes mission data.
+      fitRef.current(viewer, Cesium, missionRef.current);
+    }, [mission.world, mission.worldType, status]);
+
+    useImperativeHandle(ref, () =>
+      createMissionSceneHandle({
+        viewerRef,
+        cesiumRef,
+        fitRef,
+        missionRef,
+        planRef,
+        reducedRef,
+        clockRef,
+        topDownRef,
+        zdragRef,
+        wpDragRef,
+        pendingDragRef,
+        editControlsRef,
+        abortPendingDrag: abortPendingDragLocal,
+        abortWpDrag: abortWpDragLocal,
+        abortZdrag: abortZdragLocal,
+      }),
+    );
+
+    /* ------------------------- viewer lifecycle ------------------------- */
+    useEffect(
+      () =>
+        startMissionSceneRuntime({
+          hostRef,
+          viewerRef,
+          cesiumRef,
+          missionRef,
+          simActiveRef,
+          planRef,
+          reducedRef,
+          gestureModeRef,
+          snapFnRef,
+          orbitByRef,
+          orbitEndRef,
+          topDownRef,
+          renderedPreviewCaptureRef,
+          renderedPreviewMissionRef,
+          settleRef,
+          previewCaptureRef,
+          previewPositionRef,
+          clockRef,
+          editControlsRef,
+          editState: {
+            missionRef,
+            toolRef,
+            selectionRef,
+            simActiveRef,
+            pickRef,
+            drawAltRef,
+            pendingPointsRef,
+            pendingShapeRef,
+            hoverRef,
+            hoveredWaypointRef,
+            hoveredPhotoRef,
+            selectedPhotoRef,
+            showPhotoMarkersRef,
+            frustumGeomRef,
+            zHeldRef,
+            zdragRef,
+            zdragInputsRef,
+            wpDragRef,
+            pendingDragRef,
+            pendingDownRef,
+            pendingClickArmRef,
+            wpDownRef,
+            selectMetaRef,
+            toolRevRef,
+            selRevRef,
+            worldTerrainTrianglesRef,
+            abortZdrag: abortZdragLocal,
+            abortWpDrag: abortWpDragLocal,
+            abortPendingDrag: abortPendingDragLocal,
+          },
+          readinessRef,
+          setStatus,
+          setErrorMessage,
+          setOrientation,
+          fitRef,
+          revalidateWaypointGroundGuideRef,
+          createViewer: (Cesium, host) =>
+            new Cesium.Viewer(host, {
+              animation: false,
+              baseLayer: false,
+              baseLayerPicker: false,
+              fullscreenButton: false,
+              geocoder: false,
+              homeButton: false,
+              infoBox: false,
+              sceneModePicker: false,
+              selectionIndicator: false,
+              timeline: false,
+              navigationHelpButton: false,
+              navigationInstructionsInitiallyVisible: false,
+              requestRenderMode: true,
+              maximumRenderTimeChange: Number.POSITIVE_INFINITY,
+              msaaSamples: 4,
+              showRenderLoopErrors: false,
+            }),
+          destroyViewer: (viewer) => {
+            if (!viewer.isDestroyed()) viewer.destroy();
+          },
+        }),
+      [retryCount],
+    );
+
+    /* ------------------------- entity sync ------------------------- */
+    /* Draft plane/points sync alone on ruler changes; preview heights match commit rules. */
+
+    useEffect(() => {
+      const viewer = viewerRef.current;
+      const Cesium = cesiumRef.current;
+      if (!viewer || !Cesium || viewer.isDestroyed() || status !== "ready")
+        return;
+      hoverRef.current = { insert: null, pendingInsert: null };
+      worldTerrainTrianglesRef.current = syncCommittedMissionEntities({
+        viewer,
+        Cesium,
+        mission,
+        selection,
+        simActive,
+        showAreaSurface,
+        focusedPhotoWaypointId,
+      });
+      viewer.scene.requestRender();
+      settleRef.current = 90;
+      if (hostRef.current)
+        hostRef.current.dataset.entities = String(
+          viewer.entities.values.length,
+        );
+      revalidateWaypointGroundGuideRef.current(mission);
+    }, [mission, selection, simActive, status, showAreaSurface]);
+
+    /* Draft cursor/ruler changes refresh only draft-owned entities. */
+    useEffect(() => {
+      const viewer = viewerRef.current;
+      const Cesium = cesiumRef.current;
+      if (!viewer || !Cesium || viewer.isDestroyed() || status !== "ready")
+        return;
+      /* Replace draft-owned plane/points only; other entity layers must survive. */
+      removeSceneEntitiesInLayer(viewer.entities, "draft");
+      syncDraftOverlay(
+        viewer,
+        Cesium,
+        mission,
+        pendingPoints,
+        tool,
+        pendingShape,
+        draftCursor,
+        closeDraftAtStart,
+        draftAreaSettings,
+        draftAvoidSettings,
+        drawingAltM,
+        planeVisible,
+      );
+      viewer.scene.requestRender();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+      mission,
+      pendingPoints,
+      tool,
+      drawingAltM,
+      planeVisible,
+      pendingShape,
+      draftCursor,
+      closeDraftAtStart,
+      draftAreaSettings,
+      draftAvoidSettings,
+      status,
+    ]);
+
+    useEffect(() => {
+      const viewer = viewerRef.current;
+      const Cesium = cesiumRef.current;
+      if (!viewer || !Cesium || viewer.isDestroyed()) return;
+      hoveredPhotoRef.current = null;
+      frustumGeomRef.current = syncCaptureEntities({
+        viewer,
+        Cesium,
+        mission,
+        focusedPhotoWaypointId,
+        showPhotoMarkers,
+        showCameraFootprint,
+        footprintOpacity,
+      });
+      settleRef.current = 90;
+      viewer.scene.requestRender();
+    }, [
+      mission,
+      selection,
+      showPhotoMarkers,
+      showCameraFootprint,
+      footprintOpacity,
+      status,
+    ]);
+
+    return (
+      <div className="ms-scene absolute inset-0" data-testid="ms-scene">
+        <div
+          ref={hostRef}
+          className=" absolute inset-0 [&_canvas]:block [&_canvas]:w-full [&_canvas]:h-full"
+          aria-hidden={status !== "ready"}
+          data-testid="ms-scene-host"
         />
-      ) : null}
-      {status === 'loading' && !without3d ? (
-        <div className='ms-scene-overlay' role='status' aria-label='3D scene loading'>
-          <p className='ms-scene-overlay-title'>Loading 3D scene…</p>
-          <p className='ms-scene-overlay-sub'>Starting route-local renderer (mock site, no network map).</p>
-        </div>
-      ) : null}
-      {status === 'error' && !without3d ? (
-        <div className='ms-scene-overlay' role='alert' data-testid='ms-scene-error'>
-          <p className='ms-scene-overlay-title'>3D scene unavailable</p>
-          <p className='ms-scene-overlay-sub'>{errorMessage ?? 'Renderer failed to start.'}</p>
-          <div className='ms-scene-overlay-actions'>
-            <Button size='sm' variant='default' onClick={() => {
-              setStatus('loading')
-              onReadinessChange('loading')
-              setRetryCount((c) => c + 1)
-            }} data-testid='ms-scene-retry'>
+        {status === "ready" && !without3d ? (
+          <MissionCompassCube
+            heading={orientation.heading}
+            pitch={orientation.pitch}
+            interactive
+            onSnap={handleCubeSnap}
+            onOrbitBy={handleCubeOrbitBy}
+            onOrbitEnd={handleCubeOrbitEnd}
+          />
+        ) : null}
+        {status === "loading" && !without3d ? (
+          <div
+            className="ms-scene-overlay"
+            role="status"
+            aria-label="3D scene loading"
+          >
+            <p className="ms-scene-overlay-title">Loading 3D scene…</p>
+            <p className="ms-scene-overlay-sub">Loading mission scene.</p>
+          </div>
+        ) : null}
+        {status === "error" && !without3d ? (
+          <div
+            className="ms-scene-overlay"
+            role="alert"
+            data-testid="ms-scene-error"
+          >
+            <p className="ms-scene-overlay-title">3D scene unavailable</p>
+            <p className="ms-scene-overlay-sub">
+              {errorMessage ?? "Renderer failed to start."}
+            </p>
+            <div
+              className=" flex gap-[0.5rem]"
+              data-testid="ms-scene-overlay-actions"
+            >
+              <Button
+                size="sm"
+                variant="default"
+                onClick={() => {
+                  setStatus("loading");
+                  onReadinessChange("loading");
+                  setRetryCount((c) => c + 1);
+                }}
+                data-testid="ms-scene-retry"
+              >
+                Retry 3D
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  setWithout3d(true);
+                  onReadinessChange("without-3d");
+                }}
+              >
+                Continue without 3D
+              </Button>
+            </div>
+          </div>
+        ) : null}
+        {without3d && status !== "ready" ? (
+          <div
+            className=" absolute left-[0.75rem] bottom-[0.75rem] flex items-center gap-[0.25rem] text-[0.75rem] text-(--muted-foreground) bg-(--card) [border:0.0625rem_solid_var(--border)] rounded-(--radius) p-[0.25rem_0.5rem]"
+            role="status"
+            data-testid="ms-scene-fallback"
+          >
+            <span>3D off — edit from the waypoint list. </span>
+            <Button
+              size="sm"
+              variant="link"
+              onClick={() => {
+                setWithout3d(false);
+                setStatus("loading");
+                onReadinessChange("loading");
+                setRetryCount((c) => c + 1);
+              }}
+            >
               Retry 3D
             </Button>
-            <Button size='sm' variant='outline' onClick={() => {
-              setWithout3d(true)
-              onReadinessChange('without-3d')
-            }}>
-              Continue without 3D
-            </Button>
           </div>
-        </div>
-      ) : null}
-      {without3d && status !== 'ready' ? (
-        <div className='ms-scene-fallback' role='status'>
-          <span>3D off — edit from the waypoint list. </span>
-          <Button
-            size='sm'
-            variant='link'
-            onClick={() => {
-              setWithout3d(false)
-              setStatus('loading')
-              onReadinessChange('loading')
-              setRetryCount((c) => c + 1)
-            }}
-          >
-            Retry 3D
-          </Button>
-        </div>
-      ) : null}
-    </div>
-  )
-})
+        ) : null}
+      </div>
+    );
+  },
+);
 
-export default MissionScene
+export default MissionScene;

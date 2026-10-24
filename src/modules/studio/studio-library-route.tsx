@@ -1,20 +1,22 @@
-import StudioLibrary, { type LibraryEntry, type LibrarySection } from '../library/library'
+import StudioLibrary, {
+  type LibraryEntry,
+  type LibrarySection,
+} from "../library/library";
 
 export interface StudioLibraryRouteProps {
-  announce: string
-  section: LibrarySection
-  projectId: string | null
-  templateId: string | null
-  sharedMissionId: string | null
-  sharedProjectId: string | null
-  current: LibraryEntry | null
-  onNavigate: (section: LibrarySection, projectId: string | null) => void
-  onOpenTemplate: (templateId: string | null) => void
-  onOpenSharedAccounts: (missionId: string | null) => void
-  onOpenSharedProject: (projectId: string | null) => void
-  onOpenMission: (entry: LibraryEntry) => void
-  onAnnounce: (message: string) => void
-  onLogout: () => void
+  announce: string;
+  section: LibrarySection;
+  projectId: string | null;
+  templateId: string | null;
+  sharedMissionId: string | null;
+  sharedProjectId: string | null;
+  onNavigate: (section: LibrarySection, projectId: string | null) => void;
+  onOpenTemplate: (templateId: string | null) => void;
+  onOpenSharedAccounts: (missionId: string | null) => void;
+  onOpenSharedProject: (projectId: string | null) => void;
+  onOpenMission: (entry: LibraryEntry) => void;
+  onAnnounce: (message: string) => void;
+  onLogout: () => void;
 }
 
 export default function StudioLibraryRoute({
@@ -24,17 +26,16 @@ export default function StudioLibraryRoute({
   templateId,
   sharedMissionId,
   sharedProjectId,
-  current,
   onNavigate,
   onOpenTemplate,
   onOpenSharedAccounts,
   onOpenSharedProject,
   onOpenMission,
   onAnnounce,
-  onLogout
+  onLogout,
 }: StudioLibraryRouteProps) {
   return (
-    <div className='ms-root' data-testid='ms-root'>
+    <div className="ms-root" data-testid="ms-root">
       <StudioLibrary
         announce={announce}
         section={section}
@@ -42,7 +43,6 @@ export default function StudioLibraryRoute({
         templateId={templateId}
         sharedMissionId={sharedMissionId}
         sharedProjectId={sharedProjectId}
-        current={current}
         onNavigate={onNavigate}
         onOpenTemplate={onOpenTemplate}
         onOpenSharedAccounts={onOpenSharedAccounts}
@@ -52,5 +52,5 @@ export default function StudioLibraryRoute({
         onLogout={onLogout}
       />
     </div>
-  )
+  );
 }

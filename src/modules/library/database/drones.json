@@ -42,14 +42,12 @@
             "verticalMax": 52
           },
           "pointRatePerSecond": 200000,
-          "sourceUrls": [
-            "https://www.livoxtech.com/jp/mid-360/specs"
-          ]
+          "sourceUrls": ["https://www.livoxtech.com/jp/mid-360/specs"]
         }
       ],
       "gimbal": null,
       "notes": [
-        "The existing Mission Studio mock supports photo capture and LiDAR scan actions, but the photo camera and X500 airframe specifications have not been identified."
+        "Photo capture and LiDAR scan actions are available. Configure camera and X500 airframe specifications for mission planning."
       ]
     },
     {
@@ -69,9 +67,7 @@
         "maxTakeoffWeightG": 1050,
         "maxFlightTimeMin": 45,
         "maxSpeedMps": 21,
-        "sourceUrls": [
-          "https://enterprise.dji.com/mavic-3-enterprise/specs"
-        ]
+        "sourceUrls": ["https://enterprise.dji.com/mavic-3-enterprise/specs"]
       },
       "cameraProfiles": [
         {
@@ -99,9 +95,7 @@
             "height": 2160,
             "fps": 30
           },
-          "sourceUrls": [
-            "https://enterprise.dji.com/mavic-3-enterprise/specs"
-          ]
+          "sourceUrls": ["https://enterprise.dji.com/mavic-3-enterprise/specs"]
         },
         {
           "id": "tele",
@@ -114,9 +108,7 @@
           },
           "equivalentFocalLengthMm": 162,
           "shutter": "electronic",
-          "sourceUrls": [
-            "https://enterprise.dji.com/mavic-3-enterprise/specs"
-          ]
+          "sourceUrls": ["https://enterprise.dji.com/mavic-3-enterprise/specs"]
         }
       ],
       "payloads": [],
@@ -126,9 +118,7 @@
           "min": -90,
           "max": 35
         },
-        "sourceUrls": [
-          "https://enterprise.dji.com/mavic-3-enterprise/specs"
-        ]
+        "sourceUrls": ["https://enterprise.dji.com/mavic-3-enterprise/specs"]
       },
       "notes": [
         "Physical sensor dimensions and physical focal length are carried over from the Planner reference catalog and are marked unverified; use the manufacturer specifications before relying on them for flight or GSD calculations."
@@ -155,7 +145,7 @@
       "payloads": [],
       "gimbal": null,
       "notes": [
-        "Reference airframe used by the current prototype; capture capabilities are mock behavior and do not describe a specific physical drone."
+        "Generic quadcopter profile with photo, video, and LiDAR capture capabilities."
       ]
     }
   ]
