@@ -180,7 +180,7 @@ function MissionCardOwner({ username }: { username: string }) {
 
 function formatCompactEditedAgo(value: string): string {
   const normalized = value.trim().replace(/^Edited\s+/u, "");
-  if (/^just now$/iu.test(normalized)) return "now";
+  if (/^just now$/iu.test(normalized)) return "Now";
   if (/^yesterday$/iu.test(normalized)) return "1d ago";
 
   const match = normalized.match(/^(\d+)\s+(minute|hour|day)s?\s+ago$/iu);
