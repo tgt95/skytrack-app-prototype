@@ -26,6 +26,7 @@ export function AccountMenuDialogs({
   onClose,
   onSaveProfile,
   onChangeNotifications,
+  onAnnounce,
   onLogout
 }: {
   panel: AccountMenuPanel | null
@@ -34,6 +35,7 @@ export function AccountMenuDialogs({
   onClose: () => void
   onSaveProfile: (name: string) => boolean
   onChangeNotifications: (next: NotificationPreferences) => void
+  onAnnounce: (message: string) => void
   onLogout: () => void
 }) {
   const [name, setName] = useState(profile.name)
@@ -157,8 +159,11 @@ export function AccountMenuDialogs({
                 <strong>No other accounts connected</strong>
                 <p>Account linking is not available in this local prototype.</p>
               </div>
-              {addAccountMessage ? <p className='ms-lib-account-note' role='status'>Sign-in and account linking are not connected in this prototype.</p> : null}
-              <Button size='sm' variant='outline' onClick={() => setAddAccountMessage(true)}>
+              {addAccountMessage ? <p className='ms-lib-account-note'>Sign-in and account linking are not connected in this prototype.</p> : null}
+              <Button size='sm' variant='outline' onClick={() => {
+                setAddAccountMessage(true)
+                onAnnounce('Sign-in and account linking are not connected in this prototype.')
+              }}>
                 <UsersIcon aria-hidden='true' /> Add account
               </Button>
             </div>

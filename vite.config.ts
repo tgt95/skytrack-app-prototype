@@ -37,9 +37,7 @@ function cesiumPlugin(): Plugin {
       const cesiumRoot = existsSync(resolve(process.cwd(), outDir, 'cesium'))
         ? resolve(process.cwd(), outDir, 'cesium')
         : resolve(process.cwd(), 'node_modules/cesium/Build/Cesium')
-      const fixtureRoot = existsSync(resolve(process.cwd(), outDir, 'fixtures/3dtiles'))
-        ? resolve(process.cwd(), outDir, 'fixtures/3dtiles')
-        : resolve(process.cwd(), 'src/prototypes/planner/map3d/fixtures')
+      const fixtureRoot = resolve(process.cwd(), outDir, 'fixtures/3dtiles')
 
       function safeResolveInRoot(
         rootDir: string,
@@ -143,12 +141,6 @@ function cesiumPlugin(): Plugin {
             mkdirSync(targetDir, { recursive: true })
             cpSync(srcDir, targetDir, { recursive: true })
           }
-        }
-        const srcFixtures = resolve(process.cwd(), 'src/prototypes/planner/map3d/fixtures')
-        const destFixtures = resolve(process.cwd(), outDir, 'fixtures/3dtiles')
-        if (existsSync(srcFixtures)) {
-          mkdirSync(destFixtures, { recursive: true })
-          cpSync(srcFixtures, destFixtures, { recursive: true })
         }
       }
     }

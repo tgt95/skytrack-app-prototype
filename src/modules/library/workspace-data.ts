@@ -1,3 +1,5 @@
+import { STORAGE_KEYS } from '../../shared/storage-keys'
+
 export interface WorkspaceWorld {
   id: string
   name: string
@@ -40,7 +42,7 @@ export interface SharedProjectFixture {
 }
 
 export const DEFAULT_WORKSPACE_ID = 'tuan-workspace'
-export const ACTIVE_WORKSPACE_STORAGE_KEY = 'ms-lib-active-workspace-v1'
+export const ACTIVE_WORKSPACE_STORAGE_KEY = STORAGE_KEYS.activeWorkspace
 
 export const WORKSPACES: WorkspaceDefinition[] = [
   {

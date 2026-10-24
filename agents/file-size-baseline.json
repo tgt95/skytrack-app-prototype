@@ -1,0 +1,30 @@
+{
+  "targets": {
+    "uiComponent": 400,
+    "domainAndHook": 450,
+    "imperativeScene": 500,
+    "persistence": 500
+  },
+  "exceptions": [
+    {
+      "path": "src/modules/design/sequence-controls.tsx",
+      "maxLines": 446,
+      "why": "Waypoint rows, action rows, insertion affordances, and their shared keyboard drag payload form one sequence editing interaction; keep the serialization and row contract together until a split preserves that shared owner."
+    },
+    {
+      "path": "src/modules/library/drone-profile-dialog.tsx",
+      "maxLines": 406,
+      "why": "The complete drone profile editor and its field adapters share one dialog draft and validation lifecycle; the field adapters are only used inside this dialog."
+    },
+    {
+      "path": "src/modules/scene/scene-camera-gestures.ts",
+      "maxLines": 547,
+      "why": "Camera pointer arbitration, gesture state, listener ordering, and disposal are one lifecycle; splitting solely for line count would scatter cancellation and restoration ownership."
+    },
+    {
+      "path": "src/modules/simulation/simulation-panel.tsx",
+      "maxLines": 410,
+      "why": "Simulation playback, settings, and completion/restart states share one panel interaction contract; retain its existing source until a focused component boundary is justified."
+    }
+  ]
+}

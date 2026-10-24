@@ -28,6 +28,18 @@ Live prototype: <https://tgt95.github.io/skytrack-app-prototype/>. Pushes to `ma
 - `vite.config.ts` — React, Tailwind, and Cesium worker/static asset setup.
 - [`agents/`](./agents/README.md) — current agent instructions and architecture notes.
 
+### Source organization
+
+The `domain/`, `modules/`, and `shared/` folders under `src/` separate business rules, feature implementation, and reusable app code:
+
+| Folder | Responsibility | Examples |
+| --- | --- | --- |
+| `src/domain/` | Mission types and deterministic rules such as geometry, validation, generation, and serialization. Keep it independent of React, Cesium, the DOM, and browser storage. | `mission-generation.ts`, `mission-validation.ts` |
+| `src/modules/` | Feature UI, state, and integrations. Subfolders group related responsibilities such as auth, Studio orchestration, Design inspectors, Cesium scene rendering, Library pages, and address search. | `auth/`, `studio/`, `design/`, `scene/`, `library/`, `search/` |
+| `src/shared/` | Reusable, feature-neutral UI and helpers used by multiple modules. Keep feature internals and feature persistence out. | `map-control-tooltip.tsx`, `theme-preference.ts` |
+
+Modules may use domain rules and shared helpers. Domain code and shared code should not depend on feature modules. `src/shared/` is app-internal code; design-system controls come from `skytrack-ui`.
+
 The app supports direct URLs for its pages:
 
 | Page | URL |

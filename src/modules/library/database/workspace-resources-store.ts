@@ -1,5 +1,6 @@
 import { WORLDS } from '../../../domain/mission-model'
 import { DEFAULT_WORKSPACE_ID, WORKSPACES } from '../workspace-data'
+import { STORAGE_KEYS, STORAGE_VERSIONS } from '../../../shared/storage-keys'
 
 export type ResourceStatus = 'Sample' | 'Draft' | 'Registered' | 'Archived'
 export type AIModelStatus = ResourceStatus | 'Ready'
@@ -42,7 +43,7 @@ export interface WorkspaceResourceState {
   aiModels: WorkspaceAIModelRecord[]
 }
 
-export const WORKSPACE_RESOURCES_STORAGE_KEY = 'ms-lib-workspace-resources-v1'
+export const WORKSPACE_RESOURCES_STORAGE_KEY = STORAGE_KEYS.workspaceResources
 const statuses: ResourceStatus[] = ['Sample', 'Draft', 'Registered', 'Archived']
 const sourceTypes: WorldSourceType[] = ['none', 'mission', 'flight-reference']
 
@@ -125,10 +126,10 @@ export function loadWorkspaceResources(): WorkspaceResourceState {
     const raw = localStorage.getItem(WORKSPACE_RESOURCES_STORAGE_KEY)
     if (raw) {
       const parsed = JSON.parse(raw) as Partial<WorkspaceResourceState>
-      if (parsed.version === 1 && Array.isArray(parsed.worlds) && parsed.worlds.every(isWorld) &&
+      if (parsed.version === STORAGE_VERSIONS.workspaceResources && Array.isArray(parsed.worlds) && parsed.worlds.every(isWorld) &&
         Array.isArray(parsed.aiModels) && parsed.aiModels.every(isAIModel)) {
         return {
-          version: 1,
+          version: STORAGE_VERSIONS.workspaceResources,
           worlds: parsed.worlds,
           aiModels: parsed.aiModels
         }
@@ -142,7 +143,7 @@ export function loadWorkspaceResources(): WorkspaceResourceState {
 
 export function saveWorkspaceResources(state: WorkspaceResourceState): boolean {
   try {
-    localStorage.setItem(WORKSPACE_RESOURCES_STORAGE_KEY, JSON.stringify({ ...state, version: 1 }))
+    localStorage.setItem(WORKSPACE_RESOURCES_STORAGE_KEY, JSON.stringify({ ...state, version: STORAGE_VERSIONS.workspaceResources }))
     return true
   } catch {
     return false

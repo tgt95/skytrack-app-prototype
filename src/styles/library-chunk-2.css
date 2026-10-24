@@ -1,0 +1,477 @@
+@media (max-width: 32.5rem) {
+  .ms-lib-account-dialog {
+    padding: 1.25rem;
+  }
+}
+
+.ms-lib-avatar {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--primary);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.ms-lib-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 1rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.ms-lib-main h1 {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.ms-lib-main h2 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.ms-lib-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: -1rem -1.5rem 1.25rem;
+  padding: 1.25rem 1.5rem 1rem;
+  background: var(--card);
+  border-bottom: 0.0625rem solid var(--border);
+}
+
+.ms-lib-page-header.has-tabs {
+  padding-bottom: 0;
+}
+
+.ms-lib-page-header.is-plain {
+  background: transparent;
+  border: 0;
+}
+
+.ms-lib-page-header-context {
+  min-width: 0;
+}
+
+.ms-lib-page-header-context>.ms-lib-crumb,
+.ms-lib-page-header-context>.ms-lib-back {
+  margin-bottom: 0;
+}
+
+.ms-lib-page-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.ms-lib-page-header-copy {
+  min-width: 0;
+}
+
+.ms-lib-page-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.ms-lib-page-header-description {
+  margin-top: 0.25rem;
+}
+
+.ms-lib-page-header-description> :first-child {
+  margin-top: 0;
+}
+
+.ms-lib-page-header-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+}
+
+.ms-ai-model-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ms-run-environment {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ms-run-environment-label {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.ms-lib-page-header-footer {
+  min-width: 0;
+}
+
+.ms-lib-page-header-footer>.ms-lib-search {
+  max-width: 30rem;
+}
+
+.ms-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.ms-lib-sub {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.ms-lib-main[data-section="worlds"] .ms-lib-sub,
+.ms-lib-main[data-section="drones"] .ms-lib-sub,
+.ms-lib-main[data-section="aimodels"] .ms-lib-sub {
+  display: none;
+}
+
+.ms-lib-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 0.75rem;
+  padding: 0.25rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.ms-lib-back:hover {
+  color: var(--primary);
+}
+
+.ms-lib-viewall {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.ms-lib-viewall:hover {
+  color: var(--primary);
+}
+
+.ms-lib-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13.125rem, 1fr));
+  gap: 1rem;
+}
+
+.ms-ai-model-tabs {
+  width: 100%;
+  max-width: none;
+  gap: 0.75rem;
+}
+
+.ms-ai-model-tabs:has([data-slot="tabs-indicator"]) [data-slot="tabs-list"] {
+  margin-left: -0.75rem;
+}
+
+.ms-ai-model-tabs [data-slot="tabs-panel"] {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+}
+
+.ms-lib-grid.is-templates {
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+}
+
+.ms-lib-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  border: 0.0625rem solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--foreground);
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.ms-lib-card:hover {
+  border-color: var(--primary);
+}
+
+.ms-lib-card-overlay-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+  display: inline-flex;
+  gap: 0.25rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.ms-lib-card:hover .ms-lib-card-overlay-actions,
+.ms-lib-card:focus-within .ms-lib-card-overlay-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ms-lib-card-overlay-actions [aria-pressed="true"] svg {
+  color: var(--favorite);
+}
+
+@media (hover: none) {
+  .ms-lib-card-overlay-actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-lib-card-overlay-actions {
+    transition: none;
+  }
+}
+
+.ms-lib-card.is-current {
+  border-color: var(--primary);
+}
+
+.ms-lib-current {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--primary);
+  white-space: nowrap;
+}
+
+/* Shared card media ratio across thumbnails and resource-card icon panels. */
+.ms-lib-thumb,
+.ms-lib-resource-icon {
+  aspect-ratio: 4 / 3;
+}
+
+/* Mission thumbnail uses source-backed line art over the token grid. */
+.ms-lib-thumb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  background-color: var(--background);
+  background-image:
+    repeating-linear-gradient(to right,
+      color-mix(in srgb, var(--border) 55%, transparent) 0 0.0625rem,
+      transparent 0.0625rem 1.75rem),
+    repeating-linear-gradient(to bottom,
+      color-mix(in srgb, var(--border) 55%, transparent) 0 0.0625rem,
+      transparent 0.0625rem 1.75rem);
+  border-bottom: 0.0625rem solid var(--border);
+}
+
+button.ms-lib-thumb {
+  padding: 0;
+  border: 0;
+  border-bottom: 0.0625rem solid var(--border);
+  appearance: none;
+  cursor: pointer;
+}
+
+.ms-lib-thumb svg {
+  width: 3.5rem;
+  height: 3.5rem;
+  opacity: 0.75;
+}
+
+.ms-lib-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+}
+
+.ms-lib-card-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.ms-lib-card-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.ms-lib-card-meta svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.ms-lib-context-row {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.ms-lib-shared-owner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+
+.ms-lib-shared-owner .ms-lib-avatar {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+.ms-lib-shared-context {
+  color: var(--muted-foreground);
+  font-size: 0.6875rem;
+}
+
+.ms-lib-card.is-readonly {
+  cursor: default;
+}
+
+.ms-lib-resource-card {
+  min-height: 9.75rem;
+}
+
+.ms-lib-managed-resource-card .ms-lib-card-body {
+  flex: 1;
+}
+
+.ms-lib-resource-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 0.75rem 0.75rem;
+}
+
+.ms-lib-resource-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border-bottom: 0.0625rem solid var(--border);
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+
+.ms-lib-resource-icon svg {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.ms-lib-card-edited {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.ms-lib-card-desc {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+
+@media (max-width: 61.25rem) {
+  .ms-lib-side {
+    flex-basis: 4rem;
+    align-items: stretch;
+    padding: 0.75rem 0.375rem;
+  }
+
+  .ms-lib-nav-label,
+  .ms-lib-navhead,
+  .ms-lib-community,
+  .ms-lib-workspace .ms-lib-nav-label,
+  .ms-lib-workspace-name,
+  .ms-lib-workspace-role,
+  .ms-lib-profile .ms-lib-nav-label,
+  .ms-lib-sidebar-divider,
+  .ms-lib-workspace-settings {
+    display: none;
+  }
+
+  .ms-lib-workspace-head {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .ms-lib-workspace-select {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .ms-lib-workspace-caret {
+    display: none;
+  }
+
+  .ms-lib-workspace-avatar {
+    display: inline-flex;
+  }
+
+  .ms-lib-navitem {
+    justify-content: center;
+  }
+
+  .ms-lib-main {
+    padding: 0.75rem 0.75rem 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .ms-lib-page-header {
+    margin: -0.75rem -0.75rem 1rem;
+    padding: 1rem 0.75rem 0.75rem;
+  }
+
+  .ms-lib-page-header-row {
+    flex-wrap: wrap;
+  }
+
+  .ms-lib-top {
+    flex-wrap: wrap;
+  }
+}
+

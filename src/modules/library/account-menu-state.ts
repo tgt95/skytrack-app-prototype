@@ -1,3 +1,5 @@
+import { STORAGE_KEYS } from '../../shared/storage-keys'
+
 export type AccountProfile = {
   name: string
   email: string
@@ -8,9 +10,6 @@ export type NotificationPreferences = {
   sharedProjectActivity: boolean
   workspaceUpdates: boolean
 }
-
-const PROFILE_STORAGE_KEY = 'skytrack-mission-studio-profile-v1'
-const NOTIFICATIONS_STORAGE_KEY = 'skytrack-mission-studio-notifications-v1'
 
 export const DEFAULT_ACCOUNT_PROFILE: AccountProfile = {
   name: 'Tuan Trinh',
@@ -25,7 +24,7 @@ export const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences = {
 
 export function readAccountProfile(): AccountProfile {
   try {
-    const stored = window.localStorage.getItem(PROFILE_STORAGE_KEY)
+    const stored = window.localStorage.getItem(STORAGE_KEYS.accountProfile)
     if (!stored) return DEFAULT_ACCOUNT_PROFILE
 
     const value: unknown = JSON.parse(stored)
@@ -43,7 +42,7 @@ export function readAccountProfile(): AccountProfile {
 
 export function saveAccountProfile(profile: AccountProfile): boolean {
   try {
-    window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify({ name: profile.name.trim() }))
+    window.localStorage.setItem(STORAGE_KEYS.accountProfile, JSON.stringify({ name: profile.name.trim() }))
     return true
   } catch {
     return false
@@ -52,7 +51,7 @@ export function saveAccountProfile(profile: AccountProfile): boolean {
 
 export function readNotificationPreferences(): NotificationPreferences {
   try {
-    const stored = window.localStorage.getItem(NOTIFICATIONS_STORAGE_KEY)
+    const stored = window.localStorage.getItem(STORAGE_KEYS.accountNotifications)
     if (!stored) return DEFAULT_NOTIFICATION_PREFERENCES
 
     const value: unknown = JSON.parse(stored)
@@ -71,7 +70,7 @@ export function readNotificationPreferences(): NotificationPreferences {
 
 export function saveNotificationPreferences(preferences: NotificationPreferences): boolean {
   try {
-    window.localStorage.setItem(NOTIFICATIONS_STORAGE_KEY, JSON.stringify(preferences))
+    window.localStorage.setItem(STORAGE_KEYS.accountNotifications, JSON.stringify(preferences))
     return true
   } catch {
     return false

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js'
-import droneGeometryUrl from './assets/minipro-v6-login-geometry.glb?url'
+import droneGeometryUrl from '../../assets/minipro-v6-login-geometry.glb?url'
 
 type LoginDroneProps = {
   isDark: boolean

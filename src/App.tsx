@@ -3,14 +3,13 @@ import { Button } from 'skytrack-ui/button'
 import { FieldLabel, FieldRoot } from 'skytrack-ui/field'
 import { Input } from 'skytrack-ui/input'
 import logo from './assets/skytrack-logo-full.svg?raw'
-import LoginDrone from './LoginDrone'
+import LoginDrone from './modules/auth/login-drone'
 import MissionStudio from './index'
-
-const AUTH_STORAGE_KEY = 'skytrack-mission-studio-authenticated'
+import { STORAGE_KEYS } from './shared/storage-keys'
 
 export default function MissionStudioApp() {
   const [authenticated, setAuthenticated] = useState(
-    () => window.localStorage.getItem(AUTH_STORAGE_KEY) === '1',
+    () => window.localStorage.getItem(STORAGE_KEYS.authentication) === '1',
   )
   const [error, setError] = useState('')
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(
@@ -113,12 +112,12 @@ export default function MissionStudioApp() {
     }
 
     setError('')
-    window.localStorage.setItem(AUTH_STORAGE_KEY, '1')
+    window.localStorage.setItem(STORAGE_KEYS.authentication, '1')
     setAuthenticated(true)
   }
 
   function handleLogout() {
-    window.localStorage.removeItem(AUTH_STORAGE_KEY)
+    window.localStorage.removeItem(STORAGE_KEYS.authentication)
     setAuthenticated(false)
   }
 

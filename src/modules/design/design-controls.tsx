@@ -7,7 +7,7 @@ import { Button } from 'skytrack-ui/button'
 import { Toggle } from 'skytrack-ui/toggle'
 import { ToolbarButton } from 'skytrack-ui/toolbar'
 import { Tooltip, TooltipArrow, TooltipPopup, TooltipPortal, TooltipPositioner, TooltipProvider, TooltipTrigger } from 'skytrack-ui/tooltip'
-import { BASEMAPS, type MissionBasemapStyle } from '../scene/mission-map-2d'
+import { BASEMAPS, type MissionBasemapStyle } from '../scene/basemaps'
 
 /* Toolbar-backed button with styled tooltip and native disabled semantics. */
 export function ToolButton({

@@ -12,6 +12,7 @@
 import projectsSeed from './projects.json'
 import templatesSeed from './templates.json'
 import { getWorkspace } from '../workspace-data'
+import { STORAGE_KEYS, STORAGE_VERSIONS } from '../../../shared/storage-keys'
 
 export interface LibMission {
   id: string
@@ -43,8 +44,8 @@ export interface LibTemplate {
   byline: string
 }
 
-export const DB_KEY = 'skytrack-library-db-v1'
-export const DB_VERSION = 1
+export const DB_KEY = STORAGE_KEYS.libraryDatabase
+export const DB_VERSION = STORAGE_VERSIONS.libraryDatabase
 
 interface DatabaseShape {
   version: number
@@ -62,10 +63,17 @@ function isMission(value: unknown): value is LibMission {
     typeof m.starred === 'boolean' &&
     typeof m.shared === 'boolean' &&
     typeof m.viewOnly === 'boolean' &&
-    (m.droneId === undefined || typeof m.droneId === 'string') &&
-    (m.worldId === undefined || typeof m.worldId === 'string') &&
+    (m.world === undefined || typeof m.world === 'string') &&
+    (m.worldType === undefined || m.worldType === '2D' || m.worldType === '3D') &&
+    (m.vehicle === undefined || typeof m.vehicle === 'string') &&
+    (m.droneId === undefined || (typeof m.droneId === 'string' && m.droneId.length <= 128)) &&
+    (m.worldId === undefined || (typeof m.worldId === 'string' && m.worldId.length <= 128)) &&
     (m.missionData === undefined || typeof m.missionData === 'string')
   )
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
 function isProject(value: unknown): value is LibProject {
@@ -79,6 +87,21 @@ function isProject(value: unknown): value is LibProject {
     Array.isArray(p.missions) &&
     p.missions.every(isMission)
   )
+}
+
+function isDatabase(value: unknown): value is DatabaseShape {
+  return isRecord(value) && value.version === DB_VERSION &&
+    Array.isArray(value.projects) && value.projects.every(isProject)
+}
+
+function parseSnapshotMetadata(raw: string | undefined): Record<string, unknown> | null {
+  if (!raw) return null
+  try {
+    const parsed: unknown = JSON.parse(raw) as unknown
+    return isRecord(parsed) ? parsed : null
+  } catch {
+    return null
+  }
 }
 
 function seedProjects(): LibProject[] {
@@ -96,12 +119,7 @@ function normalizeProjects(projects: LibProject[]): LibProject[] {
     workspaceId: getWorkspace(project.workspaceId).id,
     missions: project.missions.map((mission) => {
       const seeded = seededMissionById.get(mission.id)
-      let snapshot: Record<string, unknown> | null = null
-      try {
-        snapshot = mission.missionData ? JSON.parse(mission.missionData) as Record<string, unknown> : null
-      } catch {
-        snapshot = null
-      }
+      const snapshot = parseSnapshotMetadata(mission.missionData)
       const snapshotWorldType = snapshot?.worldType === '2D' || snapshot?.worldType === '3D' ? snapshot.worldType : undefined
       const snapshotWorld = typeof snapshot?.world === 'string' ? snapshot.world : undefined
       const snapshotWorldId = typeof snapshot?.worldId === 'string' ? snapshot.worldId : undefined
@@ -128,8 +146,8 @@ export function loadProjects(): LibProject[] {
   try {
     const raw = localStorage.getItem(DB_KEY)
     if (raw) {
-      const parsed = JSON.parse(raw) as Partial<DatabaseShape>
-      if (parsed && parsed.version === DB_VERSION && Array.isArray(parsed.projects) && parsed.projects.every(isProject)) {
+      const parsed: unknown = JSON.parse(raw) as unknown
+      if (isDatabase(parsed)) {
         return normalizeProjects(parsed.projects)
       }
     }
@@ -194,7 +212,9 @@ export function cloneMissionSnapshotIdentity(
 ): string | undefined {
   if (!missionData) return undefined
   try {
-    const mission = JSON.parse(missionData) as Record<string, unknown>
+    const parsed: unknown = JSON.parse(missionData) as unknown
+    if (!isRecord(parsed)) return undefined
+    const mission = parsed
     return JSON.stringify({ ...mission, id: missionId, name })
   } catch {
     return undefined

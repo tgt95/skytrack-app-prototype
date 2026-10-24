@@ -1,6 +1,8 @@
 # Mission Studio agent instructions
 
-Read this file before changing this standalone project.
+Read this file before changing this standalone project. Also read
+[`coding-practices.md`](./coding-practices.md) and
+[`reference/architecture.md`](./reference/architecture.md).
 
 ## Source of truth and protected copy
 

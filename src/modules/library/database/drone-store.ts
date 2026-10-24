@@ -1,4 +1,5 @@
 import { DEFAULT_WORKSPACE_ID, WORKSPACES } from '../workspace-data'
+import { STORAGE_KEYS, STORAGE_VERSIONS } from '../../../shared/storage-keys'
 
 export type DroneFirmwareFamily = 'PX4' | 'ArduPilot' | 'DJI' | 'Other' | 'Unspecified'
 
@@ -86,9 +87,9 @@ export interface WorkspaceDroneProfile {
   components: DroneHardwareComponent[]
 }
 
-export const DRONE_DB_KEY = 'ms-lib-drone-profiles-v2'
-const LEGACY_DRONE_DB_KEY = 'ms-lib-drone-profiles-v1'
-export const DRONE_DB_VERSION = 2
+export const DRONE_DB_KEY = STORAGE_KEYS.droneProfiles
+const LEGACY_DRONE_DB_KEY = STORAGE_KEYS.legacyDroneProfiles
+export const DRONE_DB_VERSION = STORAGE_VERSIONS.droneProfiles
 
 interface DroneDatabaseShape {
   version: number
