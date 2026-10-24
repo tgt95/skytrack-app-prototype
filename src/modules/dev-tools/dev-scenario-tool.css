@@ -1,0 +1,112 @@
+.ms-dev-tool-trigger {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 2147483646;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+}
+
+.ms-dev-tool-portal[data-slot='drawer-portal'] {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+}
+
+.ms-dev-tool-backdrop[data-slot='drawer-backdrop'] {
+  z-index: 2147483646;
+}
+
+.ms-dev-tool-viewport[data-slot='drawer-viewport'] {
+  z-index: 2147483647;
+  pointer-events: none;
+}
+
+.ms-dev-tool-popup[data-slot='drawer-popup'] {
+  pointer-events: auto;
+}
+
+.ms-dev-tool-content {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ms-dev-tool-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ms-dev-tool-heading {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ms-dev-tool-close {
+  flex: none;
+}
+
+.ms-dev-tool-search {
+  display: block;
+  flex: none;
+}
+
+.ms-dev-tool-list-heading {
+  color: var(--muted-foreground);
+  flex: none;
+  font-size: 0.75rem;
+}
+
+.ms-dev-tool-list {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.ms-dev-scenario-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding: 0.875rem 0;
+}
+
+.ms-dev-scenario-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ms-dev-scenario-name {
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.ms-dev-scenario-description {
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.ms-dev-tool-empty {
+  color: var(--muted-foreground);
+  padding: 1rem 0;
+}
+
+@media (max-width: 40rem) {
+  .ms-dev-tool-trigger {
+    right: 1rem;
+    bottom: 1rem;
+  }
+
+}

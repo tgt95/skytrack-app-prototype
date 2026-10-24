@@ -26,6 +26,7 @@ import { useStudioStageActions } from './modules/studio/use-studio-stage-actions
 import { useMissionStudioTestBridge } from './modules/studio/use-mission-studio-test-bridge'
 import StudioLibraryRoute from './modules/studio/studio-library-route'
 import StudioShell from './modules/studio/studio-shell'
+import DevScenarioTool from './modules/dev-tools/dev-scenario-tool'
 import type { SimEventItem } from './modules/simulation/simulation'
 import './index.css'
 
@@ -243,42 +244,52 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
     newMission, resetToSeed
   })
 
+  const devScenarioTool = import.meta.env.DEV
+    ? <DevScenarioTool />
+    : null
+
   if (section === 'library') {
     return (
-      <StudioLibraryRoute
-        announce={announce}
-        section={libNav.section}
-        projectId={libNav.projectId}
-        templateId={route.kind === 'library' ? route.templateId ?? null : null}
-        sharedMissionId={route.kind === 'library' ? route.sharedMissionId ?? null : null}
-        sharedProjectId={route.kind === 'library' ? route.sharedProjectId ?? null : null}
-        current={libraryEntry}
-        onNavigate={routing.onLibraryNavigate}
-        onOpenTemplate={routing.onOpenTemplate}
-        onOpenSharedAccounts={routing.onOpenSharedAccounts}
-        onOpenSharedProject={routing.onOpenSharedProject}
-        onOpenMission={openLibraryMission}
-        onAnnounce={say}
-        onLogout={onLogout}
-      />
+      <>
+        <StudioLibraryRoute
+          announce={announce}
+          section={libNav.section}
+          projectId={libNav.projectId}
+          templateId={route.kind === 'library' ? route.templateId ?? null : null}
+          sharedMissionId={route.kind === 'library' ? route.sharedMissionId ?? null : null}
+          sharedProjectId={route.kind === 'library' ? route.sharedProjectId ?? null : null}
+          current={libraryEntry}
+          onNavigate={routing.onLibraryNavigate}
+          onOpenTemplate={routing.onOpenTemplate}
+          onOpenSharedAccounts={routing.onOpenSharedAccounts}
+          onOpenSharedProject={routing.onOpenSharedProject}
+          onOpenMission={openLibraryMission}
+          onAnnounce={say}
+          onLogout={onLogout}
+        />
+        {devScenarioTool}
+      </>
     )
   }
 
   return (
-    <StudioShell
-      announce={announce}
-      mission={mission}
-      sceneDrawingAltitudeM={sceneDrawingAltitudeM}
-      document={{ dirty, past, future }}
-      ui={uiState}
-      drawing={drawingSession}
-      routing={routing}
-      simulation={simulation}
-      scene={sceneSession}
-      addressSearch={addressSearch}
-      commands={missionCommands}
-      actions={studioActions}
-      handlers={{ backToLibrary, openCrumbProject, gotoAppTab, gotoStage, onSelectEvent }}
-    />
+    <>
+      <StudioShell
+        announce={announce}
+        mission={mission}
+        sceneDrawingAltitudeM={sceneDrawingAltitudeM}
+        document={{ dirty, past, future }}
+        ui={uiState}
+        drawing={drawingSession}
+        routing={routing}
+        simulation={simulation}
+        scene={sceneSession}
+        addressSearch={addressSearch}
+        commands={missionCommands}
+        actions={studioActions}
+        handlers={{ backToLibrary, openCrumbProject, gotoAppTab, gotoStage, onSelectEvent }}
+      />
+      {devScenarioTool}
+    </>
   )
 }

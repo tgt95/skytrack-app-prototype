@@ -1,10 +1,11 @@
-import { CloudIcon, DiscordLogoIcon, DownloadIcon } from '@phosphor-icons/react'
+import { CloudIcon, DiscordLogoIcon } from '@phosphor-icons/react'
 import { Button } from 'skytrack-ui/button'
-import { Separator } from 'skytrack-ui/separator'
 import { Tabs, TabsIndicator, TabsList, TabsTab } from 'skytrack-ui/tabs'
 import { Tooltip, TooltipArrow, TooltipPopup, TooltipPortal, TooltipPositioner, TooltipProvider, TooltipTrigger } from 'skytrack-ui/tooltip'
 import { ToastClose, ToastContent, ToastPortal, ToastProvider, ToastRoot, ToastTitle, ToastViewport, createToastManager, useToastManager } from 'skytrack-ui/toast'
 import skytrackLogoFull from '../../assets/skytrack-logo-full.svg?raw'
+import DevScenarioSlot from '../dev-tools/dev-scenario-slot'
+import { DEV_SCENARIO_SLOTS } from '../dev-tools/scenario-slots'
 
 export const runEnvironmentToastManager = createToastManager()
 
@@ -97,27 +98,18 @@ export default function LibraryTopbar({ runEnvironment, canUseCloudSIM, onEnviro
             </TooltipProvider>
           </div>
 
-          <Separator orientation='vertical' className='mx-1.5 h-auto self-stretch' />
-
-          <Button
-            size='sm'
-            variant='outline'
-            data-testid='ms-lib-restart'
-            title='Mock — no update service in this prototype'
-            onClick={() => onAnnounce('Restart to update is a mock in this prototype. No update was checked.')}
-          >
-            <DownloadIcon aria-hidden='true' /> Restart to update
-          </Button>
-
-
+          <DevScenarioSlot
+            name={DEV_SCENARIO_SLOTS.libraryTopbarActions}
+            onAnnounce={onAnnounce}
+          />
 
           <Tooltip>
             <TooltipTrigger render={<span className='inline-flex' />}>
               <Button
                 size='icon-sm'
                 variant='outline'
-                data-testid='ms-lib-restart'
-                title='Mock — no update service in this prototype'
+                data-testid='ms-lib-discord'
+                title='Mock — no Discord integration in this prototype'
                 onClick={() => onAnnounce('Join Discord is a mock in this prototype.')}
               >
                 <DiscordLogoIcon weight='fill' aria-hidden='true' fill='#5865F2' />

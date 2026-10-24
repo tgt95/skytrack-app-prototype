@@ -5,6 +5,7 @@ import { Input } from 'skytrack-ui/input'
 import logo from './assets/skytrack-logo-full.svg?raw'
 import LoginDrone from './modules/auth/login-drone'
 import MissionStudio from './index'
+import { DevScenarioProvider } from './shared/dev-scenario-state'
 import { STORAGE_KEYS } from './shared/storage-keys'
 
 export default function MissionStudioApp() {
@@ -124,7 +125,9 @@ export default function MissionStudioApp() {
   return (
     <main className="mission-studio-host">
       {authenticated ? (
-        <MissionStudio onLogout={handleLogout} />
+        <DevScenarioProvider enabled={import.meta.env.DEV}>
+          <MissionStudio onLogout={handleLogout} />
+        </DevScenarioProvider>
       ) : (
         <section
           className="ms-login-screen"
