@@ -40,7 +40,7 @@ export function ProjectsPage({
           titleId="ms-lib-projects-title"
           title="Projects"
           actions={
-            <Button size="sm" variant="default" onClick={onCreateProject}>
+            <Button size="default" variant="default" onClick={onCreateProject}>
               <PlusIcon aria-hidden="true" /> New Project
             </Button>
           }
@@ -115,7 +115,7 @@ export function ProjectDetailPage({
               data-testid="ms-lib-row-actions"
             >
               <Button
-                size="sm"
+                size="default"
                 variant="default"
                 data-testid="ms-lib-new-mission"
                 onClick={() => onCreateMission(project.id)}

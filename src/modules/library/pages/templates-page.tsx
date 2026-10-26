@@ -57,7 +57,7 @@ export default function TemplatesPage({
             }
             actions={
               <Button
-                size="sm"
+                size="default"
                 variant="default"
                 onClick={() => onUseTemplate(activeTemplate)}
               >

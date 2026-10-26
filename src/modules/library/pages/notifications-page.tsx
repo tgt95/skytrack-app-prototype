@@ -142,7 +142,7 @@ export function NotificationsPage() {
           description="Mission activity, shared projects, and workspace updates."
           actions={
             <Button
-              size="sm"
+              size="default"
               variant="outline"
               onClick={markAllRead}
               disabled={unreadCount === 0}

@@ -73,7 +73,7 @@ export function WorldsPage({
             </p>
           }
           actions={
-            <Button size="sm" variant="default" onClick={onCreate}>
+            <Button size="default" variant="default" onClick={onCreate}>
               <PlusIcon aria-hidden="true" /> Add World
             </Button>
           }
@@ -180,7 +180,7 @@ export function DronesPage({
             </p>
           }
           actions={
-            <Button size="sm" variant="default" onClick={onCreate}>
+            <Button size="default" variant="default" onClick={onCreate}>
               <PlusIcon aria-hidden="true" /> Add Drone
             </Button>
           }
@@ -313,7 +313,7 @@ export function AIModelsPage({
                 className=" inline-flex items-center gap-[0.5rem]"
                 data-testid="ms-ai-model-header-actions"
               >
-                <Button size="sm" variant="default" onClick={onImport}>
+                <Button size="default" variant="default" onClick={onImport}>
                   <PlusIcon aria-hidden="true" /> Import model
                 </Button>
               </div>
