@@ -250,7 +250,11 @@ export function AccountMenuDialogs({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => onAnnounce("Account added.")}
+                onClick={() =>
+                  onAnnounce(
+                    "Sign-in and account linking are not connected in this prototype.",
+                  )
+                }
               >
                 <UsersIcon aria-hidden="true" /> Add account
               </Button>

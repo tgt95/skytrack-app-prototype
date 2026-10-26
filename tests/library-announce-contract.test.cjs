@@ -97,9 +97,9 @@ test('Library source has one status region and routes dynamic messages through i
   const librarySource = fs.readFileSync(path.join(libraryDirectory, 'library.tsx'), 'utf8')
   const templatesSource = fs.readFileSync(path.join(libraryDirectory, 'pages/templates-page.tsx'), 'utf8')
   const accountsSource = fs.readFileSync(path.join(libraryDirectory, 'account-menu-dialogs.tsx'), 'utf8')
-  assert.match(librarySource, /onAnnounce\(templateSearchAnnouncement\(filteredTemplates\.length, searchTerm\)\)/)
+  assert.match(librarySource, /onAnnounce\(\s*templateSearchAnnouncement\(filteredTemplates\.length,\s*searchTerm\),?\s*\)/)
   assert.match(templatesSource, /\{templates\.length\} result/)
-  assert.match(accountsSource, /onAnnounce\('Sign-in and account linking are not connected in this prototype\.'\)/)
+  assert.match(accountsSource, /onAnnounce\(\s*(["'])Sign-in and account linking are not connected in this prototype\.\1,?\s*\)/)
 })
 
 test('template search announcement handles zero, one, and multiple results', () => {
