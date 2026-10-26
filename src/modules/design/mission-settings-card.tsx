@@ -56,7 +56,7 @@ export function MissionChecksCard({
   const warnings = issues.filter((issue) => issue.level === "warning");
   return (
     <section className="ms-card" aria-label="Validation">
-      <h3 className="ms-card-title">Checks</h3>
+      <h3 className="heading ms-card-title">Checks</h3>
       {issues.length === 0 ? (
         <p className="ms-issue is-ok" role="status">
           Valid mission — Simulation is available.
@@ -102,7 +102,7 @@ export default function MissionSettingsCard({
         className=" flex items-center gap-[0.25rem]"
         data-testid="ms-settings-head"
       >
-        <h3 className="ms-card-title m-0">Mission settings</h3>
+        <h3 className="h6 m-0">Mission settings</h3>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger

@@ -81,7 +81,7 @@ export function WorldsPage({
       }
     >
       <div
-        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
         aria-label={`${workspaceName} 3D Worlds`}
       >
         {worlds.map((world) => (
@@ -113,7 +113,7 @@ export function WorldsPage({
               />
             </span>
             <span className="ms-lib-card-body flex-1">
-              <span className="text-sm font-medium leading-[1.4]">
+              <span className="text-sm font-medium">
                 {world.name}
               </span>
               <span className="text-xs text-muted-foreground leading-[1.5]">
@@ -188,7 +188,7 @@ export function DronesPage({
       }
     >
       <div
-        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
         aria-label="Drones"
       >
         {drones.map((drone) => (
@@ -220,7 +220,7 @@ export function DronesPage({
               />
             </span>
             <span className="ms-lib-card-body flex-1">
-              <span className="text-sm font-medium leading-[1.4]">
+              <span className="text-sm font-medium">
                 {drone.name}
               </span>
               <span className="text-xs text-muted-foreground leading-[1.5]">
@@ -348,7 +348,7 @@ export function AIModelsPage({
             />
           ) : (
             <div
-              className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
+              className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
               aria-label={`${workspaceName} AI models ${category}`}
             >
               {visibleModels.map((model) => {
@@ -370,7 +370,7 @@ export function AIModelsPage({
                       />
                     </span>
                     <span className="ms-lib-card-body flex-1">
-                      <span className="text-sm font-medium leading-[1.4]">
+                      <span className="text-sm font-medium">
                         {model.name}
                       </span>
                       <span className="text-xs text-muted-foreground leading-[1.5]">

@@ -2,6 +2,14 @@ import { Fragment, type ReactNode } from "react";
 import { DotsThreeVerticalIcon, PlusIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
 import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "skytrack-ui/breadcrumb";
+import {
   Menu,
   MenuItem,
   MenuPopup,
@@ -40,7 +48,7 @@ export function ProjectsPage({
       }
     >
       <div
-        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
         aria-label={`${workspaceName} Projects`}
       >
         {projects.map((project) => (
@@ -79,21 +87,27 @@ export function ProjectDetailPage({
           titleId="ms-lib-project-title"
           title={project.name}
           context={
-            <nav
-              className=" flex items-center gap-[0.5rem] mb-0 text-[0.8125rem] text-(--muted-foreground)"
+            <Breadcrumb
+              className="mb-0 text-[0.8125rem] text-(--muted-foreground)"
               aria-label="Breadcrumb"
             >
-              <button
-                type="button"
-                className="inline-flex items-center gap-[0.375rem] [border:0] p-[0.125rem] bg-transparent text-inherit [font:inherit] cursor-pointer rounded-(--radius) hover:text-(--primary) focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:outline-offset-1"
-                data-testid="ms-lib-project-breadcrumb-link"
-                onClick={onNavigateProjects}
-              >
-                Projects
-              </button>
-              <span aria-hidden="true">›</span>
-              <span aria-current="page">{project.name}</span>
-            </nav>
+              <BreadcrumbList className="m-0 list-none gap-[0.5rem] p-0 text-inherit">
+                <BreadcrumbItem>
+                  <BreadcrumbLink
+                    render={<button type="button" />}
+                    className="rounded-(--radius) p-[0.125rem] text-inherit hover:text-(--primary) focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:outline-offset-1"
+                    data-testid="ms-lib-project-breadcrumb-link"
+                    onClick={onNavigateProjects}
+                  >
+                    Projects
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{project.name}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
           }
           actions={
             <span
@@ -143,7 +157,7 @@ export function ProjectDetailPage({
     >
       {project.missions.length === 0 ? (
         <div
-          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
+          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
           aria-label="Create mission"
         >
           <button
@@ -158,7 +172,7 @@ export function ProjectDetailPage({
         </div>
       ) : (
         <div
-          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
+          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
           aria-label="Missions in this project"
         >
           {project.missions.map((mission) => (

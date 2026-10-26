@@ -63,7 +63,9 @@ export default function StudioInspector({
             data-testid="ms-inspector-head"
           >
             <div>
-              <h2 className="ms-inspector-title">Simulation settings</h2>
+              <h2 className="heading ms-inspector-title">
+                Simulation settings
+              </h2>
             </div>
           </div>
           <SimulationSettingsForm {...simulationSettings} />

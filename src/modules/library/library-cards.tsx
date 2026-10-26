@@ -269,7 +269,9 @@ function MissionCardCore({
     <div className="ms-lib-card-body flex-1 justify-between">
       <div className="flex flex-col gap-2">
         <div className="flex items-start justify-between gap-2">
-          <span className="text-sm font-medium leading-[1.4]">{title}</span>
+          <span className="text-sm font-medium">
+            {title}
+          </span>
           {variant === "shared" || mission.viewOnly ? (
             <Badge count="View only" />
           ) : null}
@@ -378,7 +380,7 @@ export function ProjectCard({
         <FolderIcon aria-hidden="true" className="w-[2.25rem] h-[2.25rem]" />
       </button>
       <div className="ms-lib-card-body">
-        <span className="text-sm font-medium leading-[1.4]">
+        <span className="text-sm font-medium">
           {project.name}
         </span>
         <span className="text-sm text-muted-foreground">
@@ -441,7 +443,7 @@ export function TemplateCard({
         )}
       </button>
       <span className="ms-lib-card-body">
-        <span className="text-sm font-medium leading-[1.4]">
+        <span className="text-sm font-medium">
           {template.title}
         </span>
         <span className="text-xs text-muted-foreground leading-[1.5]">
@@ -520,7 +522,7 @@ export function SharedProjectCard({
       <div className="ms-lib-card-body flex-1 justify-between">
         <div className="flex flex-col gap-2">
           <div className="flex items-start justify-between gap-2">
-            <span className="text-sm font-medium leading-[1.4]">
+            <span className="text-sm font-medium">
               {project.name}
             </span>
             <Badge count="View only" />

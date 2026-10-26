@@ -307,7 +307,7 @@ export default function DroneProfileDialog({
           }
         >
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="heading">
               {mode === "create"
                 ? "Add drone"
                 : `Edit ${profile?.name ?? draft.name}`}
@@ -325,7 +325,7 @@ export default function DroneProfileDialog({
               <div className="ms-drone-section-heading">
                 <h2
                   id="ms-drone-platform-title"
-                  className="m-0 text-[0.875rem] font-semibold"
+                  className="heading m-0 text-[0.875rem] font-semibold"
                 >
                   Platform
                 </h2>
@@ -442,7 +442,7 @@ export default function DroneProfileDialog({
               <div className="ms-drone-section-heading">
                 <h2
                   id="ms-drone-fit-title"
-                  className="m-0 text-[0.875rem] font-semibold"
+                  className="heading m-0 text-[0.875rem] font-semibold"
                 >
                   Frame &amp; fit
                 </h2>
@@ -498,7 +498,7 @@ export default function DroneProfileDialog({
               <div className="ms-drone-section-heading">
                 <h2
                   id="ms-drone-performance-title"
-                  className="m-0 text-[0.875rem] font-semibold"
+                  className="heading m-0 text-[0.875rem] font-semibold"
                 >
                   Performance &amp; payload
                 </h2>
@@ -545,7 +545,7 @@ export default function DroneProfileDialog({
               <div className="ms-drone-section-heading">
                 <h2
                   id="ms-drone-profile-source-title"
-                  className="m-0 text-[0.875rem] font-semibold"
+                  className="heading m-0 text-[0.875rem] font-semibold"
                 >
                   Profile source
                 </h2>
@@ -602,7 +602,7 @@ export default function DroneProfileDialog({
                 <div>
                   <h2
                     id="ms-drone-hardware-title"
-                    className="m-0 text-[0.875rem] font-semibold"
+                    className="heading m-0 text-[0.875rem] font-semibold"
                   >
                     Hardware components
                   </h2>
@@ -803,7 +803,7 @@ export default function DroneProfileDialog({
                             data-testid="ms-drone-specifications-heading"
                           >
                             <div>
-                              <h3 className="m-[0_0_0.1875rem] text-[0.75rem] font-semibold">
+                              <h3 className="sub-heading m-[0_0_0.1875rem] text-xs">
                                 Key specifications
                               </h3>
                               <p className="max-w-[35rem] m-0 text-(--muted-foreground) text-[0.6875rem] leading-[1.45]">

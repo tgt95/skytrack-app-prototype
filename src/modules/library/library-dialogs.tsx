@@ -66,7 +66,7 @@ export function MissionDialog({
         <DialogBackdrop />
         <DialogPopup aria-label="Update mission">
           <DialogHeader>
-            <DialogTitle>Update Mission</DialogTitle>
+            <DialogTitle className="heading">Update Mission</DialogTitle>
           </DialogHeader>
           {dlg ? (
             <MissionDialogForm
@@ -171,7 +171,7 @@ export function ProjectDialog({
           aria-label={dlg?.mode === "rename" ? "Update project" : "New project"}
         >
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="heading">
               {dlg?.mode === "rename" ? "Update Project" : "New Project"}
             </DialogTitle>
             <DialogDescription>
@@ -246,7 +246,7 @@ export function ShareDialog({
         <DialogBackdrop />
         <DialogPopup aria-label="Share mission">
           <DialogHeader>
-            <DialogTitle>Share mission</DialogTitle>
+            <DialogTitle className="heading">Share mission</DialogTitle>
             <DialogDescription>
               {dlg ? <>Invite someone to &ldquo;{dlg.name}&rdquo;.</> : null}
             </DialogDescription>

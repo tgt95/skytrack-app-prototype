@@ -40,13 +40,13 @@ export function HomePage({
         <div className="ms-section-header">
           <h2
             id="ms-lib-recent-title"
-            className="m-0 text-[1.125rem] font-semibold"
+            className="h6 m-0"
           >
             Recent missions
           </h2>
         </div>
         <div
-          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
+          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
           role="list"
           aria-label="Recent missions"
         >
@@ -61,7 +61,7 @@ export function HomePage({
         <div className="ms-section-header">
           <h2
             id="ms-lib-templates-title"
-            className="m-0 text-[1.125rem] font-semibold"
+            className="h6 m-0"
           >
             Mission templates
           </h2>
@@ -75,7 +75,7 @@ export function HomePage({
           </button>
         </div>
         <div
-          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
+          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
           role="list"
           aria-label="Mission templates preview"
         >

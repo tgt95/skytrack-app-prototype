@@ -290,7 +290,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
     <div className="ms-inspector" data-testid="ms-sim-panel">
       {!plan ? (
         <section className="ms-card" role="status">
-          <h3 className="ms-card-title">Simulation locked</h3>
+          <h3 className="heading ms-card-title">Simulation locked</h3>
           <p className="ms-hint">{gateReason ?? "Add mission logic first."}</p>
         </section>
       ) : (
@@ -428,7 +428,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
           <TabsPanel value="events">
             {fired.length === 0 ? (
               <section className="ms-card" role="status">
-                <h3 className="ms-card-title">No events yet</h3>
+                <h3 className="heading ms-card-title">No events yet</h3>
                 <p className="ms-hint">
                   Events appear here during a run — waypoint arrivals, actions,
                   and return home.

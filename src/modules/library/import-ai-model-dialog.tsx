@@ -113,7 +113,7 @@ export function ImportAIModelDialog({
         <DialogBackdrop />
         <DialogPopup aria-label="Import AI models">
           <DialogHeader>
-            <DialogTitle>Import AI models</DialogTitle>
+            <DialogTitle className="heading">Import AI models</DialogTitle>
             <DialogDescription>
               Add an ONNX model package and JSON class map to your uploaded
               models.

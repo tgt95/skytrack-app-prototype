@@ -200,7 +200,7 @@ export function LibraryEmptyState({
         {sizedIcon}
       </span>
       <p
-        className=" m-[0_0_0.5rem] text-[1rem] font-semibold"
+        className="heading mb-1 text-lg font-semibold"
         data-testid="ms-lib-empty-title"
       >
         {title}
@@ -281,7 +281,7 @@ export function LibraryPageHeader({
         data-testid="ms-lib-page-header-row"
       >
         <div className=" min-w-0" data-testid="ms-lib-page-header-copy">
-          <h1 id={titleId} className="m-0 text-[1.25rem] font-semibold">
+          <h1 id={titleId} className="h5 m-0">
             {title}
           </h1>
           {description ? (

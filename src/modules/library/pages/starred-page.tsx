@@ -32,7 +32,7 @@ export default function StarredPage({
         />
       ) : (
         <div
-          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
+          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
           aria-label="Starred missions"
         >
           {missions.map((entry) => (

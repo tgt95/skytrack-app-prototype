@@ -183,7 +183,7 @@ export function WorldProfileDialog({
           }
         >
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="heading">
               {mode === "create"
                 ? "Add World"
                 : `Edit ${profile?.name ?? draft.name}`}
@@ -196,7 +196,7 @@ export function WorldProfileDialog({
           <div className="ms-drone-dialog-body">
             <section className="ms-drone-form-section">
               <div className="ms-drone-section-heading">
-                <h2 className="m-0 text-[0.875rem] font-semibold">
+                <h2 className="heading m-0 text-[0.875rem] font-semibold">
                   World details
                 </h2>
                 <p className="m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.5]">

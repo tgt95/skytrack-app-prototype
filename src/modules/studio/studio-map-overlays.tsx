@@ -88,7 +88,7 @@ export default function StudioMapOverlays({
           data-testid={testId}
         >
           <h2
-            className=" m-0 text-[1rem] font-bold"
+            className="heading m-0 text-[1rem] font-bold"
             data-testid="ms-placeholder-title"
           >
             {title}

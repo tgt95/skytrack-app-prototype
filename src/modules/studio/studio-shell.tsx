@@ -240,7 +240,7 @@ export default function StudioShell({
   );
 
   return (
-    <div className="ms-root" data-testid="ms-root">
+    <div className="ms-root ms-route-content" data-testid="ms-root">
       <p className="ms-sr" role="status" aria-live="polite">
         {announce}
       </p>

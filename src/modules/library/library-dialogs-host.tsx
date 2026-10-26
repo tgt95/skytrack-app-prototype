@@ -259,7 +259,7 @@ export default function LibraryDialogsHost({
           <DialogBackdrop />
           <DialogPopup aria-label="Clone mission">
             <DialogHeader>
-              <DialogTitle>Clone mission</DialogTitle>
+              <DialogTitle className="heading">Clone mission</DialogTitle>
               <DialogDescription>
                 {cloneTarget ? (
                   <>
@@ -298,7 +298,7 @@ export default function LibraryDialogsHost({
           <DialogBackdrop />
           <DialogPopup aria-label="Delete mission">
             <DialogHeader>
-              <DialogTitle>Delete Mission?</DialogTitle>
+              <DialogTitle className="heading">Delete Mission?</DialogTitle>
               <DialogDescription>
                 {deleteMission ? (
                   <>
@@ -335,7 +335,7 @@ export default function LibraryDialogsHost({
           <DialogBackdrop />
           <DialogPopup aria-label="Delete project">
             <DialogHeader>
-              <DialogTitle>Delete Project?</DialogTitle>
+              <DialogTitle className="heading">Delete Project?</DialogTitle>
               <DialogDescription>
                 {deleteProject ? (
                   <>
@@ -375,7 +375,9 @@ export default function LibraryDialogsHost({
           <DialogBackdrop />
           <DialogPopup aria-label="Delete drone profile">
             <DialogHeader>
-              <DialogTitle>Delete drone profile?</DialogTitle>
+              <DialogTitle className="heading">
+                Delete drone profile?
+              </DialogTitle>
               <DialogDescription>
                 {droneToDelete
                   ? `Delete ${droneToDelete.name} from ${activeWorkspace.name}?`
@@ -428,7 +430,7 @@ export default function LibraryDialogsHost({
           <DialogBackdrop />
           <DialogPopup aria-label="Delete World">
             <DialogHeader>
-              <DialogTitle>
+              <DialogTitle className="heading">
                 {deleteWorldReferences.length > 0
                   ? "World is in use"
                   : "Delete World?"}
@@ -491,7 +493,9 @@ export default function LibraryDialogsHost({
           <DialogBackdrop />
           <DialogPopup aria-label="Remove uploaded AI model">
             <DialogHeader>
-              <DialogTitle>Remove uploaded model?</DialogTitle>
+              <DialogTitle className="heading">
+                Remove uploaded model?
+              </DialogTitle>
               <DialogDescription>
                 {modelToDelete
                   ? `Delete ${modelToDelete.name} from ${activeWorkspace.name}?`

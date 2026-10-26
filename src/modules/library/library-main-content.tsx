@@ -18,6 +18,7 @@ import { HomePage } from "./pages/home-page";
 import RecentPage from "./pages/recent-page";
 import StarredPage from "./pages/starred-page";
 import TemplatesPage from "./pages/templates-page";
+import { NotificationsPage } from "./pages/notifications-page";
 import {
   SharedAccountsPage,
   SharedProjectPage,
@@ -162,7 +163,7 @@ export default function LibraryMainContent({
   return (
     <main
       className={
-        "min-h-0 flex-[1_1_auto] min-w-0 overflow-y-auto overscroll-contain flex flex-col gap-0"
+        "ms-route-content min-h-0 flex-[1_1_auto] min-w-0 overflow-y-auto overscroll-contain flex flex-col gap-0"
       }
       data-section={section}
       aria-label={label}
@@ -270,7 +271,7 @@ export default function LibraryMainContent({
           }
         >
           <div
-            className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
+            className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
             aria-label="Featured learning resources"
           >
             <LibraryCardFrame
@@ -375,20 +376,7 @@ export default function LibraryMainContent({
           />
         </LibraryPageLayout>
       ) : section === "notifications" ? (
-        <LibraryPageLayout
-          titleId="ms-lib-notifications-title"
-          header={
-            <LibraryPageHeader
-              titleId="ms-lib-notifications-title"
-              title="Notifications"
-            />
-          }
-        >
-          <LibraryEmptyState
-            title="No notifications yet"
-            description="Workspace and mission updates will appear here."
-          />
-        </LibraryPageLayout>
+        <NotificationsPage />
       ) : (
         <LibraryPageLayout
           titleId="ms-lib-placeholder-title"

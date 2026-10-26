@@ -189,7 +189,7 @@ function StudioDialogs({
             data-testid="ms-world-picker"
           >
             <DialogHeader>
-              <DialogTitle>
+              <DialogTitle className="heading">
                 {mission.worldType === "2D"
                   ? "Choose mission type"
                   : "Choose mission type and world"}
@@ -269,9 +269,7 @@ function StudioDialogs({
                               {worldOptions.map((world) => (
                                 <SelectItem key={world.id} value={world.id}>
                                   <SelectItemIndicator />
-                                  <SelectItemText>
-                                    {world.name}
-                                  </SelectItemText>
+                                  <SelectItemText>{world.name}</SelectItemText>
                                 </SelectItem>
                               ))}
                             </SelectList>
@@ -295,7 +293,7 @@ function StudioDialogs({
           <DialogBackdrop />
           <DialogPopup aria-label="Edit mission">
             <DialogHeader>
-              <DialogTitle>Edit Mission</DialogTitle>
+              <DialogTitle className="heading">Edit Mission</DialogTitle>
               <DialogDescription>World and vehicle.</DialogDescription>
             </DialogHeader>
             <FieldRoot className="ms-field">
@@ -331,9 +329,7 @@ function StudioDialogs({
                         {worldOptions.map((world) => (
                           <SelectItem key={world.id} value={world.id}>
                             <SelectItemIndicator />
-                            <SelectItemText>
-                              {world.name}
-                            </SelectItemText>
+                            <SelectItemText>{world.name}</SelectItemText>
                           </SelectItem>
                         ))}
                       </SelectList>
@@ -397,7 +393,7 @@ function StudioDialogs({
             className=" w-[min(56rem,calc(100vw-2rem))] max-w-none max-h-[calc(100dvh-2rem)] overflow-y-auto"
           >
             <DialogHeader>
-              <DialogTitle>Keyboard shortcuts</DialogTitle>
+              <DialogTitle className="heading">Keyboard shortcuts</DialogTitle>
               <DialogDescription>
                 Shortcuts are ignored while typing in fields or the code editor.
               </DialogDescription>
@@ -415,7 +411,7 @@ function StudioDialogs({
                 >
                   <h3
                     id={`ms-shortcuts-${group.title.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-")}`}
-                    className=" m-[0_0_0.625rem] pt-[0.625rem] [border-top:0.0625rem_solid_var(--border)] text-[0.9375rem] font-semibold leading-[1.4]"
+                    className="heading m-[0_0_0.625rem] pt-[0.625rem] [border-top:0.0625rem_solid_var(--border)] text-[0.9375rem] font-semibold leading-[1.4]"
                   >
                     {group.title}
                   </h3>

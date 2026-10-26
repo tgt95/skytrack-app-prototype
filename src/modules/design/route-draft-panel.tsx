@@ -28,7 +28,7 @@ export default function RouteDraftPanel({
     >
       <header className=" min-w-0" data-testid="ms-route-draft-head">
         <div>
-          <h2 className="ms-inspector-title">Route draft</h2>
+          <h2 className="heading ms-inspector-title">Route draft</h2>
           <p className="ms-inspector-sub mt-[0.375rem] leading-[1.45]">
             Click the scene to add waypoints. Add at least 2, then press Enter
             to commit. Press Escape to cancel.

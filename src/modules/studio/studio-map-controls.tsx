@@ -310,7 +310,7 @@ export function StudioMapControls({
                     className=" flex items-center justify-between pb-[0.5rem] mb-[0.25rem] [border-bottom:0.0625rem_solid_var(--border)]"
                     data-testid="ms-map-gear-head"
                   >
-                    <PopoverTitle className="ms-basemap-title text-[1rem]">
+                    <PopoverTitle className="heading ms-basemap-title text-[1rem]">
                       Map display
                     </PopoverTitle>
                   </div>
@@ -408,7 +408,7 @@ export function StudioMapControls({
                       className=" flex items-center justify-between pb-[0.5rem] [border-bottom:0.0625rem_solid_var(--border)]"
                       data-testid="ms-basemap-heading"
                     >
-                      <PopoverTitle className="ms-basemap-title">
+                      <PopoverTitle className="heading ms-basemap-title">
                         Basemap
                       </PopoverTitle>
                       <SkyTooltip>

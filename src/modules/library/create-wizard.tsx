@@ -188,7 +188,7 @@ export default function CreateMissionWizard({
           className="ms-lib-wizard w-[min(32rem,calc(100vw-2rem))]"
         >
           <DialogHeader>
-            <DialogTitle>Create mission</DialogTitle>
+            <DialogTitle className="heading">Create mission</DialogTitle>
           </DialogHeader>
           <Tabs
             value={String(step)}

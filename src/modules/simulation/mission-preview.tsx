@@ -157,7 +157,7 @@ export default function MissionPreview({
     >
       {/* <header className='ms-preview-header'>
         <div>
-          <h2 className='ms-preview-title'>Flight preview</h2>
+          <h2 className='sub-heading ms-preview-title'>Flight preview</h2>
           <p className='ms-preview-note'>Approximate route playback · no drone control</p>
         </div>
         <span className='ms-preview-duration' aria-label={`Estimated duration ${formatTime(preview.duration)}`}>

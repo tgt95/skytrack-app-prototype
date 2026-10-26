@@ -263,7 +263,7 @@ export default function AreaInspectorCard({
           >
             <AccordionItem value="camera-settings" className="border-b-0">
               <AccordionHeader>
-                <AccordionTrigger variant="compact">
+                <AccordionTrigger className="min-h-[34px] gap-2 rounded-none py-1 text-left text-[11px] font-semibold text-muted-foreground hover:no-underline [&>svg]:size-3">
                   Camera settings by waypoint ({photoCount})
                 </AccordionTrigger>
               </AccordionHeader>

@@ -77,7 +77,7 @@ export function AccountMenuDialogs({
           data-testid={`ms-lib-account-dialog-${panel ?? "closed"}`}
         >
           <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
+            <DialogTitle className="heading">{title}</DialogTitle>
             {panel === "profile" ? (
               <DialogDescription>
                 Manage the name shown in your SkyTrack workspace.
@@ -164,7 +164,7 @@ export function AccountMenuDialogs({
               className=" flex flex-col gap-[0.875rem] min-w-0"
               data-testid="ms-lib-account-notifications-content"
             >
-              <h3 className="m-0 text-[0.8125rem] font-semibold">
+              <h3 className="heading m-0 text-[0.8125rem] font-semibold">
                 In-app activity
               </h3>
               <NotificationRow

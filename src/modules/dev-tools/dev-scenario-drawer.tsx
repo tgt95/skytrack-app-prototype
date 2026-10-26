@@ -43,7 +43,7 @@ export default function DevScenarioDrawer() {
     <DrawerContent className="h-full min-h-0 overflow-hidden">
       <header className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 flex-col gap-2">
-          <DrawerTitle>Dev Tool</DrawerTitle>
+          <DrawerTitle className="heading">Dev Tool</DrawerTitle>
           <DrawerDescription>
             Search and toggle test scenarios.
           </DrawerDescription>

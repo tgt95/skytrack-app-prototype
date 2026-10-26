@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type Dispatch, type MutableRefObject, type SetStateAction } from 'react'
+import { flushSync } from 'react-dom'
 import { emptyMission, missionFromSnapshot, type SceneSelection, type SceneTool, type StudioMission } from '../../domain/mission-model'
 import type { StudioMissionDocumentAction } from './mission-document'
 import type { Stage } from './studio-map-overlays'
@@ -60,20 +61,50 @@ export function useStudioRouting({
     ? { section: route.section, projectId: route.projectId ?? null }
     : { section: 'home' as LibrarySection, projectId: null }
 
+  const updateRoute = useCallback(
+    (
+      nextRoute: MissionStudioRoute,
+      updateHistory?: () => void,
+      animate = true,
+    ) => {
+      if (animate && typeof document.startViewTransition === 'function') {
+        const transition = document.startViewTransition(() => {
+          updateHistory?.()
+          flushSync(() => setRoute(nextRoute))
+        })
+        void transition.ready.catch(() => {})
+        return
+      }
+
+      updateHistory?.()
+      setRoute(nextRoute)
+    },
+    [],
+  )
+
   const navigateRoute = useCallback((nextRoute: MissionStudioRoute, replace = false) => {
     const nextPath = missionStudioRoutePath(nextRoute, import.meta.env.BASE_URL)
-    if (window.location.pathname !== nextPath) {
+    const pathChanged = window.location.pathname !== nextPath
+    const updateHistory = () => {
+      if (!pathChanged) return
       if (replace) window.history.replaceState({}, '', nextPath)
       else window.history.pushState({}, '', nextPath)
     }
-    setRoute(nextRoute)
-  }, [])
+
+    updateRoute(nextRoute, updateHistory, pathChanged && !replace)
+  }, [updateRoute])
 
   useEffect(() => {
-    const onPopState = () => setRoute(parseMissionStudioRoute(window.location.pathname, import.meta.env.BASE_URL))
+    const onPopState = () =>
+      updateRoute(
+        parseMissionStudioRoute(
+          window.location.pathname,
+          import.meta.env.BASE_URL,
+        ),
+      )
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
-  }, [])
+  }, [updateRoute])
 
   useEffect(() => {
     if (route.kind !== 'not-found') return

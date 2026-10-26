@@ -13,3 +13,54 @@
 .ms-sr {
   @apply absolute w-px h-px overflow-hidden [clip:rect(0_0_0_0)] whitespace-nowrap;
 }
+
+.ms-route-content {
+  view-transition-name: ms-route-content;
+}
+
+@keyframes ms-route-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ms-route-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+::view-transition-old(root) {
+  display: none;
+}
+
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-group(ms-route-content) {
+  animation: none;
+}
+
+::view-transition-old(ms-route-content) {
+  animation: 160ms ease-out both ms-route-fade-out;
+}
+
+::view-transition-new(ms-route-content) {
+  animation: 160ms ease-out both ms-route-fade-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
