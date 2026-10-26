@@ -47,11 +47,13 @@ export default function LibraryTopbar({
   canUseCloudSIM,
   onEnvironmentChange,
   onAnnounce,
+  onNavigateHome,
 }: {
   runEnvironment: "local" | "cloud";
   canUseCloudSIM: boolean;
   onEnvironmentChange: (value: "local" | "cloud") => void;
   onAnnounce: (message: string) => void;
+  onNavigateHome: () => void;
 }) {
   return (
     <>
@@ -66,12 +68,20 @@ export default function LibraryTopbar({
         className="sticky top-0 z-20 flex-[0_0_auto] flex items-center justify-between gap-[0.75rem] min-h-[3rem] p-[0.5rem_0.75rem] [border-bottom:0.0625rem_solid_var(--border)] bg-(--card) [@media_(max-width:_61.25rem)]:flex-wrap"
         data-testid="ms-lib-top"
       >
-        <span
-          className=" inline-flex items-center gap-[0.5rem] font-bold text-[0.875rem] [&_svg]:block [&_svg]:h-[1.5rem]"
-          role="img"
-          aria-label="SkyTrack"
-          dangerouslySetInnerHTML={{ __html: skytrackLogoFull }}
-        />
+        <button
+          type="button"
+          className="inline-flex items-center gap-[0.5rem] rounded-(--radius) bg-transparent p-0 [border:0] [font:inherit] font-bold text-[0.875rem] text-inherit cursor-pointer [&_svg]:block [&_svg]:h-[1.5rem] focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:outline-offset-1"
+          aria-label="Go to Home"
+          title="Go to Home"
+          data-testid="ms-lib-logo-home"
+          onClick={onNavigateHome}
+        >
+          <span
+            className="inline-flex items-center gap-[0.5rem]"
+            aria-hidden="true"
+            dangerouslySetInnerHTML={{ __html: skytrackLogoFull }}
+          />
+        </button>
         <span
           className=" flex items-center gap-[0.5rem]"
           data-testid="ms-lib-top-actions"

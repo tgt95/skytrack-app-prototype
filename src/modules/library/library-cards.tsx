@@ -203,7 +203,7 @@ function MissionCardFooter({
   editedAgo: string;
 }) {
   return (
-    <div className="mt-auto flex items-center justify-between gap-2 border-t border-(--border) pt-3">
+    <div className="mt-auto flex items-center justify-between gap-2 pt-3">
       <MissionCardOwner username={username} />
       <time
         aria-label={editedAgo}
@@ -540,7 +540,7 @@ export function SharedProjectCard({
               .join(" / ")}
           </span>
         </div>
-        <div className="mt-auto flex items-center justify-between gap-2 border-t border-(--border) pt-3">
+        <div className="mt-auto flex items-center justify-between gap-2 pt-3">
           <span
             className="inline-flex min-w-0 items-center gap-1.5 text-sm text-muted-foreground"
             data-testid="ms-lib-shared-owner"

@@ -40,7 +40,7 @@ export function HomePage({
         <div className="ms-section-header">
           <h2
             id="ms-lib-recent-title"
-            className="h6 m-0"
+            className="h4 m-0"
           >
             Recent missions
           </h2>
@@ -61,7 +61,7 @@ export function HomePage({
         <div className="ms-section-header">
           <h2
             id="ms-lib-templates-title"
-            className="h6 m-0"
+            className="h4 m-0"
           >
             Mission templates
           </h2>

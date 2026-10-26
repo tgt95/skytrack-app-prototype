@@ -110,7 +110,7 @@ export function LibraryCardFrame({
       >
         <span
           className={
-            " absolute top-[0.5rem] right-[0.5rem] z-2 inline-flex gap-[0.25rem] opacity-[0] pointer-events-none [transition:opacity_120ms_ease] [.ms-lib-card:hover_&]:opacity-[1] [.ms-lib-card:hover_&]:pointer-events-auto [.ms-lib-card:focus-within_&]:opacity-[1] [.ms-lib-card:focus-within_&]:pointer-events-auto [@media_(hover:_none)]:opacity-[1] [@media_(hover:_none)]:pointer-events-auto motion-reduce:[transition:none]"
+            " absolute top-1 right-1 z-2 inline-flex gap-1 opacity-[0] pointer-events-none [transition:opacity_120ms_ease] [.ms-lib-card:hover_&]:opacity-[1] [.ms-lib-card:hover_&]:pointer-events-auto [.ms-lib-card:focus-within_&]:opacity-[1] [.ms-lib-card:focus-within_&]:pointer-events-auto [@media_(hover:_none)]:opacity-[1] [@media_(hover:_none)]:pointer-events-auto motion-reduce:[transition:none]"
           }
           onClick={(event) => event.stopPropagation()}
           data-testid="ms-lib-card-overlay-actions"
@@ -264,7 +264,7 @@ export function LibraryPageHeader({
     "flex flex-col gap-[0.5rem]",
     stickyHeader ? "sticky top-0 z-20" : "",
     "p-[1.25rem_1.5rem_1rem]",
-    "bg-(--card) [border-bottom:0.0625rem_solid_var(--border)] [.ms-lib-page-header&:where(.has-tabs)]:pb-[0] [.ms-lib-page-header&:where(.is-plain)]:bg-transparent [.ms-lib-page-header&:where(.is-plain)]:[border:0] block flex-none w-full min-h-0",
+    "bg-(--card) [border-bottom:0.0625rem_solid_var(--border)] [.ms-lib-page-header&:where(.has-tabs)]:pb-[0] [.ms-lib-page-header&:where(.is-plain)]:[border:0] block flex-none w-full min-h-0",
   ]
     .filter(Boolean)
     .join(" ");
@@ -281,7 +281,7 @@ export function LibraryPageHeader({
         data-testid="ms-lib-page-header-row"
       >
         <div className=" min-w-0" data-testid="ms-lib-page-header-copy">
-          <h1 id={titleId} className="h5 m-0">
+          <h1 id={titleId} className="h3 m-0">
             {title}
           </h1>
           {description ? (

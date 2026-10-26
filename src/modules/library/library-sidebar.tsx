@@ -99,7 +99,7 @@ export default function LibrarySidebar({
           <Icon
             aria-hidden="true"
             weight="regular"
-            className="w-[1.25rem] h-[1.25rem] shrink-0"
+            className="size-5 shrink-0"
           />
           <span className="ms-lib-nav-label">{item.label}</span>
         </button>
@@ -116,7 +116,7 @@ export default function LibrarySidebar({
         <Icon
           aria-hidden="true"
           weight={active ? "fill" : "regular"}
-          className="w-[1.25rem] h-[1.25rem] shrink-0"
+          className="size-5 shrink-0"
         />
         <span className="ms-lib-nav-label">{item.label}</span>
       </button>
@@ -179,7 +179,7 @@ export default function LibrarySidebar({
 
       <div className="ms-lib-sidebar-divider" />
       <p
-        className=" m-[0.25rem_0.5rem_0] text-[0.875rem] font-semibold text-(--muted-foreground) [@media_(max-width:_61.25rem)]:hidden"
+        className="mt-1 mx-2 text-xs sub-heading [@media_(max-width:_61.25rem)]:hidden"
         data-testid="ms-lib-navhead"
       >
         Starred
@@ -231,14 +231,14 @@ export default function LibrarySidebar({
               }
             >
               <span
-                className=" hidden items-center justify-center w-[2.125rem] h-[2.125rem] rounded-(--radius) bg-(--sidebar-accent) text-(--sidebar-accent-foreground) text-[0.875rem] font-bold [@media_(max-width:_61.25rem)]:inline-flex"
+                className=" hidden items-center justify-center w-[2.125rem] h-[2.125rem] rounded-(--radius) bg-(--sidebar-accent) text-(--sidebar-accent-foreground) text-sm font-bold [@media_(max-width:_61.25rem)]:inline-flex"
                 aria-hidden="true"
                 data-testid="ms-lib-workspace-avatar"
               >
                 {activeWorkspace.name.slice(0, 1)}
               </span>
               <span
-                className=" min-w-0 overflow-hidden text-[0.875rem] font-semibold leading-[1.5rem] text-ellipsis whitespace-nowrap [@media_(max-width:_61.25rem)]:hidden"
+                className=" min-w-0 overflow-hidden text-sm font-semibold leading-[1.5rem] text-ellipsis whitespace-nowrap [@media_(max-width:_61.25rem)]:hidden"
                 data-testid="ms-lib-workspace-name"
               >
                 {activeWorkspace.name}
@@ -423,7 +423,7 @@ export default function LibrarySidebar({
                       data-testid="ms-lib-account-summary"
                     >
                       <span
-                        className=" inline-flex items-center justify-center w-[2rem] h-[2rem] flex-[0_0_auto] rounded-[50%] bg-(--accent) text-(--primary) text-[0.875rem] font-bold"
+                        className=" inline-flex items-center justify-center w-[2rem] h-[2rem] flex-[0_0_auto] rounded-[50%] bg-(--accent) text-(--primary) text-sm font-bold"
                         aria-hidden="true"
                         data-testid="ms-lib-account-avatar"
                       >
@@ -436,7 +436,7 @@ export default function LibrarySidebar({
                         <strong className="overflow-hidden text-[1rem] font-semibold text-ellipsis whitespace-nowrap">
                           {accountProfile.name}
                         </strong>
-                        <span className="overflow-hidden text-(--muted-foreground) text-[0.875rem] text-ellipsis whitespace-nowrap">
+                        <span className="overflow-hidden text-(--muted-foreground) text-sm text-ellipsis whitespace-nowrap">
                           {accountProfile.email}
                         </span>
                       </span>

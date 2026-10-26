@@ -129,7 +129,7 @@ export function ProjectDetailPage({
                     render={
                       <Button
                         variant="outline"
-                        size="icon-sm"
+                        size="default"
                         className="text-muted-foreground"
                       />
                     }
