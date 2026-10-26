@@ -264,7 +264,7 @@ export function LibraryPageHeader({
     "flex flex-col gap-[0.5rem]",
     stickyHeader ? "sticky top-0 z-20" : "",
     "p-[1.25rem_1.5rem_1rem]",
-    "bg-(--card) [border-bottom:0.0625rem_solid_var(--border)] [.ms-lib-page-header&:where(.has-tabs)]:pb-[0] [.ms-lib-page-header&:where(.is-plain)]:[border:0] block flex-none w-full min-h-0",
+    "bg-(--card) [border-bottom:0.0625rem_solid_var(--border)] [.ms-lib-page-header&:where(.has-tabs)]:pb-[0] [.ms-lib-page-header&:where(.is-plain)]:[border:0] [.ms-lib-page-header&:where(.is-plain)]:bg-(--background) block flex-none w-full min-h-0",
   ]
     .filter(Boolean)
     .join(" ");

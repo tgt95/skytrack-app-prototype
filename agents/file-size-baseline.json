@@ -7,14 +7,89 @@
   },
   "exceptions": [
     {
+      "path": "src/domain/mission-types.ts",
+      "maxLines": 538,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/design/area-inspector-card.tsx",
+      "maxLines": 429,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/design/design-controls.tsx",
+      "maxLines": 475,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/design/design-panel.tsx",
+      "maxLines": 456,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/design/route-sequence-card.tsx",
+      "maxLines": 466,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
       "path": "src/modules/design/sequence-controls.tsx",
-      "maxLines": 446,
-      "why": "Waypoint rows, action rows, insertion affordances, and their shared keyboard drag payload form one sequence editing interaction; keep the serialization and row contract together until a split preserves that shared owner."
+      "maxLines": 631,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/library/create-wizard.tsx",
+      "maxLines": 496,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
     },
     {
       "path": "src/modules/library/drone-profile-dialog.tsx",
-      "maxLines": 406,
-      "why": "The complete drone profile editor and its field adapters share one dialog draft and validation lifecycle; the field adapters are only used inside this dialog."
+      "maxLines": 913,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/library/library-cards.tsx",
+      "maxLines": 581,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/library/library-dialogs-host.tsx",
+      "maxLines": 537,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/library/library-sidebar.tsx",
+      "maxLines": 543,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/library/library.tsx",
+      "maxLines": 552,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/library/workspace-resource-pages.tsx",
+      "maxLines": 431,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/scene/mission-compass-cube.tsx",
+      "maxLines": 608,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/scene/mission-map-2d.tsx",
+      "maxLines": 583,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/scene/mission-scene.tsx",
+      "maxLines": 764,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/scene/sync-committed-layer.ts",
+      "maxLines": 592,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
     },
     {
       "path": "src/modules/scene/scene-camera-gestures.ts",
@@ -22,9 +97,34 @@
       "why": "Camera pointer arbitration, gesture state, listener ordering, and disposal are one lifecycle; splitting solely for line count would scatter cancellation and restoration ownership."
     },
     {
+      "path": "src/modules/simulation/mission-preview.tsx",
+      "maxLines": 549,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/simulation/simulation-model.ts",
+      "maxLines": 484,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
       "path": "src/modules/simulation/simulation-panel.tsx",
-      "maxLines": 410,
-      "why": "Simulation playback, settings, and completion/restart states share one panel interaction contract; retain its existing source until a focused component boundary is justified."
+      "maxLines": 593,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/studio/studio-dialogs.tsx",
+      "maxLines": 447,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/studio/studio-map-controls.tsx",
+      "maxLines": 438,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
+    },
+    {
+      "path": "src/modules/studio/studio-shell.tsx",
+      "maxLines": 536,
+      "why": "Temporary Owner-approved release ceiling at the current source size; the Owner plans to refactor after this Pages deployment. Keep this ceiling to block growth and remove the exception after splitting the module."
     }
   ]
 }

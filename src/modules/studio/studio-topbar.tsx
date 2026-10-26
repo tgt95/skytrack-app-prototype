@@ -122,7 +122,6 @@ function StudioTopbar({
         </Button>
         <Button
           size="sm"
-          variant="ghost"
           onClick={onSaveLocal}
           disabled={!dirty}
           aria-label="Save local state (Ctrl+S)"
