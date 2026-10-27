@@ -45,10 +45,6 @@
   @apply flex flex-col gap-3 py-1 px-0;
 }
 
-.ms-lib-select {
-  @apply w-full;
-}
-
 /* ------------------------- library: Figma Home light pass (195:13546) --- */
 
 /* Library inherits the skytrack-ui light tokens from `:root` (index.tsx drops

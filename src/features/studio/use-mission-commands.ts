@@ -226,7 +226,24 @@ export function useMissionCommands({
       );
       setWorldPickerOpen(false);
     },
-    [mission, missionWorldOptions, updateMissionFromPanel],
+    [mission, missionWorldOptions, setWorldPickerOpen, updateMissionFromPanel],
+  );
+
+  const onSelectImportedWorld = useCallback(
+    (world: Pick<WorkspaceWorldRecord, "id" | "name">) => {
+      const nextMission = recomputeGeneratedMission(
+        {
+          ...mission,
+          worldType: "3D",
+          world: world.name,
+          worldId: world.id,
+        },
+        mission,
+      );
+      updateMissionFromPanel(nextMission, `World set to ${world.name}.`);
+      setWorldPickerOpen(false);
+    },
+    [mission, setWorldPickerOpen, updateMissionFromPanel],
   );
 
   const onSelectWorldType = useCallback(
@@ -351,6 +368,7 @@ export function useMissionCommands({
     onMoveAction,
     onSelectVehicle,
     onSelectWorld,
+    onSelectImportedWorld,
     onSelectWorldType,
     onDeleteAction,
     onAddWaypointToRoute,

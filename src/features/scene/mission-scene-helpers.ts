@@ -17,8 +17,9 @@ export { enuToLngLat, lngLatToEnu } from '../../domain/mission-model'
    Hex fallbacks below apply ONLY when the var resolves empty (token missing or
    unset) or when Cesium cannot parse the token value (Tailwind v4 tokens are
    oklch(), which Cesium.Color.fromCssColorString rejects — safeColor then
-   falls back to the listed hex). The scene background is temporarily fixed to
-   light; live Cesium theme switching is not wired yet. Documented vars (all present in
+   falls back to the listed hex). The 2D globe/clear color uses --muted; 3D
+   scene background is black. Live Cesium theme switching is not wired yet.
+   Documented vars (all present in
    skytrack-ui/dist-lib/styles.css :root): --muted (globe base and scene clear
    color), --primary (route/markers/zones), --destructive (avoid
    zones), --muted-foreground (grid), and --warning (vehicle marker; orange

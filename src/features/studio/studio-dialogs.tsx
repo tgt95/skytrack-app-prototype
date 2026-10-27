@@ -32,6 +32,7 @@ interface StudioDialogsProps {
   onShortcutsOpenChange: (open: boolean) => void;
   onSelectWorld: (worldId: string) => void;
   onSelectWorldType: (worldType: "2D" | "3D") => void;
+  onImportWorld: (file: File) => Promise<void>;
   onSaveEdit: (draft: EditMissionDraft) => void;
 }
 
@@ -48,6 +49,7 @@ function StudioDialogs({
   onShortcutsOpenChange,
   onSelectWorld,
   onSelectWorldType,
+  onImportWorld,
   onSaveEdit,
 }: StudioDialogsProps) {
   const [editName, setEditName] = useState(mission.name);
@@ -148,6 +150,7 @@ function StudioDialogs({
         onWorldPickerOpenChange={onWorldPickerOpenChange}
         onSelectWorld={onSelectWorld}
         onSelectWorldType={onSelectWorldType}
+        onImportWorld={onImportWorld}
       />
       <EditMissionDialog
         restoreDialogFocus={restoreDialogFocus}

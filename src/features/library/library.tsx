@@ -332,6 +332,7 @@ export default function StudioLibrary({
     sharedMissionCard,
   } = useLibraryCardRenderers({
     username: accountProfile.name,
+    worlds: workspaceWorlds,
     openMission,
     openProject,
     toggleStar,
@@ -343,7 +344,6 @@ export default function StudioLibrary({
     setCloneTarget,
     onOpenSharedProject,
   });
-
   const openTemplateDetail = (id: string) => {
     onOpenTemplate(id);
     const t = TEMPLATES.find((item) => item.id === id);

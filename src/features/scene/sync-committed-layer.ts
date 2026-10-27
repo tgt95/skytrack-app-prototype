@@ -30,6 +30,7 @@ interface SyncCommittedMissionEntitiesParams {
   simActive: boolean;
   showAreaSurface: boolean;
   focusedPhotoWaypointId: string | null;
+  worldModelActive: boolean;
 }
 
 /** Rebuilds committed entities once while preserving every other scene layer. */
@@ -41,6 +42,7 @@ export function syncCommittedMissionEntities({
   simActive,
   showAreaSurface,
   focusedPhotoWaypointId,
+  worldModelActive,
 }: SyncCommittedMissionEntitiesParams): WorldTerrainTriangle[] {
   removeSceneEntitiesInLayer(viewer.entities, "committed");
   const origin = missionOrigin(mission);
@@ -58,7 +60,12 @@ export function syncCommittedMissionEntities({
   };
 
   addHomeConnectorEntities(context);
-  const worldTerrainTriangles = syncWorldTerrain(viewer, Cesium, mission);
+  const worldTerrainTriangles = syncWorldTerrain(
+    viewer,
+    Cesium,
+    mission,
+    worldModelActive,
+  );
   // Sample Facade context block removed (F007): grid, route, Areas,
   // Avoid zones and markers below are the only scene objects.
   addAreaAndAvoidEntities({ ...context, selection, showAreaSurface });

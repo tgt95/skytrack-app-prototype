@@ -31,7 +31,7 @@ export function GeneralStep({
   onProjectChange,
 }: GeneralStepProps) {
   return (
-    <TabsPanel value="1" className="ms-wizard-panel">
+    <TabsPanel value="1">
       <div className="ms-lib-form">
         <FieldRoot name="wizard-mission-name">
           <FieldLabel>Mission name</FieldLabel>
@@ -52,17 +52,16 @@ export function GeneralStep({
             }}
           />
         </FieldRoot>
-        <div className="ms-field">
-          <span className="ms-field-label" id="ms-wizard-project-label">
+        <FieldRoot name="wizard-project">
+          <FieldLabel id="ms-wizard-project-label">
             Project
-          </span>
+          </FieldLabel>
           <Select
             value={projectId}
             onValueChange={(value) => onProjectChange(String(value))}
           >
             <SelectTrigger
               aria-labelledby="ms-wizard-project-label"
-              className="ms-lib-select"
             >
               <SelectValue placeholder="Select a project">
                 {projects.find((project) => project.id === projectId)?.name ??
@@ -84,7 +83,7 @@ export function GeneralStep({
               </SelectPositioner>
             </SelectPortal>
           </Select>
-        </div>
+        </FieldRoot>
       </div>
     </TabsPanel>
   );

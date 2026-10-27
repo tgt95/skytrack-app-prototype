@@ -25,8 +25,8 @@ import { TransferRow } from "./sequence-transfer";
 type Waypoint = StudioMission["waypoints"][number];
 
 export function RouteWaypointList({
-  routeId,
-  routeLabel,
+  sequenceId,
+  sequenceLabel,
   routeWaypoints,
   orderedWaypoints,
   mission,
@@ -47,9 +47,10 @@ export function RouteWaypointList({
   onDeleteAction,
   onSetActionPitch,
   onAnnounce,
+  generatedWaypoints = false,
 }: {
-  routeId: string;
-  routeLabel: string;
+  sequenceId: string;
+  sequenceLabel: string;
   routeWaypoints: Waypoint[];
   orderedWaypoints: Waypoint[];
   mission: StudioMission;
@@ -80,6 +81,7 @@ export function RouteWaypointList({
   onDeleteAction: (wpId: string, actionId: string) => void;
   onSetActionPitch: (wpId: string, actionId: string, pitch: number) => void;
   onAnnounce: (message: string) => void;
+  generatedWaypoints?: boolean;
 }) {
   const lastRouteWaypoint = routeWaypoints.at(-1);
 
@@ -87,7 +89,7 @@ export function RouteWaypointList({
     <ol className="list-none m-0 p-0 flex flex-col gap-0">
       <li
         className={`${SEQUENCE_LIST_ITEM_CLASS} flex flex-wrap items-center gap-2 bg-(--accent) min-w-0 py-1.5 px-3 flex-nowrap [list-style:none] border-b border-border last:border-b-0`}
-        aria-label={`Sequence start for ${routeLabel}`}
+        aria-label={`Sequence start for ${sequenceLabel}`}
       >
         <Badge
           count="START"
@@ -105,7 +107,8 @@ export function RouteWaypointList({
           <Fragment key={waypoint.id}>
             <WaypointRow
               wp={waypoint}
-              routeId={routeId}
+              sequenceId={sequenceId}
+              generated={generatedWaypoints}
               index={index}
               total={orderedWaypoints.length}
               grabbed={grabbedWaypointId === waypoint.id}
@@ -141,7 +144,7 @@ export function RouteWaypointList({
                   action={action}
                   wpId={waypoint.id}
                   wpSeq={waypoint.seq}
-                  routeId={routeId}
+                  sequenceId={sequenceId}
                   index={index}
                   isLastSequenceRow={
                     !transfer &&

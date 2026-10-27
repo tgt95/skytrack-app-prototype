@@ -30,21 +30,26 @@ import {
 } from "../../../domain/mission-model";
 import type { DerivedTransfer } from "../../../domain/transfer-planner";
 import { ReconCaptureSummary } from "../panels/reconnaissance-inspector";
-import { AreaCameraWaypoints } from "./area-camera-waypoints";
 import { InspectorField } from "../controls/inspector-field";
 import SliderField from "../controls/slider-field";
-import { EndMissionControl, TransferRow } from "./sequence-transfer";
+import { EndMissionControl } from "./sequence-transfer";
+import { RouteWaypointList } from "./route-waypoint-list";
+import type { CameraActionKind, SceneSelection } from "../../../domain/mission-model";
+import type { SequenceDropPosition } from "./sequence-drag";
 
 type Waypoint = StudioMission["waypoints"][number];
 
 export interface AreaInspectorCardProps {
   area: MissionArea;
   mission: StudioMission;
+  orderedWaypoints: Waypoint[];
   worldType: "2D" | "3D";
   recon: ReconFlightSettings;
   draft: MissionArea;
   editing: boolean;
   collapsed: boolean;
+  grabbedWaypointId: string | null;
+  selected: SceneSelection | null;
   isFinalSequenceItem: boolean;
   transfer?: DerivedTransfer;
   onEdit: () => void;
@@ -54,6 +59,17 @@ export interface AreaInspectorCardProps {
   onOpenRecon: () => void;
   onUpdateMission: (next: StudioMission, label?: string) => void;
   onSetActionPitch: (wpId: string, actionId: string, pitch: number) => void;
+  onSelect: (selection: SceneSelection | null) => void;
+  onInsertActionAt: (wpId: string, actionIndex: number, kind: CameraActionKind) => void;
+  onPickUpWaypoint: (id: string) => void;
+  onPreviewMoveWaypoint: (id: string, dir: -1 | 1) => void;
+  onDropPreviewWaypoint: (id: string) => void;
+  onCancelPreviewWaypoint: (id: string) => void;
+  onReorderWaypoint: (id: string, toIndex: number) => void;
+  onMoveAction: (fromWpId: string, actionId: string, toWpId: string, toActionId?: string, position?: SequenceDropPosition) => void;
+  onDeleteWaypoint: (id: string) => void;
+  onDeleteAction: (wpId: string, actionId: string) => void;
+  onAnnounce: (message: string) => void;
   onPreviewDraft: (nextDraft: MissionArea) => void;
   onCancelEdit: () => void;
   onCommitEdit: (draft: MissionArea) => void;
@@ -62,11 +78,14 @@ export interface AreaInspectorCardProps {
 export default function AreaInspectorCard({
   area,
   mission,
+  orderedWaypoints,
   worldType,
   recon,
   draft,
   editing,
   collapsed,
+  grabbedWaypointId,
+  selected,
   isFinalSequenceItem,
   transfer,
   onEdit,
@@ -76,6 +95,17 @@ export default function AreaInspectorCard({
   onOpenRecon,
   onUpdateMission,
   onSetActionPitch,
+  onSelect,
+  onInsertActionAt,
+  onPickUpWaypoint,
+  onPreviewMoveWaypoint,
+  onDropPreviewWaypoint,
+  onCancelPreviewWaypoint,
+  onReorderWaypoint,
+  onMoveAction,
+  onDeleteWaypoint,
+  onDeleteAction,
+  onAnnounce,
   onPreviewDraft,
   onCancelEdit,
   onCommitEdit,
@@ -236,12 +266,6 @@ export default function AreaInspectorCard({
             pathLength={pathLength}
             altitudeAgl
           />
-          <AreaCameraWaypoints
-            areaLabel={area.label}
-            waypoints={waypoints}
-            defaultGimbalPitchDeg={recon.gimbalPitchDeg}
-            onSetPitch={onSetActionPitch}
-          />
         </>
       ) : null}
       {!collapsed ? (
@@ -330,7 +354,31 @@ export default function AreaInspectorCard({
               spacing · {area.orientationDeg ?? 0}°
             </p>
           )}
-          <TransferRow transfer={transfer} as="li" />
+          <RouteWaypointList
+            sequenceId={`area:${area.id}`}
+            sequenceLabel={area.label}
+            routeWaypoints={waypoints}
+            orderedWaypoints={orderedWaypoints}
+            mission={mission}
+            recon={recon}
+            grabbedWaypointId={grabbedWaypointId}
+            selected={selected}
+            transfer={transfer}
+            generatedWaypoints
+            onSelect={onSelect}
+            onUpdateMission={onUpdateMission}
+            onInsertActionAt={onInsertActionAt}
+            onPickUpWaypoint={onPickUpWaypoint}
+            onPreviewMoveWaypoint={onPreviewMoveWaypoint}
+            onDropPreviewWaypoint={onDropPreviewWaypoint}
+            onCancelPreviewWaypoint={onCancelPreviewWaypoint}
+            onReorderWaypoint={onReorderWaypoint}
+            onMoveAction={onMoveAction}
+            onDeleteWaypoint={onDeleteWaypoint}
+            onDeleteAction={onDeleteAction}
+            onSetActionPitch={onSetActionPitch}
+            onAnnounce={onAnnounce}
+          />
           {isFinalSequenceItem && !transfer ? (
             <EndMissionControl
               mission={mission}

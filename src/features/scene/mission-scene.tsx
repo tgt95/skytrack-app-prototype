@@ -30,10 +30,17 @@ import { startMissionSceneRuntime } from "./scene-viewer-runtime";
 import { fitMission } from "./scene-camera-gestures";
 import { MissionSceneStatus } from "./mission-scene-status";
 import { useSceneBasemap } from "./use-scene-basemap";
+import { useMissionWorldModelScene } from "./use-mission-world-model-scene";
+import { MissionSceneWorldModelStatus } from "./mission-scene-world-model-status";
 
 type CesiumNS = typeof import("cesium");
 
-import { enuToLngLat, syncSearchMarkerEntities } from "./mission-scene-helpers";
+import {
+  enuToLngLat,
+  safeColor,
+  syncSearchMarkerEntities,
+  themeColor,
+} from "./mission-scene-helpers";
 
 const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
   function MissionScene(
@@ -52,6 +59,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
       footprintOpacity = 42,
       showAreaSurface = false,
       basemap = "satellite",
+      worldModel,
       searchMarker = null,
       pendingPoints,
       pendingShape,
@@ -380,6 +388,17 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [retryCount, setRetryCount] = useState(0);
     const [without3d, setWithout3d] = useState(false);
+    const fitRef = useRef(fitMission);
+    fitRef.current = fitMission;
+    const worldModelScene = useMissionWorldModelScene({
+      viewerRef,
+      cesiumRef,
+      status,
+      mission,
+      missionRef,
+      fitRef,
+      source: worldModel,
+    });
 
     useSceneBasemap({
       viewer: viewerRef.current,
@@ -387,7 +406,20 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
       basemap,
       worldType: mission.worldType,
       world: mission.world,
+      worldModelActive: worldModelScene.active,
     });
+    useEffect(() => {
+      const viewer = viewerRef.current;
+      const Cesium = cesiumRef.current;
+      if (!viewer || !Cesium || viewer.isDestroyed() || status !== "ready")
+        return;
+      const sceneBaseColor = mission.worldType === "2D"
+        ? safeColor(Cesium, themeColor("--muted"), "--muted", 1)
+        : Cesium.Color.BLACK;
+      viewer.scene.globe.baseColor = sceneBaseColor;
+      viewer.scene.backgroundColor = sceneBaseColor;
+      viewer.scene.requestRender();
+    }, [mission.worldType, status]);
     /* Search pin is independently owned and never affects mission state or camera fitting. */
     useEffect(() => {
       const viewer = viewerRef.current;
@@ -418,32 +450,6 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
     const handleCubeOrbitEnd = useCallback(() => orbitEndRef.current(), []);
     /* Drain bounded frames after sync; Cesium builds primitives over several frames. */
     const settleRef = useRef(0);
-
-    const fitRef = useRef(fitMission);
-    fitRef.current = fitMission;
-
-    const worldViewRef = useRef({
-      world: mission.world,
-      worldType: mission.worldType,
-    });
-    useEffect(() => {
-      const previous = worldViewRef.current;
-      worldViewRef.current = {
-        world: mission.world,
-        worldType: mission.worldType,
-      };
-      if (
-        previous.world === mission.world &&
-        previous.worldType === mission.worldType
-      )
-        return;
-      const viewer = viewerRef.current;
-      const Cesium = cesiumRef.current;
-      if (!viewer || !Cesium || viewer.isDestroyed() || status !== "ready")
-        return;
-      // Named 3D fixtures center around Home; reframing never changes mission data.
-      fitRef.current(viewer, Cesium, missionRef.current);
-    }, [mission.world, mission.worldType, status]);
 
     useImperativeHandle(ref, () =>
       createMissionSceneHandle({
@@ -568,6 +574,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
         simActive,
         showAreaSurface,
         focusedPhotoWaypointId,
+        worldModelActive: worldModelScene.active,
       });
       viewer.scene.requestRender();
       settleRef.current = 90;
@@ -576,7 +583,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
           viewer.entities.values.length,
         );
       revalidateWaypointGroundGuideRef.current(mission);
-    }, [mission, selection, simActive, status, showAreaSurface]);
+    }, [mission, selection, simActive, status, showAreaSurface, worldModelScene.active]);
 
     /* Draft cursor/ruler changes refresh only draft-owned entities. */
     useEffect(() => {
@@ -673,6 +680,11 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
             setWithout3d(true);
             onReadinessChange("without-3d");
           }}
+        />
+        <MissionSceneWorldModelStatus
+          active={worldModelScene.active && status === "ready"}
+          loading={worldModelScene.loading}
+          error={worldModelScene.error}
         />
       </div>
     );

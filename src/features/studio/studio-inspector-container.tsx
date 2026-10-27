@@ -46,6 +46,7 @@ type InspectorDrawingState = Pick<
   | "tool"
   | "pending"
   | "pendingShape"
+  | "setPendingShape"
   | "draftCursor"
   | "drawingAltM"
   | "draftAreaSettings"
@@ -165,6 +166,7 @@ export default function StudioInspectorContainer({
       zoneDraft={{
         kind: drawing.tool === "area" ? "area" : "avoid",
         shape: drawing.pendingShape,
+        onShapeChange: drawing.setPendingShape,
         pointCount: drawing.pending.length,
         canCommit:
           drawing.pendingShape === "polygon"

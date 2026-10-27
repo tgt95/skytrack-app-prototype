@@ -19,6 +19,10 @@ export interface WorkspaceWorldRecord {
   sourceFlightReference: string;
   reconstructionReference: string;
   note: string;
+  /** Local IndexedDB relationship for imported 3D Worlds. */
+  glbAssetId?: string;
+  glbFileName?: string;
+  glbFileSize?: number;
 }
 
 export interface WorkspaceAIModelRecord {
@@ -146,7 +150,10 @@ function isWorld(value: unknown): value is WorkspaceWorldRecord {
     typeof world.sourceMissionLabel === "string" &&
     typeof world.sourceFlightReference === "string" &&
     typeof world.reconstructionReference === "string" &&
-    typeof world.note === "string"
+    typeof world.note === "string" &&
+    (world.glbAssetId === undefined || typeof world.glbAssetId === "string") &&
+    (world.glbFileName === undefined || typeof world.glbFileName === "string") &&
+    (world.glbFileSize === undefined || typeof world.glbFileSize === "number")
   );
 }
 
@@ -241,7 +248,10 @@ export function selectableWorldsForWorkspace(
   workspaceId: string,
 ): WorkspaceWorldRecord[] {
   return worldsForWorkspace(workspaceId).filter(
-    (world) => world.status === "Sample" || world.status === "Registered",
+    (world) =>
+      world.status === "Sample" ||
+      world.status === "Registered" ||
+      (world.status === "Draft" && Boolean(world.glbAssetId)),
   );
 }
 

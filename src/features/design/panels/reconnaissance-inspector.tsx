@@ -44,7 +44,7 @@ export function ReconSettingsPage({
               <ArrowLeftIcon aria-hidden="true" />
             </Button>
           </SkyTooltip>
-          <span className="ms-route-name">
+          <span className="h6">
             {target.kind === "area"
               ? "Area reconnaissance settings"
               : "Route reconnaissance settings"}

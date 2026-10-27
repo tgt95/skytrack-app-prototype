@@ -202,12 +202,13 @@ export default function StudioMapOverlays({
             className=" flex items-center gap-3 min-w-0 text-(--muted-foreground)"
             data-testid="ms-drawbar-copy"
           >
-            <Toolbar
-              orientation="horizontal"
-              aria-label="Footprint shape"
-              className="flex-[0_0_auto]"
-            >
-              <ToolbarGroup>
+            {tool === "avoid" ? (
+              <Toolbar
+                orientation="horizontal"
+                aria-label="Avoid-zone footprint shape"
+                className="flex-[0_0_auto]"
+              >
+                <ToolbarGroup>
                 <ToolbarButton
                   type="button"
                   size="sm"
@@ -241,14 +242,17 @@ export default function StudioMapOverlays({
                   </svg>{" "}
                   Cylinder
                 </ToolbarButton>
-              </ToolbarGroup>
-            </Toolbar>
+                </ToolbarGroup>
+              </Toolbar>
+            ) : null}
             <span>
-              {pendingShape === "cylinder"
+              {tool === "area"
+                ? `Area — ${pendingCount} point${pendingCount === 1 ? "" : "s"} placed. Choose Polygon or Cylinder in Area draft settings.${pendingCount > 0 ? " Finish or cancel this draft to change shape." : ""}`
+                : pendingShape === "cylinder"
                 ? pendingCount === 0
                   ? "Click the scene to place the center; move and click the check to set radius."
                   : "Move the pointer to set the radius, then click the check to finish."
-                : `${tool === "area" ? "Area" : "Avoid-zone"} — ${pendingCount} point${pendingCount === 1 ? "" : "s"} placed. Close the outline at point 1.`}
+                : `Avoid-zone — ${pendingCount} point${pendingCount === 1 ? "" : "s"} placed. Close the outline at point 1.`}
             </span>
           </div>
         </div>

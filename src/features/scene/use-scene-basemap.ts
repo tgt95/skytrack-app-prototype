@@ -8,6 +8,7 @@ interface UseSceneBasemapParams {
   basemap: MissionBasemapStyle;
   worldType: "2D" | "3D" | undefined;
   world: string | undefined;
+  worldModelActive: boolean;
 }
 
 /** Owns imagery selection and stale async-provider cancellation for the scene. */
@@ -17,10 +18,12 @@ export function useSceneBasemap({
   basemap,
   worldType,
   world,
+  worldModelActive,
 }: UseSceneBasemapParams): void {
   useEffect(() => {
     if (!viewer || viewer.isDestroyed() || status !== "ready") return;
-    if (worldType !== "2D" && world === "Blank space") {
+    viewer.scene.globe.show = !worldModelActive;
+    if (worldModelActive || (worldType !== "2D" && world === "Blank space")) {
       viewer.imageryLayers.removeAll();
       viewer.scene.requestRender();
       return;
@@ -49,5 +52,5 @@ export function useSceneBasemap({
     return () => {
       cancelled = true;
     };
-  }, [viewer, status, basemap, worldType, world]);
+  }, [viewer, status, basemap, worldType, world, worldModelActive]);
 }

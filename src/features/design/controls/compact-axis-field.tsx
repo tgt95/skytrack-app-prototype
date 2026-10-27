@@ -16,6 +16,7 @@ export function CompactAxisField({
   inputWidth = "flex",
   className,
   axisClassName,
+  disabled = false,
   onChange,
 }: {
   label: string;
@@ -28,6 +29,7 @@ export function CompactAxisField({
   inputWidth?: "flex" | "fixed";
   className?: string;
   axisClassName?: string;
+  disabled?: boolean;
   onChange: (v: number) => void;
 }) {
   const [text, setText] = useState<string | null>(null);
@@ -53,6 +55,7 @@ export function CompactAxisField({
         {short}
       </span>
       <NumberField
+        disabled={disabled}
         value={value}
         min={min}
         max={max}
@@ -67,6 +70,7 @@ export function CompactAxisField({
         data-testid="ms-axis-number-field"
       >
         <NumberFieldInput
+          disabled={disabled}
           className="w-full min-w-0"
           size={inputSize}
           aria-label={label}

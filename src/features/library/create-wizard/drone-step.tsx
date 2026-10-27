@@ -1,4 +1,5 @@
 import { RadioGroup, RadioRoot } from "skytrack-ui/radio";
+import { FieldLabel, FieldRoot } from "skytrack-ui/field";
 import { TabsPanel } from "skytrack-ui/tabs";
 import type { WorkspaceDroneProfile } from "../database/drone-store";
 import MissionThumbnail from "../cards/mission-thumbnail.tsx";
@@ -11,17 +12,17 @@ type DroneStepProps = {
 
 export function DroneStep({ drones, droneId, onDroneSelect }: DroneStepProps) {
   return (
-    <TabsPanel value="3" className="ms-wizard-panel">
+    <TabsPanel value="3">
       <div className="ms-lib-form">
-        <div className="ms-field">
-          <span className="ms-field-label" id="ms-wizard-drone-label">
+        <FieldRoot name="wizard-drone">
+          <FieldLabel id="ms-wizard-drone-label">
             Drone list
-          </span>
+          </FieldLabel>
           <RadioGroup
             value={droneId}
             onValueChange={(value: unknown) => onDroneSelect(String(value))}
             aria-labelledby="ms-wizard-drone-label"
-            className="ms-wizard-radio-list"
+            className='w-full'
           >
             {drones.map((drone) => (
               <label key={drone.id} className="ms-wizard-radio-row">
@@ -46,7 +47,6 @@ export function DroneStep({ drones, droneId, onDroneSelect }: DroneStepProps) {
                 <RadioRoot
                   value={drone.id}
                   aria-label={drone.name}
-                  className="order-3 ml-auto flex-[0_0_auto] rounded-(--radius)"
                 />
               </label>
             ))}
@@ -56,7 +56,7 @@ export function DroneStep({ drones, droneId, onDroneSelect }: DroneStepProps) {
               </p>
             ) : null}
           </RadioGroup>
-        </div>
+        </FieldRoot>
       </div>
     </TabsPanel>
   );

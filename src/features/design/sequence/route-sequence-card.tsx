@@ -370,8 +370,8 @@ export default function RouteSequenceCard({
         <>
           {worldType === "2D" ? null : speedRow}
           <RouteWaypointList
-            routeId={route.id}
-            routeLabel={route.label}
+            sequenceId={route.id}
+            sequenceLabel={route.label}
             routeWaypoints={routeWaypoints}
             orderedWaypoints={orderedWaypoints}
             mission={mission}

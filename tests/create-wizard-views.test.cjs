@@ -64,26 +64,17 @@ test("wizard step views preserve the labels, empty states, and test hooks", () =
   }
 });
 
-test("terrain file chooser opens only from its explicit button", () => {
+test("terrain upload delegates file selection and drop to the shared Dropzone", () => {
   const world = read("create-wizard/world-step.tsx");
 
+  assert.ok(world.includes("import { Dropzone } from 'skytrack-ui/dropzone'"));
+  assert.ok(world.includes("data-testid='ms-wizard-dropzone'"));
+  assert.ok(world.includes("data-testid='ms-wizard-filebtn'"));
+  assert.ok(world.includes("buttonLabel='Choose File'"));
+  assert.ok(world.includes("multiple={false}"));
   assert.match(
     world,
-    /const terrainInputRef = useRef<HTMLInputElement>\(null\)/,
+    /onFilesSelected=\{files =>[\s\S]*?onTerrainFileSelect\(file\.name\)/,
   );
-  assert.match(
-    world,
-    /<Button[\s\S]*?type="button"[\s\S]*?onClick=\{\(\) => terrainInputRef\.current\?\.click\(\)\}[\s\S]*?data-testid="ms-wizard-filebtn"[\s\S]*?Choose File[\s\S]*?<\/Button>/,
-  );
-  assert.match(
-    world,
-    /<input[\s\S]*?ref=\{terrainInputRef\}[\s\S]*?type="file"[\s\S]*?tabIndex=\{-1\}[\s\S]*?aria-hidden="true"/,
-  );
-  const fileInputIndex = world.indexOf('type="file"');
-  assert.ok(fileInputIndex > 0, "World step should keep the terrain input");
-  assert.ok(
-    world.lastIndexOf("</label>", fileInputIndex) >
-      world.lastIndexOf("<label", fileInputIndex),
-    "terrain input should not be label-activated",
-  );
+  assert.doesNotMatch(world, /terrainInputRef|type='file'/);
 });

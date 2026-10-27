@@ -32,6 +32,7 @@ interface MissionCardRecord {
   editedAgo: string;
   worldType?: "2D" | "3D";
   world?: string;
+  worldId?: string;
   missionData?: string;
   origin?: MapTileOrigin;
   starred?: boolean;
@@ -209,6 +210,7 @@ function MissionCardCore({
   mission,
   username,
   projectName,
+  worldAssetId,
   testId,
   actions = [],
   onToggleStar,
@@ -218,6 +220,7 @@ function MissionCardCore({
   mission: MissionCardRecord;
   username: string;
   projectName?: string;
+  worldAssetId?: string;
   testId?: string;
   actions?: LibraryCardAction[];
   onToggleStar?: () => void;
@@ -234,7 +237,7 @@ function MissionCardCore({
         missionName={mission.name}
       />
     ) : (
-      <MissionThumbnail />
+      <MissionThumbnail worldAssetId={worldAssetId} />
     );
   const worldBadge =
     mission.worldType === "2D" ? (
@@ -299,6 +302,7 @@ function MissionCardCore({
 export function MissionCard({
   projectName: _projectName,
   mission,
+  worldAssetId,
   username,
   testId,
   actions,
@@ -307,6 +311,7 @@ export function MissionCard({
 }: {
   projectName: string;
   mission: LibMission;
+  worldAssetId?: string;
   username: string;
   testId: string;
   actions: LibraryCardAction[];
@@ -317,6 +322,7 @@ export function MissionCard({
     <MissionCardCore
       variant="project"
       mission={mission}
+      worldAssetId={worldAssetId}
       username={username}
       testId={testId}
       actions={actions}
@@ -329,6 +335,7 @@ export function MissionCard({
 export function RecentMissionCard({
   projectName,
   mission,
+  worldAssetId,
   username,
   testId,
   actions,
@@ -337,6 +344,7 @@ export function RecentMissionCard({
 }: {
   projectName: string;
   mission: LibMission;
+  worldAssetId?: string;
   username: string;
   testId: string;
   actions: LibraryCardAction[];
@@ -347,6 +355,7 @@ export function RecentMissionCard({
     <MissionCardCore
       variant="recent"
       mission={mission}
+      worldAssetId={worldAssetId}
       username={username}
       projectName={projectName}
       testId={testId}

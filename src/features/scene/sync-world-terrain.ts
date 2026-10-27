@@ -8,7 +8,7 @@ type CesiumNS = typeof import('cesium')
 export type WorldTerrainTriangle = readonly [import('cesium').Cartesian3, import('cesium').Cartesian3, import('cesium').Cartesian3]
 
 /** Rebuilds the committed World surface and local grid. */
-export function syncWorldTerrain(viewer: Viewer, Cesium: CesiumNS, mission: StudioMission): WorldTerrainTriangle[] {
+export function syncWorldTerrain(viewer: Viewer, Cesium: CesiumNS, mission: StudioMission, worldModelActive = false): WorldTerrainTriangle[] {
   const origin = missionOrigin(mission)
   const cssColor = (varName: SceneToken, alpha: number): import('cesium').Color =>
     safeColor(Cesium, themeColor(varName), varName, alpha)
@@ -34,7 +34,7 @@ export function syncWorldTerrain(viewer: Viewer, Cesium: CesiumNS, mission: Stud
       }
       return pts
     }
-    if (mission.worldType !== '2D' && mission.world === 'Blank space') {
+    if (!worldModelActive && mission.worldType !== '2D' && mission.world === 'Blank space') {
       const gridMat = cssColor('--muted-foreground', 0.22)
       viewer.entities.add({
         id: 'ms-grid-x',
@@ -50,7 +50,7 @@ export function syncWorldTerrain(viewer: Viewer, Cesium: CesiumNS, mission: Stud
     // Sample only the current globe terrain when available; ellipsoid-only
     // scenes fall back to zero. This keeps synthetic relief above the visible
     // ground without installing or requesting a terrain provider.
-    if (mission.worldType !== '2D' && mission.world !== 'Blank space') {
+    if (!worldModelActive && mission.worldType !== '2D' && mission.world !== 'Blank space') {
       const terrain = WORLD_TERRAIN_FIXTURES[mission.world]
       const rows = terrain?.elevationsM
       const rowCount = rows?.length ?? 0

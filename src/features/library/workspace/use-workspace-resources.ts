@@ -5,6 +5,7 @@ import {
   saveDroneProfiles,
   type WorkspaceDroneProfile,
 } from "../database/drone-store";
+import { deleteWorldGlbAsset } from "../database/world-glb-assets";
 import {
   loadWorkspaceResources,
   saveWorkspaceResources,
@@ -274,6 +275,9 @@ export function useWorkspaceResources({
 
   const deleteWorldProfile = (id: string) => {
     if (deleteWorldReferences.length > 0) return false;
+    const worldToRemove = resourceStateRef.current.worlds.find(
+      (world) => world.id === id,
+    );
     const nextWorlds = resourceStateRef.current.worlds.filter(
       (world) => world.id !== id,
     );
@@ -281,6 +285,13 @@ export function useWorkspaceResources({
       !commitResourceState({ ...resourceStateRef.current, worlds: nextWorlds })
     )
       return false;
+    if (worldToRemove?.glbAssetId) {
+      void deleteWorldGlbAsset(worldToRemove.glbAssetId).catch(() => {
+        onAnnounce(
+          "World deleted, but its GLB file could not be cleared from this browser.",
+        );
+      });
+    }
     onAnnounce("World deleted.");
     return true;
   };

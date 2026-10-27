@@ -275,14 +275,13 @@ export function ShareDialog({
               />
               <FieldError />
             </FieldRoot>
-            <div className="ms-field">
-              <span className="ms-field-label" id="ms-lib-share-perm-label">
+            <FieldRoot name="share-permission">
+              <FieldLabel id="ms-lib-share-perm-label">
                 Permission
-              </span>
+              </FieldLabel>
               <Select value="view-only" onValueChange={() => undefined}>
                 <SelectTrigger
                   aria-labelledby="ms-lib-share-perm-label"
-                  className="ms-lib-select"
                 >
                   <SelectValue>View only</SelectValue>
                 </SelectTrigger>
@@ -299,7 +298,7 @@ export function ShareDialog({
                   </SelectPositioner>
                 </SelectPortal>
               </Select>
-            </div>
+            </FieldRoot>
           </div>
           <DialogFooter>
             <DialogClose className="w-auto flex-[0_0_auto]">Cancel</DialogClose>
@@ -331,17 +330,16 @@ export function CloneProjectPicker({
   const [pid, setPid] = useState(projects[0]?.id ?? "");
   return (
     <div className="ms-lib-form">
-      <div className="ms-field">
-        <span className="ms-field-label" id="ms-lib-clone-project-label">
+      <FieldRoot name="clone-project">
+        <FieldLabel id="ms-lib-clone-project-label">
           Project
-        </span>
+        </FieldLabel>
         <Select
           value={pid}
           onValueChange={(v) => setPid(typeof v === "string" ? v : String(v))}
         >
           <SelectTrigger
             aria-labelledby="ms-lib-clone-project-label"
-            className="ms-lib-select"
           >
             <SelectValue placeholder="Select a project">
               {projects.find((p) => p.id === pid)?.name ?? ""}
@@ -362,7 +360,7 @@ export function CloneProjectPicker({
             </SelectPositioner>
           </SelectPortal>
         </Select>
-      </div>
+      </FieldRoot>
       <div className="ms-btnrow">
         <Button
           size="sm"

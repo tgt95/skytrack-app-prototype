@@ -1,12 +1,11 @@
 import { useCallback, useRef } from "react";
 import type { StudioMission } from "../../domain/mission-model";
-import { clampSnapRuler } from "../../features/design/drawing/drawing-altitude-utils";
 import type { useAddressSearch } from "../../features/search/use-address-search";
 import StudioDialogs from "../../features/studio/studio-dialogs";
 import StudioInspectorContainer from "../../features/studio/studio-inspector-container";
 import StudioLeftRail from "../../features/studio/studio-left-rail";
 import StudioMapOverlays from "../../features/studio/studio-map-overlays";
-import StudioSceneViewport from "../../features/studio/studio-scene-viewport";
+import { StudioShellSceneViewport } from "../../features/studio/studio-shell-scene-viewport";
 import StudioStatusFooter from "./footer";
 import StudioTopbar from "./header";
 import { useDialogFocusReturn } from "../../features/studio/use-dialog-focus-return";
@@ -17,6 +16,7 @@ import type { useStudioRouting } from "../../features/studio/use-studio-routing"
 import type { useStudioSimulationModel } from "../../features/studio/use-studio-simulation-model";
 import type { useStudioSceneSession } from "../../features/studio/use-studio-scene-session";
 import type { useMissionCommands } from "../../features/studio/use-mission-commands";
+import { useStudioWorldGlb } from "../../features/studio/use-studio-world-glb";
 import type { useStudioActions } from "../../features/studio/use-studio-actions";
 import type { useStudioStageActions } from "../../features/studio/use-studio-stage-actions";
 import type { SimEventItem } from "../../features/simulation/simulation";
@@ -84,23 +84,17 @@ export default function StudioShell({
     appTab,
     appTabsOrientation,
     selection,
-    detailEditActive,
     codeView,
     codeDraft,
     codeLang,
     jsonDraft,
     jsonError,
     rightOpen,
-    lidarOn,
     simTab,
     settings,
     editOpen,
     shortcutsOpen,
     simSettingsOpen,
-    basemapStyle,
-    showPhotoMarkers,
-    showCameraFootprint,
-    footprintOpacity,
     worldPickerOpen,
     setSelection,
     setDetailEditActive,
@@ -112,10 +106,6 @@ export default function StudioShell({
     setEditOpen,
     setShortcutsOpen,
     setSimSettingsOpen,
-    setBasemapStyle,
-    setShowPhotoMarkers,
-    setShowCameraFootprint,
-    setFootprintOpacity,
     setWorldPickerOpen,
     say,
   } = ui;
@@ -124,55 +114,38 @@ export default function StudioShell({
     pending,
     pendingShape,
     draftCursor,
-    closeDraftAtStart,
     drawingAltM,
     draftAreaSettings,
     draftAvoidSettings,
     setPending,
-    setDrawingAltM,
     setPendingShape,
     setDraftAreaSettings,
     setDraftAvoidSettings,
-    onDraftHover,
-    onPendingPositionChange,
-    onPendingAltitudeChange,
-    onRemovePendingPoint,
-    onInsertPendingPoint,
     cancelPending,
   } = drawing;
   const draftActions = drawing.draftActions;
-  const {
-    libraryEntry,
-    missionWorldOptions,
-    availableDrones,
-    missionDroneValue,
-    missionDroneChoices,
-  } = routing;
+  const { libraryEntry, missionWorldOptions, availableDrones } = routing;
+  const worldGlb = useStudioWorldGlb({
+    mission,
+    worldOptions: missionWorldOptions,
+    workspaceId: libraryEntry?.workspaceId ?? "tuan-workspace",
+    persistWorld: routing.persistImportedWorld,
+    onSelectImportedWorld: commands.onSelectImportedWorld,
+    announce: say,
+  });
   const { issues, derivedTransfers, gate, plan, sim, totalT, telemetry } =
     simulation;
+  const { previewPositionRef, previewCaptureRef } = scene;
   const {
-    sceneRef,
-    previewPositionRef,
-    previewCaptureRef,
-    onSceneReadinessChange,
-  } = scene;
-  const {
-    onScenePoint,
-    insertWaypointAt,
-    removeWaypointById,
-    onWaypointAltitudeChange,
-    onWaypointPositionChange,
     updateMissionFromPanel,
     previewMissionFromPanel,
     commitPanelPreview,
     cancelPanelPreview,
-    onAvoidHeightChange,
     finishPending,
     closePendingShape,
     onMoveWaypoint,
     onReorderWaypoint,
     onMoveAction,
-    onSelectVehicle,
     onSelectWorld,
     onSelectWorldType,
     onDeleteAction,
@@ -202,8 +175,6 @@ export default function StudioShell({
   } = handlers;
 
   const drawingActive = tool === "route" || tool === "area" || tool === "avoid";
-  const editModeActive =
-    stage === "design" && (drawingActive || detailEditActive);
   const simActive = stage === "simulation";
 
   const dialogFocus = useDialogFocusReturn();
@@ -281,90 +252,18 @@ export default function StudioShell({
           }}
           onAnnounce={say}
         >
-          <StudioSceneViewport
+          <StudioShellSceneViewport
             mission={mission}
-            hideContextCards={ui.aiModelsOpen}
-            sceneRef={sceneRef}
-            sceneProps={{
-              mission,
-              tool: stage === "design" ? tool : "select",
-              selection,
-              simActive,
-              clockRef: sim.clockRef,
-              previewPositionRef,
-              previewCaptureRef,
-              plan,
-              reducedMotion: settings.reducedMotion,
-              showPhotoMarkers,
-              showCameraFootprint,
-              footprintOpacity,
-              showAreaSurface: editModeActive,
-              basemap: basemapStyle,
-              searchMarker: addressSearch.visibleSearchMarker,
-              pendingPoints: pending,
-              pendingShape,
-              draftCursor,
-              closeDraftAtStart,
-              draftAreaSettings,
-              draftAvoidSettings,
-              drawingAltM: sceneDrawingAltitudeM,
-              planeVisible: drawingActive && stage === "design",
-              onPickWaypoint: (id) => {
-                setSelection({ kind: "waypoint", id });
-                const waypoint = mission.waypoints.find(
-                  (item) => item.id === id,
-                );
-                if (waypoint) say(`Waypoint ${waypoint.seq} selected.`);
-              },
-              onPickZone: (kind, id) => {
-                setSelection({ kind, id });
-                say(`${kind === "area" ? "Area" : "Avoid zone"} selected.`);
-              },
-              onClearSelection: () => setSelection(null),
-              onScenePoint,
-              onDraftHover,
-              onClosePending: closePendingShape,
-              onInsertWaypoint: insertWaypointAt,
-              onRemoveWaypoint: removeWaypointById,
-              onWaypointAltitudeChange,
-              onWaypointPositionChange,
-              onAvoidHeightChange,
-              onPendingPositionChange,
-              onPendingAltitudeChange,
-              onInsertPendingPoint,
-              onRemovePendingPoint,
-              onReadinessChange: onSceneReadinessChange,
-            }}
-            editModeActive={editModeActive}
-            drawing={drawingActive}
-            stageIsDesign={stage === "design"}
-            toolIsArea={tool === "area" && mission.worldType === "2D"}
-            simActive={simActive}
-            lidarOn={lidarOn}
-            plan={plan}
-            simClockRef={sim.clockRef}
-            reducedMotion={settings.reducedMotion}
-            drawingAltM={drawingAltM}
-            onDrawingAltitudeCommit={(value) =>
-              setDrawingAltM(clampSnapRuler(value))
-            }
-            onAnnounce={say}
-            droneChoices={missionDroneChoices}
-            selectedDroneValue={missionDroneValue}
-            onSelectVehicle={onSelectVehicle}
-            onOpenWorldPicker={() =>
-              dialogFocus.openWithFocusReturn(() => setWorldPickerOpen(true))
-            }
+            ui={ui}
+            drawing={drawing}
+            routing={routing}
+            simulation={simulation}
+            scene={scene}
             addressSearch={addressSearch}
-            stage={stage}
-            showPhotoMarkers={showPhotoMarkers}
-            onShowPhotoMarkersChange={setShowPhotoMarkers}
-            showCameraFootprint={showCameraFootprint}
-            onShowCameraFootprintChange={setShowCameraFootprint}
-            footprintOpacity={footprintOpacity}
-            onFootprintOpacityChange={setFootprintOpacity}
-            basemapStyle={basemapStyle}
-            onBasemapStyleChange={setBasemapStyle}
+            commands={commands}
+            worldModel={worldGlb.sceneWorld}
+            sceneDrawingAltitudeM={sceneDrawingAltitudeM}
+            dialogFocus={dialogFocus}
           />
         </StudioMapOverlays>
         <StudioInspectorContainer
@@ -406,6 +305,7 @@ export default function StudioShell({
             tool,
             pending,
             pendingShape,
+            setPendingShape,
             draftCursor,
             drawingAltM,
             draftAreaSettings,
@@ -476,6 +376,7 @@ export default function StudioShell({
         onShortcutsOpenChange={setShortcutsOpen}
         onSelectWorld={stableSelectWorld}
         onSelectWorldType={stableSelectWorldType}
+        onImportWorld={worldGlb.onImportWorld}
         onSaveEdit={stableSaveEdit}
       />
     </div>

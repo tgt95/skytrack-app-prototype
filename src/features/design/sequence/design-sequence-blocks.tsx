@@ -196,11 +196,14 @@ export function DesignSequenceBlocks({
             key={area.id}
             area={area}
             mission={mission}
+            orderedWaypoints={orderedWaypoints}
             worldType={worldType}
             recon={recon}
             draft={areaDraft?.id === area.id ? areaDraft : area}
             editing={editingAreaId === area.id}
             collapsed={isCollapsed(`area:${area.id}`)}
+            grabbedWaypointId={grabbedWaypointId}
+            selected={selection}
             isFinalSequenceItem={isFinalSequenceItem("area", area.id)}
             transfer={transferFrom("area", area.id)}
             onEdit={() => onStartAreaEdit(area)}
@@ -228,6 +231,17 @@ export function DesignSequenceBlocks({
             onOpenRecon={() => onOpenRecon("area", area.id, recon)}
             onUpdateMission={onUpdateMission}
             onSetActionPitch={updateActionPitch}
+            onSelect={onSelect}
+            onInsertActionAt={onInsertActionAt}
+            onPickUpWaypoint={onPickUpWaypoint}
+            onPreviewMoveWaypoint={onPreviewMoveWaypoint}
+            onDropPreviewWaypoint={onDropPreviewWaypoint}
+            onCancelPreviewWaypoint={onCancelPreviewWaypoint}
+            onReorderWaypoint={onReorderWaypoint}
+            onMoveAction={onMoveAction}
+            onDeleteWaypoint={onDeleteWaypoint}
+            onDeleteAction={onDeleteAction}
+            onAnnounce={onAnnounce}
             onPreviewDraft={(nextDraft) =>
               onPreviewAreaDraft(area.id, nextDraft)
             }

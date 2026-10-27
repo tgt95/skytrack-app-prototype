@@ -15,7 +15,7 @@ import {
   DialogPortal,
   DialogTitle,
 } from "skytrack-ui/dialog";
-import { Tabs, TabsIndicator, TabsList, TabsTab } from "skytrack-ui/tabs";
+import { Tabs, TabsList, TabsTab } from "skytrack-ui/tabs";
 import { WORLDS } from "../../domain/mission-model";
 import type { WorkspaceDroneProfile } from "./database/drone-store";
 import type { WorkspaceWorldRecord } from "./database/workspace-resources-store";
@@ -39,12 +39,11 @@ function Stepper({ step }: { step: 1 | 2 | 3 }) {
   return (
     <TabsList
       variant="line"
-      className=" relative w-fit max-w-none m-[0_auto] pt-1 px-0 pb-0 flex items-center justify-center gap-0"
+      className="relative max-w-0 mx-auto pt-1 px-0 pb-0 flex items-center justify-center gap-0"
       aria-label="Create mission steps"
     >
       {STEPS.map((label, i) => {
         const n = (i + 1) as 1 | 2 | 3;
-        const state = n < step ? "done" : n === step ? "active" : "todo";
         return (
           <span
             key={label}
@@ -53,18 +52,12 @@ function Stepper({ step }: { step: 1 | 2 | 3 }) {
           >
             <TabsTab
               value={String(n)}
-              variant="line"
               disabled={n > step}
-              className={[
-                `ms-wizard-stepbtn is-${state}`,
-                "inline-flex flex-[0_0_auto] items-center gap-1.5 pt-0 px-0 pb-2 bg-transparent text-(--muted-foreground) [font:inherit] text-[0.8125rem] [&:not(:disabled):hover]:text-(--foreground) [button&:focus-visible]:outline-2 [button&:focus-visible]:outline-(--primary) [button&:focus-visible]:outline-offset-1 data-active:text-(--foreground) data-active:font-semibold grid place-items-center w-6 h-6 rounded-[50%] bg-(--muted) text-(--foreground) text-xs font-semibold",
-              ]
-                .filter(Boolean)
-                .join(" ")}
               aria-label={`Step ${n}: ${label}`}
             >
               <span
-                className=" inline-flex items-center justify-center w-4.5 h-4.5 rounded-[50%] bg-(--muted) text-(--muted-foreground) text-[0.6875rem] font-bold [.ms-wizard-stepbtn[data-active]_&]:bg-(--primary) [.ms-wizard-stepbtn[data-active]_&]:text-(--primary-foreground)"
+                className="inline-flex size-4.5 items-center justify-center rounded-full bg-muted text-[0.6875rem] font-bold text-muted-foreground data-[active]:bg-primary data-[active]:text-primary-foreground"
+                data-active={n === step ? "" : undefined}
                 aria-hidden="true"
                 data-testid="ms-wizard-num"
               >
@@ -82,7 +75,6 @@ function Stepper({ step }: { step: 1 | 2 | 3 }) {
           </span>
         );
       })}
-      <TabsIndicator variant="line" />
     </TabsList>
   );
 }
@@ -119,7 +111,9 @@ export default function CreateMissionWizard({
   /* Parent remounts (key) per open, so initial state is fresh each time. */
   const worldsForType = worlds.filter(
     (worldProfile) =>
-      worldProfile.status === "Sample" || worldProfile.status === "Registered",
+      worldProfile.status === "Sample" ||
+      worldProfile.status === "Registered" ||
+      (worldProfile.status === "Draft" && Boolean(worldProfile.glbAssetId)),
   );
   const canNext = title.trim() !== "" && projectId !== "";
   const canLeaveWorld = worldType === "2D" || worldId !== "";
@@ -170,12 +164,9 @@ export default function CreateMissionWizard({
     >
       <DialogPortal>
         <DialogBackdrop />
-        <DialogPopup
-          aria-label="Create mission"
-          className="ms-lib-wizard w-[min(32rem,calc(100vw-2rem))]"
-        >
+        <DialogPopup aria-label="Create mission" className='top-8 translate-y-0'>
           <DialogHeader>
-            <DialogTitle className="heading">Create mission</DialogTitle>
+            <DialogTitle>Create mission</DialogTitle>
           </DialogHeader>
           <Tabs
             value={String(step)}
@@ -189,7 +180,6 @@ export default function CreateMissionWizard({
                 setStep(nextStep as 1 | 2 | 3);
               }
             }}
-            className=" w-full max-w-none"
             data-testid="ms-wizard-tabs"
           >
             <Stepper step={step} />
@@ -216,12 +206,9 @@ export default function CreateMissionWizard({
               onDroneSelect={setDroneId}
             />
           </Tabs>
-          <DialogFooter
-            className=" in-[.ms-lib-wizard]:flex in-[.ms-lib-wizard]:items-center in-[.ms-lib-wizard]:justify-between in-[.ms-lib-wizard]:gap-2"
-            data-testid="ms-wizard-footer"
-          >
+          <DialogFooter data-testid="ms-wizard-footer">
             <span
-              className=" flex items-center gap-2"
+              className="mr-auto flex items-center gap-2"
               data-testid="ms-wizard-footer-start"
             >
               {step > 1 ? (
@@ -235,7 +222,7 @@ export default function CreateMissionWizard({
               ) : null}
             </span>
             <span
-              className=" flex items-center gap-2"
+              className="flex items-center gap-2"
               data-testid="ms-wizard-footer-end"
             >
               <Button variant="secondary" onClick={onClose}>

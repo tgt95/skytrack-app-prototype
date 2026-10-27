@@ -15,9 +15,9 @@
      into the Route/Area block sequence and renumbered.
    - Avoid detours are recomputed after the Area pass and reuse prior detour
      IDs per Avoid zone.
-   - A photo action is minted for capture points that do not already carry a
-     photo action on the matched prior waypoint; non-capture points keep only
-     their non-photo actions.
+   - A default photo action is minted only for 2D Areas with Recon enabled;
+     existing actions are preserved at capture points, while non-capture
+     connectors keep only their non-photo actions.
 
    ID generation is unchanged by default: identifiers come from the shared
    `uid` in mission-model.ts. `MissionGenerationOptions.idFactory` only exists
@@ -119,6 +119,8 @@ export function regenerateAreaWaypoints(
       const lines = area.scanLines ?? []
       const prior = next.waypoints.filter((wp) => wp.generatedByArea === area.id)
       const points = generateAreaCapturePath(area, lines)
+      const autoAddPhotoCapture =
+        routeBase.worldType === '2D' && area.reconnaissance?.enabled === true
       const reusedPriorIds = new Set<string>()
       const priorByCell = indexPriorByCell(prior)
       const areaFlightAltM = getAreaFlightAltitudeM(area, routeBase.takeoffAltM, routeBase.worldType ?? '3D')
@@ -134,11 +136,13 @@ export function regenerateAreaWaypoints(
         const hasAltitudeOverride = Number.isFinite(altitudeOverrideM)
         const matchedActions = matchedPrior?.actions ?? []
         const photoActions = matchedActions.filter((action) => action.kind === 'photo')
-        const actions = p.capturePhoto
+        const actions = p.capturePhoto && autoAddPhotoCapture
           ? photoActions.length > 0
             ? matchedActions
             : [...matchedActions, { id: idFactory('act'), kind: 'photo' as const, label: actionLabel('photo') }]
-          : matchedActions.filter((action) => action.kind !== 'photo')
+          : p.capturePhoto
+            ? matchedActions
+            : matchedActions.filter((action) => action.kind !== 'photo')
         const waypoint: Waypoint = {
           id: reusedId ?? idFactory('wp'),
           seq: 0,

@@ -18,7 +18,7 @@ import {
 import type { StudioMissionDocumentAction } from "./mission-document";
 import type { Stage } from "./studio-map-overlays";
 import type { PendingMissionPoint } from "./use-drawing-session";
-import type { MissionWorldOption } from "./studio-dialogs";
+import { useStudioWorldOptions } from "./use-studio-world-options";
 import type { LibraryEntry, LibrarySection } from "../library/library";
 import {
   findMissionRecord,
@@ -29,10 +29,6 @@ import {
   loadDroneProfiles,
   type WorkspaceDroneProfile,
 } from "../library/database/drone-store";
-import {
-  selectableWorldsForWorkspace,
-  type WorkspaceWorldRecord,
-} from "../library/database/workspace-resources-store";
 import { getSharedProject } from "../library/workspace/workspace-data.ts";
 import {
   missionStudioRoutePath,
@@ -276,46 +272,15 @@ export function useStudioRouting({
     simResetRef,
   ]);
 
-  const selectableMissionWorlds = useMemo<WorkspaceWorldRecord[]>(
-    () =>
-      selectableWorldsForWorkspace(
-        libraryEntry?.workspaceId ?? "tuan-workspace",
-      ),
-    [libraryEntry?.workspaceId, route],
-  );
-  const missionWorldOptions = useMemo<MissionWorldOption[]>(() => {
-    if (
-      !mission.world ||
-      selectableMissionWorlds.some(
-        (world) => world.id === mission.worldId || world.name === mission.world,
-      )
-    ) {
-      return selectableMissionWorlds;
-    }
-    return [
-      ...selectableMissionWorlds,
-      {
-        id:
-          mission.worldId ??
-          `legacy-world:${encodeURIComponent(mission.world)}`,
-        workspaceId: libraryEntry?.workspaceId ?? "tuan-workspace",
-        name: mission.world,
-        location: "",
-        status: "Legacy" as const,
-        sourceType: "none" as const,
-        sourceMissionId: "",
-        sourceMissionLabel: "",
-        sourceFlightReference: "",
-        reconstructionReference: "",
-        note: "",
-      },
-    ];
-  }, [
-    libraryEntry?.workspaceId,
-    mission.world,
-    mission.worldId,
+  const {
     selectableMissionWorlds,
-  ]);
+    missionWorldOptions,
+    persistImportedWorld,
+  } = useStudioWorldOptions({
+    mission,
+    workspaceId: libraryEntry?.workspaceId ?? "tuan-workspace",
+    route,
+  });
   const availableDrones = useMemo(
     () =>
       workspaceDroneProfiles.filter(
@@ -422,7 +387,6 @@ export function useStudioRouting({
     },
     [navigateRoute],
   );
-
   return {
     route,
     section,
@@ -435,6 +399,7 @@ export function useStudioRouting({
     onOpenTemplate,
     onOpenSharedAccounts,
     onOpenSharedProject,
+    persistImportedWorld,
     selectableMissionWorlds,
     missionWorldOptions,
     availableDrones,

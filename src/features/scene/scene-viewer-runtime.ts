@@ -112,12 +112,16 @@ export function startMissionSceneRuntime(args: SceneRuntimeArgs): (() => void) |
         renderedPreviewMissionRef.current = null
         viewer.scene.postProcessStages.fxaa.enabled = !viewer.scene.msaaSupported
         /* Render at device density for crisp map tiles and geometry, capped to
-           avoid unbounded canvas cost on very high-density displays. */
-        viewer.resolutionScale = Math.min(window.devicePixelRatio || 1, 2)
-        viewer.scene.globe.baseColor = safeColor(Cesium, themeColor('--muted'), '--muted', 1)
-        // Match the sky clear color to the globe base so the horizon has no
-        // visible color seam against the Mission Studio scene background.
-        viewer.scene.backgroundColor = safeColor(Cesium, themeColor('--muted'), '--muted', 1)
+        avoid unbounded canvas cost on very high-density displays. */
+        // viewer.resolutionScale = Math.min(window.devicePixelRatio || 1, 2)
+        viewer.resolutionScale = 0.75
+        const sceneBaseColor = missionRef.current.worldType === '2D'
+          ? safeColor(Cesium, themeColor('--muted'), '--muted', 1)
+          : Cesium.Color.BLACK
+        viewer.scene.globe.baseColor = sceneBaseColor
+        // Keep the clear color aligned with the globe in 2D. 3D mode uses
+        // black around the mission model.
+        viewer.scene.backgroundColor = sceneBaseColor
         viewer.scene.skyAtmosphere.show = false
         // Hide the default starfield skybox while keeping the scene base color
         // and mission grid visible.

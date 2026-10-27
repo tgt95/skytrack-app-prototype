@@ -165,7 +165,7 @@ export function SequenceActionRow (props: {
   }
   wpId: string
   wpSeq: number
-  routeId: string
+  sequenceId: string
   index: number
   isLastSequenceRow: boolean
   inheritedPitch: number
@@ -184,7 +184,7 @@ export function SequenceActionRow (props: {
     action,
     wpId,
     wpSeq,
-    routeId,
+    sequenceId,
     index,
     isLastSequenceRow,
     inheritedPitch,
@@ -202,7 +202,7 @@ export function SequenceActionRow (props: {
     event.preventDefault()
     setDropPosition(null)
     const item = readSequenceDragItem(event)
-    if (!item || item.routeId !== routeId) return
+    if (!item || item.routeId !== sequenceId) return
     const position = sequenceDropPosition(event)
     if (item.kind === 'waypoint') {
       onReorderWaypoint(item.id, index + (position === 'after' ? 1 : 0))
@@ -256,7 +256,7 @@ export function SequenceActionRow (props: {
               kind: 'action',
               id: action.id,
               waypointId: wpId,
-              routeId
+      routeId: sequenceId
             })
             setDragging(true)
           }}

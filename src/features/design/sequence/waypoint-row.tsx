@@ -30,7 +30,8 @@ import {
    goes through the existing undo/redo history in the parent only on drop. */
 export function WaypointRow(props: {
   wp: Waypoint;
-  routeId: string;
+  sequenceId: string;
+  generated?: boolean;
   index: number;
   total: number;
   isLastSequenceRow: boolean;
@@ -56,7 +57,8 @@ export function WaypointRow(props: {
 }) {
   const {
     wp,
-    routeId,
+    sequenceId,
+    generated = false,
     index,
     total,
     isLastSequenceRow,
@@ -150,10 +152,11 @@ export function WaypointRow(props: {
         event.preventDefault();
         setDropPosition(null);
         const item = readSequenceDragItem(event);
-        if (!item || item.routeId !== routeId) return;
+        if (!item || item.routeId !== sequenceId) return;
         const position = sequenceDropPosition(event);
         if (item.kind === "waypoint") {
-          onReorderWaypoint(item.id, index + (position === "after" ? 1 : 0));
+          if (!generated)
+            onReorderWaypoint(item.id, index + (position === "after" ? 1 : 0));
         } else {
           onMoveAction(item.waypointId, item.id, wp.id);
         }
@@ -165,9 +168,12 @@ export function WaypointRow(props: {
           variant="ghost"
           size="icon-xs"
           className={`flex-[0_0_auto] self-center inline-flex items-center justify-center w-5.5 h-8.5 text-sm border border-transparent rounded-(--radius) bg-transparent text-(--muted-foreground) cursor-grab touch-none hover:bg-(--accent) hover:text-(--foreground) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1${grabbed ? " text-(--primary) cursor-grabbing" : ""}`}
-          draggable
+          disabled={generated}
+          draggable={!generated}
           aria-label={
-            grabbed
+            generated
+              ? `Generated waypoint ${wp.seq} cannot be reordered`
+              : grabbed
               ? `Reorder waypoint ${wp.seq}, grabbed. Arrow keys move, Space drops, Escape cancels.`
               : `Reorder waypoint ${wp.seq}. Press Space to pick up.`
           }
@@ -178,7 +184,7 @@ export function WaypointRow(props: {
             writeSequenceDragItem(event, {
               kind: "waypoint",
               id: wp.id,
-              routeId,
+              routeId: sequenceId,
             });
           }}
           onDragEnd={() => setDropPosition(null)}
@@ -215,6 +221,7 @@ export function WaypointRow(props: {
           min={-500}
           max={500}
           step={0.5}
+          disabled={generated}
           onChange={(v) => patchWaypoint({ x: v })}
         />
         <CompactAxisField
@@ -225,6 +232,7 @@ export function WaypointRow(props: {
           min={-500}
           max={500}
           step={0.5}
+          disabled={generated}
           onChange={(v) => patchWaypoint({ y: v })}
         />
         <CompactAxisField
@@ -246,8 +254,9 @@ export function WaypointRow(props: {
           <Button
             size="icon-sm"
             variant="ghost"
-            aria-label={`Delete waypoint ${wp.seq}`}
+            aria-label={generated ? `Generated waypoint ${wp.seq} cannot be deleted` : `Delete waypoint ${wp.seq}`}
             data-testid={`ms-wp-delete-${wp.seq}`}
+            disabled={generated}
             onClick={() => onDeleteWaypoint(wp.id)}
           >
             <TrashIcon aria-hidden="true" />

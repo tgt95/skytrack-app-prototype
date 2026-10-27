@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -9,6 +10,7 @@ import {
   DialogTitle,
 } from "skytrack-ui/dialog";
 import { FieldLabel, FieldRoot } from "skytrack-ui/field";
+import { Dropzone } from "skytrack-ui/dropzone";
 import {
   Select,
   SelectIcon,
@@ -28,12 +30,18 @@ import type { StudioMission } from "../../domain/mission-model";
 interface MissionWorldPickerDialogProps {
   restoreDialogFocus: () => HTMLElement | null;
   mission: Pick<StudioMission, "world" | "worldId" | "worldType">;
-  worldOptions: { id: string; name: string }[];
+  worldOptions: {
+    id: string;
+    name: string;
+    glbAssetId?: string;
+    glbFileName?: string;
+  }[];
   selectOptions: { value: string; label: string }[];
   worldPickerOpen: boolean;
   onWorldPickerOpenChange: (open: boolean) => void;
   onSelectWorld: (worldId: string) => void;
   onSelectWorldType: (worldType: "2D" | "3D") => void;
+  onImportWorld: (file: File) => Promise<void>;
 }
 
 export function MissionWorldPickerDialog({
@@ -45,7 +53,35 @@ export function MissionWorldPickerDialog({
   onWorldPickerOpenChange,
   onSelectWorld,
   onSelectWorldType,
+  onImportWorld,
 }: MissionWorldPickerDialogProps) {
+  const [isImporting, setIsImporting] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
+  const selectedWorld =
+    worldOptions.find((world) => world.id === mission.worldId) ??
+    worldOptions.find((world) => world.name === mission.world);
+  const importWorldFiles = async (files: File[]) => {
+    if (files.length > 1) {
+      setImportError("Import one .glb file at a time.");
+      return;
+    }
+    const file = files[0];
+    if (!file) return;
+    setImportError(null);
+    setIsImporting(true);
+    try {
+      await onImportWorld(file);
+    } catch (error) {
+      setImportError(
+        error instanceof Error
+          ? error.message
+          : "This GLB could not be imported. Choose another file and try again.",
+      );
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   return (
     <Dialog open={worldPickerOpen} onOpenChange={onWorldPickerOpenChange}>
       <DialogPortal>
@@ -101,17 +137,17 @@ export function MissionWorldPickerDialog({
                 </span>
               </TabsPanel>
               <TabsPanel value="3D" className="ms-world-type-panel pb-2">
+                <p className="m-0 text-sm text-muted-foreground">
+                  Import a GLB to replace this mission’s 3D World. Its origin
+                  anchors to the mission location. Routes and mission geometry
+                  stay in place. The file and card preview stay in this
+                  browser.
+                </p>
                 <FieldRoot className="ms-field">
                   <FieldLabel>World</FieldLabel>
                   <Select<string>
                     items={selectOptions}
-                    value={
-                      worldOptions.find(
-                        (world) =>
-                          world.id === mission.worldId ||
-                          world.name === mission.world,
-                      )?.id ?? ""
-                    }
+                    value={selectedWorld?.id ?? ""}
                     onValueChange={(value: unknown) =>
                       onSelectWorld(String(value))
                     }
@@ -140,6 +176,37 @@ export function MissionWorldPickerDialog({
                     </SelectPortal>
                   </Select>
                 </FieldRoot>
+                {selectedWorld?.glbAssetId ? (
+                  <p
+                    className="m-0 text-xs text-muted-foreground"
+                    data-testid="ms-world-glb-selected"
+                  >
+                    GLB model: {selectedWorld.glbFileName ?? selectedWorld.name}
+                  </p>
+                ) : null}
+                <FieldRoot className="ms-field">
+                  <FieldLabel>Import 3D World</FieldLabel>
+                  <Dropzone
+                    accept=".glb,model/gltf-binary"
+                    multiple={false}
+                    disabled={isImporting}
+                    buttonLabel={
+                      isImporting ? "Importing GLB…" : "Choose GLB file"
+                    }
+                    hint="Drop one .glb file here. We validate the model and make a mission-card preview."
+                    onFilesSelected={importWorldFiles}
+                    data-testid="ms-world-glb-dropzone"
+                  />
+                </FieldRoot>
+                {importError ? (
+                  <p
+                    role="alert"
+                    className="m-0 text-sm text-destructive"
+                    data-testid="ms-world-glb-error"
+                  >
+                    {importError}
+                  </p>
+                ) : null}
               </TabsPanel>
             </Tabs>
           </FieldRoot>

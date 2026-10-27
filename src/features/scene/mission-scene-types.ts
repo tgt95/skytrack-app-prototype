@@ -16,6 +16,13 @@ export interface MissionSceneHandle {
 
 export type SceneReadiness = 'loading' | 'ready' | 'error' | 'without-3d'
 
+export interface MissionWorldModelSource {
+  assetId?: string;
+  blob?: Blob | null;
+  error?: string | null;
+  loading?: boolean;
+}
+
 export interface MissionSceneProps {
   mission: StudioMission
   tool: SceneTool
@@ -37,6 +44,8 @@ export interface MissionSceneProps {
   searchMarker?: { latitude: number; longitude: number; label: string } | null
   /** Active basemap style for Photogrammetry 2D and non-blank legacy 3D Worlds. */
   basemap?: MissionBasemapStyle
+  /** Browser-local imported GLB World, resolved by the Studio route. */
+  worldModel?: MissionWorldModelSource
   pendingPoints: { x: number; y: number; z?: number }[]
   pendingShape: 'polygon' | 'cylinder'
   draftCursor: { x: number; y: number } | null

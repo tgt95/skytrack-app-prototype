@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogBackdrop,
   DialogClose,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogPopup,
@@ -75,11 +74,8 @@ export function EditMissionDialog({
         >
           <DialogHeader>
             <DialogTitle className="heading">Edit Mission</DialogTitle>
-            <DialogDescription>
-              Mission name, world type, World, and vehicle.
-            </DialogDescription>
           </DialogHeader>
-          <FieldRoot className="ms-field">
+          <FieldRoot>
             <FieldLabel>Mission name</FieldLabel>
             <FieldControl
               ref={missionNameRef}
@@ -88,7 +84,7 @@ export function EditMissionDialog({
               placeholder="Mission name"
             />
           </FieldRoot>
-          <FieldRoot className="ms-field">
+          <FieldRoot>
             <FieldLabel>World type</FieldLabel>
             <Tabs
               value={editWorldType}
@@ -110,14 +106,14 @@ export function EditMissionDialog({
                   variant="filled"
                   data-testid="ms-edit-world-type-2d"
                 >
-                  2D Photogrammetry
+                  2D
                 </TabsTab>
                 <TabsTab
                   value="3D"
                   variant="filled"
                   data-testid="ms-edit-world-type-3d"
                 >
-                  3D Mission
+                  3D
                 </TabsTab>
               </TabsList>
             </Tabs>
@@ -128,7 +124,7 @@ export function EditMissionDialog({
             ) : null}
           </FieldRoot>
           {editWorldType === "3D" ? (
-            <FieldRoot className="ms-field">
+            <FieldRoot>
               <FieldLabel>World</FieldLabel>
               <Select<string>
                 items={selectOptions}
@@ -156,7 +152,7 @@ export function EditMissionDialog({
               </Select>
             </FieldRoot>
           ) : null}
-          <FieldRoot className="ms-field">
+          <FieldRoot>
             <FieldLabel>Drone</FieldLabel>
             <Select<string>
               items={editDroneChoices}
