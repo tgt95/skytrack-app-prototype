@@ -25,6 +25,21 @@
       "path": "src/ui/layout/page-layout.tsx",
       "maxLines": 457,
       "why": "The shell is the Studio composition root and retains route state ownership plus the Viewer and map-overlay branch. S17c moved inspector prop derivation and footer rendering into focused components; the remaining 457 lines wire top-level state into the viewport, rail, topbar, and dialogs. Further extraction would add a pass-through adapter without a separate state or behavior boundary."
+    },
+    {
+      "path": "src/features/design/design-panel.tsx",
+      "maxLines": 409,
+      "why": "Temporarily accept the current Mission Studio release state per Owner authorization to defer project line limits during the 2026-10-27 Pages release. Track a focused composition refactor in the workspace follow-up record and remove this exception when the file returns to the 400-line target."
+    },
+    {
+      "path": "src/pages/mission-studio-page.tsx",
+      "maxLines": 475,
+      "why": "Temporarily accept the current Mission Studio release state per Owner authorization to defer project line limits during the 2026-10-27 Pages release. Track a focused shell composition refactor in the workspace follow-up record and remove this exception when the file returns to the 400-line target."
+    },
+    {
+      "path": "src/ui/layout/page-layout.tsx",
+      "maxLines": 467,
+      "why": "Temporarily raise the reviewed ceiling for the current Mission Studio release per Owner authorization to defer project line limits. Track a focused composition refactor in the workspace follow-up record and remove this exception when the file returns to the previous 457-line ceiling."
     }
   ]
 }
