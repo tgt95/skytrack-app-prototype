@@ -1,6 +1,6 @@
 const test = require('node:test')
 const assert = require('node:assert/strict')
-const { resolveEscapeCaptureAction } = require('../src/modules/studio/use-mission-keyboard.ts')
+const { resolveEscapeCaptureAction } = require('../src/features/studio/use-mission-keyboard.ts')
 
 test('Escape cancels an active edit drag before an unfinished drawing', () => {
   assert.equal(resolveEscapeCaptureAction({

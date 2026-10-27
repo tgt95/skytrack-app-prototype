@@ -5,7 +5,7 @@ const {
   emptyStudioMissionDocument,
   isMissionDocumentDirty,
   studioMissionReducer
-} = require('../src/modules/studio/mission-document.ts')
+} = require('../src/features/studio/mission-document.ts')
 
 test('commit, undo, redo, and save keep mission snapshots and dirty state consistent', () => {
   const base = emptyMission()
@@ -52,7 +52,7 @@ test('preview commit stores the pre-preview snapshot as the undo entry', () => {
 })
 
 test('Library and mission routes round-trip encoded identifiers under a base path', () => {
-  const { missionStudioRoutePath, parseMissionStudioRoute } = require('../src/modules/library/router.ts')
+  const { missionStudioRoutePath, parseMissionStudioRoute } = require('../src/features/library/router.ts')
   const projectRoute = { kind: 'library', section: 'projects', projectId: 'team space/alpha' }
   const missionRoute = { kind: 'mission', missionId: 'mission / 1' }
 

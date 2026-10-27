@@ -1,8 +1,0 @@
-@layer theme, base, components, utilities;
-
-@import "tailwindcss/theme.css" layer(theme) theme(reference);
-@import "tailwindcss/utilities.css" layer(utilities) source("./");
-
-@theme {
-  --breakpoint-3xl: 120rem;
-}

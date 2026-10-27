@@ -3,10 +3,6 @@ import {
   DEFAULT_RECON_FLIGHT_SETTINGS,
   WORLDS,
   actionLabel,
-  getMissionRoutes,
-  getMissionSequence,
-  normalizeMissionRoutes,
-  renumber,
   reconSettingsFrom,
   round2,
   uid,
@@ -22,6 +18,12 @@ import {
   type Waypoint,
   type WaypointAction
 } from './mission-types'
+import {
+  getMissionRoutes,
+  getMissionSequence,
+  normalizeMissionRoutes,
+  renumber
+} from './mission-sequence'
 import { isValidGeoOrigin } from './geo-math'
 import { generateAreaCapturePath, generateAreaScan } from './area-scan'
 import { withAvoidDetours } from './avoid-detour'

@@ -34,12 +34,12 @@ test('versioned stores and preference/workspace records round-trip through their
   global.localStorage = storage
   global.window = { localStorage: storage }
   try {
-    const { DEFAULT_WORKSPACE_ID, readActiveWorkspaceId, saveActiveWorkspaceId } = require('../src/modules/library/workspace-data.ts')
-    const library = require('../src/modules/library/database/store.ts')
-    const drone = require('../src/modules/library/database/drone-store.ts')
-    const resources = require('../src/modules/library/database/workspace-resources-store.ts')
+    const { DEFAULT_WORKSPACE_ID, readActiveWorkspaceId, saveActiveWorkspaceId } = require('../src/features/library/workspace-data.ts')
+    const library = require('../src/features/library/database/store.ts')
+    const drone = require('../src/features/library/database/drone-store.ts')
+    const resources = require('../src/features/library/database/workspace-resources-store.ts')
     const theme = require('../src/shared/theme-preference.ts')
-    const account = require('../src/modules/library/account-menu-state.ts')
+    const account = require('../src/features/library/account-menu-state.ts')
 
     const mission = {
       id: 'guardrail-mission', name: 'Contract mission', editedAgo: 'Just now', starred: false,

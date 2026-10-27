@@ -1,11 +1,11 @@
 /* mission-generation.ts — pure mission generation orchestration.
    Area scan waypoint generation and Avoid detour refresh, lifted out of the
-   Mission Studio React shell (src/index.tsx) so mission calculation stays in
+   Mission Studio React shell (src/pages/mission-studio-page.tsx) so mission calculation stays in
    the domain layer. No React, no Cesium, no I/O.
 
    Behavior contract — this module must stay byte-for-byte equivalent to the
    pre-extraction `regenerateAreaWaypoints` / `refreshDetours` /
-   `recomputeGenerated` callbacks in src/index.tsx:
+   `recomputeGenerated` callbacks in src/pages/mission-studio-page.tsx:
    - Area scan lanes are recomputed from the Area geometry and settings, and
      the recomputed lanes are written back onto the returned mission's areas.
    - Prior generated waypoints are reused by position (0.1 m cell neighbourhood
@@ -28,18 +28,19 @@
 
 import {
   actionLabel,
-  generateAreaCapturePath,
-  generateAreaScan,
   getAreaFlightAltitudeM,
+  uid,
+  type StudioMission,
+  type Waypoint
+} from './mission-types'
+import {
   getMissionRoutes,
   getMissionSequence,
   normalizeMissionRoutes,
-  renumber,
-  uid,
-  withAvoidDetours,
-  type StudioMission,
-  type Waypoint
-} from './mission-model'
+  renumber
+} from './mission-sequence'
+import { generateAreaCapturePath, generateAreaScan } from './area-scan'
+import { withAvoidDetours } from './avoid-detour'
 
 /** Mints identifiers for generated waypoints and camera actions. */
 export type MissionIdFactory = (prefix: string) => string

@@ -1,14 +1,16 @@
 import {
   DEFAULT_MISSION_ORIGIN,
   getAreaFlightAltitudeM,
-  getMissionRoutes,
-  getMissionRouteWaypoints,
-  getMissionSequence,
   type EnuVec,
   type GeoAttribution,
   type GeoOrigin,
   type StudioMission
 } from './mission-types'
+import {
+  getMissionRoutes,
+  getMissionRouteWaypoints,
+  getMissionSequence
+} from './mission-sequence'
 import { generateAreaScan, generateAreaTraversal, isValidRing } from './area-scan'
 
 /** True for a finite latitude/longitude pair usable as a mission origin. */
@@ -46,6 +48,37 @@ export function missionOrigin(mission: Pick<StudioMission, 'origin'>): GeoOrigin
   return isValidGeoOrigin(mission.origin)
     ? { lat: mission.origin.lat, lng: mission.origin.lng }
     : { ...DEFAULT_MISSION_ORIGIN }
+}
+
+const DEG_PER_M_LAT = 1 / 111320
+
+function lonScaleForLat(lat: number): number {
+  return 1 / (111320 * Math.cos((lat * Math.PI) / 180))
+}
+
+/* Small-area ENU/geographic conversion shared by the Cesium scene and the
+   dormant Leaflet map. Always origin-aware; the default origin keeps legacy
+   callers working. Inputs and output object shape stay unchanged. */
+export function enuToLngLat(x: number, y: number, origin: GeoOrigin = missionOrigin({})): { lng: number; lat: number } {
+  return { lng: origin.lng + x * lonScaleForLat(origin.lat), lat: origin.lat + y * DEG_PER_M_LAT }
+}
+
+export function lngLatToEnu(lng: number, lat: number, origin: GeoOrigin = missionOrigin({})): { x: number; y: number } {
+  const scale = lonScaleForLat(origin.lat)
+  return { x: (lng - origin.lng) / scale, y: (lat - origin.lat) / DEG_PER_M_LAT }
+}
+
+/** Shoelace polygon area in local ENU square meters. Returns 0 for rings with
+    fewer than three points; absolute value keeps reversed rings positive. */
+export function polygonAreaM2(points: { x: number; y: number }[]): number {
+  if (points.length < 3) return 0
+  let twiceArea = 0
+  for (let index = 0; index < points.length; index += 1) {
+    const current = points[index]
+    const next = points[(index + 1) % points.length]
+    twiceArea += current.x * next.y - next.x * current.y
+  }
+  return Math.abs(twiceArea) / 2
 }
 
 /** Return a copy of `mission` anchored at `origin`, preserving every local

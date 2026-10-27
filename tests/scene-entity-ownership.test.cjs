@@ -5,7 +5,7 @@ const {
   removeSceneEntitiesInLayer,
   sceneEntityIdsInLayer,
   sceneEntityLayer
-} = require('../src/modules/scene/scene-entity-ownership.ts')
+} = require('../src/features/scene/scene-entity-ownership.ts')
 
 test('mission entity IDs map to their declared scene layer', () => {
   assert.deepEqual(SCENE_ENTITY_LAYERS, [

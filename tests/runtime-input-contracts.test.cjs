@@ -57,7 +57,7 @@ test('mission snapshots reject malformed roots, coordinate arrays, and actions',
 })
 
 test('Library load accepts legacy metadata and rejects invalid metadata and DB versions', () => {
-  const { DB_KEY, DB_VERSION, loadProjects } = require('../src/modules/library/database/store.ts')
+  const { DB_KEY, DB_VERSION, loadProjects } = require('../src/features/library/database/store.ts')
   const legacy = {
     version: DB_VERSION,
     projects: [{ id: 'legacy-project', name: 'Legacy project', missions: [{
@@ -87,7 +87,7 @@ test('Library load accepts legacy metadata and rejects invalid metadata and DB v
 })
 
 test('Library storage failures fall back to seed data and return false on save', () => {
-  const { loadProjects, saveProjects } = require('../src/modules/library/database/store.ts')
+  const { loadProjects, saveProjects } = require('../src/features/library/database/store.ts')
   const failingStorage = {
     getItem() { throw new Error('storage unavailable') },
     setItem() { throw new Error('storage unavailable') },
@@ -100,7 +100,7 @@ test('Library storage failures fall back to seed data and return false on save',
 })
 
 test('cloned snapshots keep payload while remapping identity and rejecting malformed JSON', () => {
-  const { cloneMissionSnapshotIdentity } = require('../src/modules/library/database/store.ts')
+  const { cloneMissionSnapshotIdentity } = require('../src/features/library/database/store.ts')
   const source = JSON.stringify({ id: 'old-id', name: 'Old name', world: 'Blank space', waypoints: [] })
   const cloned = JSON.parse(cloneMissionSnapshotIdentity(source, 'new-id', 'Copy'))
   assert.deepEqual(cloned, { id: 'new-id', name: 'Copy', world: 'Blank space', waypoints: [] })

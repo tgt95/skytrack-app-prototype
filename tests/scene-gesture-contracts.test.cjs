@@ -12,9 +12,9 @@
 const test = require('node:test')
 const assert = require('node:assert/strict')
 const { emptyMission, missionOrigin } = require('../src/domain/mission-model.ts')
-const { enuToLngLat } = require('../src/modules/scene/mission-scene-helpers.ts')
-const { createEditGestures } = require('../src/modules/scene/scene-edit-gestures.ts')
-const { installCameraGestures } = require('../src/modules/scene/scene-camera-gestures.ts')
+const { enuToLngLat } = require('../src/features/scene/mission-scene-helpers.ts')
+const { createEditGestures } = require('../src/features/scene/scene-edit-gestures.ts')
+const { installCameraGestures } = require('../src/features/scene/scene-camera-gestures.ts')
 
 const PIXEL_ORIGIN = 100
 const SCREEN_SCALE = 1

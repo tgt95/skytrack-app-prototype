@@ -8,20 +8,22 @@ export {
   VEHICLES,
   WORLDS,
   actionLabel,
-  appendMissionSequenceItem,
   emptyMission,
   getAreaFlightAltitudeM,
+  safetyModeOf,
+  uid,
+  vehicleSpecOf
+} from './mission-types'
+export {
+  appendMissionSequenceItem,
   getMissionRouteWaypoints,
   getMissionRoutes,
   getMissionSequence,
   normalizeMissionRoutes,
   reorderWaypoints,
   removeMissionSequenceItem,
-  renumber,
-  safetyModeOf,
-  uid,
-  vehicleSpecOf
-} from './mission-types'
+  renumber
+} from './mission-sequence'
 export type {
   AvoidZone,
   CameraActionKind,
@@ -47,11 +49,14 @@ export type {
 export {
   actionCount,
   dist3,
+  enuToLngLat,
   getMissionEnd,
   getMissionHome,
   getMissionStart,
   isValidGeoOrigin,
+  lngLatToEnu,
   missionOrigin,
+  polygonAreaM2,
   routeLengthM,
   withMissionOrigin
 } from './geo-math'

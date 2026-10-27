@@ -1,5 +1,4 @@
 import {
-  renumber,
   round2,
   uid,
   type AvoidZone,
@@ -8,6 +7,7 @@ import {
   type StudioMission,
   type Waypoint
 } from './mission-types'
+import { renumber } from './mission-sequence'
 import { isValidRing, pointInRing, polylineIntersectsRing } from './area-scan'
 
 /* ------------------------- avoid detours (mock geometry) -------------------------

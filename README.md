@@ -23,22 +23,31 @@ Live prototype: <https://tgt95.github.io/skytrack-app-prototype/>. Pushes to `ma
 
 ## Project map
 
-- `src/` — complete standalone app, route, and source modules.
-- `src/App.tsx` and `src/main.tsx` — standalone entry and host wrapper.
+- `src/` — standalone app source.
+- `src/main.tsx` and `src/App.tsx` — browser bootstrap and host wrapper.
+- `src/pages/mission-studio-page.tsx` — route entry and stage composition.
+- `src/assets/` — browser app images, icons, and login illustration assets.
+- `src/ui/components/` — reusable app-owned React controls and icons.
+- `src/ui/layout/` — Studio page composition, header, and footer.
+- `src/ui/styles/` — app CSS and ordered Library chunks.
+- `src/domain/` — pure mission types and deterministic rules.
 - `vite.config.ts` — React, Tailwind, and Cesium worker/static asset setup.
 - [`agents/`](./agents/README.md) — current agent instructions and architecture notes.
 
 ### Source organization
 
-The `domain/`, `modules/`, and `shared/` folders under `src/` separate business rules, feature implementation, and reusable app code:
+All source areas are direct children of `src/`; there is no extra `client/` wrapper. `domain/` stays pure, feature-owned screens stay in `features/`, app-owned reusable controls and page layout stay in `ui/`, and non-visual cross-feature helpers stay in `shared/`:
 
 | Folder | Responsibility | Examples |
 | --- | --- | --- |
 | `src/domain/` | Mission types and deterministic rules such as geometry, validation, generation, and serialization. Keep it independent of React, Cesium, the DOM, and browser storage. | `mission-generation.ts`, `mission-validation.ts` |
-| `src/modules/` | Feature UI, state, and integrations. Subfolders group related responsibilities such as auth, Studio orchestration, Design inspectors, Cesium scene rendering, Library pages, address search, and development tools. | `auth/`, `studio/`, `design/`, `scene/`, `library/`, `search/`, `dev-tools/` |
-| `src/shared/` | Reusable, feature-neutral UI and helpers used by multiple modules. Keep feature internals and feature persistence out. | `map-control-tooltip.tsx`, `theme-preference.ts` |
+| `src/features/` | Feature UI, state, and integrations. Subfolders group related responsibilities such as auth, Studio orchestration, Design inspectors, Cesium scene rendering, Library pages, address search, and development tools. | `auth/`, `studio/`, `design/`, `scene/`, `library/`, `search/`, `dev-tools/` |
+| `src/shared/` | Feature-neutral state, storage keys, map data, and utilities. Keep React presentation and feature persistence out. | `theme-preference.ts`, `storage-keys.ts` |
+| `src/ui/components/` | Reusable app-owned React components and icons shared by features. | `sky-tooltip.tsx`, `map-control-tooltip.tsx`, `icons.tsx` |
+| `src/ui/layout/` | Studio page composition and its header/footer layout components. Keep feature state owners in `features/studio/`. | `page-layout.tsx`, `header.tsx`, `footer.tsx` |
+| `src/ui/styles/` | Global app styles and the ordered Library CSS chunks. | `index.css`, `library-chunk-1.css`–`library-chunk-4.css` |
 
-Modules may use domain rules and shared helpers. Domain code and shared code should not depend on feature modules. `src/shared/` is app-internal code; design-system controls come from `skytrack-ui`.
+Features may use domain rules, shared helpers, and UI components. Domain, shared, and UI component code must not depend on feature modules. Design-system controls come from `skytrack-ui`.
 
 The app supports direct URLs for its pages:
 

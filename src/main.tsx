@@ -1,8 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import 'skytrack-ui/styles.css'
-import './tailwind-utilities.css'
-import './main.css'
+import './ui/styles/tailwind-utilities.css'
+import './ui/styles/main.css'
 import { applyThemePreference, readThemePreference } from './shared/theme-preference'
 import MissionStudioApp from './App'
 

@@ -1,6 +1,5 @@
 import {
   canonicalizeReconSettings,
-  normalizeMissionRoutes,
   vehicleSpecOf,
   type AvoidZone,
   type CameraActionKind,
@@ -12,6 +11,7 @@ import {
   type Waypoint,
   type WaypointAction
 } from './mission-types'
+import { normalizeMissionRoutes } from './mission-sequence'
 import { actionCount, isValidGeoOrigin } from './geo-math'
 import { generateAreaScan, isValidRing, pointInRing, polylineIntersectsRing } from './area-scan'
 import { avoidBaseM, avoidTopM, isAuthoredWaypoint } from './avoid-detour'

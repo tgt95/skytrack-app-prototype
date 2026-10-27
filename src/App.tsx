@@ -9,8 +9,8 @@ import { Button } from "skytrack-ui/button";
 import { FieldLabel, FieldRoot } from "skytrack-ui/field";
 import { Input } from "skytrack-ui/input";
 import logo from "./assets/skytrack-logo-full.svg?raw";
-import LoginDrone from "./modules/auth/login-drone";
-import MissionStudio from "./index";
+import LoginDrone from "./features/auth/login-drone";
+import MissionStudio from "./pages/mission-studio-page";
 import { DevScenarioProvider } from "./shared/dev-scenario-state";
 import { STORAGE_KEYS } from "./shared/storage-keys";
 

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "p1",
+    "name": "Default project",
+    "workspaceId": "tuan-workspace",
+    "missions": [
+      {
+        "id": "m1",
+        "name": "First mission",
+        "editedAgo": "Edited 1 hour ago",
+        "starred": false,
+        "shared": true,
+        "viewOnly": false,
+        "worldType": "3D",
+        "world": "Field terrain"
+      },
+      {
+        "id": "m2",
+        "name": "First mission",
+        "editedAgo": "Edited 1 hour ago",
+        "starred": false,
+        "shared": true,
+        "viewOnly": false,
+        "worldType": "3D",
+        "world": "Field terrain"
+      }
+    ]
+  }
+]

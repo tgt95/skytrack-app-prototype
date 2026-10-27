@@ -59,10 +59,10 @@ function dependencyViolations(filePath, sourceText) {
       if (!localTarget || !localTarget.startsWith('src/domain/')) {
         violations.push(`${filePath}: domain import "${specifier}" crosses the pure domain boundary`)
       }
-    } else if (filePath.startsWith('src/shared/')) {
-      const aliasedFeatureImport = /^(?:@\/|src\/)?modules\//.test(specifier)
-      if (localTarget?.startsWith('src/modules/') || aliasedFeatureImport) {
-        violations.push(`${filePath}: shared import "${specifier}" depends on a feature module`)
+    } else if (filePath.startsWith('src/shared/') || filePath.startsWith('src/ui/components/')) {
+      const aliasedFeatureImport = /^(?:@\/|src\/)?features\//.test(specifier)
+      if (localTarget?.startsWith('src/features/') || aliasedFeatureImport) {
+        violations.push(`${filePath}: shared UI/helper import "${specifier}" depends on a feature module`)
       }
     }
   }
@@ -71,14 +71,14 @@ function dependencyViolations(filePath, sourceText) {
 
 function collectDependencyViolations(files = sourceFiles()) {
   return files.flatMap((filePath) => {
-    if (!filePath.startsWith('src/domain/') && !filePath.startsWith('src/shared/')) return []
+    if (!filePath.startsWith('src/domain/') && !filePath.startsWith('src/shared/') && !filePath.startsWith('src/ui/components/')) return []
     return dependencyViolations(filePath, fs.readFileSync(path.join(root, filePath), 'utf8'))
   })
 }
 
 function budgetCategory(filePath) {
-  if (filePath.startsWith('src/modules/scene/')) return 'imperativeScene'
-  if (filePath.startsWith('src/modules/library/database/')) return 'persistence'
+  if (filePath.startsWith('src/features/scene/')) return 'imperativeScene'
+  if (filePath.startsWith('src/features/library/database/')) return 'persistence'
   if (filePath.endsWith('.tsx')) return 'uiComponent'
   if (filePath.endsWith('.ts')) return 'domainAndHook'
   return null

@@ -10,7 +10,7 @@ they do not imply production readiness or full feature coverage.
 - Keep mission rules, geometry, validation, generation, and serialization in
   `src/domain/`. Keep them deterministic and independent of React, Cesium, DOM,
   and browser storage.
-- Keep the Cesium `Viewer` lifecycle in `modules/scene/mission-scene.tsx`.
+- Keep the Cesium `Viewer` lifecycle in `src/features/scene/mission-scene.tsx`.
   Scene helpers and synchronizers must have explicit inputs and cleanup. Update
   only entities owned by the relevant scene layer; do not clear unrelated layers
   during an incremental update.
@@ -19,16 +19,18 @@ they do not imply production readiness or full feature coverage.
   existing callbacks so one completed user action creates at most one history
   entry. No-op edits must not create history.
 - Keep presentation and transient form state near the component that renders it.
-  Keep Library persistence behind `modules/library/database/` stores and preserve
+  Keep Library persistence behind `src/features/library/database/` stores and preserve
   Workspace scoping and existing migrations.
-- Keep `src/index.tsx` as the Studio composition boundary. Extract cohesive
+- Keep `src/pages/mission-studio-page.tsx` as the Studio composition boundary. Extract cohesive
   responsibilities and render boundaries; do not move a large component body
   wholesale into a hook to reduce a file's line count.
-- Keep reusable, feature-neutral UI in `src/shared/`. Feature modules may use
-  shared UI and domain contracts; shared code must not depend on feature internals
-  or own feature persistence.
-- Keep dependency direction explicit: `src/index.tsx` composes feature modules;
-  feature modules may depend on `src/domain/` and `src/shared/`; `src/shared/`
+- Keep reusable React presentation in `src/ui/components/` and page framing in
+  `src/ui/layout/`. Keep non-visual feature-neutral state, storage keys, map data,
+  and helpers in `src/shared/`. Features may use domain, shared, and UI contracts;
+  shared code and UI components must not depend on feature internals or own
+  feature persistence.
+- Keep dependency direction explicit: `src/pages/mission-studio-page.tsx` composes feature modules through `src/ui/layout/`;
+  feature modules may depend on `src/domain/`, `src/shared/`, and `src/ui/components/`; `src/shared/` and `src/ui/components/`
   must not depend on feature modules; and `src/domain/` must remain independent
   of UI, scene, storage, and feature modules. Outside `src/domain/`, import its
   public APIs through `mission-model.ts`; use direct imports for internal domain

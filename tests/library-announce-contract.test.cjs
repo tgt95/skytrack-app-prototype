@@ -19,8 +19,8 @@ require.extensions['.tsx'] = (module, filename) => {
   }).outputText
   module._compile(output, filename)
 }
-const LibraryAnnounceRegion = require('../src/modules/library/library-announce-region.tsx').default
-const { templateSearchAnnouncement } = require('../src/modules/library/use-template-search.ts')
+const LibraryAnnounceRegion = require('../src/features/library/library-announce-region.tsx').default
+const { templateSearchAnnouncement } = require('../src/features/library/use-template-search.ts')
 
 function jsxElements(sourcePath, name) {
   const source = ts.createSourceFile(sourcePath, fs.readFileSync(sourcePath, 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
@@ -74,8 +74,8 @@ test('Library announce region retains status semantics and exposes current messa
 })
 
 test('Library route forwards its announce value into exactly one retained region', () => {
-  const routePath = path.resolve(__dirname, '../src/modules/studio/studio-library-route.tsx')
-  const libraryPath = path.resolve(__dirname, '../src/modules/library/library.tsx')
+  const routePath = path.resolve(__dirname, '../src/features/studio/studio-library-route.tsx')
+  const libraryPath = path.resolve(__dirname, '../src/features/library/library.tsx')
   const usages = jsxElements(routePath, 'StudioLibrary')
   assert.equal(usages.length, 1)
   assert.ok(usages[0].attributes.properties.some((attribute) =>
@@ -87,7 +87,7 @@ test('Library route forwards its announce value into exactly one retained region
 })
 
 test('Library source has one status region and routes dynamic messages through its callback', () => {
-  const libraryDirectory = path.resolve(__dirname, '../src/modules/library')
+  const libraryDirectory = path.resolve(__dirname, '../src/features/library')
   const statusSources = sourceFiles(libraryDirectory).flatMap((sourcePath) =>
     jsxStatusElements(sourcePath).map(() => path.relative(libraryDirectory, sourcePath))
   )

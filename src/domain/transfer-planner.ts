@@ -3,16 +3,7 @@
    No React, no Cesium. Prototype mock geometry only; not flight planning. */
 
 import {
-  avoidBaseM,
-  avoidTopM,
-  detourAroundAvoid,
-  dist3,
-  generateAreaScan,
-  generateAreaTraversal,
-  getMissionRouteWaypoints,
-  getMissionSequence,
   getAreaFlightAltitudeM,
-  isValidRing,
   type AvoidZone,
   type EnuPoint,
   type EnuVec,
@@ -20,7 +11,18 @@ import {
   type StudioMission,
   type ValidationIssue,
   type Waypoint,
-} from "./mission-model";
+} from "./mission-types";
+import {
+  getMissionRouteWaypoints,
+  getMissionSequence,
+} from "./mission-sequence";
+import { dist3 } from "./geo-math";
+import {
+  generateAreaScan,
+  generateAreaTraversal,
+  isValidRing,
+} from "./area-scan";
+import { avoidBaseM, avoidTopM, detourAroundAvoid } from "./avoid-detour";
 
 export interface DerivedTransfer {
   id: string;
