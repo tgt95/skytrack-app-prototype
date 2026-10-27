@@ -20,6 +20,7 @@ import type { useMissionCommands } from "../../features/studio/use-mission-comma
 import type { useStudioActions } from "../../features/studio/use-studio-actions";
 import type { useStudioStageActions } from "../../features/studio/use-studio-stage-actions";
 import type { SimEventItem } from "../../features/simulation/simulation";
+import type { AIModelCardModel } from "../components/ai-model-card";
 
 type DocumentState = Pick<
   ReturnType<typeof useStudioDocumentState>,
@@ -44,6 +45,8 @@ export interface StudioShellProps {
     openCrumbProject: () => void;
     onSelectEvent: (event: SimEventItem) => void;
   };
+  aiModels: AIModelCardModel[];
+  onImportAIModel: () => void;
 }
 
 export default function StudioShell({
@@ -60,6 +63,8 @@ export default function StudioShell({
   commands,
   actions,
   handlers,
+  aiModels,
+  onImportAIModel,
 }: StudioShellProps) {
   const { dirty } = document;
   const {
@@ -262,6 +267,7 @@ export default function StudioShell({
         >
           <StudioSceneViewport
             mission={mission}
+            hideContextCards={ui.aiModelsOpen}
             sceneRef={sceneRef}
             sceneProps={{
               mission,
@@ -347,13 +353,20 @@ export default function StudioShell({
         </StudioMapOverlays>
         <StudioInspectorContainer
           mission={mission}
+          aiModels={aiModels}
+          onImportAIModel={onImportAIModel}
+          inspectorWidth={ui.inspectorWidth}
+          onInspectorWidthChange={ui.setInspectorWidth}
           ui={{
             appTab,
             stage,
             selection,
             codeView,
+            previewView: ui.previewView,
             codeDraft,
             codeLang,
+            aiModelsOpen: ui.aiModelsOpen,
+            selectedAIModelId: ui.selectedAIModelId,
             jsonDraft,
             jsonError,
             rightOpen,
@@ -363,6 +376,9 @@ export default function StudioShell({
             setSelection,
             setDetailEditActive,
             setCodeDraft,
+            setPreviewView: ui.setPreviewView,
+            setAIModelsOpen: ui.setAIModelsOpen,
+            setSelectedAIModelId: ui.setSelectedAIModelId,
             setJsonDraft,
             setRightOpen,
             setSimTab,

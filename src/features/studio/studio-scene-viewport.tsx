@@ -13,6 +13,7 @@ type SceneProps = Omit<ComponentProps<typeof MissionScene>, "ref">;
 
 interface StudioSceneViewportProps {
   mission: StudioMission;
+  hideContextCards?: boolean;
   sceneRef: RefObject<MissionSceneHandle | null>;
   sceneProps: SceneProps;
   editModeActive: boolean;
@@ -45,6 +46,7 @@ interface StudioSceneViewportProps {
 
 export default function StudioSceneViewport({
   mission,
+  hideContextCards = false,
   sceneRef,
   sceneProps,
   editModeActive,
@@ -83,7 +85,7 @@ export default function StudioSceneViewport({
         .filter(Boolean)
         .join(" ")}
     >
-      {!editModeActive ? (
+      {!editModeActive && !hideContextCards ? (
         <div
           className=" absolute inset-0 z-4 pointer-events-none [&_.ms-drone-trigger]:flex-[1_1_auto] [&_.ms-drone-trigger]:min-w-0 [&_.ms-drone-trigger]:w-auto [&_.ms-drone-trigger]:min-h-0 [&_.ms-drone-trigger]:flex [&_.ms-drone-trigger]:items-center [&_.ms-drone-trigger]:gap-[0.375rem] [&_.ms-drone-trigger]:p-[0.125rem_0.5rem_0.125rem_0.125rem] [&_.ms-drone-trigger]:[border:0] [&_.ms-drone-trigger]:rounded-[calc(var(--radius)-0.125rem)] [&_.ms-drone-trigger]:bg-transparent [&_.ms-drone-trigger]:[box-shadow:none] [&_.ms-drone-trigger]:text-inherit [&_.ms-drone-trigger]:[font:inherit] [&_.ms-drone-trigger]:text-left [&_.ms-drone-trigger]:cursor-pointer [&_.ms-drone-trigger:focus-visible]:[outline:0.125rem_solid_var(--primary)] [&_.ms-drone-trigger:focus-visible]:outline-offset-1"
           data-testid="ms-map-overlays"

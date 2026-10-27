@@ -18,6 +18,7 @@ import MissionSettingsCard, {
   MissionChecksCard,
 } from "./mission-settings-card";
 import CodeInspectorPanel from "./code-inspector-panel";
+import type { AIModelCardModel } from "../../ui/components/ai-model-card";
 import AvoidInspectorCard from "./avoid-inspector-card";
 import type { SequenceDropPosition } from "./sequence-drag";
 import useDesignPanelState from "./use-design-panel-state";
@@ -30,11 +31,19 @@ export interface DesignPanelProps {
   issues: ValidationIssue[];
   selection: SceneSelection | null;
   codeView: boolean;
+  previewView: boolean;
   codeDraft: string;
   codeLang: "python" | "json";
+  aiModels: AIModelCardModel[];
+  aiModelsOpen: boolean;
+  selectedAIModelId: string | null;
+  onAIModelsOpenChange: (open: boolean) => void;
+  onSelectAIModel: (modelId: string | null) => void;
+  onImportAIModel: () => void;
   jsonDraft: string;
   jsonError: string | null;
   onCodeViewChange: (code: boolean) => void;
+  onPreviewViewChange: (preview: boolean) => void;
   onCodeDraftChange: (text: string) => void;
   onCodeLangChange: (lang: "python" | "json") => void;
   onJsonDraftChange: (text: string) => void;
@@ -80,11 +89,15 @@ function DesignPanel(props: DesignPanelProps) {
     issues,
     selection,
     codeView,
+    previewView,
     codeDraft,
     codeLang,
+    aiModelsOpen,
+    onAIModelsOpenChange,
     jsonDraft,
     jsonError,
     onCodeViewChange,
+    onPreviewViewChange,
     onCodeDraftChange,
     onCodeLangChange,
     onJsonDraftChange,
@@ -143,7 +156,6 @@ function DesignPanel(props: DesignPanelProps) {
     cancelPreviewWaypoint,
   } = useDesignPanelState(props);
   const [settingsOpen, setSettingsOpen] = useState(true);
-  const [previewOpen, setPreviewOpen] = useState(false);
 
   if (reconTarget !== null) {
     return (
@@ -210,180 +222,186 @@ function DesignPanel(props: DesignPanelProps) {
       className={`ms-inspector${codeView ? " ms-inspector-code" : ""}`}
       data-testid="ms-design-panel"
     >
-      {/* Pane tabs: Design, Code and the photogrammetry route Preview. */}
-      <div className="ms-pane-head sticky top-0 m-[-0.75rem_-0.75rem_0] bg-(--card) [border-bottom:0.0625rem_solid_var(--border)] z-2 in-[.ms-inspector]:bg-(--card)">
-        <div
-          className="ms-pane-tabs flex items-center justify-between gap-[0.5rem] p-[0.5rem_0.75rem]"
-          data-testid="ms-pane-tabs"
-        >
-          <Tabs
-            value={codeView ? "code" : previewOpen ? "preview" : "visual"}
-            onValueChange={(v: unknown) => {
-              const value = String(v);
-              setPreviewOpen(value === "preview");
-              onCodeViewChange(value === "code");
-            }}
-            aria-label="Mission panel view"
-            className=" text-[0.75rem]"
+      <div className="ms-inspector-main flex min-h-0 flex-1 flex-col">
+        {/* Pane tabs: Design, Code and the photogrammetry route Preview. */}
+        <div className="ms-pane-head sticky top-0 bg-(--card) z-2 in-[.ms-inspector]:bg-(--card)">
+          <div
+            className="ms-pane-tabs flex items-center justify-between gap-2 p-3 min-h-16 border-b border-border"
+            data-testid="ms-pane-tabs"
           >
-            <TabsList variant="filled">
-              <TabsTab value="visual">Design</TabsTab>
-              <TabsTab
-                value="code"
-                disabled={editingAreaId !== null || editingAvoidId !== null}
-              >
-                Code
-              </TabsTab>
-              <TabsTab
-                value="preview"
-                disabled={editingAreaId !== null || editingAvoidId !== null}
-              >
-                Preview
-              </TabsTab>
-              <TabsIndicator variant="pill" />
-            </TabsList>
-          </Tabs>
-        </div>
-        {!codeView &&
-          !previewOpen &&
-          editingAreaId === null &&
-          editingAvoidId === null && (
-            <MissionSettingsCard
-              mission={mission}
-              open={settingsOpen}
-              tooltip={missionSettingsTooltip}
-              onOpenChange={setSettingsOpen}
-              onUpdateMission={onUpdateMission}
-              onAnnounce={onAnnounce}
-            />
-          )}
-      </div>
-
-      {codeView ? (
-        <CodeInspectorPanel
-          codeLang={codeLang}
-          codeDraft={codeDraft}
-          jsonDraft={jsonDraft}
-          jsonError={jsonError}
-          onCodeLangChange={onCodeLangChange}
-          onCodeDraftChange={onCodeDraftChange}
-          onJsonDraftChange={onJsonDraftChange}
-          onApplyJson={onApplyJson}
-          onExportJson={onExportJson}
-        />
-      ) : previewOpen ? (
-        <MissionPreview
-          mission={mission}
-          onSelectWaypoint={(id) => onSelect({ kind: "waypoint", id })}
-          previewPositionRef={previewPositionRef}
-          previewCaptureRef={previewCaptureRef}
-        />
-      ) : (
-        <>
-          <DesignSequenceBlocks
-            mission={mission}
-            worldType={worldType}
-            selection={selection}
-            missionSequence={missionSequence}
-            routes={routes}
-            orderedWaypoints={orderedWaypoints}
-            grabbedWaypointId={grabValid?.id ?? null}
-            editingAreaId={editingAreaId}
-            editingAvoidId={editingAvoidId}
-            areaDraft={areaDraft}
-            isCollapsed={isCollapsed}
-            toggleCollapsed={toggleCollapsed}
-            routeRecon={routeRecon}
-            areaRecon={areaRecon}
-            transferFrom={transferFrom}
-            isFinalSequenceItem={isFinalSequenceItem}
-            onToggleRouteRecon={toggleRouteRecon}
-            onOpenRecon={openReconSettings}
-            onUpdateMission={onUpdateMission}
-            onSelect={onSelect}
-            onDeleteRoute={onDeleteRoute}
-            onDeleteWaypoint={onDeleteWaypoint}
-            onReorderWaypoint={onReorderWaypoint}
-            onMoveAction={onMoveAction}
-            onInsertActionAt={onInsertActionAt}
-            onDeleteAction={onDeleteAction}
-            onDeleteZone={onDeleteZone}
-            onAnnounce={onAnnounce}
-            onPickUpWaypoint={pickUpWaypoint}
-            onPreviewMoveWaypoint={previewMoveWaypoint}
-            onDropPreviewWaypoint={dropPreviewWaypoint}
-            onCancelPreviewWaypoint={cancelPreviewWaypoint}
-            updateActionPitch={updateActionPitch}
-            onStartAreaEdit={startAreaEdit}
-            onPreviewAreaDraft={previewAreaDraft}
-            onCancelAreaEdit={cancelAreaEdit}
-            onCommitAreaEdit={commitAreaEdit}
-          />
-
-          {mission.avoids
-            .filter(
-              (zone) =>
-                editingAreaId === null &&
-                (editingAvoidId === null || editingAvoidId === zone.id),
-            )
-            .map((zone) => (
-              <AvoidInspectorCard
-                key={zone.id}
-                zone={zone}
-                draft={avoidDraft?.id === zone.id ? avoidDraft : zone}
-                editing={editingAvoidId === zone.id}
-                onEdit={() => {
-                  if (editingAreaId) onCancelPreview();
-                  setEditingAreaId(null);
-                  setAreaDraft(null);
-                  onDetailEditStateChange(true);
-                  setEditingAvoidId(zone.id);
-                  setAvoidDraft({
-                    ...zone,
-                    type: zone.type ?? "obstacle",
-                    heightM: zone.heightM ?? 15,
-                    clearanceM: zone.clearanceM ?? 2,
-                  });
-                }}
-                onDelete={() => onDeleteZone("avoid", zone.id)}
-                onPreviewDraft={(nextDraft) => {
-                  setAvoidDraft(nextDraft);
-                  onPreviewMission({
-                    ...mission,
-                    avoids: mission.avoids.map((item) =>
-                      item.id === zone.id ? nextDraft : item,
-                    ),
-                  });
-                }}
-                onCancelEdit={() => {
-                  onCancelPreview();
-                  setEditingAvoidId(null);
-                  setAvoidDraft(null);
-                  onDetailEditStateChange(false);
-                }}
-                onCommitEdit={(nextDraft) => {
-                  onCommitPreview(
-                    {
-                      ...mission,
-                      avoids: mission.avoids.map((item) =>
-                        item.id === zone.id ? nextDraft : item,
-                      ),
-                    },
-                    "Avoid zone updated.",
-                  );
-                  setEditingAvoidId(null);
-                  setAvoidDraft(null);
-                  onDetailEditStateChange(false);
-                }}
+            <Tabs
+              value={codeView ? "code" : previewView ? "preview" : "visual"}
+              onValueChange={(v: unknown) => {
+                const value = String(v);
+                onPreviewViewChange(value === "preview");
+                onCodeViewChange(value === "code");
+              }}
+              aria-label="Mission panel view"
+              className=" text-[0.75rem]"
+            >
+              <TabsList variant="filled">
+                <TabsTab value="visual">Design</TabsTab>
+                <TabsTab
+                  value="code"
+                  disabled={editingAreaId !== null || editingAvoidId !== null}
+                >
+                  Code
+                </TabsTab>
+                <TabsTab
+                  value="preview"
+                  disabled={editingAreaId !== null || editingAvoidId !== null}
+                >
+                  Preview
+                </TabsTab>
+                <TabsIndicator variant="pill" />
+              </TabsList>
+            </Tabs>
+          </div>
+          {!codeView &&
+            !previewView &&
+            editingAreaId === null &&
+            editingAvoidId === null && (
+              <MissionSettingsCard
+                mission={mission}
+                open={settingsOpen}
+                tooltip={missionSettingsTooltip}
+                onOpenChange={setSettingsOpen}
+                onUpdateMission={onUpdateMission}
+                onAnnounce={onAnnounce}
               />
-            ))}
+            )}
+        </div>
 
-          <MissionChecksCard
-            issues={issues}
-            hidden={editingAreaId !== null || editingAvoidId !== null}
-          />
-        </>
-      )}
+        <div className="p-3 min-h-0 h-full">
+          {codeView ? (
+            <CodeInspectorPanel
+              codeLang={codeLang}
+              aiModelsOpen={aiModelsOpen}
+              codeDraft={codeDraft}
+              jsonDraft={jsonDraft}
+              jsonError={jsonError}
+              onCodeLangChange={onCodeLangChange}
+              onAIModelsOpenChange={onAIModelsOpenChange}
+              onCodeDraftChange={onCodeDraftChange}
+              onJsonDraftChange={onJsonDraftChange}
+              onApplyJson={onApplyJson}
+              onExportJson={onExportJson}
+            />
+          ) : previewView ? (
+            <MissionPreview
+              mission={mission}
+              onSelectWaypoint={(id) => onSelect({ kind: "waypoint", id })}
+              previewPositionRef={previewPositionRef}
+              previewCaptureRef={previewCaptureRef}
+            />
+          ) : (
+            <>
+              <DesignSequenceBlocks
+                mission={mission}
+                worldType={worldType}
+                selection={selection}
+                missionSequence={missionSequence}
+                routes={routes}
+                orderedWaypoints={orderedWaypoints}
+                grabbedWaypointId={grabValid?.id ?? null}
+                editingAreaId={editingAreaId}
+                editingAvoidId={editingAvoidId}
+                areaDraft={areaDraft}
+                isCollapsed={isCollapsed}
+                toggleCollapsed={toggleCollapsed}
+                routeRecon={routeRecon}
+                areaRecon={areaRecon}
+                transferFrom={transferFrom}
+                isFinalSequenceItem={isFinalSequenceItem}
+                onToggleRouteRecon={toggleRouteRecon}
+                onOpenRecon={openReconSettings}
+                onUpdateMission={onUpdateMission}
+                onSelect={onSelect}
+                onDeleteRoute={onDeleteRoute}
+                onDeleteWaypoint={onDeleteWaypoint}
+                onReorderWaypoint={onReorderWaypoint}
+                onMoveAction={onMoveAction}
+                onInsertActionAt={onInsertActionAt}
+                onDeleteAction={onDeleteAction}
+                onDeleteZone={onDeleteZone}
+                onAnnounce={onAnnounce}
+                onPickUpWaypoint={pickUpWaypoint}
+                onPreviewMoveWaypoint={previewMoveWaypoint}
+                onDropPreviewWaypoint={dropPreviewWaypoint}
+                onCancelPreviewWaypoint={cancelPreviewWaypoint}
+                updateActionPitch={updateActionPitch}
+                onStartAreaEdit={startAreaEdit}
+                onPreviewAreaDraft={previewAreaDraft}
+                onCancelAreaEdit={cancelAreaEdit}
+                onCommitAreaEdit={commitAreaEdit}
+              />
+
+              {mission.avoids
+                .filter(
+                  (zone) =>
+                    editingAreaId === null &&
+                    (editingAvoidId === null || editingAvoidId === zone.id),
+                )
+                .map((zone) => (
+                  <AvoidInspectorCard
+                    key={zone.id}
+                    zone={zone}
+                    draft={avoidDraft?.id === zone.id ? avoidDraft : zone}
+                    editing={editingAvoidId === zone.id}
+                    onEdit={() => {
+                      if (editingAreaId) onCancelPreview();
+                      setEditingAreaId(null);
+                      setAreaDraft(null);
+                      onDetailEditStateChange(true);
+                      setEditingAvoidId(zone.id);
+                      setAvoidDraft({
+                        ...zone,
+                        type: zone.type ?? "obstacle",
+                        heightM: zone.heightM ?? 15,
+                        clearanceM: zone.clearanceM ?? 2,
+                      });
+                    }}
+                    onDelete={() => onDeleteZone("avoid", zone.id)}
+                    onPreviewDraft={(nextDraft) => {
+                      setAvoidDraft(nextDraft);
+                      onPreviewMission({
+                        ...mission,
+                        avoids: mission.avoids.map((item) =>
+                          item.id === zone.id ? nextDraft : item,
+                        ),
+                      });
+                    }}
+                    onCancelEdit={() => {
+                      onCancelPreview();
+                      setEditingAvoidId(null);
+                      setAvoidDraft(null);
+                      onDetailEditStateChange(false);
+                    }}
+                    onCommitEdit={(nextDraft) => {
+                      onCommitPreview(
+                        {
+                          ...mission,
+                          avoids: mission.avoids.map((item) =>
+                            item.id === zone.id ? nextDraft : item,
+                          ),
+                        },
+                        "Avoid zone updated.",
+                      );
+                      setEditingAvoidId(null);
+                      setAvoidDraft(null);
+                      onDetailEditStateChange(false);
+                    }}
+                  />
+                ))}
+
+              <MissionChecksCard
+                issues={issues}
+                hidden={editingAreaId !== null || editingAvoidId !== null}
+              />
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

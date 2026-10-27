@@ -34,7 +34,7 @@
 }
 
 .ms-lib-card-body {
-  @apply flex flex-col gap-[0.25rem] p-[0.75rem];
+  @apply flex flex-col gap-1 p-3;
 }
 
 .ms-lib-card.is-readonly {

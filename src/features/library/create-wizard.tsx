@@ -38,7 +38,7 @@ const STEPS = ["General", "World", "Drone"] as const;
 function Stepper({ step }: { step: 1 | 2 | 3 }) {
   return (
     <TabsList
-      variant="standard"
+      variant="line"
       className=" relative w-fit max-w-none m-[0_auto] p-[0.25rem_0_0] flex items-center justify-center gap-0"
       aria-label="Create mission steps"
     >
@@ -53,7 +53,7 @@ function Stepper({ step }: { step: 1 | 2 | 3 }) {
           >
             <TabsTab
               value={String(n)}
-              variant="standard"
+              variant="line"
               disabled={n > step}
               className={[
                 `ms-wizard-stepbtn is-${state}`,
@@ -82,7 +82,7 @@ function Stepper({ step }: { step: 1 | 2 | 3 }) {
           </span>
         );
       })}
-      <TabsIndicator variant="underline" />
+      <TabsIndicator variant="line" />
     </TabsList>
   );
 }

@@ -8,6 +8,7 @@ import type { useStudioSceneSession } from "./use-studio-scene-session";
 import type { useStudioSimulationModel } from "./use-studio-simulation-model";
 import type { useStudioUiState } from "./use-studio-ui-state";
 import StudioInspector from "./studio-inspector";
+import type { AIModelCardModel } from "../../ui/components/ai-model-card";
 
 type InspectorUiState = Pick<
   ReturnType<typeof useStudioUiState>,
@@ -15,8 +16,11 @@ type InspectorUiState = Pick<
   | "stage"
   | "selection"
   | "codeView"
+  | "previewView"
   | "codeDraft"
   | "codeLang"
+  | "aiModelsOpen"
+  | "selectedAIModelId"
   | "jsonDraft"
   | "jsonError"
   | "rightOpen"
@@ -26,6 +30,9 @@ type InspectorUiState = Pick<
   | "setSelection"
   | "setDetailEditActive"
   | "setCodeDraft"
+  | "setPreviewView"
+  | "setAIModelsOpen"
+  | "setSelectedAIModelId"
   | "setJsonDraft"
   | "setRightOpen"
   | "setSimTab"
@@ -103,6 +110,10 @@ interface StudioInspectorContainerProps {
   commands: InspectorCommands;
   actions: InspectorActions;
   onSelectEvent: (event: SimEventItem) => void;
+  aiModels: AIModelCardModel[];
+  onImportAIModel: () => void;
+  inspectorWidth: number | null;
+  onInspectorWidthChange: (width: number) => void;
 }
 
 export default function StudioInspectorContainer({
@@ -114,6 +125,10 @@ export default function StudioInspectorContainer({
   commands,
   actions,
   onSelectEvent,
+  aiModels,
+  onImportAIModel,
+  inspectorWidth,
+  onInspectorWidthChange,
 }: StudioInspectorContainerProps) {
   const routeDraftActive =
     ui.appTab === "plan" && ui.stage === "design" && drawing.tool === "route";
@@ -176,13 +191,21 @@ export default function StudioInspectorContainer({
         issues: simulation.issues,
         selection: ui.selection,
         codeView: ui.codeView,
+        previewView: ui.previewView,
         codeDraft: ui.codeDraft,
         codeLang: ui.codeLang,
+        aiModels,
+        aiModelsOpen: ui.aiModelsOpen,
+        selectedAIModelId: ui.selectedAIModelId,
         jsonDraft: ui.jsonDraft,
         jsonError: ui.jsonError,
         onCodeViewChange: actions.openCodeView,
+        onPreviewViewChange: ui.setPreviewView,
         onCodeDraftChange: ui.setCodeDraft,
         onCodeLangChange: actions.handleCodeLangChange,
+        onAIModelsOpenChange: ui.setAIModelsOpen,
+        onSelectAIModel: ui.setSelectedAIModelId,
+        onImportAIModel,
         onJsonDraftChange: ui.setJsonDraft,
         onApplyJson: actions.handleApplyJson,
         onExportJson: actions.handleExportJson,
@@ -208,6 +231,8 @@ export default function StudioInspectorContainer({
         onAnnounce: ui.say,
       }}
       simulationSettingsOpen={ui.simSettingsOpen}
+      inspectorWidth={inspectorWidth}
+      onInspectorWidthChange={onInspectorWidthChange}
       simulationSettings={{
         settings: ui.settings,
         maxSeq: mission.waypoints.length,

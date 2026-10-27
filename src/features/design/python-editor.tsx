@@ -113,6 +113,35 @@ export function PythonEditor({
         aria-describedby="ms-code-limit"
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        onDragOver={(event) => {
+          if (
+            event.dataTransfer.types.includes(
+              "application/x-skytrack-ai-model-path",
+            ) ||
+            event.dataTransfer.types.includes("text/plain")
+          ) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = "copy";
+          }
+        }}
+        onDrop={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const path =
+            event.dataTransfer.getData(
+              "application/x-skytrack-ai-model-path",
+            ) || event.dataTransfer.getData("text/plain");
+          if (!path) return;
+          const input = event.currentTarget;
+          const start = input.selectionStart;
+          const end = input.selectionEnd;
+          onChange(`${value.slice(0, start)}${path}${value.slice(end)}`);
+          setActiveLine(value.slice(0, start).split("\n").length);
+          requestAnimationFrame(() => {
+            input.focus();
+            input.setSelectionRange(start + path.length, start + path.length);
+          });
+        }}
         onScroll={(event) => {
           if (mirrorRef.current) {
             mirrorRef.current.scrollTop = event.currentTarget.scrollTop;

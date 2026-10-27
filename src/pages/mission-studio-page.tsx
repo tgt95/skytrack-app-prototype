@@ -2,7 +2,7 @@
    Full-height desktop shell: top bar + stage switch, left rail, center 3D scene,
    right inspector, bottom status strip. Design + deterministic mock Simulation. */
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAddressSearch } from "../features/search/use-address-search";
 import { PYTHON_SAMPLE } from "../features/design/python-editor";
@@ -28,12 +28,52 @@ import StudioLibraryRoute from "../features/studio/studio-library-route";
 import StudioShell from "../ui/layout/page-layout";
 import DevScenarioTool from "../features/dev-tools/dev-scenario-tool";
 import type { SimEventItem } from "../features/simulation/simulation";
+import { ImportAIModelDialog } from "../features/library/import-ai-model-dialog";
+import { useWorkspaceResources } from "../features/library/use-workspace-resources";
+import {
+  getWorkspace,
+  readActiveWorkspaceId,
+} from "../features/library/workspace-data";
+import {
+  parseMissionViewSearch,
+  sameMissionViewState,
+  serializeMissionViewSearch,
+  type MissionViewState,
+} from "../features/studio/mission-view-url";
 import "../ui/styles/index.css";
 
 export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
+  const [importAIModelOpen, setImportAIModelOpen] = useState(false);
+  const createAIModelId = useCallback(
+    (prefix: string) => `${prefix}-${crypto.randomUUID()}`,
+    [],
+  );
   const { mission, past, future, missionRef, dispatchDocument, dirty } =
     useStudioDocumentState();
   const uiState = useStudioUiState();
+  const activeWorkspace = getWorkspace(readActiveWorkspaceId());
+  const modelResources = useWorkspaceResources({
+    workspaceId: activeWorkspace.id,
+    workspaceName: activeWorkspace.name,
+    projects: [],
+    deleteDroneId: null,
+    deleteWorldId: null,
+    deleteModelId: null,
+    createId: createAIModelId,
+    onAnnounce: uiState.say,
+  });
+  const aiModels = useMemo(
+    () => [
+      ...modelResources.skytrackAIModels,
+      ...modelResources.workspaceAIModels,
+      ...modelResources.uploadedAIModels,
+    ],
+    [
+      modelResources.skytrackAIModels,
+      modelResources.workspaceAIModels,
+      modelResources.uploadedAIModels,
+    ],
+  );
   const {
     stage,
     setStage,
@@ -47,6 +87,8 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
     setDetailEditActive,
     codeView,
     setCodeView,
+    previewView,
+    setPreviewView,
     setCodeDraft,
     codeLang,
     setCodeLang,
@@ -104,8 +146,10 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
     setSelection,
     setPending,
     setTool,
+    setAppTab,
     setStage,
     setCodeView,
+    setPreviewView,
     setCodeDraft,
     setJsonError,
     setSimSettingsOpen,
@@ -124,6 +168,33 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
     selectableMissionWorlds,
     missionWorldOptions,
   } = routing;
+
+  useEffect(() => {
+    if (
+      route.kind !== "mission" ||
+      libraryEntry?.missionId !== route.missionId
+    ) {
+      return;
+    }
+
+    const currentSearch = window.location.search;
+    const currentViewState = parseMissionViewSearch(currentSearch);
+    const nextViewState: MissionViewState = {
+      appTab,
+      stage,
+      panelView: codeView ? "code" : previewView ? "preview" : "design",
+    };
+    const nextSearch = serializeMissionViewSearch(nextViewState, currentSearch);
+    const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}${window.location.hash}`;
+    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    if (nextUrl === currentUrl) return;
+
+    if (sameMissionViewState(currentViewState, nextViewState)) {
+      window.history.replaceState({}, "", nextUrl);
+    } else {
+      window.history.pushState({}, "", nextUrl);
+    }
+  }, [appTab, codeView, libraryEntry, previewView, route, stage]);
 
   const simulation = useStudioSimulationModel(
     mission,
@@ -371,6 +442,8 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
     <>
       <StudioShell
         announce={announce}
+        aiModels={aiModels}
+        onImportAIModel={() => setImportAIModelOpen(true)}
         mission={mission}
         sceneDrawingAltitudeM={sceneDrawingAltitudeM}
         document={{ dirty, past, future }}
@@ -389,6 +462,12 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
           gotoStage,
           onSelectEvent,
         }}
+      />
+      <ImportAIModelDialog
+        open={importAIModelOpen}
+        existingNames={modelResources.existingAIModelNames}
+        onClose={() => setImportAIModelOpen(false)}
+        onImport={modelResources.importAIModel}
       />
       {devScenarioTool}
     </>

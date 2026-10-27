@@ -30,6 +30,8 @@ Library Notifications groups mission/flight/reconstruction activity, shared-proj
 
 - [`mission-world-picker-dialog.tsx`](../../src/features/studio/mission-world-picker-dialog.tsx), [`edit-mission-dialog.tsx`](../../src/features/studio/edit-mission-dialog.tsx), and [`shortcuts-dialog.tsx`](../../src/features/studio/shortcuts-dialog.tsx) own their dialog views. [`use-dialog-focus-return.ts`](../../src/features/studio/use-dialog-focus-return.ts) captures the active opener before those dialogs open. [`studio-dialogs.tsx`](../../src/features/studio/studio-dialogs.tsx) keeps edit draft state/reset effect, selection handlers, save action, and dialog composition.
 
+`src/ui/components/ai-model-card.tsx` owns reusable AI model card content shared by Library and the Code-mode picker. The Mission page coordinator supplies workspace records and import actions, keeping Design independent of Library internals.
+
 ## Mission and state logic
 
 - `StudioMission` is the design source of truth. Geometry uses local ENU meters (`x` east, `y` north, `z` up) anchored to per-mission `origin`; old missions fall back to Redlands.
