@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from "react";
-import type { StudioMission } from "../../domain/mission-model";
+import { WORLDS, type StudioMission } from "../../domain/mission-model";
 import type { WorkspaceWorldRecord } from "../library/database/workspace-resources-store";
 import type { WorkspaceDroneProfile } from "../library/database/drone-store";
 import { EditMissionDialog } from "./edit-mission-dialog";
@@ -12,6 +12,7 @@ export type MissionWorldOption = Omit<WorkspaceWorldRecord, "status"> & {
 
 interface EditMissionDraft {
   name: string;
+  worldType: "2D" | "3D";
   world: string;
   worldId: string;
   vehicle: string;
@@ -50,6 +51,9 @@ function StudioDialogs({
   onSaveEdit,
 }: StudioDialogsProps) {
   const [editName, setEditName] = useState(mission.name);
+  const [editWorldType, setEditWorldType] = useState<"2D" | "3D">(
+    mission.worldType ?? "3D",
+  );
   const [editWorld, setEditWorld] = useState(mission.world);
   const [editWorldId, setEditWorldId] = useState("");
   const [editVehicle, setEditVehicle] = useState(mission.vehicle);
@@ -61,6 +65,7 @@ function StudioDialogs({
       worldOptions.find((world) => world.id === mission.worldId) ??
       worldOptions.find((world) => world.name === mission.world);
     setEditName(mission.name);
+    setEditWorldType(mission.worldType ?? "3D");
     setEditWorld(mission.world);
     setEditWorldId(selectedWorld?.id ?? "");
     setEditVehicle(mission.vehicle);
@@ -92,12 +97,29 @@ function StudioDialogs({
   const saveEdit = () => {
     onSaveEdit({
       name: editName,
+      worldType: editWorldType,
       world: editWorld,
       worldId: editWorldId,
       vehicle: editVehicle,
       droneId: editDroneId,
     });
     onEditOpenChange(false);
+  };
+
+  const handleEditWorldTypeChange = (worldType: "2D" | "3D") => {
+    setEditWorldType(worldType);
+    if (worldType === "2D") {
+      setEditWorld(WORLDS[0]);
+      setEditWorldId("");
+      return;
+    }
+    const firstSelectableWorld = worldOptions.find(
+      (world) => world.status !== "Legacy",
+    );
+    if (firstSelectableWorld) {
+      setEditWorld(firstSelectableWorld.name);
+      setEditWorldId(firstSelectableWorld.id);
+    }
   };
 
   const handleEditWorldChange = (value: unknown) => {
@@ -132,12 +154,14 @@ function StudioDialogs({
         editOpen={editOpen}
         onEditOpenChange={onEditOpenChange}
         editName={editName}
+        editWorldType={editWorldType}
         editWorldId={editWorldId}
         editDroneValue={editDroneValue}
         worldOptions={worldOptions}
         selectOptions={selectOptions}
         editDroneChoices={editDroneChoices}
         onNameChange={setEditName}
+        onWorldTypeChange={handleEditWorldTypeChange}
         onWorldChange={handleEditWorldChange}
         onDroneChange={handleEditDroneChange}
         onSave={saveEdit}

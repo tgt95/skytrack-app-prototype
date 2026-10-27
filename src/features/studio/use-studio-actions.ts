@@ -4,6 +4,7 @@ import {
   missionFromCode,
   missionToCode,
   snapshotOf,
+  WORLDS,
   type SceneSelection,
   type SceneTool,
   type StudioMission,
@@ -219,6 +220,7 @@ export function useStudioActions({
   const saveEdit = useCallback(
     (draft: {
       name: string;
+      worldType: "2D" | "3D";
       world: string;
       worldId: string;
       vehicle: string;
@@ -228,24 +230,32 @@ export function useStudioActions({
         (world) => world.id === draft.worldId,
       );
       const nextWorldId =
-        selectedWorld?.status === "Legacy"
-          ? mission.worldId === selectedWorld.id
-            ? mission.worldId
-            : undefined
-          : selectedWorld?.id;
-      commit(
-        {
-          ...mission,
-          name: draft.name || mission.name,
-          world: selectedWorld?.name ?? draft.world,
-          worldId: nextWorldId,
-          vehicle: draft.vehicle,
-          ...(draft.droneId
-            ? { droneId: draft.droneId }
-            : { droneId: undefined }),
-        },
-        "Mission properties saved locally.",
-      );
+        draft.worldType === "2D"
+          ? undefined
+          : selectedWorld?.status === "Legacy"
+            ? mission.worldId === selectedWorld.id
+              ? mission.worldId
+              : undefined
+            : selectedWorld?.id;
+      const updatedMission = {
+        ...mission,
+        name: draft.name || mission.name,
+        worldType: draft.worldType,
+        world:
+          draft.worldType === "2D"
+            ? WORLDS[0]
+            : (selectedWorld?.name ?? draft.world),
+        worldId: nextWorldId,
+        vehicle: draft.vehicle,
+        ...(draft.droneId
+          ? { droneId: draft.droneId }
+          : { droneId: undefined }),
+      };
+      const nextMission =
+        draft.worldType !== (mission.worldType ?? "3D")
+          ? recomputeGeneratedMission(updatedMission, mission)
+          : updatedMission;
+      commit(nextMission, "Mission properties saved locally.");
     },
     [commit, mission, missionWorldOptions],
   );

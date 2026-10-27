@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { CaretRightIcon } from "@phosphor-icons/react";
-import { LibraryPageHeader, LibraryPageLayout } from "../library-presentation";
+import { LibraryPageHeader, LibraryPageLayout } from "../cards/library-presentation.tsx";
 import type { LibMission, LibTemplate } from "../database/store";
 
 type MissionEntry = { projectId: string; project: string; mission: LibMission };

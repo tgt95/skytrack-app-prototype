@@ -25,18 +25,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "skytrack-ui/select";
+import { Tabs, TabsList, TabsTab } from "skytrack-ui/tabs";
 
 interface EditMissionDialogProps {
   restoreDialogFocus: () => HTMLElement | null;
   editOpen: boolean;
   onEditOpenChange: (open: boolean) => void;
   editName: string;
+  editWorldType: "2D" | "3D";
   editWorldId: string;
   editDroneValue: string;
   worldOptions: { id: string; name: string }[];
   selectOptions: { value: string; label: string }[];
   editDroneChoices: { value: string; label: string }[];
   onNameChange: (value: string) => void;
+  onWorldTypeChange: (worldType: "2D" | "3D") => void;
   onWorldChange: (value: unknown) => void;
   onDroneChange: (value: unknown) => void;
   onSave: () => void;
@@ -47,12 +50,14 @@ export function EditMissionDialog({
   editOpen,
   onEditOpenChange,
   editName,
+  editWorldType,
   editWorldId,
   editDroneValue,
   worldOptions,
   selectOptions,
   editDroneChoices,
   onNameChange,
+  onWorldTypeChange,
   onWorldChange,
   onDroneChange,
   onSave,
@@ -70,7 +75,9 @@ export function EditMissionDialog({
         >
           <DialogHeader>
             <DialogTitle className="heading">Edit Mission</DialogTitle>
-            <DialogDescription>World and vehicle.</DialogDescription>
+            <DialogDescription>
+              Mission name, world type, World, and vehicle.
+            </DialogDescription>
           </DialogHeader>
           <FieldRoot className="ms-field">
             <FieldLabel>Mission name</FieldLabel>
@@ -82,34 +89,75 @@ export function EditMissionDialog({
             />
           </FieldRoot>
           <FieldRoot className="ms-field">
-            <FieldLabel>World</FieldLabel>
-            <Select<string>
-              items={selectOptions}
-              value={editWorldId}
-              onValueChange={onWorldChange}
+            <FieldLabel>World type</FieldLabel>
+            <Tabs
+              value={editWorldType}
+              onValueChange={(value) => {
+                if (value === "2D" || value === "3D") {
+                  onWorldTypeChange(value);
+                }
+              }}
+              className="w-full max-w-none"
+              data-testid="ms-edit-world-type-tabs"
             >
-              <SelectTrigger>
-                <SelectValue />
-                <SelectIcon />
-              </SelectTrigger>
-              <SelectPortal>
-                <SelectPositioner side="bottom" align="start" sideOffset={4}>
-                  <SelectPopup>
-                    <SelectList>
-                      {worldOptions.map((world) => (
-                        <SelectItem key={world.id} value={world.id}>
-                          <SelectItemIndicator />
-                          <SelectItemText>{world.name}</SelectItemText>
-                        </SelectItem>
-                      ))}
-                    </SelectList>
-                  </SelectPopup>
-                </SelectPositioner>
-              </SelectPortal>
-            </Select>
+              <TabsList
+                variant="filled"
+                className="w-full"
+                aria-label="Mission World type"
+              >
+                <TabsTab
+                  value="2D"
+                  variant="filled"
+                  data-testid="ms-edit-world-type-2d"
+                >
+                  2D Photogrammetry
+                </TabsTab>
+                <TabsTab
+                  value="3D"
+                  variant="filled"
+                  data-testid="ms-edit-world-type-3d"
+                >
+                  3D Mission
+                </TabsTab>
+              </TabsList>
+            </Tabs>
+            {editWorldType === "2D" ? (
+              <span className="text-sm text-muted-foreground">
+                2D photogrammetry missions use reconnaissance planning.
+              </span>
+            ) : null}
           </FieldRoot>
+          {editWorldType === "3D" ? (
+            <FieldRoot className="ms-field">
+              <FieldLabel>World</FieldLabel>
+              <Select<string>
+                items={selectOptions}
+                value={editWorldId}
+                onValueChange={onWorldChange}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                  <SelectIcon />
+                </SelectTrigger>
+                <SelectPortal>
+                  <SelectPositioner side="bottom" align="start" sideOffset={4}>
+                    <SelectPopup>
+                      <SelectList>
+                        {worldOptions.map((world) => (
+                          <SelectItem key={world.id} value={world.id}>
+                            <SelectItemIndicator />
+                            <SelectItemText>{world.name}</SelectItemText>
+                          </SelectItem>
+                        ))}
+                      </SelectList>
+                    </SelectPopup>
+                  </SelectPositioner>
+                </SelectPortal>
+              </Select>
+            </FieldRoot>
+          ) : null}
           <FieldRoot className="ms-field">
-            <FieldLabel>Vehicle</FieldLabel>
+            <FieldLabel>Drone</FieldLabel>
             <Select<string>
               items={editDroneChoices}
               value={editDroneValue}

@@ -12,17 +12,17 @@ import {
 } from "../../domain/mission-model";
 import type { DerivedTransfer } from "../../domain/transfer-planner";
 import MissionPreview from "../simulation/mission-preview";
-import { ReconSettingsPage } from "./reconnaissance-inspector";
-import { DesignSequenceBlocks } from "./design-sequence-blocks";
+import { ReconSettingsPage } from "./panels/reconnaissance-inspector";
+import { DesignSequenceBlocks } from "./sequence/design-sequence-blocks";
 import MissionSettingsCard, {
   MissionChecksCard,
-} from "./mission-settings-card";
-import CodeInspectorPanel from "./code-inspector-panel";
+} from "./panels/mission-settings-card";
+import CodeInspectorPanel from "./panels/code-inspector-panel";
 import type { AIModelCardModel } from "../../ui/components/ai-model-card";
-import AvoidInspectorCard from "./avoid-inspector-card";
-import type { SequenceDropPosition } from "./sequence-drag";
+import AvoidInspectorCard from "./panels/avoid-inspector-card";
+import type { SequenceDropPosition } from "./sequence/sequence-drag";
 import useDesignPanelState from "./use-design-panel-state";
-export { ZoneDraftPanel } from "./zone-draft-panel";
+export { ZoneDraftPanel } from "./drawing/zone-draft-panel";
 
 export interface DesignPanelProps {
   mission: StudioMission;
@@ -272,7 +272,7 @@ function DesignPanel(props: DesignPanelProps) {
             )}
         </div>
 
-        <div className={`${!codeView ? 'p-3' : ''} min-h-0 h-full`}>
+        <div className={`${!codeView ? 'p-3' : ''} ${(!codeView && !previewView) && 'flex flex-col gap-3'} min-h-0 h-full`}>
           {codeView ? (
             <CodeInspectorPanel
               codeLang={codeLang}

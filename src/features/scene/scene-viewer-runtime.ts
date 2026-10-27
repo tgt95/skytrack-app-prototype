@@ -111,7 +111,9 @@ export function startMissionSceneRuntime(args: SceneRuntimeArgs): (() => void) |
         renderedPreviewCaptureRef.current = null
         renderedPreviewMissionRef.current = null
         viewer.scene.postProcessStages.fxaa.enabled = !viewer.scene.msaaSupported
-        viewer.resolutionScale = 1
+        /* Render at device density for crisp map tiles and geometry, capped to
+           avoid unbounded canvas cost on very high-density displays. */
+        viewer.resolutionScale = Math.min(window.devicePixelRatio || 1, 2)
         viewer.scene.globe.baseColor = safeColor(Cesium, themeColor('--muted'), '--muted', 1)
         // Match the sky clear color to the globe base so the horizon has no
         // visible color seam against the Mission Studio scene background.

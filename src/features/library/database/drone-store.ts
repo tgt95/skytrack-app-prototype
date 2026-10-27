@@ -1,4 +1,4 @@
-import { DEFAULT_WORKSPACE_ID, WORKSPACES } from '../workspace-data'
+import { DEFAULT_WORKSPACE_ID, WORKSPACES } from '../workspace/workspace-data.ts'
 import { STORAGE_KEYS, STORAGE_VERSIONS } from '../../../shared/storage-keys'
 
 export type DroneFirmwareFamily = 'PX4' | 'ArduPilot' | 'DJI' | 'Other' | 'Unspecified'

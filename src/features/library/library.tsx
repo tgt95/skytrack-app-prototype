@@ -69,20 +69,20 @@ import {
   readActiveWorkspaceId,
   saveActiveWorkspaceId,
   SHARED_PROJECTS,
-} from "./workspace-data";
-import LibraryDialogsHost from "./library-dialogs-host";
+} from "./workspace/workspace-data.ts";
+import LibraryDialogsHost from "./dialogs/library-dialogs-host.tsx";
 import LibraryAnnounceRegion from "./library-announce-region";
 import LibrarySidebar from "./library-sidebar";
 import LibraryTopbar from "./library-topbar";
 import LibraryMainContent from "./library-main-content";
-import { useWorkspaceResources } from "./use-workspace-resources";
+import { useWorkspaceResources } from "./workspace/use-workspace-resources.ts";
 import {
   createLibraryResourceEditorActions,
   useLibraryResourceEditors,
-} from "./use-library-resource-editors";
-import { useLibraryProjects } from "./use-library-projects";
-import { useLibraryAccountSettings } from "./use-library-account-settings";
-import { useLibraryCardRenderers } from "./library-card-renderers";
+} from "./workspace/use-library-resource-editors.ts";
+import { useLibraryProjects } from "./workspace/use-library-projects.ts";
+import { useLibraryAccountSettings } from "./account/use-library-account-settings.ts";
+import { useLibraryCardRenderers } from "./cards/library-card-renderers.tsx";
 import {
   DEV_SCENARIO_IDS,
   useDevScenarioEnabled,

@@ -19,66 +19,20 @@
   @apply flex items-center gap-0 ml-auto shrink-0;
 }
 
-/* Hover add-affordance (feedback #3): circle sits on the line at the left
-   edge of the sequence, full-width violet line behind it. The zone itself
-   takes no layout space so rows stay touching; its padding is the hover
-   target straddling the seam. */
-
-.ms-insert-action-menu {
-  @apply min-w-52.5;
-}
-
-/* Action rows sit at the same level as waypoint rows (feedback #2/#3):
-   no indent, same surface, touching borders via the tight list rules. */
-.ms-seq-action-row {
-  @apply flex items-center gap-2 pt-1.25 pr-0 pb-1.25 pl-1 bg-(--card) border border-border text-xs [list-style:none];
-}
-
-.ms-seq-action-row.is-grabbed {
-  @apply border-(--primary) border-dashed;
-}
-
-.ms-action-label {
-  @apply flex-[1_1_auto] text-(--foreground) font-medium;
-}
-
-.ms-action-camera-angle {
-  @apply flex items-center gap-1 whitespace-nowrap;
-}
-
-.ms-avoid-type-toggle {
-  @apply mb-2.5;
-}
-
 /* Pane tab bar (Figma 607:18957): pill Design/Code switch + icon actions. */
 
 /* Unified pane head (feedback #1/#5): tabs and Mission settings share one
    card background with a bottom border under the whole block. Only this head
    block goes edge-to-edge; cards below keep side padding. */
 
-/* .ms-seq-static-accent {
-  background-color: var(--background);
-  border-color: var(--border);
-  color: var(--muted-foreground);
-} */
+.ms-avoid-type-toggle {
+  @apply mb-2.5;
+}
 
 /* Mission settings section (Figma 607:18957). */
-
-.ms-data-row {
-  @apply flex items-center justify-between gap-2 min-h-8 text-xs;
-}
 
 .ms-data-select {
   @apply min-w-37.5 max-w-47.5 text-xs;
 }
 
 /* Block header mini-stats (Figma 607:18957 info triples). */
-.ms-stat {
-  @apply inline-flex items-center gap-1 text-xs text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap;
-}
-
-/* START / TRANS / END sequence marker rows (Figma 607:18957). */
-
-.ms-seq-marker-label {
-  @apply flex-[1_1_auto] min-w-0 text-xs text-(--muted-foreground);
-}

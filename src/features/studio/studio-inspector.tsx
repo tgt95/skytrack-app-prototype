@@ -5,8 +5,8 @@ import {
   type PointerEvent,
 } from "react";
 import DesignPanel, { ZoneDraftPanel } from "../design/design-panel";
-import RouteDraftPanel from "../design/route-draft-panel";
-import { AIModelPickerPanel } from "../design/ai-model-picker-panel";
+import RouteDraftPanel from "../design/drawing/route-draft-panel";
+import { AIModelPickerPanel } from "../design/panels/ai-model-picker-panel";
 import SimulationPanel, {
   SimulationSettingsForm,
 } from "../simulation/simulation-panel";

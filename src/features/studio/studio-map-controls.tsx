@@ -14,7 +14,6 @@ import {
   PopoverPopup,
   PopoverPortal,
   PopoverPositioner,
-  PopoverTitle,
   PopoverTrigger
 } from 'skytrack-ui/popover'
 import { Button } from 'skytrack-ui/button'

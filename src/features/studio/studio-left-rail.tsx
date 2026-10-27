@@ -9,8 +9,15 @@ import {
 } from "@phosphor-icons/react";
 import { Tabs, TabsIndicator, TabsList, TabsTab } from "skytrack-ui/tabs";
 import { Toolbar, ToolbarGroup } from "skytrack-ui/toolbar";
+import { Separator } from "skytrack-ui/separator";
 import { AreaIcon, AvoidZoneIcon } from "../../ui/components/icons";
-import { ToolButton } from "../design/design-controls";
+import {
+  AccountMenu,
+  type AccountMenuPanel,
+  type AccountMenuProfile,
+} from "../../ui/components/account-menu";
+import type { ThemePreference } from "../../shared/theme-preference";
+import { ToolButton } from "../design/controls/design-controls";
 import type { SceneTool } from "../../domain/mission-model";
 
 export type AppTab = "plan" | "fly" | "report";
@@ -39,6 +46,10 @@ interface StudioLeftRailProps {
   onClearDraftClosure: () => void;
   onSetPolygon: () => void;
   onAnnounce: (message: string) => void;
+  accountProfile: AccountMenuProfile;
+  themePreference: ThemePreference;
+  onOpenAccountPanel: (panel: AccountMenuPanel) => void;
+  onUpdateThemePreference: (preference: ThemePreference) => void;
 }
 
 function StudioLeftRail({
@@ -53,6 +64,10 @@ function StudioLeftRail({
   onClearDraftClosure,
   onSetPolygon,
   onAnnounce,
+  accountProfile,
+  themePreference,
+  onOpenAccountPanel,
+  onUpdateThemePreference,
 }: StudioLeftRailProps) {
   const resetDraft = () => {
     onClearPending();
@@ -189,6 +204,18 @@ function StudioLeftRail({
             <AvoidZoneIcon aria-hidden="true" />
           </ToolButton>
         </ToolbarGroup>
+        <Separator
+          orientation="horizontal"
+          aria-hidden="true"
+          className="w-8"
+        />
+        <AccountMenu
+          profile={accountProfile}
+          themePreference={themePreference}
+          onOpenPanel={onOpenAccountPanel}
+          onUpdateThemePreference={onUpdateThemePreference}
+          variant="studio"
+        />
       </Toolbar>
     </aside>
   );

@@ -35,7 +35,3 @@
 
 /* The DS Toolbar ships a bordered box; on the rail the tool cluster stays
    transparent and borderless like before. */
-
-.ms-seq-badge:focus-visible {
-  @apply outline-2 outline-(--primary) outline-offset-1;
-}

@@ -41,7 +41,7 @@ All source areas are direct children of `src/`; there is no extra `client/` wrap
 | Folder | Responsibility | Examples |
 | --- | --- | --- |
 | `src/domain/` | Mission types and deterministic rules such as geometry, validation, generation, and serialization. Keep it independent of React, Cesium, the DOM, and browser storage. | `mission-generation.ts`, `mission-validation.ts` |
-| `src/features/` | Feature UI, state, and integrations. Subfolders group related responsibilities such as auth, Studio orchestration, Design inspectors, Cesium scene rendering, Library pages, address search, and development tools. | `auth/`, `studio/`, `design/`, `scene/`, `library/`, `search/`, `dev-tools/` |
+| `src/features/` | Feature UI, state, and integrations. Subfolders group related responsibilities such as auth, Studio orchestration, Design inspectors, Cesium scene rendering, Library pages, address search, and development tools. Design modules are grouped into `controls/`, `drawing/`, `panels/`, and `sequence/`. | `auth/`, `studio/`, `design/{controls,drawing,panels,sequence}/`, `scene/`, `library/{account,cards,dialogs,workspace}/` plus `library/{pages,database,create-wizard,drone-profile}/`, `search/`, `dev-tools/` |
 | `src/shared/` | Feature-neutral state, storage keys, map data, and utilities. Keep React presentation and feature persistence out. | `theme-preference.ts`, `storage-keys.ts` |
 | `src/ui/components/` | Reusable app-owned React components and icons shared by features. | `sky-tooltip.tsx`, `map-control-tooltip.tsx`, `icons.tsx` |
 | `src/ui/layout/` | Studio page composition and its header/footer layout components. Keep feature state owners in `features/studio/`. | `page-layout.tsx`, `header.tsx`, `footer.tsx` |

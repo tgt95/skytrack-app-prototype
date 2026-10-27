@@ -66,23 +66,9 @@
   @apply text-xs text-(--muted-foreground);
 }
 
-.ms-seq-list {
-  @apply [list-style:none] m-0 p-0 flex flex-col gap-0 max-h-85 overflow-y-auto;
-}
-
 .ms-seq-row {
-  @apply flex flex-wrap items-center gap-2 border border-border bg-(--card) min-w-0;
-}
-
-.ms-seq-badge {
-  @apply flex-[0_0_auto] min-w-7.5;
-  /* height: 1.625rem; */
-  @apply py-0 px-1 inline-flex items-center justify-center text-xs font-semibold;
-  /* border: 0.0625rem solid var(--border); */
-  @apply rounded-(--radius);
-  @apply bg-[oklch(from_var(--accent)_calc(l/1.02)_c_h)];
-  @apply text-(--muted-foreground);
-  @apply cursor-default;
+  @apply flex flex-wrap items-center gap-2 bg-(--card) min-w-0;
+  /* @apply flex flex-wrap items-center gap-2 border border-border bg-(--card) min-w-0; */
 }
 
 /* Compact direct-entry XYZ for sequence rows: a small native number input

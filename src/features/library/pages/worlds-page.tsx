@@ -7,7 +7,7 @@ import {
   LibraryEmptyState,
   LibraryPageHeader,
   LibraryPageLayout,
-} from "../library-presentation";
+} from "../cards/library-presentation.tsx";
 
 function worldSourceSummary(world: WorkspaceWorldRecord): string {
   if (world.sourceType === "mission") {

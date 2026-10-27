@@ -1,5 +1,5 @@
 import { WORLDS } from "../../../domain/mission-model";
-import { DEFAULT_WORKSPACE_ID, WORKSPACES } from "../workspace-data";
+import { DEFAULT_WORKSPACE_ID, WORKSPACES } from "../workspace/workspace-data.ts";
 import { STORAGE_KEYS, STORAGE_VERSIONS } from "../../../shared/storage-keys";
 
 export type ResourceStatus = "Sample" | "Draft" | "Registered" | "Archived";

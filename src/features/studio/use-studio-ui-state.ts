@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { SceneSelection } from "../../domain/mission-model";
 import type { MissionBasemapStyle } from "../scene/basemaps";
 import type { SceneReadiness } from "../scene/mission-scene";
-import { PYTHON_SAMPLE } from "../design/python-editor";
+import { PYTHON_SAMPLE } from "../design/panels/python-editor";
 import type { SimSettings } from "../simulation/simulation";
 import { DEFAULT_SIM_SETTINGS } from "../simulation/simulation";
 import type { AppTab } from "./studio-left-rail";
@@ -78,8 +78,12 @@ export function useStudioUiState() {
   const [simSettingsOpen, setSimSettingsOpen] = useState(false);
   const [sceneReadiness, setSceneReadiness] =
     useState<SceneReadiness>("loading");
-  const [basemapStyle, setBasemapStyle] =
-    useState<MissionBasemapStyle>("basic");
+  const [basemapStyle, setBasemapStyle] = useState<MissionBasemapStyle>(() =>
+    typeof document !== "undefined" &&
+    document.documentElement.classList.contains("dark")
+      ? "dark"
+      : "light",
+  );
   const [showPhotoMarkers, setShowPhotoMarkers] = useState(true);
   const [showCameraFootprint, setShowCameraFootprint] = useState(false);
   const [footprintOpacity, setFootprintOpacity] = useState(2);

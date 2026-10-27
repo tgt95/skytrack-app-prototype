@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAddressSearch } from "../features/search/use-address-search";
-import { PYTHON_SAMPLE } from "../features/design/python-editor";
+import { PYTHON_SAMPLE } from "../features/design/panels/python-editor";
 import {
   DEFAULT_RECON_FLIGHT_SETTINGS,
   type StudioMission,
@@ -28,12 +28,14 @@ import StudioLibraryRoute from "../features/studio/studio-library-route";
 import StudioShell from "../ui/layout/page-layout";
 import DevScenarioTool from "../features/dev-tools/dev-scenario-tool";
 import type { SimEventItem } from "../features/simulation/simulation";
-import { ImportAIModelDialog } from "../features/library/import-ai-model-dialog";
-import { useWorkspaceResources } from "../features/library/use-workspace-resources";
+import { ImportAIModelDialog } from "../features/library/dialogs/import-ai-model-dialog.tsx";
+import { AccountMenuDialogs } from "../features/library/dialogs/account-menu-dialogs.tsx";
+import { useLibraryAccountSettings } from "../features/library/account/use-library-account-settings.ts";
+import { useWorkspaceResources } from "../features/library/workspace/use-workspace-resources.ts";
 import {
   getWorkspace,
   readActiveWorkspaceId,
-} from "../features/library/workspace-data";
+} from "../features/library/workspace/workspace-data.ts";
 import {
   parseMissionViewSearch,
   sameMissionViewState,
@@ -51,6 +53,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
   const { mission, past, future, missionRef, dispatchDocument, dirty } =
     useStudioDocumentState();
   const uiState = useStudioUiState();
+  const accountSettings = useLibraryAccountSettings(uiState.say);
   const activeWorkspace = getWorkspace(readActiveWorkspaceId());
   const modelResources = useWorkspaceResources({
     workspaceId: activeWorkspace.id,
@@ -168,6 +171,23 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
     selectableMissionWorlds,
     missionWorldOptions,
   } = routing;
+
+  useEffect(() => {
+    if (section === "library") return;
+
+    const syncBasemapToTheme = (isDark: boolean) => {
+      uiState.setBasemapStyle(isDark ? "dark" : "light");
+    };
+    syncBasemapToTheme(document.documentElement.classList.contains("dark"));
+
+    if (accountSettings.themePreference !== "system") return;
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleSystemThemeChange = (event: MediaQueryListEvent) => {
+      syncBasemapToTheme(event.matches);
+    };
+    media.addEventListener("change", handleSystemThemeChange);
+    return () => media.removeEventListener("change", handleSystemThemeChange);
+  }, [section, accountSettings.themePreference, uiState.setBasemapStyle]);
 
   useEffect(() => {
     if (
@@ -444,6 +464,12 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
         announce={announce}
         aiModels={aiModels}
         onImportAIModel={() => setImportAIModelOpen(true)}
+        account={{
+          profile: accountSettings.accountProfile,
+          themePreference: accountSettings.themePreference,
+          onOpenPanel: accountSettings.setAccountPanel,
+          onUpdateThemePreference: accountSettings.updateThemePreference,
+        }}
         mission={mission}
         sceneDrawingAltitudeM={sceneDrawingAltitudeM}
         document={{ dirty, past, future }}
@@ -462,6 +488,16 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
           gotoStage,
           onSelectEvent,
         }}
+      />
+      <AccountMenuDialogs
+        panel={accountSettings.accountPanel}
+        profile={accountSettings.accountProfile}
+        notifications={accountSettings.notificationPreferences}
+        onClose={() => accountSettings.setAccountPanel(null)}
+        onSaveProfile={accountSettings.updateAccountProfile}
+        onChangeNotifications={accountSettings.updateNotificationPreferences}
+        onAnnounce={uiState.say}
+        onLogout={onLogout}
       />
       <ImportAIModelDialog
         open={importAIModelOpen}

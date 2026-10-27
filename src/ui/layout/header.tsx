@@ -66,9 +66,7 @@ function StudioTopbar({
               </BreadcrumbLink>
             </SkyTooltip>
           </BreadcrumbItem>
-          <BreadcrumbSeparator className="ms-crumb-separator">
-            /
-          </BreadcrumbSeparator>
+          <BreadcrumbSeparator className="ms-crumb-separator" />
           {libraryEntry ? (
             <>
               <BreadcrumbItem className="min-w-0">
@@ -87,9 +85,7 @@ function StudioTopbar({
                   {libraryEntry.project}
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="ms-crumb-separator">
-                /
-              </BreadcrumbSeparator>
+              <BreadcrumbSeparator className="ms-crumb-separator" />
               <BreadcrumbItem className="min-w-0">
                 <BreadcrumbPage className="ms-crumb-name">
                   {libraryEntry.mission}
@@ -101,9 +97,7 @@ function StudioTopbar({
               <BreadcrumbItem>
                 <span className="ms-crumb-dim">Missions</span>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="ms-crumb-separator">
-                /
-              </BreadcrumbSeparator>
+              <BreadcrumbSeparator className="ms-crumb-separator" />
               <BreadcrumbItem className="min-w-0">
                 <BreadcrumbPage className="ms-crumb-name">
                   {missionName}

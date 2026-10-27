@@ -8,7 +8,7 @@ import {
 } from "@phosphor-icons/react";
 import { Badge } from "skytrack-ui/badge";
 import { Button } from "skytrack-ui/button";
-import { LibraryPageHeader, LibraryPageLayout } from "../library-presentation";
+import { LibraryPageHeader, LibraryPageLayout } from "../cards/library-presentation.tsx";
 
 type NotificationCategory = "mission" | "shared" | "workspace";
 type NotificationFilter = "all" | "unread" | NotificationCategory;

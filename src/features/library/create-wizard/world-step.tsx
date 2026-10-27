@@ -4,7 +4,7 @@ import { Button } from "skytrack-ui/button";
 import { RadioGroup, RadioRoot } from "skytrack-ui/radio";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "skytrack-ui/tabs";
 import type { WorkspaceWorldRecord } from "../database/workspace-resources-store";
-import MissionThumbnail from "../mission-thumbnail";
+import MissionThumbnail from "../cards/mission-thumbnail.tsx";
 
 type WorldType = "2D" | "3D";
 

@@ -1,6 +1,7 @@
 import { STORAGE_KEYS } from './storage-keys'
 
 export type ThemePreference = 'light' | 'dark' | 'system'
+export const THEME_PREFERENCE_CHANGE_EVENT = 'skytrack:theme-preference-change'
 
 let systemQuery: MediaQueryList | null = null
 let systemChangeHandler: (() => void) | null = null

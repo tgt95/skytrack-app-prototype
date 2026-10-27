@@ -1,7 +1,7 @@
 import type { ComponentProps, RefObject } from "react";
 import MissionScene, { type MissionSceneHandle } from "../scene/mission-scene";
 import LidarPreview from "../scene/lidar-preview";
-import { DrawingAltitudeRuler } from "../design/drawing-altitude-ruler";
+import { DrawingAltitudeRuler } from "../design/drawing/drawing-altitude-ruler";
 import type { MissionBasemapStyle } from "../scene/basemaps";
 import type { StudioMission } from "../../domain/mission-model";
 import type { SimPlan } from "../simulation/simulation";

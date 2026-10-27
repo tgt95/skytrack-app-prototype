@@ -3,7 +3,7 @@ import {
   LibraryEmptyState,
   LibraryPageHeader,
   LibraryPageLayout,
-} from "../library-presentation";
+} from "../cards/library-presentation.tsx";
 import type { LibMission } from "../database/store";
 
 type MissionEntry = { projectId: string; project: string; mission: LibMission };

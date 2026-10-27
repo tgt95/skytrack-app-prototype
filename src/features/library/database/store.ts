@@ -11,7 +11,7 @@
 
 import projectsSeed from './projects.json'
 import templatesSeed from './templates.json'
-import { getWorkspace } from '../workspace-data'
+import { getWorkspace } from '../workspace/workspace-data.ts'
 import { STORAGE_KEYS, STORAGE_VERSIONS } from '../../../shared/storage-keys'
 
 export interface LibMission {

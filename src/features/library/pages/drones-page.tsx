@@ -5,7 +5,7 @@ import {
   LibraryCardFrame,
   LibraryPageHeader,
   LibraryPageLayout,
-} from "../library-presentation";
+} from "../cards/library-presentation.tsx";
 
 export function DronesPage({
   workspaceName,

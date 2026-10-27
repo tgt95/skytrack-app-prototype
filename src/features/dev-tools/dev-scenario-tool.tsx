@@ -18,8 +18,8 @@ export default function DevScenarioTool () {
     <>
       {createPortal(
         <Button
-          className='fixed right-1 bottom-1 z-2147483646 size-11 max-sm:right-0.5 max-sm:bottom-0.5'
-          size='icon-xs'
+          className='fixed right-1 bottom-1 z-2147483646 max-sm:right-0.5 max-sm:bottom-0.5'
+          size='icon'
           variant='secondary'
           aria-label='Open Dev Tool'
           aria-haspopup='dialog'
@@ -28,7 +28,7 @@ export default function DevScenarioTool () {
           onClick={() => setOpen(true)}
         >
           <span
-            className='inline-flex size-5 [&>svg]:size-full'
+            className='grid size-5 place-items-center [&>svg]:block [&>svg]:size-full'
             aria-hidden='true'
             dangerouslySetInnerHTML={{ __html: skyTrackUiLogo }}
           />

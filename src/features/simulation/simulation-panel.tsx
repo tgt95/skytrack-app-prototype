@@ -176,7 +176,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
           {showConsole ? (
             <TabsPanel value="console">
               <ol
-                className=" [list-style:none] m-0 p-2 flex flex-col gap-0.75 max-h-80 overflow-y-auto font-[ui-monospace,SFMono-Regular,Menlo,monospace] text-[0.6875rem] bg-(--background) border border-border rounded-(--radius)"
+                className=" [list-style:none] m-0 p-2 flex flex-col gap-0.75 max-h-80 overflow-y-auto font-[ui-monospace,SFMono-Regular,Menlo,monospace] text-sm bg-(--background) border border-border rounded-(--radius)"
                 aria-label="Simulation console"
               >
                 {log.length === 0 ? (

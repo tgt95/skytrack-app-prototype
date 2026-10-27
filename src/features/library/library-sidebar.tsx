@@ -13,11 +13,11 @@ import {
   SquaresFourIcon,
   StarIcon,
 } from "@phosphor-icons/react";
-import { LibraryAccountFooter } from "./library-account-footer";
-import { LibraryWorkspaceSwitcher } from "./library-workspace-switcher";
-import type { AccountProfile } from "./account-menu-state";
-import type { AccountMenuPanel } from "./account-menu-dialogs";
-import type { WorkspaceDefinition } from "./workspace-data";
+import { LibraryAccountFooter } from "./account/library-account-footer.tsx";
+import { LibraryWorkspaceSwitcher } from "./workspace/library-workspace-switcher.tsx";
+import type { AccountProfile } from "./account/account-menu-state.ts";
+import type { AccountMenuPanel } from "../../ui/components/account-menu";
+import type { WorkspaceDefinition } from "./workspace/workspace-data.ts";
 import type { LibrarySection } from "./library-types";
 
 type NavItem = { id: LibrarySection; label: string; icon: typeof HouseIcon };

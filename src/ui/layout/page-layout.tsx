@@ -1,6 +1,6 @@
 import { useCallback, useRef } from "react";
 import type { StudioMission } from "../../domain/mission-model";
-import { clampSnapRuler } from "../../features/design/drawing-altitude-utils";
+import { clampSnapRuler } from "../../features/design/drawing/drawing-altitude-utils";
 import type { useAddressSearch } from "../../features/search/use-address-search";
 import StudioDialogs from "../../features/studio/studio-dialogs";
 import StudioInspectorContainer from "../../features/studio/studio-inspector-container";
@@ -21,6 +21,11 @@ import type { useStudioActions } from "../../features/studio/use-studio-actions"
 import type { useStudioStageActions } from "../../features/studio/use-studio-stage-actions";
 import type { SimEventItem } from "../../features/simulation/simulation";
 import type { AIModelCardModel } from "../components/ai-model-card";
+import type {
+  AccountMenuPanel,
+  AccountMenuProfile,
+} from "../components/account-menu";
+import type { ThemePreference } from "../../shared/theme-preference";
 
 type DocumentState = Pick<
   ReturnType<typeof useStudioDocumentState>,
@@ -47,6 +52,12 @@ export interface StudioShellProps {
   };
   aiModels: AIModelCardModel[];
   onImportAIModel: () => void;
+  account: {
+    profile: AccountMenuProfile;
+    themePreference: ThemePreference;
+    onOpenPanel: (panel: AccountMenuPanel) => void;
+    onUpdateThemePreference: (preference: ThemePreference) => void;
+  };
 }
 
 export default function StudioShell({
@@ -65,6 +76,7 @@ export default function StudioShell({
   handlers,
   aiModels,
   onImportAIModel,
+  account,
 }: StudioShellProps) {
   const { dirty } = document;
   const {
@@ -244,6 +256,10 @@ export default function StudioShell({
           onClearDraftClosure={draftActions.clearClosure}
           onSetPolygon={draftActions.selectPolygon}
           onAnnounce={say}
+          accountProfile={account.profile}
+          themePreference={account.themePreference}
+          onOpenAccountPanel={account.onOpenPanel}
+          onUpdateThemePreference={account.onUpdateThemePreference}
         />
         <StudioMapOverlays
           appTab={appTab}

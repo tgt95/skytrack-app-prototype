@@ -33,7 +33,7 @@ import {
   selectableWorldsForWorkspace,
   type WorkspaceWorldRecord,
 } from "../library/database/workspace-resources-store";
-import { getSharedProject } from "../library/workspace-data";
+import { getSharedProject } from "../library/workspace/workspace-data.ts";
 import {
   missionStudioRoutePath,
   parseMissionStudioRoute,

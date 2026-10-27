@@ -12,7 +12,7 @@ import {
   LibraryEmptyState,
   LibraryPageHeader,
   LibraryPageLayout,
-} from "./library-presentation";
+} from "./cards/library-presentation.tsx";
 import type { SharedProject, SharedMission } from "./library-cards";
 import { HomePage } from "./pages/home-page";
 import RecentPage from "./pages/recent-page";

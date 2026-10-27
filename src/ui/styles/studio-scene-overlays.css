@@ -79,32 +79,6 @@
 
 /* ------------------------- waypoint row: one-line XYZ, handle, more ------------------------- */
 
-.ms-drag-handle {
-  @apply flex-[0_0_auto] self-center inline-flex items-center justify-center w-5.5 h-8.5 text-sm border border-transparent rounded-(--radius) bg-transparent text-(--muted-foreground) cursor-grab touch-none;
-}
-
-.ms-drag-handle:hover {
-  @apply bg-(--accent) text-(--foreground);
-}
-
-.ms-drag-handle:focus-visible {
-  @apply outline-2 outline-(--primary) outline-offset-1;
-}
-
-.ms-seq-row.is-grabbed {
-  @apply border-(--primary) border-dashed;
-}
-
-.ms-seq-row.is-drop-before,
-.ms-seq-action-row.is-drop-before {
-  @apply [box-shadow:inset_0_0.125rem_0_var(--primary)];
-}
-
-.ms-seq-row.is-drop-after,
-.ms-seq-action-row.is-drop-after {
-  @apply [box-shadow:inset_0_-0.125rem_0_var(--primary)];
-}
-
 /* ------------------------- status strip ------------------------- */
 
 /* ------------------------- compass cube ------------------------- */

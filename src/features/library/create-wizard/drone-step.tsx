@@ -1,7 +1,7 @@
 import { RadioGroup, RadioRoot } from "skytrack-ui/radio";
 import { TabsPanel } from "skytrack-ui/tabs";
 import type { WorkspaceDroneProfile } from "../database/drone-store";
-import MissionThumbnail from "../mission-thumbnail";
+import MissionThumbnail from "../cards/mission-thumbnail.tsx";
 
 type DroneStepProps = {
   drones: WorkspaceDroneProfile[];

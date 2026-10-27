@@ -181,6 +181,14 @@ export function MissionCompassCube({
 
   const rxRad = (rx * Math.PI) / 180;
   const rzRad = (rz * Math.PI) / 180;
+  const faceLabelRotation = (face: CubeFace) => {
+    if (face === "TOP") return 0;
+    const followsFaceY = face === "WEST" || face === "EAST";
+    const edgeX = followsFaceY ? -Math.sin(rzRad) : Math.cos(rzRad);
+    const edgeRotation = followsFaceY ? 90 : 0;
+    // Keep labels aligned to each face's horizontal edge and readable left-to-right.
+    return edgeX < 0 ? edgeRotation + 180 : edgeRotation;
+  };
   const topVisible = Math.cos(rxRad) > 0.05;
   const southVisible = Math.sin(rxRad) * Math.cos(rzRad) > 0.05;
   const northVisible = -Math.sin(rxRad) * Math.cos(rzRad) > 0.05;
@@ -292,7 +300,12 @@ export function MissionCompassCube({
                 data-testid={st.testid}
                 tabIndex={shown ? 0 : -1}
               >
-                {label}
+                <span
+                  className="inline-block"
+                  style={{ transform: `rotate(${faceLabelRotation(face)}deg)` }}
+                >
+                  {label}
+                </span>
               </button>
             );
           })}

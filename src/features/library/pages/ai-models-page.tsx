@@ -8,7 +8,7 @@ import {
   LibraryEmptyState,
   LibraryPageHeader,
   LibraryPageLayout,
-} from "../library-presentation";
+} from "../cards/library-presentation.tsx";
 import type { AIModelCategory } from "../library-types";
 
 export function AIModelsPage({
