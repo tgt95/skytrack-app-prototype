@@ -91,11 +91,11 @@ export function ProjectDetailPage({
               className="mb-0 text-[0.8125rem] text-(--muted-foreground)"
               aria-label="Breadcrumb"
             >
-              <BreadcrumbList className="m-0 list-none gap-[0.5rem] p-0 text-inherit">
+              <BreadcrumbList className="m-0 list-none gap-2 p-0 text-inherit">
                 <BreadcrumbItem>
                   <BreadcrumbLink
                     render={<button type="button" />}
-                    className="rounded-(--radius) p-[0.125rem] text-inherit hover:text-(--primary) focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:outline-offset-1"
+                    className="rounded-(--radius) p-0.5 text-inherit hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
                     data-testid="ms-lib-project-breadcrumb-link"
                     onClick={onNavigateProjects}
                   >
@@ -111,7 +111,7 @@ export function ProjectDetailPage({
           }
           actions={
             <span
-              className=" inline-flex items-center gap-[0.375rem] flex-[0_0_auto]"
+              className=" inline-flex items-center gap-1.5 flex-[0_0_auto]"
               data-testid="ms-lib-row-actions"
             >
               <Button
@@ -161,11 +161,11 @@ export function ProjectDetailPage({
         >
           <button
             type="button"
-            className=" inline-flex flex-col items-center justify-center gap-[0.5rem] min-h-[12.875rem] w-full p-[1rem] [border:0.09375rem_dashed_var(--border)] rounded-(--radius) bg-transparent text-(--primary) text-[0.8125rem] font-semibold cursor-pointer hover:border-(--primary) hover:bg-(--accent) focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:outline-offset-1"
+            className=" inline-flex flex-col items-center justify-center gap-2 min-h-51.5 w-full p-4 border-[1.5px] border-dashed border-border rounded-(--radius) bg-transparent text-(--primary) text-[0.8125rem] font-semibold cursor-pointer hover:border-(--primary) hover:bg-(--accent) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
             onClick={() => onCreateMission(project.id)}
             data-testid="ms-lib-newitem"
           >
-            <PlusIcon aria-hidden="true" className="w-[1.25rem] h-[1.25rem]" />
+            <PlusIcon aria-hidden="true" className="w-5 h-5" />
             New Mission
           </button>
         </div>

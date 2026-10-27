@@ -138,7 +138,7 @@ export default function LoginDrone({ isDark, reducedMotion }: LoginDroneProps) {
   return (
     <div
       data-testid="ms-login-drone"
-      className="[--login-drone-width:min(12rem,42vw)] relative z-3 grid box-border w-[min(var(--login-drone-width),calc(100vw-3rem))] aspect-[1] place-items-center overflow-hidden bg-(--card) [outline:0.5rem_solid_var(--muted)] [border:1px_solid_var(--border)] rounded-[100%] mx-auto -mt-[(var(--login-drone-width)-3rem)] text-base"
+      className="[--login-drone-width:min(12rem,42vw)] relative z-3 grid box-border w-[min(var(--login-drone-width),calc(100vw-3rem))] aspect-[1] place-items-center overflow-hidden bg-(--card) outline-8 outline-(--muted) [border:1px_solid_var(--border)] rounded-[100%] mx-auto -mt-[(var(--login-drone-width)-3rem)] text-base"
       aria-hidden="true"
     >
       <canvas

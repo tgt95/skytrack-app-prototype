@@ -41,7 +41,7 @@ export function ProjectCard({
         aria-label={`Open ${project.name}`}
         onClick={onOpen}
       >
-        <FolderIcon aria-hidden="true" className="w-[2.25rem] h-[2.25rem]" />
+        <FolderIcon aria-hidden="true" className="w-9 h-9" />
       </button>
       <div className="ms-lib-card-body">
         <span className="text-sm font-medium">{project.name}</span>
@@ -145,7 +145,7 @@ export function SharedProjectCard({
         aria-label={`Open shared project ${project.name}`}
         onClick={onOpen}
       >
-        <FolderIcon aria-hidden="true" className="w-[2.25rem] h-[2.25rem]" />
+        <FolderIcon aria-hidden="true" className="w-9 h-9" />
       </button>
       <div className="ms-lib-card-body flex-1 justify-between">
         <div className="flex flex-col gap-2">

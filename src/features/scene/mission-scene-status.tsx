@@ -43,7 +43,7 @@ export function MissionSceneStatus({
           {errorMessage ?? "Renderer failed to start."}
         </p>
         <div
-          className=" flex gap-[0.5rem]"
+          className=" flex gap-2"
           data-testid="ms-scene-overlay-actions"
         >
           <Button
@@ -65,7 +65,7 @@ export function MissionSceneStatus({
   if (without3d && status !== "ready") {
     return (
       <div
-        className=" absolute left-[0.75rem] bottom-[0.75rem] flex items-center gap-[0.25rem] text-[0.75rem] text-(--muted-foreground) bg-(--card) [border:0.0625rem_solid_var(--border)] rounded-(--radius) p-[0.25rem_0.5rem]"
+        className=" absolute left-3 bottom-3 flex items-center gap-1 text-xs text-(--muted-foreground) bg-(--card) border border-border rounded-(--radius) py-1 px-2"
         role="status"
         data-testid="ms-scene-fallback"
       >

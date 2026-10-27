@@ -135,13 +135,13 @@ export default function LidarPreview({
     <div
       className={[
         `ms-lidar${expanded ? " is-expanded" : ""}`,
-        "absolute left-[0.75rem] bottom-[0.75rem] z-1 flex flex-col w-[min(18.75rem,calc(100%-5.375rem))] h-[min(12.25rem,calc(100%-1.5rem))] overflow-hidden [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-(--card) [.ms-lidar&:where(.is-expanded)]:w-[min(35rem,calc(100%-5.375rem))] [.ms-lidar&:where(.is-expanded)]:h-[min(21.25rem,calc(100%-1.5rem))]",
+        "absolute left-3 bottom-3 z-1 flex flex-col w-[min(18.75rem,calc(100%-5.375rem))] h-[min(12.25rem,calc(100%-1.5rem))] overflow-hidden border border-border rounded-(--radius) bg-(--card) [.ms-lidar&:where(.is-expanded)]:w-[min(35rem,calc(100%-5.375rem))] [.ms-lidar&:where(.is-expanded)]:h-[min(21.25rem,calc(100%-1.5rem))]",
       ]
         .filter(Boolean)
         .join(" ")}
     >
       <div
-        className=" flex-[0_0_2rem] flex items-center justify-between pl-[0.625rem]"
+        className=" grow-0 shrink-0 basis-8 flex items-center justify-between pl-2.5"
         data-testid="ms-lidar-header"
       >
         <span

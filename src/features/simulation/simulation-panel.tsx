@@ -153,14 +153,14 @@ export default function SimulationPanel(props: SimulationPanelProps) {
               </section>
             ) : (
               <ol
-                className=" [list-style:none] m-0 p-0 flex flex-col gap-[0.25rem]"
+                className=" [list-style:none] m-0 p-0 flex flex-col gap-1"
                 aria-label="Simulation events"
               >
                 {fired.map((ev, i) => (
                   <li key={`${ev.t}-${i}`}>
                     <button
                       type="button"
-                      className=" w-full flex gap-[0.5rem] items-baseline text-left text-[0.75rem] bg-(--background) text-(--foreground) [border:0.0625rem_solid_var(--border)] rounded-(--radius) p-[0.375rem_0.5rem] cursor-pointer [&:hover]:bg-(--accent) focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:outline-offset-1"
+                      className=" w-full flex gap-2 items-baseline text-left text-xs bg-(--background) text-(--foreground) border border-border rounded-(--radius) py-1.5 px-2 cursor-pointer [&:hover]:bg-(--accent) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
                       onClick={() => onSelectEvent(ev)}
                       aria-label={`Focus ${ev.label}`}
                     >
@@ -176,7 +176,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
           {showConsole ? (
             <TabsPanel value="console">
               <ol
-                className=" [list-style:none] m-0 p-[0.5rem] flex flex-col gap-[0.1875rem] max-h-[20rem] overflow-y-auto font-[ui-monospace,SFMono-Regular,Menlo,monospace] text-[0.6875rem] bg-(--background) [border:0.0625rem_solid_var(--border)] rounded-(--radius)"
+                className=" [list-style:none] m-0 p-2 flex flex-col gap-0.75 max-h-80 overflow-y-auto font-[ui-monospace,SFMono-Regular,Menlo,monospace] text-[0.6875rem] bg-(--background) border border-border rounded-(--radius)"
                 aria-label="Simulation console"
               >
                 {log.length === 0 ? (
@@ -238,7 +238,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
       ) : null}
 
       <div
-        className=" flex flex-wrap gap-[0.375rem] p-[0.625rem_0.75rem] [border-top:0.0625rem_solid_var(--border)] bg-(--card) sticky bottom-0"
+        className=" flex flex-wrap gap-1.5 py-2.5 px-3 border-t border-t-border bg-(--card) sticky bottom-0"
         data-testid="ms-run-footer"
       >
         {!running && !paused ? (

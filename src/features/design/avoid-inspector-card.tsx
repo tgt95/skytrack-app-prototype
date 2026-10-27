@@ -43,14 +43,14 @@ export default function AvoidInspectorCard({
       className={`ms-card ms-object-block${editing ? " is-editing" : ""}`}
       aria-label={zone.label}
     >
-      <div className="ms-route-head flex-row! items-center gap-[0.5rem] min-w-0 p-[0.75rem] [@media_(max-width:_40rem)]:flex-wrap">
+      <div className="ms-route-head flex-row! items-center gap-2 min-w-0 p-3 max-sm:flex-wrap">
         <div className="ms-route-title-group">
           <AvoidZoneIcon aria-hidden="true" className="ms-route-icon" />
           <span className="ms-route-name flex-[0_0_auto] min-w-0 whitespace-nowrap">
             {zone.label}
           </span>
         </div>
-        <span className="ms-route-stats block flex-[1_1_0] ml-auto min-w-0 overflow-hidden text-right text-ellipsis whitespace-nowrap [@media_(max-width:_40rem)]:ml-0 [@media_(max-width:_40rem)]:text-left">
+        <span className="ms-route-stats block flex-[1_1_0] ml-auto min-w-0 overflow-hidden text-right text-ellipsis whitespace-nowrap max-sm:ml-0 max-sm:text-left">
           <Badge
             count={zone.type === "privacy" ? "People / Privacy" : "Obstacle"}
             status="secondary"
@@ -105,7 +105,7 @@ export default function AvoidInspectorCard({
             onCommitEdit(draft);
           }}
         >
-          <p className="ms-hint p-[0.75rem]">
+          <p className="ms-hint p-3">
             Choose whether this is a static physical obstacle or a
             people/privacy exclusion zone.
           </p>
@@ -161,7 +161,7 @@ export default function AvoidInspectorCard({
           </div>
         </form>
       ) : (
-        <p className="ms-hint p-[0.75rem]">
+        <p className="ms-hint p-3">
           Height {(zone.heightM ?? 15).toFixed(1)} m · Clearance{" "}
           {(zone.clearanceM ?? 2).toFixed(1)} m
         </p>

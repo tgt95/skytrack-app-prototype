@@ -50,12 +50,12 @@ export function LibraryAccountFooter({
         <Menu>
           <MenuTrigger
             type="button"
-            className=" [&:hover]:bg-(--sidebar-accent) [&:hover]:text-(--sidebar-accent-foreground) flex items-center gap-[0.75rem] min-h-[2.625rem] w-full p-[0.375rem_0.625rem_0.375rem_0.125rem] [border:0] rounded-(--radius) bg-transparent text-(--sidebar-foreground) [font:inherit] text-[0.9375rem] text-left cursor-pointer [@media_(max-width:_61.25rem)]:w-[2.625rem] [@media_(max-width:_61.25rem)]:justify-center [@media_(max-width:_61.25rem)]:p-0"
+            className=" [&:hover]:bg-(--sidebar-accent) [&:hover]:text-(--sidebar-accent-foreground) flex items-center gap-3 min-h-10.5 w-full pt-1.5 pr-2.5 pb-1.5 pl-0.5 [border:0] rounded-(--radius) bg-transparent text-(--sidebar-foreground) [font:inherit] text-[0.9375rem] text-left cursor-pointer [@media_(max-width:_61.25rem)]:w-10.5 [@media_(max-width:_61.25rem)]:justify-center [@media_(max-width:_61.25rem)]:p-0"
             aria-label={`${accountProfile.name} account menu`}
             data-testid="ms-lib-account-trigger"
           >
             <span
-              className=" inline-flex items-center justify-center w-[2rem] h-[2rem] flex-[0_0_auto] rounded-[50%] bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1rem] font-semibold"
+              className=" inline-flex items-center justify-center w-8 h-8 flex-[0_0_auto] rounded-[50%] bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-base font-semibold"
               aria-hidden="true"
               data-testid="ms-lib-profile-avatar"
             >
@@ -66,31 +66,31 @@ export function LibraryAccountFooter({
             </span>
             <CaretDownIcon
               aria-hidden="true"
-              className="w-[1rem] h-[1rem] flex-[0_0_auto] ml-auto [@media_(max-width:_61.25rem)]:hidden"
+              className="w-4 h-4 flex-[0_0_auto] ml-auto [@media_(max-width:_61.25rem)]:hidden"
             />
           </MenuTrigger>
           <MenuPortal>
             <MenuPositioner side="right" align="end" sideOffset={-2}>
               <MenuPopup
-                className="w-[min(16rem,calc(100vw-1.5rem))] p-[0.5rem] rounded-(--radius)"
+                className="w-[min(16rem,calc(100vw-1.5rem))] p-2 rounded-(--radius)"
                 aria-label={`${accountProfile.name} account settings`}
               >
                 <div
-                  className=" flex items-center gap-[0.5rem] min-w-0 mb-[0.5rem] rounded-(--radius) text-(--foreground)"
+                  className=" flex items-center gap-2 min-w-0 mb-2 rounded-(--radius) text-(--foreground)"
                   data-testid="ms-lib-account-summary"
                 >
                   <span
-                    className=" inline-flex items-center justify-center w-[2rem] h-[2rem] flex-[0_0_auto] rounded-[50%] bg-(--accent) text-(--primary) text-sm font-bold"
+                    className=" inline-flex items-center justify-center w-8 h-8 flex-[0_0_auto] rounded-[50%] bg-(--accent) text-(--primary) text-sm font-bold"
                     aria-hidden="true"
                     data-testid="ms-lib-account-avatar"
                   >
                     {getUserInitial(accountProfile.name)}
                   </span>
                   <span
-                    className=" flex flex-col gap-[0.125rem] min-w-0"
+                    className=" flex flex-col gap-0.5 min-w-0"
                     data-testid="ms-lib-account-identity"
                   >
-                    <strong className="overflow-hidden text-[1rem] font-semibold text-ellipsis whitespace-nowrap">
+                    <strong className="overflow-hidden text-base font-semibold text-ellipsis whitespace-nowrap">
                       {accountProfile.name}
                     </strong>
                     <span className="overflow-hidden text-(--muted-foreground) text-sm text-ellipsis whitespace-nowrap">

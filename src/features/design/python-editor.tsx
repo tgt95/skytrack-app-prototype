@@ -1,6 +1,6 @@
 /* Local syntax-highlighted Python draft editor. Script contents remain a non-executing UI draft. */
 
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 
 export const PYTHON_SAMPLE = `"""This sample demonstrates how to control a drone using Python. You can customize the flight scenario by adding additional steps."""
 
@@ -28,28 +28,96 @@ def main() -> None:
 if __name__ == "__main__":
     main()`;
 
+const PYTHON_KEYWORDS = new Set([
+  "and",
+  "as",
+  "assert",
+  "async",
+  "await",
+  "break",
+  "case",
+  "class",
+  "continue",
+  "def",
+  "del",
+  "elif",
+  "else",
+  "except",
+  "finally",
+  "for",
+  "from",
+  "global",
+  "if",
+  "import",
+  "in",
+  "is",
+  "lambda",
+  "nonlocal",
+  "not",
+  "or",
+  "pass",
+  "raise",
+  "return",
+  "try",
+  "while",
+  "with",
+  "yield",
+]);
+const PYTHON_TYPES = new Set([
+  "Any",
+  "bool",
+  "dict",
+  "float",
+  "int",
+  "Iterator",
+  "list",
+  "set",
+  "str",
+  "tuple",
+]);
+const PYTHON_CONSTANTS = new Set(["False", "None", "True"]);
+
 function pythonTokens(line: string) {
   const pattern =
-    /("""[^"\n]*"""|"[^"\n]*"|'[^'\n]*'|#.*$|\b(?:from|import|def|yield|with|as|if|None)\b|\b\d+(?:\.\d+)?\b|[()[\],:=])/g;
-  const parts: React.ReactNode[] = [];
+    /(""".*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|#.*$|\b[A-Za-z_][\w]*\b|\b\d+(?:\.\d+)?\b|[()[\]{}.,:=+*/%<>!-]+)/g;
+  const parts: ReactNode[] = [];
   let start = 0;
+  let nextDeclaration: "function" | "type" | null = null;
   for (const match of line.matchAll(pattern)) {
     const index = match.index ?? 0;
     if (index > start) parts.push(line.slice(start, index));
     const token = match[0];
-    const kind = token.startsWith("#")
-      ? "comment"
-      : token.startsWith('"') || token.startsWith("'")
-        ? "string"
-        : /^\d/.test(token)
-          ? "number"
-          : /^[a-zA-Z]/.test(token)
-            ? "keyword"
-            : "punctuation";
+    let kind: string | null = null;
+    if (token.startsWith("#")) kind = "comment";
+    else if (/^(?:"|'|'''|""")/.test(token)) kind = "string";
+    else if (/^\d/.test(token)) kind = "number";
+    else if (/^[A-Za-z_]/.test(token)) {
+      if (PYTHON_KEYWORDS.has(token)) {
+        kind = "keyword";
+        if (token === "def") nextDeclaration = "function";
+        else if (token === "class") nextDeclaration = "type";
+      } else if (PYTHON_CONSTANTS.has(token)) {
+        kind = "constant";
+        nextDeclaration = null;
+      } else if (nextDeclaration) {
+        kind = nextDeclaration;
+        nextDeclaration = null;
+      } else if (PYTHON_TYPES.has(token)) {
+        kind = "type";
+      } else if (/^\s*\(/.test(line.slice(index + token.length))) {
+        kind = "function";
+      }
+    } else if (/^[()[\]{}.,:=+*/%<>!-]+$/.test(token)) {
+      kind = "punctuation";
+    }
     parts.push(
-      <span className={`ms-python-token-${kind}`} key={index}>
-        {token}
-      </span>,
+      kind ? (
+        <span className={`ms-python-token-${kind}`} key={index}>
+          {token}
+        </span>
+      ) : (
+        token
+      ),
     );
     start = index + token.length;
   }
@@ -70,13 +138,11 @@ export function PythonEditor({
 
   return (
     <div
-      className={
-        ' [--ms-code-canvas:var(--foreground)] [--ms-code-ink:var(--background)] relative flex-[1_1_auto] min-h-0 bg-(--ms-code-canvas) text-(--ms-code-ink) font-["IBM_Plex_Mono",ui-monospace,SFMono-Regular,Menlo,monospace] text-[0.75rem] leading-[1.55] [font-variant-ligatures:none] in-[.dark]:[--ms-code-canvas:var(--background)] in-[.dark]:[--ms-code-ink:var(--foreground)]'
-      }
+      className='ms-python-editor relative flex-[1_1_auto] min-h-0 bg-(--ms-code-canvas) text-(--ms-code-ink) font-["IBM_Plex_Mono",ui-monospace,SFMono-Regular,Menlo,monospace] text-xs leading-[1.55] [font-variant-ligatures:none]'
       data-testid="ms-python-editor"
     >
       <div
-        className=" absolute inset-0 box-border w-full h-full m-0 overflow-auto [font:inherit] leading-[inherit] tracking-[inherit] tab-4 p-[0.75rem_0.75rem_0.75rem_0] pointer-events-none"
+        className=" absolute inset-0 box-border w-full h-full m-0 overflow-auto [font:inherit] leading-[inherit] tracking-[inherit] tab-4 pt-3 pr-3 pb-3 pl-0 pointer-events-none"
         ref={mirrorRef}
         aria-hidden="true"
         data-testid="ms-python-mirror"
@@ -92,14 +158,14 @@ export function PythonEditor({
             key={index}
           >
             <span
-              className=" pr-[0.5rem] text-right text-[color-mix(in_srgb,var(--ms-code-ink)_54%,transparent)] [user-select:none] [.ms-python-line.is-active_&]:bg-[color-mix(in_srgb,var(--primary)_22%,var(--ms-code-canvas))] [.ms-python-line.is-active_&]:text-(--ms-code-ink)"
+              className="ms-python-line-number pr-2 text-right [user-select:none]"
               data-testid="ms-python-number"
             >
               {index + 1}
             </span>
             <span
               data-testid="ms-python-source"
-              className="pl-[0.625rem] whitespace-pre-wrap wrap-anywhere"
+              className="pl-2.5 whitespace-pre-wrap wrap-anywhere"
             >
               {pythonTokens(line) || " "}
             </span>
@@ -108,7 +174,7 @@ export function PythonEditor({
       </div>
       <textarea
         id="ms-code-editor"
-        className=" absolute inset-0 box-border w-full h-full m-0 overflow-auto [font:inherit] leading-[inherit] tracking-[inherit] tab-4 z-1 block p-[0.75rem_0.75rem_0.75rem_3rem] [border:0] rounded-none resize-none -outline-offset-2 bg-transparent text-transparent [-webkit-text-fill-color:transparent] caret-(--ms-code-ink) whitespace-pre-wrap wrap-anywhere [&::selection]:bg-[color-mix(in_srgb,var(--primary)_42%,transparent)]"
+        className="absolute inset-0 box-border w-full h-full m-0 overflow-auto [font:inherit] leading-[inherit] tracking-[inherit] tab-4 z-1 block pt-3 pr-3 pb-3 pl-12 [border:0] rounded-none resize-none outline-none bg-transparent text-transparent [-webkit-text-fill-color:transparent] caret-(--ms-code-ink) whitespace-pre-wrap wrap-anywhere [&::selection]:bg-(--ms-code-selection)"
         aria-label="Python mission script draft"
         aria-describedby="ms-code-limit"
         value={value}

@@ -237,7 +237,7 @@ function DesignPanel(props: DesignPanelProps) {
                 onCodeViewChange(value === "code");
               }}
               aria-label="Mission panel view"
-              className=" text-[0.75rem]"
+              className=" text-xs"
             >
               <TabsList variant="filled">
                 <TabsTab value="visual">Design</TabsTab>
@@ -272,7 +272,7 @@ function DesignPanel(props: DesignPanelProps) {
             )}
         </div>
 
-        <div className="p-3 min-h-0 h-full">
+        <div className={`${!codeView ? 'p-3' : ''} min-h-0 h-full`}>
           {codeView ? (
             <CodeInspectorPanel
               codeLang={codeLang}

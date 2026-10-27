@@ -121,7 +121,7 @@ function ReconSlider({
   return (
     <div
       className={
-        " grid gap-[0.5rem] p-[0.875rem_0.125rem_0.625rem] [border-top:0.0625rem_solid_var(--border)]"
+        " grid gap-2 pt-3.5 px-0.5 pb-2.5 border-t border-t-border"
       }
       data-testid="ms-recon-slider"
     >
@@ -138,12 +138,12 @@ function ReconSlider({
         }}
       >
         <div
-          className=" flex items-baseline justify-between gap-[0.5rem] text-(--foreground)"
+          className=" flex items-baseline justify-between gap-2 text-(--foreground)"
           data-testid="ms-recon-slider-head"
         >
           <SliderLabel data-testid="ms-recon-slider-label">{label}</SliderLabel>
           <span
-            className=" p-[0.0625rem_0.5rem] rounded-(--radius) bg-(--muted) text-(--foreground) text-[0.6875rem] font-semibold [font-variant-numeric:tabular-nums] whitespace-nowrap"
+            className=" py-0.25 px-2 rounded-(--radius) bg-(--muted) text-(--foreground) text-[0.6875rem] font-semibold [font-variant-numeric:tabular-nums] whitespace-nowrap"
             data-testid="ms-recon-slider-badge"
           >
             {display}
@@ -157,7 +157,7 @@ function ReconSlider({
               <span
                 key={mark}
                 aria-hidden="true"
-                className=" absolute left-(--ms-recon-mark-position) top-[50%] w-px h-[0.5rem] transform-[translate(-50%,-50%)] bg-(--foreground) opacity-[0.4] pointer-events-none"
+                className=" absolute left-(--ms-recon-mark-position) top-[50%] w-px h-2 transform-[translate(-50%,-50%)] bg-(--foreground) opacity-[0.4] pointer-events-none"
                 style={
                   {
                     "--ms-recon-mark-position": `${toPct(mark)}%`,
@@ -173,7 +173,7 @@ function ReconSlider({
       {marks && marks.length > 0 ? (
         <div
           data-testid="ms-recon-mark-labels"
-          className="relative h-[1rem] [user-select:none]"
+          className="relative h-4 [user-select:none]"
           aria-hidden="true"
         >
           {marks.map((mark, index) => (
@@ -193,7 +193,7 @@ function ReconSlider({
       ) : null}
       {hint ? (
         <p
-          className=" m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.6]"
+          className=" m-0 text-(--muted-foreground) text-xs leading-[1.6]"
           data-testid="ms-recon-slider-hint"
         >
           {hint}
@@ -233,7 +233,7 @@ export function ReconnaissanceSettingsForm({
         </p>
       ) : null}
       <div
-        className=" pt-4 grid grid-cols-[minmax(0,1fr)] gap-[0.25rem]"
+        className=" pt-4 grid grid-cols-[minmax(0,1fr)] gap-1"
         data-testid="ms-recon-form-grid"
       >
         {numericFields.map(
@@ -265,7 +265,7 @@ export function ReconnaissanceSettingsForm({
 
         {showFlightPattern ? (
           <div
-            className=" grid gap-[0.3125rem] text-(--muted-foreground) text-[0.75rem]"
+            className=" grid gap-1.25 text-(--muted-foreground) text-xs"
             data-testid="ms-recon-form-field"
           >
             <span
@@ -312,7 +312,7 @@ export function ReconnaissanceSettingsForm({
       ) : null}
 
       <label
-        className=" flex items-start gap-[0.5rem] mt-[0.875rem]"
+        className=" flex items-start gap-2 mt-3.5"
         data-testid="ms-recon-form-toggle"
       >
         <CheckboxRoot
@@ -325,7 +325,7 @@ export function ReconnaissanceSettingsForm({
           <CheckboxIndicator aria-hidden="true">✓</CheckboxIndicator>
         </CheckboxRoot>
         <span
-          className=" grid gap-[0.1875rem]"
+          className=" grid gap-0.75"
           data-testid="ms-recon-form-toggle-copy"
         >
           <span className="ms-recon-form-label">Terrain awareness</span>

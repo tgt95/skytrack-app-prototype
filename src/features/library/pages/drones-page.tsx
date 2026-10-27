@@ -69,7 +69,7 @@ export function DronesPage({
             <span className="ms-lib-resource-icon">
               <DroneIcon
                 aria-hidden="true"
-                className="w-[2.25rem] h-[2.25rem]"
+                className="w-9 h-9"
               />
             </span>
             <span className="ms-lib-card-body flex-1">

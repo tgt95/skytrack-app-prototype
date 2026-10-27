@@ -21,11 +21,11 @@ export function DronePerformanceSourceSection({
         <div className="ms-drone-section-heading">
           <h2
             id="ms-drone-performance-title"
-            className="heading m-0 text-[0.875rem] font-semibold"
+            className="heading m-0 text-sm font-semibold"
           >
             Performance &amp; payload
           </h2>
-          <p className="m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.5]">
+          <p className="m-0 text-(--muted-foreground) text-xs leading-[1.5]">
             Optional descriptive values. Leave unknown values blank.
           </p>
         </div>
@@ -64,11 +64,11 @@ export function DronePerformanceSourceSection({
         <div className="ms-drone-section-heading">
           <h2
             id="ms-drone-profile-source-title"
-            className="heading m-0 text-[0.875rem] font-semibold"
+            className="heading m-0 text-sm font-semibold"
           >
             Profile source
           </h2>
-          <p className="m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.5]">
+          <p className="m-0 text-(--muted-foreground) text-xs leading-[1.5]">
             Track the source for platform and performance values. Use component
             sources for component-specific facts.
           </p>

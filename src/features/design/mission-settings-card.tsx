@@ -59,7 +59,7 @@ export function MissionChecksCard ({
         </p>
       ) : (
         <ul
-          className=' [list-style:none] m-0 p-0 flex flex-col gap-[0.375rem]'
+          className=' [list-style:none] m-0 p-0 flex flex-col gap-1.5'
           data-testid='ms-issue-list'
         >
           {errors.map(issue => (

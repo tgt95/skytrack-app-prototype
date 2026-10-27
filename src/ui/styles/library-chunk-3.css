@@ -42,7 +42,7 @@
 }
 
 .ms-lib-form {
-  @apply flex flex-col gap-[0.75rem] p-[0.25rem_0];
+  @apply flex flex-col gap-3 py-1 px-0;
 }
 
 .ms-lib-select {
@@ -59,31 +59,31 @@
    from skytrack-ui tokens. */
 
 .ms-resource-note {
-  @apply m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.5];
+  @apply m-0 text-(--muted-foreground) text-xs leading-[1.5];
 }
 
 .ms-resource-note {
-  @apply col-span-full p-[0.625rem_0.75rem] [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-(--muted);
+  @apply col-span-full py-2.5 px-3 border border-border rounded-(--radius) bg-(--muted);
 }
 
 .ms-drone-dialog-body {
-  @apply flex flex-col gap-[1.5rem] min-h-0 overflow-auto;
+  @apply flex flex-col gap-6 min-h-0 overflow-auto;
 }
 
 .ms-drone-form-section {
-  @apply flex flex-col gap-[0.75rem];
+  @apply flex flex-col gap-3;
 }
 
 .ms-drone-section-heading {
-  @apply flex flex-col gap-[0.1875rem];
+  @apply flex flex-col gap-0.75;
 }
 
 .ms-drone-empty-components {
-  @apply m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.5];
+  @apply m-0 text-(--muted-foreground) text-xs leading-[1.5];
 }
 
 .ms-drone-form-grid {
-  @apply grid grid-cols-2 gap-[0.75rem];
+  @apply grid grid-cols-2 gap-3;
 }
 
 .ms-drone-form-wide {
@@ -91,12 +91,12 @@
 }
 
 .ms-drone-reference-warning {
-  @apply m-[0_1.25rem_1.125rem] p-[0.75rem] [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-(--muted) text-(--foreground) text-[0.75rem] leading-[1.5];
+  @apply mt-0 mx-5 mb-4.5 p-3 border border-border rounded-(--radius) bg-(--muted) text-(--foreground) text-xs leading-[1.5];
 }
 
 @media (max-width: 45rem) {
   .ms-drone-dialog-body {
-    @apply p-[0.25rem_0.875rem_0.5rem];
+    @apply pt-1 px-3.5 pb-2;
   }
 
   .ms-drone-form-grid {

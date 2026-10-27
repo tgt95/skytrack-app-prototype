@@ -34,20 +34,20 @@ export function SharedAccountsPage({
       }
     >
       <ul
-        className=" [list-style:none] m-0 p-0 flex flex-col gap-[0.5rem] max-w-[32.5rem]"
+        className=" [list-style:none] m-0 p-0 flex flex-col gap-2 max-w-130"
         data-testid="ms-lib-sharelist"
       >
         <li
-          className=" flex items-center gap-[0.625rem] [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-(--card) p-[0.625rem_0.75rem]"
+          className=" flex items-center gap-2.5 border border-border rounded-(--radius) bg-(--card) py-2.5 px-3"
           data-testid="ms-lib-share-row"
         >
           <span
-            className="flex-[0_0_auto] inline-flex items-center justify-center w-[1.375rem] h-[1.375rem] rounded-full bg-(--accent) text-(--primary) text-[0.6875rem] font-bold"
+            className="flex-[0_0_auto] inline-flex items-center justify-center w-5.5 h-5.5 rounded-full bg-(--accent) text-(--primary) text-[0.6875rem] font-bold"
             aria-hidden="true"
           >
             GT
           </span>
-          <span className="flex flex-col gap-[0.125rem]">
+          <span className="flex flex-col gap-0.5">
             <span className="text-sm font-medium leading-[1.4]">
               Gia Tuấn Trinh&apos;s … (you)
             </span>

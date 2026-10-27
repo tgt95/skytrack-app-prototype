@@ -115,7 +115,7 @@ export function AIModelPickerPanel({
 
   return (
     <aside
-      className="flex min-h-0 min-w-0 flex-[0_0_25rem] flex-col overflow-hidden border-r border-border bg-(--card) [@media_(max-width:_48rem)]:[border-right:none] [@media_(max-width:_48rem)]:[border-bottom:0.0625rem_solid_var(--border)]"
+      className="flex min-h-0 min-w-0 grow-0 shrink-0 basis-100 flex-col overflow-hidden border-l border-border bg-(--card) max-md:[border-left:none] max-md:border-b max-md:border-b-border"
       style={{ flexBasis: panelWidth, width: panelWidth }}
       aria-label="AI models"
       data-testid="ms-code-ai-models"
@@ -137,7 +137,7 @@ export function AIModelPickerPanel({
           </Button>
         </div>
       </header>
-      <div className="flex shrink-0 items-center gap-2 p-3 pb-2.5">
+      <div className="flex shrink-0 items-center gap-2 p-3">
         <Input
           startAdornment={<MagnifyingGlassIcon />}
           endAdornment={
@@ -191,7 +191,7 @@ export function AIModelPickerPanel({
           </SelectPortal>
         </Select>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto p-3 pt-3.5">
+      <div className="min-h-0 flex-1 overflow-y-auto p-3 pt-0">
         {visibleModels.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">
             {models.length === 0

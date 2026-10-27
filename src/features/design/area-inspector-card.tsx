@@ -105,14 +105,14 @@ export default function AreaInspectorCard({
       className={`ms-card ms-object-block${editing ? " is-editing" : ""}`}
       aria-label={area.label}
     >
-      <div className="ms-route-head flex-row! items-center gap-[0.5rem] min-w-0 p-[0.75rem] [@media_(max-width:_40rem)]:flex-wrap">
+      <div className="ms-route-head flex-row! items-center gap-2 min-w-0 p-3 max-sm:flex-wrap">
         <div className="ms-route-title-group">
           <AreaIcon aria-hidden="true" className="ms-route-icon" />
           <span className="ms-route-name flex-[0_0_auto] min-w-0 whitespace-nowrap">
             {area.label}
           </span>
         </div>
-        <span className="ms-route-stats block flex-[1_1_0] ml-auto min-w-0 overflow-hidden text-right text-ellipsis whitespace-nowrap [@media_(max-width:_40rem)]:ml-0 [@media_(max-width:_40rem)]:text-left">
+        <span className="ms-route-stats block flex-[1_1_0] ml-auto min-w-0 overflow-hidden text-right text-ellipsis whitespace-nowrap max-sm:ml-0 max-sm:text-left">
           <SkyTooltip>
             <span
               className="ms-stat"
@@ -124,7 +124,7 @@ export default function AreaInspectorCard({
             >
               <RulerIcon
                 aria-hidden="true"
-                className="w-[0.875rem] h-[0.875rem]"
+                className="w-3.5 h-3.5"
               />
               {areaM2 > 0 ? `${areaM2} m²` : `${area.points.length} pts`}
             </span>
@@ -137,7 +137,7 @@ export default function AreaInspectorCard({
             >
               <GitMergeIcon
                 aria-hidden="true"
-                className="w-[0.875rem] h-[0.875rem]"
+                className="w-3.5 h-3.5"
               />
               {waypoints.length}
             </span>
@@ -150,7 +150,7 @@ export default function AreaInspectorCard({
             >
               <HandIcon
                 aria-hidden="true"
-                className="w-[0.875rem] h-[0.875rem]"
+                className="w-3.5 h-3.5"
               />
               {actionCount}
             </span>
@@ -266,7 +266,7 @@ export default function AreaInspectorCard({
               }}
             >
               {draft.reconnaissance?.enabled ? (
-                <p className="ms-hint p-[0.75rem]">
+                <p className="ms-hint p-3">
                   Lane spacing follows Side overlap (
                   {getAreaScanSpacingM(draft).toFixed(1)} m) while Recon is on.
                   Turn Recon off to edit manual line spacing.
@@ -319,7 +319,7 @@ export default function AreaInspectorCard({
               </div>
             </form>
           ) : (
-            <p className="ms-hint p-[0.75rem] pt-0!">
+            <p className="ms-hint p-3 pt-0!">
               {area.scanLines?.length ?? 0} scan lanes · {spacingLabel} m
               spacing · {area.orientationDeg ?? 0}°
             </p>

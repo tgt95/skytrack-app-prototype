@@ -294,11 +294,11 @@ export default function LibraryMainContent({
                 className="ms-lib-thumb is-learn tint-3 [.ms-lib-thumb&]:bg-[color-mix(in_srgb,var(--accent)_70%,var(--card))]"
                 aria-hidden="true"
               >
-                <BookOpenIcon className="w-[2.75rem] h-[2.75rem] opacity-[0.85]" />
+                <BookOpenIcon className="w-11 h-11 opacity-[0.85]" />
               </span>
               <span className="ms-lib-card-body">
                 <a
-                  className="border-0 p-0 bg-transparent text-inherit [font:inherit] text-sm font-medium text-left cursor-pointer rounded-(--radius) hover:text-(--primary) focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:outline-offset-1"
+                  className="border-0 p-0 bg-transparent text-inherit [font:inherit] text-sm font-medium text-left cursor-pointer rounded-(--radius) hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
                   href={LEARN_FEATURED.url}
                   target="_blank"
                   rel="noreferrer"
@@ -306,7 +306,7 @@ export default function LibraryMainContent({
                   {LEARN_FEATURED.title}{" "}
                   <ArrowSquareOutIcon
                     aria-hidden="true"
-                    className="w-3 h-3 align-[-0.0625rem]"
+                    className="w-3 h-3 align-[-1px]"
                   />
                 </a>
                 <span className="text-xs text-muted-foreground leading-[1.5]">
@@ -330,11 +330,11 @@ export default function LibraryMainContent({
                 className="ms-lib-thumb is-learn tint-1 [.ms-lib-thumb&]:bg-[color-mix(in_srgb,var(--primary)_16%,var(--muted))]"
                 aria-hidden="true"
               >
-                <BookOpenIcon className="w-[2.75rem] h-[2.75rem] opacity-[0.85]" />
+                <BookOpenIcon className="w-11 h-11 opacity-[0.85]" />
               </span>
               <span className="ms-lib-card-body">
                 <a
-                  className="border-0 p-0 bg-transparent text-inherit [font:inherit] text-sm font-medium text-left cursor-pointer rounded-(--radius) hover:text-(--primary) focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:outline-offset-1"
+                  className="border-0 p-0 bg-transparent text-inherit [font:inherit] text-sm font-medium text-left cursor-pointer rounded-(--radius) hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
                   href={LEARN_URL}
                   target="_blank"
                   rel="noreferrer"
@@ -342,7 +342,7 @@ export default function LibraryMainContent({
                   SkyTrack help center{" "}
                   <ArrowSquareOutIcon
                     aria-hidden="true"
-                    className="w-3 h-3 align-[-0.0625rem]"
+                    className="w-3 h-3 align-[-1px]"
                   />
                 </a>
                 <span className="text-xs text-muted-foreground leading-[1.5]">

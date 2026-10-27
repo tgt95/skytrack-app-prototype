@@ -36,17 +36,17 @@ export function DroneHardwareSection({
       aria-labelledby="ms-drone-hardware-title"
     >
       <div
-        className="ms-drone-section-heading  flex-row items-center justify-between gap-[0.875rem] [@media_(max-width:_45rem)]:items-start"
+        className="ms-drone-section-heading  flex-row items-center justify-between gap-3.5 [@media_(max-width:_45rem)]:items-start"
         data-testid="ms-drone-components-heading"
       >
         <div>
           <h2
             id="ms-drone-hardware-title"
-            className="heading m-0 text-[0.875rem] font-semibold"
+            className="heading m-0 text-sm font-semibold"
           >
             Hardware components
           </h2>
-          <p className="m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.5]">
+          <p className="m-0 text-(--muted-foreground) text-xs leading-[1.5]">
             Track subsystem, part identity, specifications, installation state,
             and source. Unknown details stay blank.
           </p>
@@ -61,7 +61,7 @@ export function DroneHardwareSection({
         </p>
       ) : (
         <div
-          className=" flex flex-col gap-[0.5rem]"
+          className=" flex flex-col gap-2"
           data-testid="ms-drone-component-list"
         >
           {components.map((component, index) => (

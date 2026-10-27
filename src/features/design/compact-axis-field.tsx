@@ -56,7 +56,7 @@ export function CompactAxisField({
         max={max}
         step={step}
         className={
-          " in-[.ms-data-right]:flex-[0_0_4rem] in-[.ms-data-right]:w-[4rem] flex-[1_1_auto] min-w-0 gap-0"
+          " in-[.ms-data-right]:grow-0 shrink-0 basis-16 in-[.ms-data-right]:w-16 flex-[1_1_auto] min-w-0 gap-0"
         }
         onValueChange={(next) => {
           if (typeof next === "number" && Number.isFinite(next)) {

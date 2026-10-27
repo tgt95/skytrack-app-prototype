@@ -177,7 +177,7 @@ export default function StudioInspectorContainer({
               ) >= 0.5,
         area: drawing.draftAreaSettings,
         avoid: drawing.draftAvoidSettings,
-        className: "m-[0.75rem]",
+        className: "m-3",
         onAreaChange: drawing.setDraftAreaSettings,
         onAvoidChange: drawing.setDraftAvoidSettings,
         onCommit: commands.closePendingShape,

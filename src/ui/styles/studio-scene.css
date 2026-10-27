@@ -3,19 +3,19 @@
 /* Fill-style custom icons (Area) opt out of the stroke treatment above. */
 
 .ms-basemap-title {
-  @apply text-[0.875rem] font-semibold;
+  @apply text-sm font-semibold;
 }
 
 .ms-map-check-row {
-  @apply flex items-center gap-[0.625rem] min-h-[2.375rem] text-(--foreground) text-[0.875rem] cursor-pointer;
+  @apply flex items-center gap-2.5 min-h-9.5 text-(--foreground) text-sm cursor-pointer;
 }
 
 .ms-recon-control-group {
-  @apply [border-bottom:0.0625rem_solid_var(--border)];
+  @apply border-b border-b-border;
 }
 
 .ms-recon-control-row {
-  @apply flex items-center gap-[0.75rem] min-h-[2.625rem] p-[0.5rem_0.75rem] text-(--muted-foreground) text-[0.75rem] font-semibold;
+  @apply flex items-center gap-3 min-h-10.5 py-2 px-3 text-(--muted-foreground) text-xs font-semibold;
 }
 
 /* Planner LiveSlider list rows: no cards, top dividers, 1rem labels with the
@@ -36,19 +36,19 @@
    tabular time badge. */
 
 .ms-scene-overlay {
-  @apply absolute inset-0 flex flex-col items-center justify-center gap-[0.375rem] text-center bg-(--background) text-(--foreground) p-[1.5rem];
+  @apply absolute inset-0 flex flex-col items-center justify-center gap-1.5 text-center bg-(--background) text-(--foreground) p-6;
 }
 
 .ms-scene-overlay-title {
-  @apply m-0 text-[0.875rem] font-semibold;
+  @apply m-0 text-sm font-semibold;
 }
 
 .ms-scene-overlay-sub {
-  @apply m-[0_0_0.5rem] text-[0.75rem] text-(--muted-foreground) max-w-[26.25rem];
+  @apply mt-0 mx-0 mb-2 text-xs text-(--muted-foreground) max-w-105;
 }
 
 .ms-address-suggestions-status {
-  @apply p-[0.5rem_0.625rem] text-(--muted-foreground) text-[0.75rem];
+  @apply py-2 px-2.5 text-(--muted-foreground) text-xs;
 }
 
 /* Out-of-flow status/attribution panel: overlays above the search toolbar so

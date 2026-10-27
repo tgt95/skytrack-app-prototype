@@ -46,7 +46,7 @@ export function DroneStep({ drones, droneId, onDroneSelect }: DroneStepProps) {
                 <RadioRoot
                   value={drone.id}
                   aria-label={drone.name}
-                  className="order-3 ml-auto flex-[0_0_auto]"
+                  className="order-3 ml-auto flex-[0_0_auto] rounded-(--radius)"
                 />
               </label>
             ))}

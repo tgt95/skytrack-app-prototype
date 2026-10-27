@@ -62,7 +62,7 @@ function StudioLeftRail({
 
   return (
     <aside
-      className=" [@media_(max-width:_61.25rem)]:flex-[0_0_auto] [@media_(max-width:_61.25rem)]:flex-col [@media_(max-width:_61.25rem)]:items-stretch [@media_(max-width:_61.25rem)]:gap-[0.5rem] [@media_(max-width:_61.25rem)]:[border-right:none] [@media_(max-width:_61.25rem)]:[border-bottom:0.0625rem_solid_var(--border)] [@media_(max-width:_61.25rem)]:p-[0.5rem_0.625rem] [@media_(max-width:_61.25rem)]:overflow-visible flex-[0_0_3.5rem] flex flex-col items-center gap-[0.75rem] p-[0.5rem_0] [border-right:0.0625rem_solid_var(--border)] bg-(--card) overflow-y-auto"
+      className=" [@media_(max-width:_61.25rem)]:flex-[0_0_auto] [@media_(max-width:_61.25rem)]:flex-col [@media_(max-width:_61.25rem)]:items-stretch [@media_(max-width:_61.25rem)]:gap-2 [@media_(max-width:_61.25rem)]:[border-right:none] [@media_(max-width:_61.25rem)]:border-b [@media_(max-width:_61.25rem)]:border-b-border [@media_(max-width:_61.25rem)]:py-2 [@media_(max-width:_61.25rem)]:px-2.5 [@media_(max-width:_61.25rem)]:overflow-visible grow-0 shrink-0 basis-14 flex flex-col items-center gap-3 py-2 px-0 border-r border-r-border bg-(--card) overflow-y-auto"
       aria-label="Mission navigation and tools"
     >
       <Tabs
@@ -74,7 +74,7 @@ function StudioLeftRail({
         orientation={orientation}
       >
         <TabsList
-          className="ms-apptabs flex flex-col items-stretch gap-[0.125rem] rounded-(--radius) bg-transparent w-full p-0 [@media_(max-width:_61.25rem)]:flex-row [@media_(max-width:_61.25rem)]:items-center [@media_(max-width:_61.25rem)]:overflow-x-auto"
+          className="ms-apptabs data-[orientation=vertical]:h-auto flex flex-col items-stretch gap-0.5 rounded-(--radius) bg-transparent w-full p-0 [@media_(max-width:_61.25rem)]:flex-row [@media_(max-width:_61.25rem)]:items-center [@media_(max-width:_61.25rem)]:overflow-x-auto"
           aria-label="Mission workspace"
           variant="line"
         >
@@ -88,12 +88,12 @@ function StudioLeftRail({
                 id={`ms-apptab-${tab.id}`}
                 aria-label={`${tab.label} — ${tab.hint}`}
                 data-testid={`ms-apptab-${tab.id}`}
-                className="in-[.ms-apptabs]:self-stretch in-[.ms-apptabs]:w-auto flex flex-col items-center gap-0.5 bg-transparent text-xs font-medium px-0.5 py-1.5 cursor-pointer [@media_(max-width:_61.25rem)]:flex-[0_0_auto] [@media_(max-width:_61.25rem)]:min-w-[4.75rem]"
+                className="in-[.ms-apptabs]:self-stretch in-[.ms-apptabs]:w-auto data-[orientation=vertical]:h-auto data-[orientation=vertical]:flex-none flex flex-col items-center gap-0.5 bg-transparent text-xs font-medium px-0.5 py-1.5 cursor-pointer [@media_(max-width:_61.25rem)]:flex-[0_0_auto] [@media_(max-width:_61.25rem)]:min-w-19"
               >
                 <TabIcon
                   weight={selected ? "fill" : "regular"}
                   aria-hidden="true"
-                  className="size-5"
+                  className="shrink-0 size-5"
                 />
                 <span className="text-xs">{tab.label}</span>
               </TabsTab>
@@ -105,11 +105,11 @@ function StudioLeftRail({
       <Toolbar
         orientation="vertical"
         aria-label="Mission tools"
-        className="ms-rail-bottom [@media_(max-width:_61.25rem)]:mt-0 [@media_(max-width:_61.25rem)]:flex-row [@media_(max-width:_61.25rem)]:items-center [@media_(max-width:_61.25rem)]:justify-start [@media_(max-width:_61.25rem)]:overflow-x-auto [@media_(max-width:_61.25rem)]:pb-[0.125rem] mt-auto flex flex-col items-center gap-[0.625rem] [.ms-rail-bottom&]:bg-transparent [.ms-rail-bottom&]:[border:0] [.ms-rail-bottom&]:rounded-none [.ms-rail-bottom&]:p-0"
+        className="ms-rail-bottom [@media_(max-width:_61.25rem)]:mt-0 [@media_(max-width:_61.25rem)]:flex-row [@media_(max-width:_61.25rem)]:items-center [@media_(max-width:_61.25rem)]:justify-start [@media_(max-width:_61.25rem)]:overflow-x-auto [@media_(max-width:_61.25rem)]:pb-0.5 mt-auto flex flex-col items-center gap-2.5 [.ms-rail-bottom&]:bg-transparent [.ms-rail-bottom&]:[border:0] [.ms-rail-bottom&]:rounded-none [.ms-rail-bottom&]:p-0"
       >
         <ToolbarGroup
           aria-label="Draw tools"
-          className=" [@media_(max-width:_61.25rem)]:flex-row [@media_(max-width:_61.25rem)]:items-center [@media_(max-width:_61.25rem)]:flex-[0_0_auto] flex flex-col items-center gap-[0.25rem]"
+          className=" [@media_(max-width:_61.25rem)]:flex-row [@media_(max-width:_61.25rem)]:items-center [@media_(max-width:_61.25rem)]:flex-[0_0_auto] flex flex-col items-center gap-1"
         >
           <ToolButton
             label="Cursor"

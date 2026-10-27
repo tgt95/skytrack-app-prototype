@@ -39,7 +39,7 @@ export default function StudioStatusFooter({
 
   return (
     <footer
-      className=" flex-[0_0_auto] flex items-center justify-between gap-[0.625rem] p-[0.25rem_0.75rem] [border-top:0.0625rem_solid_var(--border)] bg-(--card) text-[0.75rem] text-(--muted-foreground)"
+      className=" flex-[0_0_auto] flex items-center justify-between gap-2.5 py-1 px-3 border-t border-t-border bg-(--card) text-xs text-(--muted-foreground)"
       data-testid="ms-status"
     >
       <span
@@ -49,7 +49,7 @@ export default function StudioStatusFooter({
         {statusLine}
       </span>
       <span
-        className=" flex gap-[0.25rem] flex-[0_0_auto]"
+        className=" flex gap-1 flex-[0_0_auto]"
         data-testid="ms-status-actions"
       >
         <Button

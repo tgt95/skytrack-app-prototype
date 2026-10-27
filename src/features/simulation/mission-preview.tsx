@@ -119,7 +119,7 @@ export default function MissionPreview({
 
   return (
     <section
-      className="ms-preview flex flex-col gap-[1rem] w-full min-w-0 box-border max-w-[60rem] m-[0_auto] text-(--foreground) *:min-w-0 *:box-border"
+      className="ms-preview flex flex-col gap-4 w-full min-w-0 box-border max-w-240 m-[0_auto] text-(--foreground) *:min-w-0 *:box-border"
       aria-label="Mission route preview"
       data-testid="ms-preview"
     >
@@ -154,7 +154,7 @@ export default function MissionPreview({
       />
 
       <p
-        className=" m-0 p-[0.75rem] [border:0.0625rem_solid_var(--border)] rounded-[0.4375rem] bg-(--card) text-[0.875rem]"
+        className=" m-0 p-3 border border-border rounded-[7px] bg-(--card) text-sm"
         aria-live="polite"
         data-testid="ms-preview-current-event"
       >
@@ -167,7 +167,7 @@ export default function MissionPreview({
       </p>
 
       <p
-        className=" m-[0.25rem_0_0] text-(--muted-foreground) text-[0.75rem]"
+        className=" mt-1 mx-0 mb-0 text-(--muted-foreground) text-xs"
         data-testid="ms-preview-estimate"
       >
         For runnable missions, estimate follows the flight path from Home,
@@ -185,47 +185,47 @@ export default function MissionPreview({
           />
         </div>
         <div
-          className=" overflow-x-auto [border:0.0625rem_solid_var(--border)] rounded-(--radius)"
+          className=" overflow-x-auto border border-border rounded-(--radius)"
           data-testid="ms-preview-tablewrap"
         >
           <table
-            className="w-full border-collapse text-[0.75rem]"
+            className="w-full border-collapse text-xs"
             aria-label="Waypoints in flight order"
           >
             <thead>
               <tr>
                 <th
-                  className="p-[0.375rem_0.625rem] text-left [border-bottom:0.0625rem_solid_var(--border)] whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
+                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
                   scope="col"
                 >
                   #
                 </th>
                 <th
-                  className="p-[0.375rem_0.625rem] text-left [border-bottom:0.0625rem_solid_var(--border)] whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
+                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
                   scope="col"
                 >
                   X
                 </th>
                 <th
-                  className="p-[0.375rem_0.625rem] text-left [border-bottom:0.0625rem_solid_var(--border)] whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
+                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
                   scope="col"
                 >
                   Y
                 </th>
                 <th
-                  className="p-[0.375rem_0.625rem] text-left [border-bottom:0.0625rem_solid_var(--border)] whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
+                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
                   scope="col"
                 >
                   Z
                 </th>
                 <th
-                  className="p-[0.375rem_0.625rem] text-left [border-bottom:0.0625rem_solid_var(--border)] whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
+                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
                   scope="col"
                 >
                   Action
                 </th>
                 <th
-                  className="p-[0.375rem_0.625rem] text-left [border-bottom:0.0625rem_solid_var(--border)] whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
+                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
                   scope="col"
                 >
                   T+
@@ -237,7 +237,7 @@ export default function MissionPreview({
                 const isActive = activeWaypointId === waypoint.id;
                 const isLast = index === preview.rows.length - 1;
                 const cellClassName = [
-                  "p-[0.375rem_0.625rem] text-left [border-bottom:0.0625rem_solid_var(--border)] whitespace-nowrap",
+                  "py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap",
                   isLast ? "[border-bottom:0]" : "",
                 ]
                   .filter(Boolean)
@@ -254,7 +254,7 @@ export default function MissionPreview({
                     tabIndex={0}
                     aria-selected={isActive}
                     className={[
-                      "cursor-pointer hover:bg-(--accent) focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:-outline-offset-2",
+                      "cursor-pointer hover:bg-(--accent) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:-outline-offset-2",
                       isActive
                         ? "bg-[color-mix(in_srgb,var(--primary)_9%,var(--card))]"
                         : "",

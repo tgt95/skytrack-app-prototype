@@ -2,8 +2,8 @@
    Satellite stays the Studio default; switching only swaps the active map
    imagery and never touches camera, entities, or mission state. */
 
-import { CheckIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
+import { CheckboxRoot as Checkbox } from "skytrack-ui/checkbox";
 import { BASEMAPS, type MissionBasemapStyle } from "../scene/basemaps";
 
 export function BasemapPickerGrid({
@@ -24,29 +24,27 @@ export function BasemapPickerGrid({
       {groups.map((group) => (
         <div key={group.label}>
           <p
-            className=" m-[0.75rem_0_0.375rem] text-(--muted-foreground) text-[0.6875rem] font-semibold tracking-[0.06em] uppercase"
+            className="text-sm font-medium mb-2"
             data-testid="ms-basemap-group-label"
           >
             {group.label}
           </p>
-          <div
-            className=" grid grid-cols-2 gap-[0.5rem]"
-            data-testid="ms-basemap-grid"
-          >
+          <div className="grid grid-cols-2 gap-2" data-testid="ms-basemap-grid">
             {group.ids.map((id) => {
               const option = BASEMAPS[id];
               return (
                 <Button
                   key={id}
                   type="button"
-                  variant={value === id ? "secondary" : "outline"}
+                  variant='outline'
+                  // variant={value === id ? "secondary" : "outline"}
                   aria-pressed={value === id}
                   data-testid={`${testidPrefix}-${id}`}
-                  className=" flex min-w-0 h-[5.625rem] flex-col items-stretch justify-start gap-[0.25rem] p-[0.3125rem] overflow-hidden text-[0.75rem]"
+                  className={`flex min-w-0 h-22.5 flex-col items-stretch justify-start gap-1 p-1.25 overflow-hidden text-xs  ${value === id ? "border-(--primary)" : "border-border"}`}
                   onClick={() => onChange(id)}
                 >
                   <span
-                    className=" relative block w-full h-[3.25rem] overflow-hidden [border:0.0625rem_solid_var(--border)] rounded-[calc(var(--radius)-0.0625rem)] bg-(--muted) [&_img]:block [&_img]:w-full [&_img]:h-full [&_img]:object-cover"
+                    className='relative block w-full h-13 overflow-hidden border border-border rounded-[calc(var(--radius)-0.0625rem)] bg-(--muted) [&_img]:block [&_img]:w-full [&_img]:h-full [&_img]:object-cover'
                     data-testid="ms-basemap-thumb"
                   >
                     <img
@@ -58,12 +56,14 @@ export function BasemapPickerGrid({
                       }}
                     />
                     {value === id ? (
-                      <span
-                        className=" absolute top-[0.25rem] right-[0.25rem] flex w-[1.25rem] h-[1.25rem] items-center justify-center rounded-[62.4375rem] bg-(--primary) text-(--primary-foreground)"
+                      <Checkbox
+                        checked
+                        readOnly
+                        aria-hidden="true"
+                        tabIndex={-1}
+                        className="pointer-events-none absolute top-1 right-1"
                         data-testid="ms-basemap-check"
-                      >
-                        <CheckIcon aria-hidden="true" weight="bold" />
-                      </span>
+                      />
                     ) : null}
                   </span>
                   <span>{option.label}</span>

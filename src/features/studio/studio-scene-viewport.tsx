@@ -80,14 +80,14 @@ export default function StudioSceneViewport({
     <div
       className={[
         `ms-scene-wrap${drawing && stageIsDesign ? " has-alt-ruler" : ""}${editModeActive ? " is-editing-mode" : ""}`,
-        "[@media_(max-width:_61.25rem)]:flex-[0_0_26.25rem] relative flex-[1_1_auto] min-h-0 bg-(--background)",
+        "[@media_(max-width:_61.25rem)]:grow-0 shrink-0 basis-105 relative flex-[1_1_auto] min-h-0 bg-(--background)",
       ]
         .filter(Boolean)
         .join(" ")}
     >
       {!editModeActive && !hideContextCards ? (
         <div
-          className=" absolute inset-0 z-4 pointer-events-none [&_.ms-drone-trigger]:flex-[1_1_auto] [&_.ms-drone-trigger]:min-w-0 [&_.ms-drone-trigger]:w-auto [&_.ms-drone-trigger]:min-h-0 [&_.ms-drone-trigger]:flex [&_.ms-drone-trigger]:items-center [&_.ms-drone-trigger]:gap-[0.375rem] [&_.ms-drone-trigger]:p-[0.125rem_0.5rem_0.125rem_0.125rem] [&_.ms-drone-trigger]:[border:0] [&_.ms-drone-trigger]:rounded-[calc(var(--radius)-0.125rem)] [&_.ms-drone-trigger]:bg-transparent [&_.ms-drone-trigger]:[box-shadow:none] [&_.ms-drone-trigger]:text-inherit [&_.ms-drone-trigger]:[font:inherit] [&_.ms-drone-trigger]:text-left [&_.ms-drone-trigger]:cursor-pointer [&_.ms-drone-trigger:focus-visible]:[outline:0.125rem_solid_var(--primary)] [&_.ms-drone-trigger:focus-visible]:outline-offset-1"
+          className=" absolute inset-0 z-4 pointer-events-none [&_.ms-drone-trigger]:flex-[1_1_auto] [&_.ms-drone-trigger]:min-w-0 [&_.ms-drone-trigger]:w-auto [&_.ms-drone-trigger]:min-h-0 [&_.ms-drone-trigger]:flex [&_.ms-drone-trigger]:items-center [&_.ms-drone-trigger]:gap-1.5 [&_.ms-drone-trigger]:pt-0.5 [&_.ms-drone-trigger]:pr-2 [&_.ms-drone-trigger]:pb-0.5 [&_.ms-drone-trigger]:pl-0.5 [&_.ms-drone-trigger]:[border:0] [&_.ms-drone-trigger]:rounded-[calc(var(--radius)-0.125rem)] [&_.ms-drone-trigger]:bg-transparent [&_.ms-drone-trigger]:[box-shadow:none] [&_.ms-drone-trigger]:text-inherit [&_.ms-drone-trigger]:[font:inherit] [&_.ms-drone-trigger]:text-left [&_.ms-drone-trigger]:cursor-pointer [&_.ms-drone-trigger:focus-visible]:outline-2 [&_.ms-drone-trigger:focus-visible]:outline-(--primary) [&_.ms-drone-trigger:focus-visible]:outline-offset-1"
           data-testid="ms-map-overlays"
         >
           <MissionContextCards
@@ -105,7 +105,7 @@ export default function StudioSceneViewport({
       >
         {mission.worldType !== "2D" && mission.origin?.attribution ? (
           <a
-            className=" absolute left-[7rem] bottom-[0.625rem] z-6 max-w-[min(19.375rem,calc(100%-8.25rem))] overflow-hidden p-[0.1875rem_0.4375rem] [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-(--card) text-(--muted-foreground) text-[0.6875rem] leading-[1.35] text-ellipsis [text-decoration:none] whitespace-nowrap [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] [&:hover]:text-(--foreground) [&:hover]:[text-decoration:underline]"
+            className=" absolute left-28 bottom-2.5 z-6 max-w-[min(19.375rem,calc(100%-8.25rem))] overflow-hidden py-0.75 px-1.75 border border-border rounded-(--radius) bg-(--card) text-(--muted-foreground) text-[0.6875rem] leading-[1.35] text-ellipsis [text-decoration:none] whitespace-nowrap [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] [&:hover]:text-(--foreground) [&:hover]:[text-decoration:underline]"
             href={mission.origin.attribution.href}
             target="_blank"
             rel="noreferrer"

@@ -72,7 +72,7 @@ export function AccountMenuDialogs({
       <DialogPortal>
         <DialogBackdrop />
         <DialogPopup
-          className="ms-lib-account-dialog w-[min(30rem,calc(100vw-2rem))] [@media_(max-width:_32.5rem)]:p-[1.25rem]"
+          className="ms-lib-account-dialog w-[min(30rem,calc(100vw-2rem))] [@media_(max-width:_32.5rem)]:p-5"
           aria-label={title}
           data-testid={`ms-lib-account-dialog-${panel ?? "closed"}`}
         >
@@ -103,11 +103,11 @@ export function AccountMenuDialogs({
 
           {panel === "profile" ? (
             <div
-              className=" flex flex-col gap-[0.875rem] min-w-0"
+              className=" flex flex-col gap-3.5 min-w-0"
               data-testid="ms-lib-account-form"
             >
               <div
-                className=" inline-flex items-center justify-center w-[3.25rem] h-[3.25rem] flex-[0_0_auto] rounded-[50%] bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1.3125rem] font-[650]"
+                className=" inline-flex items-center justify-center w-13 h-13 flex-[0_0_auto] rounded-[50%] bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1.3125rem] font-[650]"
                 aria-hidden="true"
                 data-testid="ms-lib-account-edit-avatar"
               >
@@ -145,11 +145,11 @@ export function AccountMenuDialogs({
 
           {panel === "settings" ? (
             <div
-              className=" flex flex-col gap-[0.875rem] min-w-0 gap-0"
+              className=" flex flex-col gap-3.5 min-w-0 gap-0"
               data-testid="ms-lib-account-settings-content"
             >
               <div
-                className=" flex items-center justify-between gap-[0.75rem] min-h-[2.75rem] [border-bottom:0.0625rem_solid_var(--border)] text-(--muted-foreground) text-[0.8125rem]"
+                className=" flex items-center justify-between gap-3 min-h-11 border-b border-b-border text-(--muted-foreground) text-[0.8125rem]"
                 data-testid="ms-lib-account-status-row"
               >
                 <span>Account status</span>
@@ -161,7 +161,7 @@ export function AccountMenuDialogs({
 
           {panel === "notifications" ? (
             <div
-              className=" flex flex-col gap-[0.875rem] min-w-0"
+              className=" flex flex-col gap-3.5 min-w-0"
               data-testid="ms-lib-account-notifications-content"
             >
               <h3 className="heading m-0 text-[0.8125rem] font-semibold">
@@ -201,7 +201,7 @@ export function AccountMenuDialogs({
                 }
               />
               <div
-                className=" flex items-center justify-between gap-[0.75rem] min-h-[2.75rem] [border-bottom:0.0625rem_solid_var(--border)] text-(--muted-foreground) text-[0.8125rem] [border-bottom:0] text-(--foreground)"
+                className=" flex items-center justify-between gap-3 min-h-11 border-b border-b-border text-(--muted-foreground) text-[0.8125rem] [border-bottom:0] text-(--foreground)"
                 data-testid="ms-lib-account-email-status"
               >
                 <span>Email notifications</span>
@@ -212,28 +212,28 @@ export function AccountMenuDialogs({
 
           {panel === "switch" ? (
             <div
-              className=" flex flex-col gap-[0.875rem] min-w-0"
+              className=" flex flex-col gap-3.5 min-w-0"
               data-testid="ms-lib-account-switch-content"
             >
               <div
-                className=" flex items-center gap-[0.75rem] min-w-0 p-[0.75rem] [border:0.0625rem_solid_var(--primary)] rounded-(--radius) bg-(--card)"
+                className=" flex items-center gap-3 min-w-0 p-3 border border-(--primary) rounded-(--radius) bg-(--card)"
                 data-testid="ms-lib-account-current"
               >
                 <span
-                  className=" inline-flex items-center justify-center w-[3.25rem] h-[3.25rem] flex-[0_0_auto] rounded-[50%] bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1.3125rem] font-[650] w-[2.625rem] h-[2.625rem] text-[1.0625rem]"
+                  className=" inline-flex items-center justify-center w-13 h-13 flex-[0_0_auto] rounded-[50%] bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1.3125rem] font-[650] w-10.5 h-10.5 text-[1.0625rem]"
                   aria-hidden="true"
                   data-testid="ms-lib-account-current-avatar"
                 >
                   {getUserInitial(profile.name)}
                 </span>
                 <span
-                  className=" flex flex-[1_1_auto] flex-col gap-[0.1875rem] min-w-0"
+                  className=" flex flex-[1_1_auto] flex-col gap-0.75 min-w-0"
                   data-testid="ms-lib-account-current-identity"
                 >
-                  <strong className="overflow-hidden text-ellipsis whitespace-nowrap text-[0.875rem] font-semibold">
+                  <strong className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold">
                     {profile.name}
                   </strong>
-                  <span className="overflow-hidden text-ellipsis whitespace-nowrap text-(--muted-foreground) text-[0.75rem]">
+                  <span className="overflow-hidden text-ellipsis whitespace-nowrap text-(--muted-foreground) text-xs">
                     {profile.email}
                   </span>
                 </span>
@@ -243,7 +243,7 @@ export function AccountMenuDialogs({
                 >
                   <CheckIcon
                     aria-hidden="true"
-                    className="w-[1.1875rem] h-[1.1875rem]"
+                    className="w-4.75 h-4.75"
                   />
                 </span>
               </div>
@@ -263,22 +263,22 @@ export function AccountMenuDialogs({
 
           {panel === "logout" ? (
             <div
-              className=" flex flex-col gap-[0.875rem] min-w-0"
+              className=" flex flex-col gap-3.5 min-w-0"
               data-testid="ms-lib-account-logout-content"
             >
               <div
-                className="ms-lib-account-callout  flex gap-[0.625rem] border-[color-mix(in_oklab,var(--warning),var(--border)_55%)]"
+                className="ms-lib-account-callout  flex gap-2.5 border-[color-mix(in_oklab,var(--warning),var(--border)_55%)]"
                 data-testid="ms-lib-account-callout"
               >
                 <WarningCircleIcon
                   aria-hidden="true"
-                  className="w-[1.1875rem] h-[1.1875rem] flex-[0_0_auto] text-(--warning)"
+                  className="w-4.75 h-4.75 flex-[0_0_auto] text-(--warning)"
                 />
                 <div>
                   <strong className="font-semibold">
                     You’ll return to sign in
                   </strong>
-                  <p className="m-[0.25rem_0_0] text-(--muted-foreground) leading-[1.5]">
+                  <p className="mt-1 mx-0 mb-0 text-(--muted-foreground) leading-[1.5]">
                     Saved projects and missions stay in this browser. Unsaved
                     changes in this session will be discarded.
                   </p>
@@ -339,7 +339,7 @@ function getUserInitial(name: string): string {
 function AccountDetail({ label, value }: { label: string; value: string }) {
   return (
     <div
-      className=" flex items-center justify-between gap-[0.75rem] min-h-[2.75rem] [border-bottom:0.0625rem_solid_var(--border)] text-(--muted-foreground) text-[0.8125rem]"
+      className=" flex items-center justify-between gap-3 min-h-11 border-b border-b-border text-(--muted-foreground) text-[0.8125rem]"
       data-testid="ms-lib-account-detail"
     >
       <span>{label}</span>
@@ -365,16 +365,16 @@ function NotificationRow({
 
   return (
     <div
-      className=" flex items-center justify-between gap-[1rem] min-h-[3.625rem] [border-bottom:0.0625rem_solid_var(--border)]"
+      className=" flex items-center justify-between gap-4 min-h-14.5 border-b border-b-border"
       data-testid="ms-lib-account-notification-row"
     >
       <label
         htmlFor={id}
-        className=" flex flex-col gap-[0.1875rem] min-w-0 cursor-pointer"
+        className=" flex flex-col gap-0.75 min-w-0 cursor-pointer"
         data-testid="ms-lib-account-notification-copy"
       >
         <strong className="text-[0.8125rem] font-medium">{title}</strong>
-        <span className="text-(--muted-foreground) text-[0.75rem] leading-[1.4]">
+        <span className="text-(--muted-foreground) text-xs leading-[1.4]">
           {description}
         </span>
       </label>

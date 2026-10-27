@@ -84,7 +84,7 @@ export function SimulationSettingsForm({
         </Slider>
       </FieldRoot>
       <label
-        className=" flex items-center gap-[0.5rem] text-[0.8125rem] cursor-pointer"
+        className=" flex items-center gap-2 text-[0.8125rem] cursor-pointer"
         data-testid="ms-switchrow"
       >
         <Switch

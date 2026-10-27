@@ -50,11 +50,11 @@ export function DroneComponentRow({
 }) {
   return (
     <div
-      className="ms-drone-component-row grid grid-cols-[2rem_minmax(9.0625rem,1.1fr)_minmax(9.6875rem,1.3fr)_minmax(9.6875rem,1.3fr)_2rem] [align-items:end] gap-[0.5rem] p-[0.625rem] [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-(--card) [@media_(max-width:_45rem)]:grid-cols-[1.75rem_minmax(0,1fr)_2rem]"
+      className="ms-drone-component-row grid grid-cols-[2rem_minmax(9.0625rem,1.1fr)_minmax(9.6875rem,1.3fr)_minmax(9.6875rem,1.3fr)_2rem] [align-items:end] gap-2 p-2.5 border border-border rounded-(--radius) bg-(--card) [@media_(max-width:_45rem)]:grid-cols-[1.75rem_minmax(0,1fr)_2rem]"
       key={component.id}
     >
       <span
-        className=" flex items-center h-[2.25rem] text-(--muted-foreground) text-[0.6875rem] [font-variant-numeric:tabular-nums] [@media_(max-width:_45rem)]:row-[1/span_3] [@media_(max-width:_45rem)]:items-start [@media_(max-width:_45rem)]:pt-[1.75rem]"
+        className=" flex items-center h-9 text-(--muted-foreground) text-[0.6875rem] [font-variant-numeric:tabular-nums] [@media_(max-width:_45rem)]:row-[1/span_3] [@media_(max-width:_45rem)]:items-start [@media_(max-width:_45rem)]:pt-7"
         aria-hidden="true"
         data-testid="ms-drone-component-index"
       >
@@ -129,14 +129,14 @@ export function DroneComponentRow({
         </Button>
       </SkyTooltip>
       <details
-        className=" col-span-full [border-top:0.0625rem_solid_var(--border)] pt-[0.5rem]"
+        className=" col-span-full border-t border-t-border pt-2"
         data-testid="ms-drone-component-details"
       >
-        <summary className="w-fit text-(--muted-foreground) text-[0.75rem] cursor-pointer">
+        <summary className="w-fit text-(--muted-foreground) text-xs cursor-pointer">
           Specifications &amp; source
         </summary>
         <div
-          className=" flex flex-col gap-[1rem] pt-[0.75rem]"
+          className=" flex flex-col gap-4 pt-3"
           data-testid="ms-drone-component-detail-body"
         >
           <div className="ms-drone-form-grid">
@@ -197,14 +197,14 @@ export function DroneComponentRow({
             />
           </div>
           <div
-            className=" flex items-start justify-between gap-[0.75rem] [@media_(max-width:_45rem)]:flex-col"
+            className=" flex items-start justify-between gap-3 [@media_(max-width:_45rem)]:flex-col"
             data-testid="ms-drone-specifications-heading"
           >
             <div>
-              <h3 className="sub-heading m-[0_0_0.1875rem] text-xs">
+              <h3 className="sub-heading mt-0 mx-0 mb-0.75 text-xs">
                 Key specifications
               </h3>
-              <p className="max-w-[35rem] m-0 text-(--muted-foreground) text-[0.6875rem] leading-[1.45]">
+              <p className="max-w-140 m-0 text-(--muted-foreground) text-[0.6875rem] leading-[1.45]">
                 Examples: battery chemistry, cell count, capacity, voltage,
                 connector; motor size and KV; ESC current and firmware;
                 propeller diameter, pitch, and blade count.

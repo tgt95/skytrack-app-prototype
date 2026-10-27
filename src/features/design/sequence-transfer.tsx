@@ -27,7 +27,7 @@ export function TransferRow({
   const Tag = as;
   return (
     <Tag
-      className={`ms-seq-row ${as === "li" ? SEQUENCE_LIST_ITEM_CLASS : "rounded-(--radius)"} border-dashed bg-[color-mix(in_srgb,var(--primary)_6%,var(--background))] [.ms-seq-row&]:p-[0.375rem_0.75rem] [.ms-seq-row&]:[flex-wrap:unset]`}
+      className={`ms-seq-row ${as === "li" ? SEQUENCE_LIST_ITEM_CLASS : "rounded-(--radius)"} border-dashed bg-[color-mix(in_srgb,var(--primary)_6%,var(--background))] [.ms-seq-row&]:py-1.5 [.ms-seq-row&]:px-3 [.ms-seq-row&]:[flex-wrap:unset]`}
       role="note"
       data-testid={`ms-trans-${transfer.id}`}
       aria-label={`Generated transfer from ${transfer.fromLabel} to ${transfer.toLabel}, ${transfer.distanceM.toFixed(1)} meters`}
@@ -66,7 +66,7 @@ export function EndMissionControl({
   const Tag = as;
   return (
     <Tag
-      className={`ms-seq-row ms-end ${as === "li" ? SEQUENCE_LIST_ITEM_CLASS : "rounded-(--radius)"} [.ms-seq-row&]:p-[0.375rem_0.75rem] [.ms-seq-row&]:[flex-wrap:unset] [.ms-seq-row&]:bg-(--accent)`}
+      className={`ms-seq-row ms-end ${as === "li" ? SEQUENCE_LIST_ITEM_CLASS : "rounded-(--radius)"} [.ms-seq-row&]:py-1.5 [.ms-seq-row&]:px-3 [.ms-seq-row&]:[flex-wrap:unset] [.ms-seq-row&]:bg-(--accent)`}
     >
       <Badge
         count="END"
@@ -94,7 +94,7 @@ export function EndMissionControl({
         <SelectTrigger
           aria-label="End of mission behavior"
           data-testid="ms-end-select"
-          className="ms-end-select flex-[1_1_auto] min-w-0 text-[0.75rem]"
+          className="ms-end-select flex-[1_1_auto] min-w-0 text-xs"
         >
           <SelectValue />
           <SelectIcon />

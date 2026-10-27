@@ -283,7 +283,7 @@ function MissionCardCore({
     >
       <button
         type="button"
-        className="ms-lib-thumb is-mission p-0 [border:0] [border-bottom:0.0625rem_solid_var(--border)] appearance-none cursor-pointer"
+        className="ms-lib-thumb is-mission p-0 [border:0] border-b border-b-border appearance-none cursor-pointer"
         data-testid={testId ? `${testId}-open` : undefined}
         aria-label={`Open ${mission.name}`}
         onClick={onOpen}

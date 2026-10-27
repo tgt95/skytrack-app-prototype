@@ -47,7 +47,7 @@ export function AIModelCardContent({
     <>
       {showThumbnail ? (
         <span className="ms-lib-resource-icon">
-          <PackageIcon aria-hidden="true" className="w-[2.25rem] h-[2.25rem]" />
+          <PackageIcon aria-hidden="true" className="w-9 h-9" />
         </span>
       ) : null}
       <span className="ms-lib-card-body min-w-0 flex-1">
@@ -67,7 +67,7 @@ export function AIModelCardContent({
             ? `${model.packageFileSize ? `${(model.packageFileSize / (1024 * 1024)).toFixed(1)} MB` : "Package size unavailable"} · ${model.status}`
             : `${model.inputModality || "Input modality not specified"}${model.compatibility ? ` · ${model.compatibility}` : ""}`}
         </span>
-        <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+        <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground mt-1">
           <Avatar aria-hidden="true" className="size-6">
             <AvatarFallback className="text-[0.625rem] font-bold">
               {initial}

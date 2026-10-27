@@ -34,14 +34,14 @@ function StudioTopbar({
 }: StudioTopbarProps) {
   return (
     <header
-      className=" [@media_(max-width:_61.25rem)]:flex-wrap flex items-center justify-between gap-[0.75rem] p-[0.5rem_0.75rem] [border-bottom:0.0625rem_solid_var(--border)] bg-(--card) flex-[0_0_auto]"
+      className=" [@media_(max-width:_61.25rem)]:flex-wrap flex items-center justify-between gap-3 py-2 px-3 border-b border-b-border bg-(--card) flex-[0_0_auto]"
       data-testid="ms-top"
     >
       <Breadcrumb
         className="flex min-w-0 flex-[1_1_auto] overflow-hidden text-[0.8125rem]"
         aria-label="Breadcrumb"
       >
-        <BreadcrumbList className="m-0 min-w-0 list-none flex-nowrap gap-[0.5rem] p-0 text-inherit">
+        <BreadcrumbList className="m-0 min-w-0 list-none flex-nowrap gap-2 p-0 text-inherit">
           <BreadcrumbItem className="shrink-0">
             <SkyTooltip>
               <BreadcrumbLink
@@ -60,7 +60,7 @@ function StudioTopbar({
                   src={skytrackLogo}
                   alt=""
                   aria-hidden="true"
-                  className=" flex-[0_0_auto] block w-[1.5rem] h-[1.5rem]"
+                  className=" flex-[0_0_auto] block w-6 h-6"
                   data-testid="ms-crumb-logo"
                 />
               </BreadcrumbLink>
@@ -114,7 +114,7 @@ function StudioTopbar({
         </BreadcrumbList>
       </Breadcrumb>
       <div
-        className=" flex items-center gap-[0.375rem] flex-[0_0_auto]"
+        className=" flex items-center gap-1.5 flex-[0_0_auto]"
         data-testid="ms-top-actions"
       >
         <Button size="sm" variant="outline" onClick={onOpenEdit}>

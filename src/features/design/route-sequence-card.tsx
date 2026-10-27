@@ -130,7 +130,7 @@ export default function RouteSequenceCard({
       <span id={`ms-speed-label-${route.id}`} className={worldType === "2D" ? "flex-1 min-w-0" : undefined}>
         Target speed
       </span>
-      <span className="ms-data-right flex items-center gap-[0.375rem] min-w-0 [.ms-target-speed-row_>_&]:flex-[0_0_auto]">
+      <span className="ms-data-right flex items-center gap-1.5 min-w-0 [.ms-target-speed-row_>_&]:flex-[0_0_auto]">
         <CompactAxisField
           label={`${route.label} target speed in meters per second`}
           short=""
@@ -155,7 +155,7 @@ export default function RouteSequenceCard({
           }
         />
         <span
-          className=" text-[0.75rem] text-(--muted-foreground)"
+          className=" text-xs text-(--muted-foreground)"
           aria-hidden="true"
           data-testid="ms-unit"
         >
@@ -194,14 +194,14 @@ export default function RouteSequenceCard({
       className="ms-card ms-object-block"
       aria-label={`${route.label} sequence, ${routeWaypoints.length} waypoints, ${routeActions} actions`}
     >
-      <div className="ms-route-head flex-row! items-center gap-[0.5rem] min-w-0 p-[0.75rem] [@media_(max-width:_40rem)]:flex-wrap">
+      <div className="ms-route-head flex-row! items-center gap-2 min-w-0 p-3 max-sm:flex-wrap">
         <div className="ms-route-title-group">
           <PathIcon aria-hidden="true" className="ms-route-icon" />
           <span className="ms-route-name flex-[0_0_auto] min-w-0 whitespace-nowrap">
             {route.label}
           </span>
         </div>
-        <span className="ms-route-stats block flex-[1_1_0] ml-auto min-w-0 overflow-hidden text-right text-ellipsis whitespace-nowrap [@media_(max-width:_40rem)]:ml-0 [@media_(max-width:_40rem)]:text-left">
+        <span className="ms-route-stats block flex-[1_1_0] ml-auto min-w-0 overflow-hidden text-right text-ellipsis whitespace-nowrap max-sm:ml-0 max-sm:text-left">
           <SkyTooltip>
             <span
               className="ms-stat"
@@ -210,7 +210,7 @@ export default function RouteSequenceCard({
             >
               <RulerIcon
                 aria-hidden="true"
-                className="w-[0.875rem] h-[0.875rem]"
+                className="w-3.5 h-3.5"
               />
               {routeLength.toFixed(1)} m
             </span>
@@ -223,7 +223,7 @@ export default function RouteSequenceCard({
             >
               <GitMergeIcon
                 aria-hidden="true"
-                className="w-[0.875rem] h-[0.875rem]"
+                className="w-3.5 h-3.5"
               />
               {routeWaypoints.length}
             </span>
@@ -236,7 +236,7 @@ export default function RouteSequenceCard({
             >
               <HandIcon
                 aria-hidden="true"
-                className="w-[0.875rem] h-[0.875rem]"
+                className="w-3.5 h-3.5"
               />
               {routeActions}
             </span>

@@ -141,7 +141,7 @@ export function DesignSequenceBlocks({
 
   return (
     <div
-      className="ms-sequence-blocks flex flex-col gap-[0.75rem] min-w-0"
+      className="ms-sequence-blocks flex flex-col gap-3 min-w-0"
       data-testid="ms-sequence-blocks"
     >
       {visibleSequence.map((item) => {

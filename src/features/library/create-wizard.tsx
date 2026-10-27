@@ -39,7 +39,7 @@ function Stepper({ step }: { step: 1 | 2 | 3 }) {
   return (
     <TabsList
       variant="line"
-      className=" relative w-fit max-w-none m-[0_auto] p-[0.25rem_0_0] flex items-center justify-center gap-0"
+      className=" relative w-fit max-w-none m-[0_auto] pt-1 px-0 pb-0 flex items-center justify-center gap-0"
       aria-label="Create mission steps"
     >
       {STEPS.map((label, i) => {
@@ -57,14 +57,14 @@ function Stepper({ step }: { step: 1 | 2 | 3 }) {
               disabled={n > step}
               className={[
                 `ms-wizard-stepbtn is-${state}`,
-                "inline-flex flex-[0_0_auto] items-center gap-[0.375rem] p-[0_0_0.5rem] bg-transparent text-(--muted-foreground) [font:inherit] text-[0.8125rem] [&:not(:disabled):hover]:text-(--foreground) [button&:focus-visible]:[outline:0.125rem_solid_var(--primary)] [button&:focus-visible]:outline-offset-1 data-active:text-(--foreground) data-active:font-semibold grid place-items-center w-[1.5rem] h-[1.5rem] rounded-[50%] bg-(--muted) text-(--foreground) text-[0.75rem] font-semibold",
+                "inline-flex flex-[0_0_auto] items-center gap-1.5 pt-0 px-0 pb-2 bg-transparent text-(--muted-foreground) [font:inherit] text-[0.8125rem] [&:not(:disabled):hover]:text-(--foreground) [button&:focus-visible]:outline-2 [button&:focus-visible]:outline-(--primary) [button&:focus-visible]:outline-offset-1 data-active:text-(--foreground) data-active:font-semibold grid place-items-center w-6 h-6 rounded-[50%] bg-(--muted) text-(--foreground) text-xs font-semibold",
               ]
                 .filter(Boolean)
                 .join(" ")}
               aria-label={`Step ${n}: ${label}`}
             >
               <span
-                className=" inline-flex items-center justify-center w-[1.125rem] h-[1.125rem] rounded-[50%] bg-(--muted) text-(--muted-foreground) text-[0.6875rem] font-bold [.ms-wizard-stepbtn[data-active]_&]:bg-(--primary) [.ms-wizard-stepbtn[data-active]_&]:text-(--primary-foreground)"
+                className=" inline-flex items-center justify-center w-4.5 h-4.5 rounded-[50%] bg-(--muted) text-(--muted-foreground) text-[0.6875rem] font-bold [.ms-wizard-stepbtn[data-active]_&]:bg-(--primary) [.ms-wizard-stepbtn[data-active]_&]:text-(--primary-foreground)"
                 aria-hidden="true"
                 data-testid="ms-wizard-num"
               >
@@ -74,7 +74,7 @@ function Stepper({ step }: { step: 1 | 2 | 3 }) {
             </TabsTab>
             {n < STEPS.length ? (
               <span
-                className=" block w-[2rem] h-px m-[0_0.625rem] bg-(--border) flex-[0_0_auto]"
+                className=" block w-8 h-px my-0 mx-2.5 bg-(--border) flex-[0_0_auto]"
                 aria-hidden="true"
                 data-testid="ms-wizard-connector"
               />
@@ -217,11 +217,11 @@ export default function CreateMissionWizard({
             />
           </Tabs>
           <DialogFooter
-            className=" in-[.ms-lib-wizard]:flex in-[.ms-lib-wizard]:items-center in-[.ms-lib-wizard]:justify-between in-[.ms-lib-wizard]:gap-[0.5rem]"
+            className=" in-[.ms-lib-wizard]:flex in-[.ms-lib-wizard]:items-center in-[.ms-lib-wizard]:justify-between in-[.ms-lib-wizard]:gap-2"
             data-testid="ms-wizard-footer"
           >
             <span
-              className=" flex items-center gap-[0.5rem]"
+              className=" flex items-center gap-2"
               data-testid="ms-wizard-footer-start"
             >
               {step > 1 ? (
@@ -235,7 +235,7 @@ export default function CreateMissionWizard({
               ) : null}
             </span>
             <span
-              className=" flex items-center gap-[0.5rem]"
+              className=" flex items-center gap-2"
               data-testid="ms-wizard-footer-end"
             >
               <Button variant="secondary" onClick={onClose}>

@@ -196,10 +196,10 @@ export function WorldProfileDialog({
           <div className="ms-drone-dialog-body">
             <section className="ms-drone-form-section">
               <div className="ms-drone-section-heading">
-                <h2 className="heading m-0 text-[0.875rem] font-semibold">
+                <h2 className="heading m-0 text-sm font-semibold">
                   World details
                 </h2>
-                <p className="m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.5]">
+                <p className="m-0 text-(--muted-foreground) text-xs leading-[1.5]">
                   Add the source mission and reconstruction reference for this
                   World.
                 </p>
@@ -350,7 +350,7 @@ export function WorldProfileDialog({
             </section>
             {error ? (
               <p
-                className=" m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.5] text-(--destructive)"
+                className=" m-0 text-(--muted-foreground) text-xs leading-[1.5] text-(--destructive)"
                 role="alert"
                 data-testid="ms-resource-error"
               >

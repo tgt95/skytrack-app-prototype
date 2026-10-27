@@ -18,12 +18,12 @@ export function DroneSpecificationList({
 }) {
   return (
     <div
-      className=" flex flex-col gap-[0.5rem]"
+      className=" flex flex-col gap-2"
       data-testid="ms-drone-specification-list"
     >
       {specifications.map((specification) => (
         <div
-          className=" grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_2rem] [align-items:end] gap-[0.5rem] [@media_(max-width:_45rem)]:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_2rem]"
+          className=" grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_2rem] [align-items:end] gap-2 [@media_(max-width:_45rem)]:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_2rem]"
           key={specification.id}
           data-testid="ms-drone-specification-row"
         >

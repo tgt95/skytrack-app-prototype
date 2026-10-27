@@ -26,7 +26,7 @@ export function LibraryWorkspaceSwitcher({
 }) {
   return (
     <div
-      className=" flex items-start gap-[0.375rem] min-w-0 p-[0_0.125rem_0.125rem] [@media_(max-width:_61.25rem)]:justify-center [@media_(max-width:_61.25rem)]:p-0"
+      className=" flex items-start gap-1.5 min-w-0 pt-0 px-0.5 pb-0.5 [@media_(max-width:_61.25rem)]:justify-center [@media_(max-width:_61.25rem)]:p-0"
       data-testid="ms-lib-workspace-head"
     >
       <div className="ms-lib-workspace-switcher flex-[1_1_auto] min-w-0">
@@ -37,30 +37,30 @@ export function LibraryWorkspaceSwitcher({
             render={
               <button
                 type="button"
-                className=" flex items-center justify-between gap-[0.5rem] w-full min-w-0 min-h-[2rem] p-[0.25rem_0.375rem] [border:0] rounded-(--radius) bg-transparent text-(--sidebar-foreground) text-left cursor-pointer [transition:background-color_150ms_ease,color_150ms_ease] [&:hover]:bg-(--sidebar-accent) [&:hover]:text-(--sidebar-accent-foreground) data-popup-open:bg-(--sidebar-accent) data-popup-open:text-(--sidebar-accent-foreground) focus-visible:[outline:0.125rem_solid_var(--ring)] focus-visible:outline-offset-2 [@media_(max-width:_61.25rem)]:justify-center [@media_(max-width:_61.25rem)]:p-0"
+                className=" flex items-center justify-between gap-2 w-full min-w-0 min-h-8 py-1 px-1.5 [border:0] rounded-(--radius) bg-transparent text-(--sidebar-foreground) text-left cursor-pointer [transition:background-color_150ms_ease,color_150ms_ease] [&:hover]:bg-(--sidebar-accent) [&:hover]:text-(--sidebar-accent-foreground) data-popup-open:bg-(--sidebar-accent) data-popup-open:text-(--sidebar-accent-foreground) focus-visible:outline-2 focus-visible:outline-(--ring) focus-visible:outline-offset-2 [@media_(max-width:_61.25rem)]:justify-center [@media_(max-width:_61.25rem)]:p-0"
                 data-testid="ms-lib-workspace-select"
               />
             }
           >
             <span
-              className=" hidden items-center justify-center w-[2.125rem] h-[2.125rem] rounded-(--radius) bg-(--sidebar-accent) text-(--sidebar-accent-foreground) text-sm font-bold [@media_(max-width:_61.25rem)]:inline-flex"
+              className=" hidden items-center justify-center w-8.5 h-8.5 rounded-(--radius) bg-(--sidebar-accent) text-(--sidebar-accent-foreground) text-sm font-bold [@media_(max-width:_61.25rem)]:inline-flex"
               aria-hidden="true"
               data-testid="ms-lib-workspace-avatar"
             >
               {activeWorkspace.name.slice(0, 1)}
             </span>
             <span
-              className=" min-w-0 overflow-hidden text-sm font-semibold leading-[1.5rem] text-ellipsis whitespace-nowrap [@media_(max-width:_61.25rem)]:hidden"
+              className=" min-w-0 overflow-hidden text-sm font-semibold leading-6 text-ellipsis whitespace-nowrap [@media_(max-width:_61.25rem)]:hidden"
               data-testid="ms-lib-workspace-name"
             >
               {activeWorkspace.name}
             </span>
             <span
               data-testid="ms-lib-workspace-caret"
-              className="inline-flex items-center justify-center w-[1.5rem] h-[1.5rem] flex-[0_0_1.5rem] [@media_(max-width:_61.25rem)]:hidden"
+              className="inline-flex items-center justify-center w-6 h-6 grow-0 shrink-0 basis-6 [@media_(max-width:_61.25rem)]:hidden"
               aria-hidden="true"
             >
-              <CaretDownIcon className="w-[1rem] h-[1rem] flex-[0_0_auto]" />
+              <CaretDownIcon className="w-4 h-4 flex-[0_0_auto]" />
             </span>
           </MenuTrigger>
           <MenuPortal>
@@ -98,7 +98,7 @@ export function LibraryWorkspaceSwitcher({
           </MenuPortal>
         </Menu>
         <div
-          className=" m-[0.125rem_0_0_0.375rem] [@media_(max-width:_61.25rem)]:hidden"
+          className=" mt-0.5 mr-0 mb-0 ml-1.5 [@media_(max-width:_61.25rem)]:hidden"
           data-testid="ms-lib-workspace-role"
         >
           <Badge count={activeWorkspace.role} status="default" />
@@ -109,7 +109,7 @@ export function LibraryWorkspaceSwitcher({
           type="button"
           size="icon-xs"
           variant="ghost"
-          className=" mt-[0.25rem] text-(--sidebar-foreground) [&:hover]:bg-(--sidebar-accent) [&:hover]:text-(--sidebar-accent-foreground) [@media_(max-width:_61.25rem)]:hidden"
+          className=" mt-1 text-(--sidebar-foreground) [&:hover]:bg-(--sidebar-accent) [&:hover]:text-(--sidebar-accent-foreground) [@media_(max-width:_61.25rem)]:hidden"
           aria-label="Workspace settings"
           title="Workspace settings"
           onClick={() => onAnnounce(`${activeWorkspace.name} settings`)}

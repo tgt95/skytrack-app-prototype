@@ -65,33 +65,33 @@ export default function LibraryTopbar({
         </ToastPortal>
       </ToastProvider>
       <header
-        className="sticky top-0 z-20 flex-[0_0_auto] flex items-center justify-between gap-[0.75rem] min-h-[3rem] p-[0.5rem_0.75rem] [border-bottom:0.0625rem_solid_var(--border)] bg-(--card) [@media_(max-width:_61.25rem)]:flex-wrap"
+        className="sticky top-0 z-20 flex-[0_0_auto] flex items-center justify-between gap-3 min-h-12 py-2 px-3 border-b border-b-border bg-(--card) [@media_(max-width:_61.25rem)]:flex-wrap"
         data-testid="ms-lib-top"
       >
         <button
           type="button"
-          className="inline-flex items-center gap-[0.5rem] rounded-(--radius) bg-transparent p-0 [border:0] [font:inherit] font-bold text-[0.875rem] text-inherit cursor-pointer [&_svg]:block [&_svg]:h-[1.5rem] focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:outline-offset-1"
+          className="inline-flex items-center gap-2 rounded-(--radius) bg-transparent p-0 [border:0] [font:inherit] font-bold text-sm text-inherit cursor-pointer [&_svg]:block [&_svg]:h-6 focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
           aria-label="Go to Home"
           title="Go to Home"
           data-testid="ms-lib-logo-home"
           onClick={onNavigateHome}
         >
           <span
-            className="inline-flex items-center gap-[0.5rem]"
+            className="inline-flex items-center gap-2"
             aria-hidden="true"
             dangerouslySetInnerHTML={{ __html: skytrackLogoFull }}
           />
         </button>
         <span
-          className=" flex items-center gap-[0.5rem]"
+          className=" flex items-center gap-2"
           data-testid="ms-lib-top-actions"
         >
           <div
-            className=" inline-flex items-center gap-[0.5rem]"
+            className=" inline-flex items-center gap-2"
             data-testid="ms-run-environment"
           >
             <span
-              className=" text-(--muted-foreground) text-[0.875rem] whitespace-nowrap"
+              className=" text-(--muted-foreground) text-sm whitespace-nowrap"
               data-testid="ms-run-environment-label"
             >
               Environment:

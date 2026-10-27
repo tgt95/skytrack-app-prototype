@@ -7,7 +7,7 @@ import type { DragEvent } from "react";
 const SEQUENCE_DRAG_MIME = "application/x-skytrack-sequence-item";
 export const SEQUENCE_LIST_ITEM_BASE_CLASS =
   "relative rounded-[0] first:[border-top-left-radius:var(--radius)] first:[border-top-right-radius:var(--radius)] last:[border-bottom-left-radius:var(--radius)] last:[border-bottom-right-radius:var(--radius)]";
-export const SEQUENCE_LIST_ITEM_CLASS = `${SEQUENCE_LIST_ITEM_BASE_CLASS} mt-[-0.0625rem] first:mt-[0]`;
+export const SEQUENCE_LIST_ITEM_CLASS = `${SEQUENCE_LIST_ITEM_BASE_CLASS} -mt-0.25 first:mt-[0]`;
 
 export type SequenceDragItem =
   | { kind: "waypoint"; id: string; routeId: string }

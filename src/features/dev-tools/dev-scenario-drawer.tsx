@@ -70,7 +70,7 @@ export default function DevScenarioDrawer() {
       </label>
 
       <div
-        className="text-(--muted-foreground) flex-none text-[0.75rem]"
+        className="text-(--muted-foreground) flex-none text-xs"
         aria-live="polite"
       >
         {scenarios.length} {scenarios.length === 1 ? "scenario" : "scenarios"}
@@ -86,7 +86,7 @@ export default function DevScenarioDrawer() {
 
           return (
             <div
-              className="flex items-center justify-between gap-4 border-b border-solid border-(--border) py-[0.875rem]"
+              className="flex items-center justify-between gap-4 border-b border-solid border-(--border) py-3.5"
               key={scenario.id}
               role="listitem"
               data-testid={`dev-scenario-${scenario.id}`}

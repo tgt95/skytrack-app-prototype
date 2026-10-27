@@ -21,7 +21,6 @@ const MIN_INSPECTOR_WIDTH = 320;
 const MAX_INSPECTOR_WIDTH = 1440;
 const MIN_MAP_WIDTH = 600;
 const AI_MODEL_PANEL_WIDTH = 400;
-const MIN_AI_MODEL_PANEL_WIDTH = 256;
 const INSPECTOR_RESIZE_STEP = 24;
 
 function availableInspectorWidth(): number {
@@ -94,7 +93,12 @@ export default function StudioInspector({
   const compactViewport = window.matchMedia("(max-width: 61.25rem)").matches;
   const modelPickerVisible =
     stageIsDesign && codeView && !routeDraftActive && design.aiModelsOpen;
-  const extraPanelWidth = modelPickerVisible ? MIN_AI_MODEL_PANEL_WIDTH : 0;
+  const extraPanelWidth = modelPickerVisible
+    ? Math.min(
+        AI_MODEL_PANEL_WIDTH,
+        Math.max(0, availableInspectorWidth() - MIN_INSPECTOR_WIDTH),
+      )
+    : 0;
   const defaultInspectorWidth =
     !compactViewport && stageIsDesign && codeView && !routeDraftActive
       ? window.innerWidth <= 1180
@@ -105,15 +109,7 @@ export default function StudioInspector({
     inspectorWidth === null
       ? clampInspectorWidth(defaultInspectorWidth, extraPanelWidth)
       : clampInspectorWidth(inspectorWidth, extraPanelWidth);
-  const aiModelPanelWidth = modelPickerVisible
-    ? Math.min(
-        AI_MODEL_PANEL_WIDTH,
-        Math.max(
-          MIN_AI_MODEL_PANEL_WIDTH,
-          availableInspectorWidth() - currentInspectorWidth,
-        ),
-      )
-    : 0;
+  const aiModelPanelWidth = extraPanelWidth;
   const customFlexBasis =
     !compactViewport && (inspectorWidth !== null || modelPickerVisible)
       ? `${currentInspectorWidth}px`
@@ -194,7 +190,7 @@ export default function StudioInspector({
         style={customFlexBasis ? { flexBasis: customFlexBasis } : undefined}
         className={[
           `ms-inspector-wrap${stageIsDesign && codeView && !routeDraftActive ? " is-code-view" : ""}`,
-          "relative flex-[0_0_25rem] min-h-0 [border-left:0.0625rem_solid_var(--border)] bg-(--card) overflow-y-auto [.ms-inspector-wrap&:where(.is-code-view)]:basis-[clamp(28.75rem,38vw,45rem)] [.ms-inspector-wrap&:where(.is-code-view)]:overflow-hidden [@media_(max-width:_73.75rem)]:basis-[19.375rem] [@media_(max-width:_73.75rem)]:[.ms-inspector-wrap&:where(.is-code-view)]:basis-[min(45vw,38.75rem)] [@media_(max-width:_61.25rem)]:flex-[0_0_auto] [@media_(max-width:_61.25rem)]:[border-left:none] [@media_(max-width:_61.25rem)]:[border-top:0.0625rem_solid_var(--border)] [@media_(max-width:_61.25rem)]:overflow-visible [@media_(max-width:_61.25rem)]:[.ms-inspector-wrap&:where(.is-code-view)]:basis-auto [@media_(max-width:_61.25rem)]:[.ms-inspector-wrap&:where(.is-code-view)]:h-[37.5rem]",
+          "relative grow-0 shrink-0 basis-100 min-h-0 border-l border-l-border bg-(--card) overflow-y-auto [.ms-inspector-wrap&:where(.is-code-view)]:basis-[clamp(28.75rem,38vw,45rem)] [.ms-inspector-wrap&:where(.is-code-view)]:overflow-hidden [@media_(max-width:_73.75rem)]:basis-77.5 [@media_(max-width:_73.75rem)]:[.ms-inspector-wrap&:where(.is-code-view)]:basis-[min(45vw,38.75rem)] [@media_(max-width:_61.25rem)]:flex-[0_0_auto] [@media_(max-width:_61.25rem)]:[border-left:none] [@media_(max-width:_61.25rem)]:border-t [@media_(max-width:_61.25rem)]:border-t-border [@media_(max-width:_61.25rem)]:overflow-visible [@media_(max-width:_61.25rem)]:[.ms-inspector-wrap&:where(.is-code-view)]:basis-auto [@media_(max-width:_61.25rem)]:[.ms-inspector-wrap&:where(.is-code-view)]:h-150",
         ]
           .filter(Boolean)
           .join(" ")}
@@ -209,7 +205,7 @@ export default function StudioInspector({
         ) : simulationSettingsOpen ? (
           <div className="ms-inspector" data-testid="ms-sim-settings">
             <div
-              className="flex items-start justify-between gap-[0.5rem]"
+              className="flex items-start justify-between gap-2"
               data-testid="ms-inspector-head"
             >
               <div>
@@ -226,6 +222,7 @@ export default function StudioInspector({
       </aside>
       <div
         className="group absolute inset-y-0 left-0 z-[100] flex w-2 -translate-x-1/2 touch-none select-none items-center justify-center cursor-col-resize bg-transparent outline-none focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-(--ring) [@media_(max-width:_61.25rem)]:hidden"
+        style={modelPickerVisible ? { left: aiModelPanelWidth } : undefined}
         role="separator"
         aria-label="Resize inspector panel"
         aria-orientation="vertical"
@@ -244,7 +241,7 @@ export default function StudioInspector({
         onPointerCancel={onResizePointerEnd}
         onKeyDown={onResizeKeyDown}
       >
-        <span className="h-full w-[0.125rem] bg-transparent transition-colors group-hover:bg-(--primary) group-focus-visible:bg-(--primary) group-active:bg-(--primary)" />
+        <span className="h-full w-0.5 bg-transparent transition-colors group-hover:bg-(--primary) group-focus-visible:bg-(--primary) group-active:bg-(--primary)" />
       </div>
     </div>
   );

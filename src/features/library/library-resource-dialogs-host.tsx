@@ -138,16 +138,16 @@ export function LibraryResourceDeleteDialogs({
             </DialogHeader>
             {deleteDroneReferences.length > 0 ? (
               <div className="ms-drone-reference-warning" role="alert">
-                <p className="m-[0_0_0.5rem]">
+                <p className="mt-0 mx-0 mb-2">
                   This Drone is selected by {deleteDroneReferences.length}{" "}
                   mission{deleteDroneReferences.length === 1 ? "" : "s"}. Change
                   those missions to another Drone before deleting this profile.
                 </p>
-                <ul className="flex flex-col gap-[0.3125rem] m-0 pl-[1.125rem]">
+                <ul className="flex flex-col gap-1.25 m-0 pl-4.5">
                   {deleteDroneReferences.map((reference) => (
                     <li key={`${reference.project}-${reference.mission}`}>
                       <strong>{reference.mission}</strong>
-                      <span className="ml-[0.375rem] text-(--muted-foreground)">
+                      <span className="ml-1.5 text-(--muted-foreground)">
                         {reference.project}
                       </span>
                     </li>
@@ -195,17 +195,17 @@ export function LibraryResourceDeleteDialogs({
             </DialogHeader>
             {deleteWorldReferences.length > 0 ? (
               <div className="ms-drone-reference-warning" role="alert">
-                <p className="m-[0_0_0.5rem]">
+                <p className="mt-0 mx-0 mb-2">
                   This World is selected by {deleteWorldReferences.length}{" "}
                   mission{deleteWorldReferences.length === 1 ? "" : "s"}.
                   Reassign those missions before deleting it, or archive the
                   World.
                 </p>
-                <ul className="flex flex-col gap-[0.3125rem] m-0 pl-[1.125rem]">
+                <ul className="flex flex-col gap-1.25 m-0 pl-4.5">
                   {deleteWorldReferences.map((reference) => (
                     <li key={`${reference.project}-${reference.mission}`}>
                       <strong>{reference.mission}</strong>
-                      <span className="ml-[0.375rem] text-(--muted-foreground)">
+                      <span className="ml-1.5 text-(--muted-foreground)">
                         {reference.project}
                       </span>
                     </li>

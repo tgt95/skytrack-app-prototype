@@ -139,7 +139,7 @@ export function DraftAxisInput({
       <input
         type="number"
         inputMode="decimal"
-        className=" flex-[1_1_auto] w-full min-w-0 h-[1.5rem] box-border p-[0.0625rem_0.1875rem] [font:inherit] text-[0.6875rem] [font-variant-numeric:tabular-nums] text-(--foreground) bg-(--background) [border:0.0625rem_solid_var(--border)] rounded-(--radius) focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:outline-offset-1"
+        className=" flex-[1_1_auto] w-full min-w-0 h-6 box-border py-0.25 px-0.75 [font:inherit] text-[0.6875rem] [font-variant-numeric:tabular-nums] text-(--foreground) bg-(--background) border border-border rounded-(--radius) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
         aria-label={label}
         value={display}
         min={min}

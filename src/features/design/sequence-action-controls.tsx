@@ -61,21 +61,21 @@ export function ActionInsertAffordance(props: {
   const { wpId, actionIndex, wpSeq, onInsertAction } = props;
   return (
     <li
-      className={`ms-insert-action-zone ${SEQUENCE_LIST_ITEM_BASE_CLASS} relative h-0 p-[0.4375rem_0] m-[-0.4375rem_0] flex items-center justify-start z-2 [list-style:none] overflow-visible [.ms-seq-list_>_&]:mt-[-0.4375rem]`}
+      className={`ms-insert-action-zone ${SEQUENCE_LIST_ITEM_BASE_CLASS} relative h-0 py-1.75 px-0 -my-1.75 mx-0 flex items-center justify-start z-2 [list-style:none] overflow-visible [.ms-seq-list_>_&]:-mt-1.75`}
       data-testid={`ms-insert-action-${wpId}-${actionIndex}`}
     >
       <div
-        className=" absolute top-[50%] left-0 right-0 h-[0.125rem] transform-[translateY(-50%)] bg-(--primary) opacity-[0] pointer-events-none [transition:opacity_120ms_ease] [.ms-insert-action-zone:hover_&]:opacity-[0.75] [.ms-insert-action-zone:focus-within_&]:opacity-[0.75]"
+        className=" absolute top-[50%] left-0 right-0 h-0.5 transform-[translateY(-50%)] bg-(--primary) opacity-[0] pointer-events-none [transition:opacity_120ms_ease] [.ms-insert-action-zone:hover_&]:opacity-[0.75] [.ms-insert-action-zone:focus-within_&]:opacity-[0.75]"
         aria-hidden="true"
         data-testid="ms-insert-action-line"
       />
       <Menu>
         <SkyTooltip>
           <MenuTrigger
-            className=" absolute top-0 left-[0.75rem] z-3 w-[1rem] h-[1rem] p-0 transform-[translate(0,-25%)] rounded-(--radius) bg-(--card) text-(--primary) [border:0.09375rem_solid_var(--primary)] inline-flex items-center justify-center opacity-[0] cursor-pointer [transition:opacity_120ms_ease,transform_120ms_ease] [.ms-insert-action-zone:hover_&]:opacity-[1] [.ms-insert-action-zone:hover_&]:transform-[scale(1.08)] [.ms-insert-action-zone:focus-within_&]:opacity-[1] [.ms-insert-action-zone:focus-within_&]:transform-[scale(1.08)]"
+            className=" absolute top-0 left-3 z-3 w-4 h-4 p-0 transform-[translate(0,-25%)] rounded-(--radius) bg-(--card) text-(--primary) border-[1.5px] border-(--primary) inline-flex items-center justify-center opacity-[0] cursor-pointer [transition:opacity_120ms_ease,transform_120ms_ease] [.ms-insert-action-zone:hover_&]:opacity-[1] [.ms-insert-action-zone:hover_&]:transform-[scale(1.08)] [.ms-insert-action-zone:focus-within_&]:opacity-[1] [.ms-insert-action-zone:focus-within_&]:transform-[scale(1.08)]"
             aria-label={`Insert drone action at waypoint ${wpSeq} position ${actionIndex + 1}`}
           >
-            <PlusIcon aria-hidden="true" className="w-[0.75rem] h-[0.75rem]" />
+            <PlusIcon aria-hidden="true" className="w-3 h-3" />
           </MenuTrigger>
         </SkyTooltip>
         <MenuPortal>
@@ -89,18 +89,18 @@ export function ActionInsertAffordance(props: {
                   }
                 >
                   <span
-                    className=" mr-[0.375rem] text-[0.8125rem]"
+                    className=" mr-1.5 text-[0.8125rem]"
                     data-testid="ms-action-tag-mini"
                   >
                     {option.value === "lidar-scan" ? (
                       <ScanIcon
                         aria-hidden="true"
-                        className="w-[0.875rem] h-[0.875rem] [vertical-align:-0.125rem]"
+                        className="w-3.5 h-3.5 [vertical-align:-2px]"
                       />
                     ) : (
                       <CameraIcon
                         aria-hidden="true"
-                        className="w-[0.875rem] h-[0.875rem] [vertical-align:-0.125rem]"
+                        className="w-3.5 h-3.5 [vertical-align:-2px]"
                       />
                     )}
                   </span>
@@ -276,7 +276,7 @@ export function SequenceActionRow(props: {
         <Button
           size="icon-sm"
           variant="ghost"
-          className="mr-[0.25rem]"
+          className="mr-1"
           aria-label={`Remove ${action.label} from waypoint ${wpSeq}`}
           onClick={() => onDeleteAction(wpId, action.id)}
         >

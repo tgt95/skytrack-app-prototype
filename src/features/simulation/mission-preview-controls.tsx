@@ -73,7 +73,7 @@ export default function MissionPreviewControls({
       </label>
 
       <div
-        className=" flex items-center gap-[1rem] flex-wrap"
+        className=" flex items-center gap-4 flex-wrap"
         role="region"
         aria-label="Route playback"
       >
@@ -108,7 +108,7 @@ export default function MissionPreviewControls({
           </Slider>
         </div>
         <div
-          className=" flex-[0_0_auto] min-h-[2.125rem] [border:0.0625rem_solid_var(--border)] rounded-[0.375rem] bg-(--background) text-(--foreground)"
+          className=" flex-[0_0_auto] min-h-8.5 border border-border rounded-[0.375rem] bg-(--background) text-(--foreground)"
           data-testid="ms-preview-speed"
         >
           <Select<string>
@@ -125,7 +125,7 @@ export default function MissionPreviewControls({
           >
             <SelectTrigger
               aria-label="Preview playback speed"
-              className=" min-w-[4.75rem]"
+              className=" min-w-19"
             >
               <SelectValue />
               <SelectIcon />
@@ -147,7 +147,7 @@ export default function MissionPreviewControls({
           </Select>
         </div>
         <span
-          className="ms-preview-time flex-[0_0_auto] text-[0.75rem] text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
+          className="ms-preview-time flex-[0_0_auto] text-xs text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
           data-testid="ms-preview-time"
         >
           {formattedTime} / {formattedDuration}

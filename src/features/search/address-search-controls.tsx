@@ -37,7 +37,7 @@ export default function AddressSearchControls({
 
   return (
     <div
-      className=" relative self-end flex flex-col items-end max-w-full gap-[0.25rem]"
+      className=" relative self-end flex flex-col items-end max-w-full gap-1"
       data-testid="ms-address-search-group"
     >
       <Toolbar
@@ -45,13 +45,13 @@ export default function AddressSearchControls({
         aria-label="Address search"
         className={[
           addressSearchOpen ? "is-open" : "",
-          "w-[2.625rem] min-h-[2.625rem] justify-start overflow-hidden [transition:width_180ms_ease] [&.is-open]:w-[19.375rem] [&.is-open]:max-w-full",
+          "w-10.5 min-h-10.5 justify-start overflow-hidden [transition:width_180ms_ease] [&.is-open]:w-77.5 [&.is-open]:max-w-full",
         ]
           .filter(Boolean)
           .join(" ")}
       >
         <ToolbarGroup
-          className=" w-full min-w-0 gap-[0.25rem]"
+          className=" w-full min-w-0 gap-1"
           data-testid="ms-address-search-items"
         >
           <MapControlTooltip
@@ -170,7 +170,7 @@ export default function AddressSearchControls({
                     }
                   }
                 }}
-                className="ms-address-search-input w-full min-w-0 h-[2rem] border-(--border) bg-(--background) text-(--foreground)"
+                className="ms-address-search-input w-full min-w-0 h-8 border-(--border) bg-(--background) text-(--foreground)"
               />
             </div>
           ) : null}
@@ -196,7 +196,7 @@ export default function AddressSearchControls({
       </Toolbar>
       {addressSearchOpen && addressSuggestionsOpen ? (
         <div
-          className=" absolute right-0 bottom-[calc(100%+0.375rem)] z-60 w-[min(19.375rem,calc(100vw-2rem))] max-h-[min(17.5rem,45vh)] overflow-auto [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-(--popover) text-(--popover-foreground) [box-shadow:0_0.5rem_1.75rem_color-mix(in_srgb,var(--foreground)_22%,transparent)]"
+          className=" absolute right-0 bottom-[calc(100%+0.375rem)] z-60 w-[min(19.375rem,calc(100vw-2rem))] max-h-[min(17.5rem,45vh)] overflow-auto border border-border rounded-(--radius) bg-(--popover) text-(--popover-foreground) [box-shadow:0_0.5rem_1.75rem_color-mix(in_srgb,var(--foreground)_22%,transparent)]"
           aria-busy={addressSuggestionBusy || undefined}
           data-testid="ms-address-suggestions"
         >
@@ -216,7 +216,7 @@ export default function AddressSearchControls({
                   aria-selected={index === activeAddressSuggestionIndex}
                   className={[
                     index === activeAddressSuggestionIndex ? "is-active" : "",
-                    "flex w-full gap-[0.5rem] [border:0] p-[0.5rem_0.625rem] bg-transparent text-inherit [font:inherit] whitespace-normal text-left cursor-pointer [&:hover]:bg-(--accent) [&:hover]:text-(--accent-foreground) [&.is-active]:bg-(--accent) [&.is-active]:text-(--accent-foreground)",
+                    "flex w-full gap-2 [border:0] py-2 px-2.5 bg-transparent text-inherit [font:inherit] whitespace-normal text-left cursor-pointer [&:hover]:bg-(--accent) [&:hover]:text-(--accent-foreground) [&.is-active]:bg-(--accent) [&.is-active]:text-(--accent-foreground)",
                   ]
                     .filter(Boolean)
                     .join(" ")}
@@ -235,7 +235,7 @@ export default function AddressSearchControls({
             </div>
           ) : null}
           <div
-            className=" flex flex-col gap-[0.1875rem] p-[0.375rem_0.625rem] [border-top:0.0625rem_solid_var(--border)] text-(--muted-foreground) text-[0.625rem] leading-[1.35]"
+            className=" flex flex-col gap-0.75 py-1.5 px-2.5 border-t border-t-border text-(--muted-foreground) text-[0.625rem] leading-[1.35]"
             aria-label="Search attribution"
           >
             {addressCredits.map((credit, index) => (
@@ -253,10 +253,10 @@ export default function AddressSearchControls({
         </div>
       ) : null}
       {addressSearchOpen && !addressSuggestionsOpen ? (
-        <div className="ms-address-search-pop absolute right-0 bottom-[calc(100%+0.375rem)] z-7 flex flex-col items-end gap-[0.25rem] w-[min(19.375rem,100%)] max-w-full pointer-events-auto">
+        <div className="ms-address-search-pop absolute right-0 bottom-[calc(100%+0.375rem)] z-7 flex flex-col items-end gap-1 w-[min(19.375rem,100%)] max-w-full pointer-events-auto">
           {addressSearchStatus ? (
             <span
-              className=" max-w-[min(19.375rem,100%)] p-[0.1875rem_0.4375rem] [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-(--card) text-(--muted-foreground) text-[0.6875rem] leading-[1.35] text-right [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] in-[.ms-address-search-pop]:max-w-full"
+              className=" max-w-[min(19.375rem,100%)] py-0.75 px-1.75 border border-border rounded-(--radius) bg-(--card) text-(--muted-foreground) text-[0.6875rem] leading-[1.35] text-right [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] in-[.ms-address-search-pop]:max-w-full"
               role="status"
               data-testid="ms-address-search-status"
             >
@@ -266,7 +266,7 @@ export default function AddressSearchControls({
           {addressCredits.map((credit, index) => (
             <a
               key={`${credit.href}-${index}`}
-              className=" max-w-[min(19.375rem,100%)] p-[0.1875rem_0.4375rem] [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-(--card) text-(--muted-foreground) text-[0.6875rem] leading-[1.35] text-right [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] in-[.ms-address-search-pop]:max-w-full [text-decoration:none] [&:hover]:text-(--foreground) [&:hover]:[text-decoration:underline]"
+              className=" max-w-[min(19.375rem,100%)] py-0.75 px-1.75 border border-border rounded-(--radius) bg-(--card) text-(--muted-foreground) text-[0.6875rem] leading-[1.35] text-right [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] in-[.ms-address-search-pop]:max-w-full [text-decoration:none] [&:hover]:text-(--foreground) [&:hover]:[text-decoration:underline]"
               href={credit.href}
               target="_blank"
               rel="noreferrer"

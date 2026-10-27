@@ -48,7 +48,7 @@ export function WorldStep({
           >
             <TabsList
               variant="filled"
-              className=" w-[10.625rem] self-start"
+              className=" w-42.5 self-start"
               aria-labelledby="ms-wizard-worldtype-label"
               data-testid="ms-wizard-toggle"
             >
@@ -87,7 +87,7 @@ export function WorldStep({
                       <RadioRoot
                         value={world.id}
                         aria-label={`${world.name} · ${world.status}`}
-                        className="order-3 ml-auto flex-[0_0_auto]"
+                        className="order-3 ml-auto flex-[0_0_auto] rounded-(--radius)"
                       />
                     </label>
                   ))}
@@ -108,14 +108,14 @@ export function WorldStep({
               Terrain layer (Optional)
             </span>
             <div
-              className=" flex flex-col items-center gap-[0.5rem] p-[1.25rem_0.75rem] [border:0.0625rem_dashed_var(--border)] rounded-(--radius) bg-(--muted) text-(--muted-foreground) text-[0.75rem]"
+              className=" flex flex-col items-center gap-2 py-5 px-3 border border-dashed border-border rounded-(--radius) bg-(--muted) text-(--muted-foreground) text-xs"
               role="group"
               aria-labelledby="ms-wizard-terrain-label"
               data-testid="ms-wizard-dropzone"
             >
               <UploadIcon
                 aria-hidden="true"
-                className="w-[1.25rem] h-[1.25rem]"
+                className="w-5 h-5"
               />
               <span className="ms-hint">{terrainFile ?? "No file chosen"}</span>
               <Button

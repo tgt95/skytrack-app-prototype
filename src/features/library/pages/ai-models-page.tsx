@@ -75,7 +75,7 @@ export function AIModelsPage({
             title="AI models"
             actions={
               <div
-                className=" inline-flex items-center gap-[0.5rem]"
+                className=" inline-flex items-center gap-2"
                 data-testid="ms-ai-model-header-actions"
               >
                 <Button size="default" variant="default" onClick={onImport}>

@@ -22,7 +22,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="ms-stat">
       <dt className="text-[0.6875rem] text-(--muted-foreground)">{label}</dt>
-      <dd className="m-0 text-[0.75rem] font-semibold overflow-hidden text-ellipsis">
+      <dd className="m-0 text-xs font-semibold overflow-hidden text-ellipsis">
         {value}
       </dd>
     </div>
@@ -70,7 +70,7 @@ export default function SimulationDetails({
           <AccordionPanel>
             {telemetry ? (
               <dl
-                className=" m-0 grid grid-cols-[1fr_1fr] gap-[0.375rem_0.625rem]"
+                className="m-0 grid grid-cols-[1fr_1fr] gap-y-1.5 gap-x-2.5"
                 data-testid="ms-telemetry"
               >
                 <Stat label="Vehicle" value={mission.vehicle} />
@@ -121,7 +121,7 @@ export default function SimulationDetails({
               {runIndex + 1}/{settings.runTimes}
             </p>
             <ol
-              className=" [list-style:none] m-[0.5rem_0_0] p-0 flex flex-col gap-[0.125rem] max-h-[16.25rem] overflow-y-auto text-[0.75rem]"
+              className=" [list-style:none] mt-2 mx-0 mb-0 p-0 flex flex-col gap-0.5 max-h-65 overflow-y-auto text-xs"
               data-testid="ms-route-list"
             >
               {mission.waypoints.map((wp) => (
@@ -131,7 +131,7 @@ export default function SimulationDetails({
                     currentSeq === wp.seq && (running || paused)
                       ? "is-active"
                       : "",
-                    "flex flex-col gap-px p-[0.1875rem_0.375rem] rounded-(--radius) [&.is-active]:bg-(--accent) [&.is-active]:text-(--primary) [&.is-active]:font-semibold",
+                    "flex flex-col gap-px py-0.75 px-1.5 rounded-(--radius) [&.is-active]:bg-(--accent) [&.is-active]:text-(--primary) [&.is-active]:font-semibold",
                   ]
                     .filter(Boolean)
                     .join(" ")}

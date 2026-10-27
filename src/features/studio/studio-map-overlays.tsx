@@ -22,12 +22,12 @@ import type { PendingMissionShape } from "./use-drawing-session";
 export type Stage = "design" | "simulation";
 
 const stageToggleClassName = [
-  "group relative inline-flex items-center gap-[0.5rem] h-auto p-[0.625rem_0.875rem] rounded-[0] bg-transparent text-(--muted-foreground) text-[0.8125rem] font-semibold whitespace-nowrap",
+  "group relative inline-flex items-center gap-2 h-auto py-2.5 px-3.5 rounded-[0] bg-transparent text-(--muted-foreground) text-[0.8125rem] font-semibold whitespace-nowrap",
   "hover:bg-transparent hover:text-(--foreground) disabled:opacity-[0.55] aria-disabled:opacity-[0.55] aria-disabled:cursor-not-allowed",
   "data-[pressed=true]:bg-transparent data-[pressed=true]:text-(--foreground) aria-pressed:bg-transparent aria-pressed:text-(--foreground)",
-  '[&[data-pressed="true"]::after]:[content:""] [&[data-pressed="true"]::after]:absolute [&[data-pressed="true"]::after]:left-[0.625rem] [&[data-pressed="true"]::after]:right-[0.625rem] [&[data-pressed="true"]::after]:bottom-[-0.0625rem] [&[data-pressed="true"]::after]:h-[0.125rem] [&[data-pressed="true"]::after]:rounded-[0.125rem] [&[data-pressed="true"]::after]:bg-(--primary)',
-  '[&[aria-pressed="true"]::after]:[content:""] [&[aria-pressed="true"]::after]:absolute [&[aria-pressed="true"]::after]:left-[0.625rem] [&[aria-pressed="true"]::after]:right-[0.625rem] [&[aria-pressed="true"]::after]:bottom-[-0.0625rem] [&[aria-pressed="true"]::after]:h-[0.125rem] [&[aria-pressed="true"]::after]:rounded-[0.125rem] [&[aria-pressed="true"]::after]:bg-(--primary)',
-  "[@media_(max-width:_61.25rem)]:p-[0.5rem_0.625rem] [@media_(max-width:_61.25rem)]:text-[0.75rem]",
+  '[&[data-pressed="true"]::after]:[content:""] [&[data-pressed="true"]::after]:absolute [&[data-pressed="true"]::after]:left-2.5 [&[data-pressed="true"]::after]:right-2.5 [&[data-pressed="true"]::after]:-bottom-0.25 [&[data-pressed="true"]::after]:h-0.5 [&[data-pressed="true"]::after]:rounded-[0.125rem] [&[data-pressed="true"]::after]:bg-(--primary)',
+  '[&[aria-pressed="true"]::after]:[content:""] [&[aria-pressed="true"]::after]:absolute [&[aria-pressed="true"]::after]:left-2.5 [&[aria-pressed="true"]::after]:right-2.5 [&[aria-pressed="true"]::after]:-bottom-0.25 [&[aria-pressed="true"]::after]:h-0.5 [&[aria-pressed="true"]::after]:rounded-[0.125rem] [&[aria-pressed="true"]::after]:bg-(--primary)',
+  "[@media_(max-width:_61.25rem)]:py-2 [@media_(max-width:_61.25rem)]:px-2.5 [@media_(max-width:_61.25rem)]:text-xs",
 ].join(" ");
 
 const stageNumberClassName =
@@ -78,7 +78,7 @@ export default function StudioMapOverlays({
       appTab === "fly" ? "Flight monitoring" : "Mission reports";
     return (
       <div
-        className=" flex-[1_1_auto] flex items-start justify-center min-w-0 p-[3rem_1.5rem] overflow-y-auto"
+        className=" flex-[1_1_auto] flex items-start justify-center min-w-0 py-12 px-6 overflow-y-auto"
         data-testid="ms-body-placeholder"
       >
         <section
@@ -88,7 +88,7 @@ export default function StudioMapOverlays({
           data-testid={testId}
         >
           <h2
-            className="heading m-0 text-[1rem] font-bold"
+            className="heading m-0 text-base font-bold"
             data-testid="ms-placeholder-title"
           >
             {title}
@@ -105,7 +105,7 @@ export default function StudioMapOverlays({
       aria-label="3D scene and run controls"
     >
       <div
-        className="ms-stage-minibar flex-[0_0_auto] flex items-stretch bg-(--card) [border-bottom:0.0625rem_solid_var(--border)] p-[0_1rem] [@media_(max-width:_61.25rem)]:p-[0_0.5rem]"
+        className="ms-stage-minibar flex-[0_0_auto] flex items-stretch bg-(--card) border-b border-b-border py-0 px-4 [@media_(max-width:_61.25rem)]:py-0 [@media_(max-width:_61.25rem)]:px-2"
         data-testid="ms-stage-minibar"
       >
         <ToggleGroup
@@ -130,7 +130,7 @@ export default function StudioMapOverlays({
             <span className="ms-stage-label">Design</span>
           </Toggle>
           <span
-            className=" flex-[0_0_auto] self-center w-[1.5rem] h-px m-[0_0.25rem] bg-(--border) [@media_(max-width:_61.25rem)]:w-[1.5rem]"
+            className=" flex-[0_0_auto] self-center w-6 h-px my-0 mx-1 bg-(--border) [@media_(max-width:_61.25rem)]:w-6"
             aria-hidden="true"
             data-testid="ms-stage-link"
           />
@@ -194,12 +194,12 @@ export default function StudioMapOverlays({
       </div>
       {drawing && stage === "design" && tool !== "route" ? (
         <div
-          className=" flex-[0_0_auto] flex items-center justify-between gap-[0.625rem] p-[0.375rem_0.75rem] [border-bottom:0.0625rem_solid_var(--border)] bg-(--card) text-[0.75rem]"
+          className=" flex-[0_0_auto] flex items-center justify-between gap-2.5 py-1.5 px-3 border-b border-b-border bg-(--card) text-xs"
           role="status"
           data-testid="ms-drawbar"
         >
           <div
-            className=" flex items-center gap-[0.75rem] min-w-0 text-(--muted-foreground)"
+            className=" flex items-center gap-3 min-w-0 text-(--muted-foreground)"
             data-testid="ms-drawbar-copy"
           >
             <Toolbar
@@ -218,7 +218,7 @@ export default function StudioMapOverlays({
                 >
                   <AreaIcon
                     aria-hidden="true"
-                    className="w-[1rem] h-[1rem] fill-[currentColor] stroke-none"
+                    className="w-4 h-4 fill-[currentColor] stroke-none"
                   />{" "}
                   Polygon
                 </ToolbarButton>
@@ -231,7 +231,7 @@ export default function StudioMapOverlays({
                   onClick={() => onPendingShapeChange("cylinder")}
                 >
                   <svg
-                    className="w-[1rem] h-[1rem] fill-none stroke-[currentColor] stroke-[1.6] [stroke-linecap:round] [stroke-linejoin:round]"
+                    className="w-4 h-4 fill-none stroke-[currentColor] stroke-[1.6] [stroke-linecap:round] [stroke-linejoin:round]"
                     viewBox="0 0 20 20"
                     aria-hidden="true"
                   >
@@ -255,12 +255,12 @@ export default function StudioMapOverlays({
       ) : null}
       {simActive ? (
         <div
-          className=" flex-[0_0_auto] flex items-center justify-between gap-[0.625rem] p-[0.375rem_0.75rem] [border-bottom:0.0625rem_solid_var(--border)] bg-(--card) text-[0.75rem]"
+          className=" flex-[0_0_auto] flex items-center justify-between gap-2.5 py-1.5 px-3 border-b border-b-border bg-(--card) text-xs"
           role="status"
           data-testid="ms-simbar"
         >
           <span
-            className=" flex items-center gap-[0.375rem] min-w-0"
+            className=" flex items-center gap-1.5 min-w-0"
             data-testid="ms-sim-state"
           >
             {sim.status === "idle" &&
@@ -274,7 +274,7 @@ export default function StudioMapOverlays({
             {sim.status === "failed" && "Failed — design preserved."}
           </span>
           <span
-            className=" flex items-center gap-[0.375rem] min-w-0"
+            className=" flex items-center gap-1.5 min-w-0"
             data-testid="ms-simbar-actions"
           >
             <Button

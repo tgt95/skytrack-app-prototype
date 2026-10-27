@@ -84,7 +84,7 @@ export function RouteWaypointList({
   return (
     <ol className="ms-seq-list">
       <li
-        className={`ms-seq-row ${SEQUENCE_LIST_ITEM_CLASS} [.ms-seq-row:not(.ms-end,&)]:p-[0.25rem] [.ms-seq-row&]:p-[0.375rem_0.75rem] [.ms-seq-row&]:[flex-wrap:unset] [.ms-seq-row&]:bg-(--accent)`}
+        className={`ms-seq-row ${SEQUENCE_LIST_ITEM_CLASS} [.ms-seq-row:not(.ms-end,&)]:p-1 [.ms-seq-row&]:py-1.5 [.ms-seq-row&]:px-3 [.ms-seq-row&]:[flex-wrap:unset] [.ms-seq-row&]:bg-(--accent)`}
         aria-label={`Sequence start for ${routeLabel}`}
       >
         <Badge

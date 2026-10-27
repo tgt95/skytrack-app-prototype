@@ -28,17 +28,17 @@ export default function SliderField({
 }: SliderFieldProps) {
   return (
     <div
-      className=" flex flex-col gap-[0.25rem] mb-[0.5rem]"
+      className=" flex flex-col gap-1 mb-2"
       data-testid="ms-slider-field"
     >
       <div
-        className=" text-[0.75rem] font-medium text-(--foreground)"
+        className=" text-xs font-medium text-(--foreground)"
         data-testid="ms-slider-label"
       >
         {label}
       </div>
       <div
-        className=" flex items-center gap-[0.5rem] w-full"
+        className=" flex items-center gap-2 w-full"
         data-testid="ms-slider-row"
       >
         <div
@@ -63,7 +63,7 @@ export default function SliderField({
             </SliderControl>
           </Slider>
         </div>
-        <div className=" flex-[0_0_4.25rem]" data-testid="ms-slider-val-box">
+        <div className=" grow-0 shrink-0 basis-17" data-testid="ms-slider-val-box">
           <NumberField
             value={value}
             min={min}

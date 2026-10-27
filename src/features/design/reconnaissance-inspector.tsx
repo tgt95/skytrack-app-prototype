@@ -109,59 +109,59 @@ export function ReconCaptureSummary({
 
   return (
     <div
-      className="grid grid-cols-3 gap-[0.75rem_0.5rem] p-[0.75rem_0.875rem] bg-[color-mix(in_srgb,var(--muted)_25%,transparent)] [border-bottom:0.0625rem_solid_var(--border)]"
+      className="grid grid-cols-3 gap-y-3 gap-x-2 py-3 px-3.5 bg-[color-mix(in_srgb,var(--muted)_25%,transparent)] border-b border-b-border"
       aria-label="Capture summary"
       data-testid="ms-recon-summary"
     >
-      <div className="flex flex-col gap-[0.25rem] min-w-0">
+      <div className="flex flex-col gap-1 min-w-0">
         <span className="text-(--muted-foreground) text-[0.6875rem]">
           GSD estimate*
         </span>
-        <strong className="overflow-hidden text-(--foreground) text-[0.75rem] font-semibold text-ellipsis whitespace-nowrap">
+        <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
           {gsd.toFixed(1)} cm/px
         </strong>
       </div>
-      <div className="flex flex-col gap-[0.25rem] min-w-0">
+      <div className="flex flex-col gap-1 min-w-0">
         <span className="text-(--muted-foreground) text-[0.6875rem]">
           {altitudeAgl ? "Altitude AGL" : "Altitude"}
         </span>
-        <strong className="overflow-hidden text-(--foreground) text-[0.75rem] font-semibold text-ellipsis whitespace-nowrap">
+        <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
           {settings.altitudeM} m
         </strong>
       </div>
-      <div className="flex flex-col gap-[0.25rem] min-w-0">
+      <div className="flex flex-col gap-1 min-w-0">
         <span className="text-(--muted-foreground) text-[0.6875rem]">
           Front / Side overlap
         </span>
-        <strong className="overflow-hidden text-(--foreground) text-[0.75rem] font-semibold text-ellipsis whitespace-nowrap">
+        <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
           {settings.frontOverlapPct}% / {settings.sideOverlapPct}%
         </strong>
       </div>
-      <div className="flex flex-col gap-[0.25rem] min-w-0">
+      <div className="flex flex-col gap-1 min-w-0">
         <span className="text-(--muted-foreground) text-[0.6875rem]">
           Gimbal pitch
         </span>
-        <strong className="overflow-hidden text-(--foreground) text-[0.75rem] font-semibold text-ellipsis whitespace-nowrap">
+        <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
           {pitchSummary}
         </strong>
       </div>
-      <div className="flex flex-col gap-[0.25rem] min-w-0">
+      <div className="flex flex-col gap-1 min-w-0">
         <span className="text-(--muted-foreground) text-[0.6875rem]">
           Segment estimate
         </span>
-        <strong className="overflow-hidden text-(--foreground) text-[0.75rem] font-semibold text-ellipsis whitespace-nowrap">
+        <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
           {Math.ceil(minutes)} min
         </strong>
       </div>
-      <div className="flex flex-col gap-[0.25rem] min-w-0">
+      <div className="flex flex-col gap-1 min-w-0">
         <span className="text-(--muted-foreground) text-[0.6875rem]">
           Battery segment*
         </span>
-        <strong className="overflow-hidden text-(--foreground) text-[0.75rem] font-semibold text-ellipsis whitespace-nowrap">
+        <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
           Spend {batteryPct}%
         </strong>
       </div>
-      <small className="col-span-full text-(--muted-foreground) text-[0.75rem] leading-[1.4]">
+      <small className="col-span-full text-(--muted-foreground) text-xs leading-[1.4]">
         {estimateNote}
       </small>
     </div>

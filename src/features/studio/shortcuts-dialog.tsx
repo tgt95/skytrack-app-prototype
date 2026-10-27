@@ -90,7 +90,7 @@ export function ShortcutsDialog({
             </DialogDescription>
           </DialogHeader>
           <div
-            className=" grid grid-cols-[minmax(0,1fr)] gap-[1.25rem]"
+            className=" grid grid-cols-[minmax(0,1fr)] gap-5"
             data-testid="ms-shortcut-groups"
           >
             {SHORTCUT_GROUPS.map((group) => (
@@ -102,16 +102,16 @@ export function ShortcutsDialog({
               >
                 <h3
                   id={`ms-shortcuts-${group.title.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-")}`}
-                  className="heading m-[0_0_0.625rem] pt-[0.625rem] [border-top:0.0625rem_solid_var(--border)] text-[0.9375rem] font-semibold leading-[1.4]"
+                  className="heading mt-0 mx-0 mb-2.5 pt-2.5 border-t border-t-border text-[0.9375rem] font-semibold leading-[1.4]"
                 >
                   {group.title}
                 </h3>
-                <ul className="ms-shortcuts [list-style:none] m-0 p-0 flex flex-col gap-[0.625rem]">
+                <ul className="ms-shortcuts [list-style:none] m-0 p-0 flex flex-col gap-2.5">
                   {group.shortcuts.map((shortcut) => (
                     <li
                       key={shortcut.keys}
                       className={
-                        ' flex min-w-0 gap-[0.75rem] items-center justify-between text-[0.875rem] leading-[1.4] **:data-[slot="badge-count"]:flex-[0_0_auto] **:data-[slot="badge-count"]:whitespace-nowrap'
+                        ' flex min-w-0 gap-3 items-center justify-between text-sm leading-[1.4] **:data-[slot="badge-count"]:flex-[0_0_auto] **:data-[slot="badge-count"]:whitespace-nowrap'
                       }
                       data-testid="ms-shortcut-row"
                     >

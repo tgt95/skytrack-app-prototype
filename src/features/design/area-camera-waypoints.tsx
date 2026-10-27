@@ -37,7 +37,7 @@ export function AreaCameraWaypoints({
   return (
     <Accordion
       multiple
-      className=" [border-top:0.0625rem_solid_var(--border)] p-[0_0.625rem_0.375rem]"
+      className=" border-t border-t-border pt-0 px-2.5 pb-1.5"
       aria-label={`${areaLabel} waypoint camera settings`}
     >
       <AccordionItem value="camera-settings" className="border-b-0">
@@ -48,7 +48,7 @@ export function AreaCameraWaypoints({
         </AccordionHeader>
         <AccordionPanel>
           <ol
-            className=" ms-seq-list max-h-[18.75rem] overflow-auto [border-top:0.0625rem_solid_var(--border)]"
+            className=" ms-seq-list max-h-75 overflow-auto border-t border-t-border"
             data-testid="ms-area-capture-rows"
           >
             {waypoints.flatMap((waypoint) =>
@@ -56,7 +56,7 @@ export function AreaCameraWaypoints({
                 .filter((action) => action.kind === "photo")
                 .map((action) => (
                   <li
-                    className={`ms-seq-action-row ${SEQUENCE_LIST_ITEM_CLASS} min-h-[2.5rem] [.ms-seq-action-row&]:pr-[0.25rem]`}
+                    className={`ms-seq-action-row ${SEQUENCE_LIST_ITEM_CLASS} min-h-10 [.ms-seq-action-row&]:pr-1`}
                     key={action.id}
                     data-testid={`ms-area-capture-${waypoint.id}-${action.id}`}
                   >

@@ -67,7 +67,7 @@ export function HomePage({
           </h2>
           <button
             type="button"
-            className=" focus-visible:[outline:0.125rem_solid_var(--sidebar-ring)] focus-visible:outline-offset-1 inline-flex items-center gap-[0.25rem] [border:0] bg-transparent text-(--foreground) text-[0.8125rem] font-semibold cursor-pointer p-[0.25rem] [&:hover]:text-(--primary)"
+            className=" focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 inline-flex items-center gap-1 [border:0] bg-transparent text-(--foreground) text-[0.8125rem] font-semibold cursor-pointer p-1 [&:hover]:text-(--primary)"
             data-testid="ms-lib-view-all"
             onClick={onViewAll}
           >

@@ -95,7 +95,7 @@ export default function LibrarySidebar({
 
   return (
     <nav
-      className="min-h-0 flex-[0_0_16.875rem] min-w-0 flex flex-col gap-[0.5rem] p-[0.75rem_0.375rem] [border-right:0.0625rem_solid_var(--sidebar-border)] bg-(--sidebar) text-(--sidebar-foreground) overflow-y-auto overscroll-contain [@media_(max-width:_61.25rem)]:basis-[4rem] [@media_(max-width:_61.25rem)]:items-stretch [@media_(max-width:_61.25rem)]:p-[0.75rem_0.375rem]"
+      className="min-h-0 grow-0 shrink-0 basis-67.5 min-w-0 flex flex-col gap-2 py-3 px-1.5 border-r border-r-(--sidebar-border) bg-(--sidebar) text-(--sidebar-foreground) overflow-y-auto overscroll-contain [@media_(max-width:_61.25rem)]:basis-16 [@media_(max-width:_61.25rem)]:items-stretch [@media_(max-width:_61.25rem)]:py-3 [@media_(max-width:_61.25rem)]:px-1.5"
       aria-label="Workspace navigation"
     >
       <div className="ms-lib-navgroup" role="group" aria-label="Main">
@@ -121,12 +121,12 @@ export default function LibrarySidebar({
           <BookOpenIcon
             aria-hidden="true"
             weight={section === "learn" ? "fill" : "regular"}
-            className="w-[1.25rem] h-[1.25rem] shrink-0"
+            className="w-5 h-5 shrink-0"
           />
           <span className="ms-lib-nav-label">Learning</span>
           <ArrowSquareOutIcon
             aria-hidden="true"
-            className=" w-[1.25rem] h-[1.25rem] ml-auto text-(--muted-foreground) flex-[0_0_auto] [@media_(max-width:_61.25rem)]:hidden"
+            className=" w-5 h-5 ml-auto text-(--muted-foreground) flex-[0_0_auto] [@media_(max-width:_61.25rem)]:hidden"
             data-testid="ms-lib-external"
           />
         </a>
@@ -140,7 +140,7 @@ export default function LibrarySidebar({
           <SquaresFourIcon
             aria-hidden="true"
             weight={section === "templates" ? "fill" : "regular"}
-            className="w-[1.25rem] h-[1.25rem] shrink-0"
+            className="w-5 h-5 shrink-0"
           />
           <span className="ms-lib-nav-label">Mission templates</span>
         </button>
@@ -208,7 +208,7 @@ export default function LibrarySidebar({
         )}
       </div>
       <div
-        className=" mt-auto flex flex-col gap-[0.25rem] pt-[0.75rem]"
+        className=" mt-auto flex flex-col gap-1 pt-3"
         data-testid="ms-lib-side-foot"
       >
         {/* {!discordClosed ? (
@@ -245,7 +245,7 @@ export default function LibrarySidebar({
           <NotepadIcon
             aria-hidden="true"
             weight={section === "logs" ? "fill" : "regular"}
-            className="w-[1.25rem] h-[1.25rem] shrink-0"
+            className="w-5 h-5 shrink-0"
           />
           <span className="ms-lib-nav-label">Logs</span>
         </button>
@@ -259,7 +259,7 @@ export default function LibrarySidebar({
           <BellIcon
             aria-hidden="true"
             weight={section === "notifications" ? "fill" : "regular"}
-            className="w-[1.25rem] h-[1.25rem] shrink-0"
+            className="w-5 h-5 shrink-0"
           />
           <span className="ms-lib-nav-label">Notifications</span>
         </button>

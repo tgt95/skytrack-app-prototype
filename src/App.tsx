@@ -141,7 +141,7 @@ export default function MissionStudioApp() {
         </DevScenarioProvider>
       ) : (
         <section
-          className=" grid min-h-dvh place-items-center p-[1.5rem] bg-(--muted) text-(--foreground) [@media_(max-width:_30rem)]:p-[1rem]"
+          className=" grid min-h-dvh place-items-center p-6 bg-(--muted) text-(--foreground) [@media_(max-width:_30rem)]:p-4"
           aria-labelledby="ms-login-title"
           data-testid="ms-login-screen"
         >
@@ -150,7 +150,7 @@ export default function MissionStudioApp() {
             data-testid="ms-login-content"
           >
             <div
-              className=" relative flex w-[min(100%,25rem)] flex-col gap-[1.75rem] p-[2rem] [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-(--card) text-(--card-foreground) [@media_(max-width:_30rem)]:gap-[1.5rem] [@media_(max-width:_30rem)]:p-[1.5rem]"
+              className=" relative flex w-[min(100%,25rem)] flex-col gap-7 p-8 border border-border rounded-(--radius) bg-(--card) text-(--card-foreground) [@media_(max-width:_30rem)]:gap-6 [@media_(max-width:_30rem)]:p-6"
               ref={loginCardRef}
               data-testid="ms-login-card"
             >
@@ -168,7 +168,7 @@ export default function MissionStudioApp() {
                 <path d="M400 8 A8 8 0 0 0 392 0 H322 C314 0 295.8 30.07 291.8 37 A106 106 0 0 1 108.2 37 C104.2 30.07 86 0 78 0 H8 A8 8 0 0 0 0 8" />
               </svg> */}
               <div
-                className=" flex justify-center text-(--foreground) [&_svg]:block [&_svg]:w-auto [&_svg]:h-[1.75rem]"
+                className=" flex justify-center text-(--foreground) [&_svg]:block [&_svg]:w-auto [&_svg]:h-7"
                 role="img"
                 aria-label="SkyTrack"
                 dangerouslySetInnerHTML={{ __html: logo }}
@@ -178,7 +178,7 @@ export default function MissionStudioApp() {
                 <p className="ms-login-description">Login to continue</p>
               </div> */}
               <form
-                className=" grid gap-[1.125rem]"
+                className=" grid gap-4.5"
                 onSubmit={handleLogin}
                 data-testid="ms-login-form"
               >
@@ -194,7 +194,7 @@ export default function MissionStudioApp() {
                 </FieldRoot> */}
                 <FieldRoot
                   name="password"
-                  className="ms-login-field grid gap-[0.5rem]"
+                  className="ms-login-field grid gap-2"
                 >
                   <FieldLabel htmlFor="ms-login-password">Password</FieldLabel>
                   <Input
@@ -208,7 +208,7 @@ export default function MissionStudioApp() {
                 </FieldRoot>
                 {error && (
                   <p
-                    className=" m-[-0.25rem_0_0] text-(--destructive) text-[0.8125rem]"
+                    className=" -mt-1 mx-0 mb-0 text-(--destructive) text-[0.8125rem]"
                     role="alert"
                     data-testid="ms-login-error"
                   >
@@ -216,7 +216,7 @@ export default function MissionStudioApp() {
                   </p>
                 )}
                 <Button
-                  className=" w-full mt-[0.125rem]"
+                  className=" w-full mt-0.5"
                   type="submit"
                   data-testid="ms-login-submit"
                 >

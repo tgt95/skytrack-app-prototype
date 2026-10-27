@@ -241,7 +241,7 @@ export function MissionCompassCube({
     <div
       className={[
         `ms-compass-cube${interactive ? "" : " is-disabled"}`,
-        "absolute top-[0.75rem] right-[0.75rem] z-5 [user-select:none] touch-none [.ms-scene-wrap.has-alt-ruler_&]:right-[2rem] [.ms-compass-cube&:where(.is-disabled)]:opacity-[0.35] [.ms-compass-cube&:where(.is-disabled)]:pointer-events-none",
+        "absolute top-3 right-3 z-5 [user-select:none] touch-none [.ms-scene-wrap.has-alt-ruler_&]:right-8 [.ms-compass-cube&:where(.is-disabled)]:opacity-[0.35] [.ms-compass-cube&:where(.is-disabled)]:pointer-events-none",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -250,7 +250,7 @@ export function MissionCompassCube({
     >
       <div
         ref={viewportRef}
-        className=" flex items-center justify-center w-(--ms-cube-viewport-size) h-(--ms-cube-viewport-size) perspective-[25rem] cursor-grab active:cursor-grabbing"
+        className=" flex items-center justify-center w-(--ms-cube-viewport-size) h-(--ms-cube-viewport-size) perspective-[400px] cursor-grab active:cursor-grabbing"
         style={
           { "--ms-cube-viewport-size": `${CUBE_SIZE + 24}px` } as CSSProperties
         }
@@ -297,7 +297,7 @@ export function MissionCompassCube({
             );
           })}
           <div
-            className="ms-cube-face  bg-(--muted) [border:0.0625rem_solid_var(--border)] pointer-events-none"
+            className="ms-cube-face  bg-(--muted) border border-border pointer-events-none"
             style={
               {
                 "--ms-cube-face-transform": `rotateX(180deg) translateZ(${HALF_SIZE}px)`,
@@ -312,7 +312,7 @@ export function MissionCompassCube({
           that pointer users reach via face regions. Revealed on focus only,
           so waypoint editing focus order is otherwise untouched. */}
       <div
-        className="ms-cube-kb absolute top-[calc(100%+0.25rem)] right-0 flex flex-col gap-[0.125rem] p-[0.25rem] bg-(--card) [border:0.0625rem_solid_var(--border)] rounded-(--radius) not-focus-within:w-px not-focus-within:h-px not-focus-within:p-0 not-focus-within:overflow-hidden not-focus-within:[clip:rect(0_0_0_0)] not-focus-within:whitespace-nowrap not-focus-within:[border:0]"
+        className="ms-cube-kb absolute top-[calc(100%+0.25rem)] right-0 flex flex-col gap-0.5 p-1 bg-(--card) border border-border rounded-(--radius) not-focus-within:w-px not-focus-within:h-px not-focus-within:p-0 not-focus-within:overflow-hidden not-focus-within:[clip:rect(0_0_0_0)] not-focus-within:whitespace-nowrap not-focus-within:[border:0]"
         aria-label="Keyboard view controls"
       >
         {MISSION_CUBE_SNAPS.map((snap) => (
@@ -322,7 +322,7 @@ export function MissionCompassCube({
             disabled={!interactive}
             data-testid={`ms-cube-kb-${snap.id}`}
             tabIndex={interactive ? 0 : -1}
-            className=" text-[0.6875rem] text-left whitespace-nowrap text-(--foreground) bg-transparent [border:0] rounded-(--radius) p-[0.125rem_0.375rem] cursor-pointer [&:hover]:bg-(--accent) focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:outline-offset-1 disabled:opacity-[0.4] disabled:cursor-not-allowed"
+            className=" text-[0.6875rem] text-left whitespace-nowrap text-(--foreground) bg-transparent [border:0] rounded-(--radius) py-0.5 px-1.5 cursor-pointer [&:hover]:bg-(--accent) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 disabled:opacity-[0.4] disabled:cursor-not-allowed"
             onClick={() => {
               if (interactive)
                 snapRef.current({ heading: snap.heading, pitch: snap.pitch });

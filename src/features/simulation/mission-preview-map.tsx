@@ -38,12 +38,12 @@ export default function MissionPreviewMap({
   const homePosition = project(home.x, home.y);
   return (
     <div
-      className="relative min-h-[13.75rem] overflow-hidden [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-[color-mix(in_srgb,var(--muted)_28%,var(--background))]"
+      className="relative min-h-55 overflow-hidden border border-border rounded-(--radius) bg-[color-mix(in_srgb,var(--muted)_28%,var(--background))]"
       role="img"
       aria-label="Mini map of areas and flight path"
     >
       <svg
-        className="block w-full h-full min-h-[13.75rem]"
+        className="block w-full h-full min-h-55"
         viewBox="0 0 640 280"
         preserveAspectRatio="xMidYMid meet"
         aria-hidden="true"
@@ -116,7 +116,7 @@ export default function MissionPreviewMap({
               <text
                 x={point.x + 9}
                 y={point.y - 8}
-                className=" fill-(--foreground) [font:700_0.6875rem/1_system-ui,sans-serif] [paint-order:stroke] stroke-(--background) stroke-[0.1875rem]"
+                className=" fill-(--foreground) [font:700_0.6875rem/1_system-ui,sans-serif] [paint-order:stroke] stroke-(--background) stroke-[3px]"
                 data-testid="ms-preview-map-label"
               >
                 {waypoint.seq}
@@ -135,7 +135,7 @@ export default function MissionPreviewMap({
           <text
             x="12"
             y="4"
-            className="fill-(--foreground) [font:700_0.625rem/1_system-ui,sans-serif] [paint-order:stroke] stroke-(--background) stroke-[0.1875rem]"
+            className="fill-(--foreground) [font:700_0.625rem/1_system-ui,sans-serif] [paint-order:stroke] stroke-(--background) stroke-[3px]"
           >
             HOME
           </text>
@@ -151,7 +151,7 @@ export default function MissionPreviewMap({
         ) : null}
       </svg>
       <span
-        className=" absolute left-[0.625rem] bottom-[0.5rem] p-[0.25rem_0.4375rem] rounded-[0.3125rem] bg-[color-mix(in_srgb,var(--card)_92%,transparent)] text-(--muted-foreground) text-[0.625rem]"
+        className=" absolute left-2.5 bottom-2 py-1 px-1.75 rounded-[5px] bg-[color-mix(in_srgb,var(--card)_92%,transparent)] text-(--muted-foreground) text-[0.625rem]"
         data-testid="ms-preview-map-caption"
       >
         Route overview · photo points highlighted

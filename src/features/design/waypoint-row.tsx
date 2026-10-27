@@ -187,7 +187,7 @@ export function WaypointRow(props: {
         {wp.seq}
       </button>
       <div
-        className=" flex-[1_1_0] flex flex-row gap-[0.75rem] pl-[0.25rem] min-w-0"
+        className=" flex-[1_1_0] flex flex-row gap-3 pl-1 min-w-0"
         data-testid="ms-seq-fields"
       >
         <CompactAxisField
@@ -222,7 +222,7 @@ export function WaypointRow(props: {
         />
       </div>
       <div
-        className=" flex flex-row gap-[0.25rem] flex-[0_0_auto] self-center ml-auto"
+        className=" flex flex-row gap-1 flex-[0_0_auto] self-center ml-auto"
         data-testid="ms-seq-actions"
       >
         <SkyTooltip>

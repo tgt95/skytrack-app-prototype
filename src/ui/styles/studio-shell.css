@@ -9,7 +9,7 @@
 }
 
 .ms-crumb-name {
-  @apply font-semibold overflow-hidden text-ellipsis whitespace-nowrap max-w-[20rem];
+  @apply font-semibold overflow-hidden text-ellipsis whitespace-nowrap max-w-80;
 }
 
 /* Breadcrumb links (P2 slice): logo returns to library home, project name
@@ -25,7 +25,7 @@
 }
 
 .ms-crumb-btn:focus-visible {
-  @apply [outline:0.125rem_solid_var(--primary)] outline-offset-1;
+  @apply outline-2 outline-(--primary) outline-offset-1;
 }
 
 /* ------------------------- body ------------------------- */
@@ -37,5 +37,5 @@
    transparent and borderless like before. */
 
 .ms-seq-badge:focus-visible {
-  @apply [outline:0.125rem_solid_var(--primary)] outline-offset-1;
+  @apply outline-2 outline-(--primary) outline-offset-1;
 }

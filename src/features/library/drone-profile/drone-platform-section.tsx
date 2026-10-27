@@ -29,11 +29,11 @@ export function DronePlatformSection({
         <div className="ms-drone-section-heading">
           <h2
             id="ms-drone-platform-title"
-            className="heading m-0 text-[0.875rem] font-semibold"
+            className="heading m-0 text-sm font-semibold"
           >
             Platform
           </h2>
-          <p className="m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.5]">
+          <p className="m-0 text-(--muted-foreground) text-xs leading-[1.5]">
             Leave details blank when they have not been confirmed.
           </p>
         </div>
@@ -110,11 +110,11 @@ export function DronePlatformSection({
         <div className="ms-drone-section-heading">
           <h2
             id="ms-drone-fit-title"
-            className="heading m-0 text-[0.875rem] font-semibold"
+            className="heading m-0 text-sm font-semibold"
           >
             Frame &amp; fit
           </h2>
-          <p className="m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.5]">
+          <p className="m-0 text-(--muted-foreground) text-xs leading-[1.5]">
             Record dimensions for reference. The profile does not validate
             component compatibility.
           </p>

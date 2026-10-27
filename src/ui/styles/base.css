@@ -2,7 +2,7 @@
    skytrack-ui; only semantic tokens (var(--*)) are used here, no palette. */
 
 .ms-root {
-  @apply flex flex-col h-[calc(100dvh-3.125rem)] min-h-[35rem] bg-(--background) text-(--foreground) text-sm;
+  @apply flex flex-col h-[calc(100dvh-3.125rem)] min-h-140 bg-(--background) text-(--foreground) text-sm;
 }
 
 /* Keep dialog actions compact and aligned to the right at every viewport. */

@@ -23,20 +23,20 @@ export default function RouteDraftPanel({
 }: RouteDraftPanelProps) {
   return (
     <section
-      className=" flex flex-col gap-[0.75rem] min-w-0 p-[0.875rem_0.75rem]"
+      className=" flex flex-col gap-3 min-w-0 py-3.5 px-3"
       aria-label="Route draft"
     >
       <header className=" min-w-0" data-testid="ms-route-draft-head">
         <div>
           <h2 className="heading ms-inspector-title">Route draft</h2>
-          <p className="ms-inspector-sub mt-[0.375rem] leading-[1.45]">
+          <p className="ms-inspector-sub mt-1.5 leading-[1.45]">
             Click the scene to add waypoints. Add at least 2, then press Enter
             to commit. Press Escape to cancel.
           </p>
         </div>
       </header>
       <p
-        className=" m-0 text-(--muted-foreground) text-[0.75rem] leading-[1.4]"
+        className=" m-0 text-(--muted-foreground) text-xs leading-[1.4]"
         role="status"
         aria-live="polite"
         data-testid="ms-route-draft-count"
@@ -47,7 +47,7 @@ export default function RouteDraftPanel({
       </p>
       {pending.length > 0 ? (
         <ol
-          className=" flex flex-col gap-[0.375rem] m-0 p-0 [list-style:none] [.ms-seq-row&]:p-[0.375rem_0.75rem] [.ms-seq-row&]:[flex-wrap:unset] [.ms-seq-row&]:bg-(--accent)"
+          className=" flex flex-col gap-1.5 m-0 p-0 [list-style:none] [.ms-seq-row&]:py-1.5 [.ms-seq-row&]:px-3 [.ms-seq-row&]:[flex-wrap:unset] [.ms-seq-row&]:bg-(--accent)"
           aria-label="Pending route waypoints"
         >
           {pending.map((point, index) => {
@@ -62,18 +62,18 @@ export default function RouteDraftPanel({
             };
             return (
               <li
-                className=" grid grid-cols-[1.75rem_minmax(0,1fr)] items-center gap-[0.5rem] min-w-0 p-[0.5rem] [border:0.0625rem_solid_var(--border)] rounded-(--radius) bg-(--background)"
+                className=" grid grid-cols-[1.75rem_minmax(0,1fr)] items-center gap-2 min-w-0 p-2 border border-border rounded-(--radius) bg-(--background)"
                 key={`route-draft-${sequence}`}
                 data-testid="ms-route-draft-row"
               >
                 <span
-                  className=" grid place-items-center w-[1.5rem] h-[1.5rem] rounded-[50%] bg-(--muted) text-(--foreground) text-[0.75rem] font-semibold"
+                  className=" grid place-items-center w-6 h-6 rounded-[50%] bg-(--muted) text-(--foreground) text-xs font-semibold"
                   data-testid="ms-route-draft-seq"
                 >
                   {sequence}
                 </span>
                 <span
-                  className="grid grid-cols-3 gap-[0.5rem] min-w-0 text-(--foreground) text-[0.6875rem] [font-variant-numeric:tabular-nums]"
+                  className="grid grid-cols-3 gap-2 min-w-0 text-(--foreground) text-[0.6875rem] [font-variant-numeric:tabular-nums]"
                   role="group"
                   aria-label={`Pending waypoint ${sequence} coordinates`}
                 >
@@ -111,11 +111,11 @@ export default function RouteDraftPanel({
         </ol>
       ) : null}
       <div
-        className=" flex flex-wrap gap-[0.5rem] pt-[0.125rem]"
+        className=" flex flex-wrap gap-2 pt-0.5"
         data-testid="ms-route-draft-actions"
       >
         <Button
-          className="flex-[1_1_6.875rem] min-w-0"
+          className="grow shrink basis-27.5 min-w-0"
           size="sm"
           variant="outline"
           onClick={onCancel}
@@ -123,7 +123,7 @@ export default function RouteDraftPanel({
           Cancel
         </Button>
         <Button
-          className="flex-[1_1_6.875rem] min-w-0"
+          className="grow shrink basis-27.5 min-w-0"
           size="sm"
           variant="default"
           onClick={() => onCommit()}

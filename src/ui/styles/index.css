@@ -9,5 +9,4 @@
 @import "./library-chunk-3.css";
 @import "./library-chunk-4.css";
 @import "./login.css";
-@reference "skytrack-ui/styles.css";
-@reference "tailwindcss";
+@reference "./tailwind-utilities.css";

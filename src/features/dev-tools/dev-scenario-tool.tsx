@@ -18,7 +18,7 @@ export default function DevScenarioTool () {
     <>
       {createPortal(
         <Button
-          className='fixed right-1 bottom-1 z-2147483646 size-[2.75rem] max-[40rem]:right-0.5 max-[40rem]:bottom-0.5'
+          className='fixed right-1 bottom-1 z-2147483646 size-11 max-sm:right-0.5 max-sm:bottom-0.5'
           size='icon-xs'
           variant='secondary'
           aria-label='Open Dev Tool'

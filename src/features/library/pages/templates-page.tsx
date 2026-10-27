@@ -68,13 +68,13 @@ export default function TemplatesPage({
         }
       >
         <div
-          className=" grid grid-cols-[minmax(17.5rem,30rem)_minmax(0,1fr)] gap-[1.25rem] [align-items:start] [@media_(max-width:_61.25rem)]:grid-cols-[1fr]"
+          className=" grid grid-cols-[minmax(17.5rem,30rem)_minmax(0,1fr)] gap-5 [align-items:start] [@media_(max-width:_61.25rem)]:grid-cols-[1fr]"
           data-testid="ms-lib-detail"
         >
           <span
             className={[
               `ms-lib-thumb is-template large tint-${activeTemplate.id.charCodeAt(1) % 6}`,
-              "[.ms-lib-thumb&]:[border:0.0625rem_solid_var(--border)] [.ms-lib-thumb&]:rounded-(--radius)",
+              "[.ms-lib-thumb&]:border [.ms-lib-thumb&]:border-border [.ms-lib-thumb&]:rounded-(--radius)",
             ]
               .filter(Boolean)
               .join(" ")}
@@ -87,7 +87,7 @@ export default function TemplatesPage({
             />
           </span>
           <div
-            className=" flex flex-col gap-[0.5rem] min-w-0"
+            className=" flex flex-col gap-2 min-w-0"
             data-testid="ms-lib-detail-body"
           >
             <p
@@ -115,7 +115,7 @@ export default function TemplatesPage({
           }
           footer={
             <div
-              className=" [.ms-lib-page-header-footer_>_&]:max-w-[30rem] max-w-[20rem] m-[0.75rem_0]"
+              className=" [.ms-lib-page-header-footer_>_&]:max-w-120 max-w-80 my-3 mx-0"
               data-testid="ms-lib-search"
             >
               <FieldRoot name="template-search">

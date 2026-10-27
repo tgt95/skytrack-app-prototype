@@ -184,17 +184,17 @@ export function LibraryEmptyState({
   const iconNode = icon ?? <FolderOpenIcon />;
   const sizedIcon = isValidElement<{ className?: string }>(iconNode)
     ? cloneElement(iconNode, {
-        className: [iconNode.props.className, "w-[2.5rem] h-[2.5rem]"]
+        className: [iconNode.props.className, "w-10 h-10"]
           .filter(Boolean)
           .join(" "),
       })
     : iconNode;
 
   return (
-    <div className="flex flex-col items-center gap-0 p-[3rem_1.5rem] text-center bg-[oklch(from_var(--muted)_calc(l*1.01)_c_h)]">
+    <div className="flex flex-col items-center gap-0 py-12 px-6 text-center bg-[oklch(from_var(--muted)_calc(l*1.01)_c_h)]">
       <span
         data-testid="ms-lib-empty-icon"
-        className="inline-flex text-(--muted-foreground) w-[2.5rem] h-[2.5rem] mb-[0.75rem]"
+        className="inline-flex text-(--muted-foreground) w-10 h-10 mb-3"
         aria-hidden="true"
       >
         {sizedIcon}
@@ -205,7 +205,7 @@ export function LibraryEmptyState({
       >
         {title}
       </p>
-      <p className="ms-hint m-0 text-[0.875rem]">{description}</p>
+      <p className="ms-hint m-0 text-sm">{description}</p>
     </div>
   );
 }
@@ -226,7 +226,7 @@ export function LibraryPageLayout({
       {header}
       <section
         aria-labelledby={titleId}
-        className={["min-w-0 p-[1.5rem]", sectionClassName ?? ""]
+        className={["min-w-0 p-6", sectionClassName ?? ""]
           .filter(Boolean)
           .join(" ")}
       >
@@ -262,10 +262,10 @@ export function LibraryPageHeader({
     footerVariant === "tabs" ? "has-tabs" : "",
     // footerVariant === "tabs" ? "[&_[data-variant='line']]:-mx-1.5" : "",
     variant === "plain" ? "is-plain" : "",
-    "flex flex-col gap-[0.5rem]",
+    "flex flex-col gap-2",
     stickyHeader ? "sticky top-0 z-20" : "",
-    "p-[1.25rem_1.5rem_1rem]",
-    "bg-(--card) [border-bottom:0.0625rem_solid_var(--border)] [.ms-lib-page-header&:where(.has-tabs)]:pb-[0] [.ms-lib-page-header&:where(.is-plain)]:[border:0] [.ms-lib-page-header&:where(.is-plain)]:bg-(--background) block flex-none w-full min-h-0",
+    "pt-5 px-6 pb-4",
+    "bg-(--card) border-b border-b-border [.ms-lib-page-header&:where(.has-tabs)]:pb-[0] [.ms-lib-page-header&:where(.is-plain)]:[border:0] [.ms-lib-page-header&:where(.is-plain)]:bg-(--background) block flex-none w-full min-h-0",
   ]
     .filter(Boolean)
     .join(" ");
@@ -278,7 +278,7 @@ export function LibraryPageHeader({
         </div>
       ) : null}
       <div
-        className=" flex items-start justify-between gap-[0.75rem] [@media_(max-width:_61.25rem)]:flex-wrap"
+        className=" flex items-start justify-between gap-3 [@media_(max-width:_61.25rem)]:flex-wrap"
         data-testid="ms-lib-page-header-row"
       >
         <div className=" min-w-0" data-testid="ms-lib-page-header-copy">
@@ -287,7 +287,7 @@ export function LibraryPageHeader({
           </h1>
           {description ? (
             <div
-              className=" mt-[0.25rem]"
+              className=" mt-1"
               data-testid="ms-lib-page-header-description"
             >
               {description}
@@ -296,7 +296,7 @@ export function LibraryPageHeader({
         </div>
         {actions ? (
           <div
-            className=" inline-flex items-center justify-end gap-[0.5rem] flex-[0_0_auto]"
+            className=" inline-flex items-center justify-end gap-2 flex-[0_0_auto]"
             data-testid="ms-lib-page-header-actions"
           >
             {actions}

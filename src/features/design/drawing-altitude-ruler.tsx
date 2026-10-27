@@ -127,22 +127,22 @@ export function DrawingAltitudeRuler({
       aria-label="Drawing altitude in meters, 0 to 500 in half-meter steps"
     >
       <div
-        className=" relative flex-[1_1_auto] flex flex-row items-stretch gap-[0.375rem] min-h-0"
+        className=" relative flex-[1_1_auto] flex flex-row items-stretch gap-1.5 min-h-0"
         data-testid="ms-alt-body"
       >
         <div
-          className=" [@media_(max-width:_61.25rem)]:basis-[4.125rem] relative flex-[0_0_4.875rem] min-h-0 pointer-events-none"
+          className=" [@media_(max-width:_61.25rem)]:basis-16.5 relative grow-0 shrink-0 basis-19.5 min-h-0 pointer-events-none"
           data-testid="ms-alt-badge-slot"
         >
           <div
             className={
-              ' absolute bottom-(--ms-alt-badge-bottom) left-0 right-[0.125rem] pointer-events-auto transform-[translateY(50%)] flex items-baseline gap-[0.1875rem] p-[0.1875rem_0.375rem] bg-(--background) [border:0.0625rem_solid_var(--border)] rounded-[calc(var(--radius)-0.125rem)] [&::after]:[content:""] [&::after]:absolute [&::after]:right-[-0.3125rem] [&::after]:top-[50%] [&::after]:transform-[translateY(-50%)] [&::after]:[border-top:0.3125rem_solid_transparent] [&::after]:[border-bottom:0.3125rem_solid_transparent] [&::after]:[border-left:0.3125rem_solid_var(--border)] focus-within:[outline:0.125rem_solid_var(--primary)] focus-within:outline-offset-1'
+              ' absolute bottom-(--ms-alt-badge-bottom) left-0 right-0.5 pointer-events-auto transform-[translateY(50%)] flex items-baseline gap-0.75 py-0.75 px-1.5 bg-(--background) border border-border rounded-[calc(var(--radius)-0.125rem)] [&::after]:[content:""] [&::after]:absolute [&::after]:-right-1.25 [&::after]:top-[50%] [&::after]:transform-[translateY(-50%)] [&::after]:[border-top:0.3125rem_solid_transparent] [&::after]:[border-bottom:0.3125rem_solid_transparent] [&::after]:border-l-[5px] [&::after]:border-l-border focus-within:outline-2 focus-within:outline-(--primary) focus-within:outline-offset-1'
             }
             style={{ "--ms-alt-badge-bottom": badgeBottom } as CSSProperties}
             data-testid="ms-alt-badge"
           >
             <input
-              className=" flex-[1_1_auto] min-w-0 bg-transparent [border:0] p-0 text-(--foreground) text-[0.75rem] font-bold text-right [font-variant-numeric:tabular-nums] focus:[outline:none]"
+              className=" flex-[1_1_auto] min-w-0 bg-transparent [border:0] p-0 text-(--foreground) text-xs font-bold text-right [font-variant-numeric:tabular-nums] focus:[outline:none]"
               data-testid="ms-alt-ruler-input"
               value={shown}
               inputMode="decimal"
@@ -168,7 +168,7 @@ export function DrawingAltitudeRuler({
         </div>
         <div
           ref={trackRef}
-          className=" relative flex-[0_0_1.5rem] min-h-[4rem] pointer-events-auto cursor-ns-resize touch-none bg-(--card) [border-left:0.0625rem_solid_var(--border)]"
+          className=" relative grow-0 shrink-0 basis-6 min-h-16 pointer-events-auto cursor-ns-resize touch-none bg-(--card) border-l border-l-border"
           data-testid="ms-alt-ruler-track"
           style={
             {
@@ -192,12 +192,12 @@ export function DrawingAltitudeRuler({
             data-testid="ms-alt-ticks"
           />
           <div
-            className=" absolute bottom-(--ms-alt-percent) left-0 right-0 h-[0.125rem] transform-[translateY(50%)] bg-(--primary) z-2 pointer-events-none"
+            className=" absolute bottom-(--ms-alt-percent) left-0 right-0 h-0.5 transform-[translateY(50%)] bg-(--primary) z-2 pointer-events-none"
             aria-hidden="true"
             data-testid="ms-alt-active-line"
           />
           <div
-            className=" absolute bottom-(--ms-alt-percent) left-[50%] w-[1.125rem] h-[1.125rem] transform-[translate(-50%,50%)] rounded-[50%] bg-(--background) [border:0.125rem_solid_var(--primary)] cursor-grab z-2 active:cursor-grabbing focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:outline-offset-2"
+            className=" absolute bottom-(--ms-alt-percent) left-[50%] w-4.5 h-4.5 transform-[translate(-50%,50%)] rounded-[50%] bg-(--background) border-[2px] border-(--primary) cursor-grab z-2 active:cursor-grabbing focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-2"
             data-testid="ms-alt-ruler-knob"
             role="slider"
             tabIndex={0}

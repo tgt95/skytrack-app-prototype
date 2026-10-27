@@ -41,7 +41,7 @@ export function MissionContextCards({
 }: MissionContextCardsProps) {
   return (
     <div
-      className=" absolute top-[0.5rem] left-[0.5rem] flex flex-row items-stretch gap-[0.5rem] w-max max-w-[min(40rem,calc(100%-1.5rem))] pointer-events-none [@media_(max-width:_61.25rem)]:top-[0.5rem] [@media_(max-width:_61.25rem)]:left-[0.5rem] [@media_(max-width:_61.25rem)]:gap-[0.375rem] [@media_(max-width:_61.25rem)]:max-w-[min(32.5rem,calc(100%-1rem))] [@media_(max-width:_61.25rem)]:flex-wrap"
+      className=" absolute top-2 left-2 flex flex-row items-stretch gap-2 w-max max-w-[min(40rem,calc(100%-1.5rem))] pointer-events-none [@media_(max-width:_61.25rem)]:top-2 [@media_(max-width:_61.25rem)]:left-2 [@media_(max-width:_61.25rem)]:gap-1.5 [@media_(max-width:_61.25rem)]:max-w-[min(32.5rem,calc(100%-1rem))] [@media_(max-width:_61.25rem)]:flex-wrap"
       role="group"
       aria-label="Mission context"
     >
@@ -97,14 +97,14 @@ export function MissionContextCards({
           </SelectPortal>
         </Select>
         <span
-          className=" flex-[0_0_auto] self-stretch w-px m-[0.25rem_0.5rem] bg-(--border) [@media_(max-width:_61.25rem)]:m-[0.25rem_0.375rem]"
+          className=" flex-[0_0_auto] self-stretch w-px my-1 mx-2 bg-(--border) [@media_(max-width:_61.25rem)]:my-1 [@media_(max-width:_61.25rem)]:mx-1.5"
           aria-hidden="true"
           data-testid="ms-drone-divider"
         />
         <SkyTooltip>
           <button
             type="button"
-            className="ms-drone-add flex-[0_0_auto] self-center inline-flex items-center justify-center w-[2rem] h-[2rem] p-0 [border:0] rounded-(--radius) bg-transparent text-(--muted-foreground) text-[1rem] cursor-not-allowed disabled:opacity-[0.55] [@media_(max-width:_61.25rem)]:w-[2rem] [@media_(max-width:_61.25rem)]:h-[2rem]"
+            className="ms-drone-add flex-[0_0_auto] self-center inline-flex items-center justify-center w-8 h-8 p-0 [border:0] rounded-(--radius) bg-transparent text-(--muted-foreground) text-base cursor-not-allowed disabled:opacity-[0.55] [@media_(max-width:_61.25rem)]:w-8 [@media_(max-width:_61.25rem)]:h-8"
             data-testid="ms-drone-add"
             disabled
             aria-label="Add drone"
@@ -121,7 +121,7 @@ export function MissionContextCards({
         <Button
           type="button"
           variant="ghost"
-          className="ms-drone-trigger  self-stretch h-auto focus-visible:[outline:0.125rem_solid_var(--primary)] focus-visible:outline-offset-1"
+          className="ms-drone-trigger  self-stretch h-auto focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
           data-testid="ms-world-select"
           aria-label={`Choose world and mission type; current world ${mission.world}, ${mission.worldType ?? "3D"}`}
           onClick={onOpenWorldPicker}
