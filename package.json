@@ -22,6 +22,7 @@
     "leaflet-draw": "^1.0.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "react-markdown": "^10.1.0",
     "skytrack-ui": "file:vendor/skytrack-ui-0.1.5.tgz",
     "three": "^0.186.1"
   },

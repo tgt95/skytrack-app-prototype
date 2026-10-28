@@ -15,11 +15,11 @@ test("mission context cards have a leaf owner and explicit viewport inputs", () 
   );
   assert.match(
     controls,
-    /export \{ MissionContextCards \} from "\.\/mission-context-cards"/,
+    /export \{ MissionContextCards \} from ["']\.\/mission-context-cards["']/,
   );
   assert.match(
     controls,
-    /export type \{ DroneChoice \} from "\.\/mission-context-cards"/,
+    /export type \{ DroneChoice \} from ["']\.\/mission-context-cards["']/,
   );
   assert.doesNotMatch(cards, /from ["']\.\/studio-map-controls["']/);
 });

@@ -7,6 +7,7 @@ function fixtureMission() {
   return {
     ...emptyMission(),
     id: 'mission-fixture',
+    worldType: '2D',
     routes: [{ id: 'route-1', label: 'Route', targetSpeedMS: 2 }],
     sequenceOrder: [
       { type: 'route', id: 'route-1' },
@@ -33,7 +34,8 @@ function fixtureMission() {
       lineSpacingM: 6,
       orientationDeg: 0,
       paddingM: 0,
-      baseAltM: 0
+      baseAltM: 0,
+      reconnaissance: { enabled: true }
     }]
   }
 }

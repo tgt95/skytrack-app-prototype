@@ -50,8 +50,7 @@ export const WORKSPACES: WorkspaceDefinition[] = [
     name: 'Tuan’s workspace',
     role: 'Admin',
     worlds: [
-      { id: 'blank-space', name: 'Blank space', type: '2D', location: 'No terrain source' },
-      { id: 'field-terrain', name: 'Field terrain', type: '3D', location: 'Redlands, CA' }
+      { id: 'blank-space', name: 'Blank space', type: '2D', location: 'No terrain source' }
     ],
     drones: [
       { id: 'mini-pro-v6', name: 'Mini Pro V6', model: 'Multirotor · camera payload', status: 'Ready' },
@@ -64,8 +63,7 @@ export const WORKSPACES: WorkspaceDefinition[] = [
     name: 'Survey operations',
     role: 'Member',
     worlds: [
-      { id: 'quarry-terrain', name: 'Quarry terrain', type: '3D', location: 'Benton County' },
-      { id: 'coastal-world', name: 'Coastal world', type: '3D', location: 'Portland, ME' }
+      { id: 'blank-space', name: 'Blank space', type: '2D', location: 'No terrain source' }
     ],
     drones: [
       { id: 'mavic-3-enterprise', name: 'Mavic 3 Enterprise', model: 'DJI · mapping payload', status: 'Ready' }

@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import type { LibMission, LibProject, LibTemplate } from "../database/store";
 import type { WorkspaceWorldRecord } from "../database/workspace-resources-store";
 import {
@@ -14,6 +14,7 @@ import {
   type SharedProject,
 } from "./library-cards.tsx";
 import { type LibraryCardAction } from "./library-presentation.tsx";
+import { resolveMissionWorldAssetId } from "./mission-world-asset.ts";
 
 interface LibraryCardRenderersOptions {
   username: string;
@@ -66,20 +67,8 @@ export function useLibraryCardRenderers({
   setCloneTarget,
   onOpenSharedProject,
 }: LibraryCardRenderersOptions) {
-  const worldsById = useMemo(
-    () => new Map(worlds.map((world) => [world.id, world])),
-    [worlds],
-  );
-  const worldsByName = useMemo(
-    () => new Map(worlds.map((world) => [world.name, world])),
-    [worlds],
-  );
-  const worldAssetForMission = (mission: LibMission) => {
-    const world = mission.worldId
-      ? worldsById.get(mission.worldId)
-      : worldsByName.get(mission.world ?? "");
-    return world?.glbAssetId;
-  };
+  const worldAssetForMission = (mission: LibMission) =>
+    resolveMissionWorldAssetId(mission, worlds);
   const missionActions = (
     projectId: string,
     projectName: string,

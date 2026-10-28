@@ -18,6 +18,7 @@ import {
   ShareDialog,
 } from "./library-dialogs.tsx";
 import CreateMissionWizard, { type WizardResult } from "../create-wizard";
+import { useWorldGlbImport } from "../use-world-glb-import";
 import type { LibProject } from "../database/store";
 import type { WorkspaceDroneProfile } from "../database/drone-store";
 import type { WorkspaceWorldRecord } from "../database/workspace-resources-store";
@@ -55,6 +56,13 @@ export interface LibraryMissionSetupDialogsProps {
   wizardSeed: { projectId: string; title: string };
   drones: WorkspaceDroneProfile[];
   worlds: WorkspaceWorldRecord[];
+  worldImport: {
+    workspaceId: string;
+    persistWorldProfile: (
+      profile: WorkspaceWorldRecord,
+      mode: "create" | "edit",
+    ) => boolean;
+  };
   submitWizard: (result: WizardResult) => void;
   projectDlg: ProjectDlg;
   setProjectDlg: (next: ProjectDlg) => void;
@@ -73,12 +81,18 @@ export function LibraryMissionSetupDialogs({
   wizardSeed,
   drones,
   worlds,
+  worldImport,
   submitWizard,
   projectDlg,
   setProjectDlg,
   projectDialogReturnFocusRef,
   submitProjectDlg,
 }: LibraryMissionSetupDialogsProps) {
+  const { importWorld } = useWorldGlbImport({
+    workspaceId: worldImport.workspaceId,
+    persistWorld: (world) => worldImport.persistWorldProfile(world, "create"),
+  });
+
   return (
     <>
       {/* Mission rename dialog. */}
@@ -96,6 +110,7 @@ export function LibraryMissionSetupDialogs({
         initialTitle={wizardSeed.title}
         drones={drones}
         worlds={worlds}
+        onImportWorld={importWorld}
         onClose={() => setWizardOpen(false)}
         onSubmit={submitWizard}
       />

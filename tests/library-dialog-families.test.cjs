@@ -5,9 +5,14 @@ const path = require("node:path");
 const ts = require("typescript");
 
 const libraryDirectory = path.resolve(__dirname, "../src/features/library");
+const dialogDirectory = path.join(libraryDirectory, "dialogs");
 
 function readSource(name) {
   return fs.readFileSync(path.join(libraryDirectory, name), "utf8");
+}
+
+function readDialogSource(name) {
+  return fs.readFileSync(path.join(dialogDirectory, name), "utf8");
 }
 
 function jsxTagNames(sourcePath) {
@@ -33,7 +38,7 @@ function jsxTagNames(sourcePath) {
 
 test("dialog host composes narrow families in the retained dialog order", () => {
   assert.deepEqual(
-    jsxTagNames(path.join(libraryDirectory, "library-dialogs-host.tsx")),
+    jsxTagNames(path.join(dialogDirectory, "library-dialogs-host.tsx")),
     [
       "LibraryMissionSetupDialogs",
       "LibraryResourceEditorDialogs",
@@ -57,8 +62,8 @@ test("dialog host composes narrow families in the retained dialog order", () => 
 });
 
 test("dialog families keep their own dialogs and do not import the host", () => {
-  const mission = readSource("library-mission-dialogs.tsx");
-  const resources = readSource("library-resource-dialogs-host.tsx");
+  const mission = readDialogSource("library-mission-dialogs.tsx");
+  const resources = readDialogSource("library-resource-dialogs-host.tsx");
 
   assert.match(mission, /MissionDialog/);
   assert.match(mission, /CreateMissionWizard/);

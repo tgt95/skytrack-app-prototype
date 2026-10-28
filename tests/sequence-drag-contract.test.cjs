@@ -8,7 +8,7 @@ const {
   SEQUENCE_LIST_ITEM_CLASS,
   sequenceDropPosition,
   writeSequenceDragItem
-} = require('../src/features/design/sequence-drag.ts')
+} = require('../src/features/design/sequence/sequence-drag.ts')
 
 const MIME = 'application/x-skytrack-sequence-item'
 
@@ -75,17 +75,18 @@ test('sequence drop position splits the row at its midpoint', () => {
 test('sequence row modules import leaf owners instead of the compatibility barrel', () => {
   const designDir = path.join(__dirname, '..', 'src', 'features', 'design')
   for (const file of [
-    'waypoint-row.tsx',
-    'sequence-action-controls.tsx',
-    'compact-axis-field.tsx',
-    'route-waypoint-list.tsx',
-    'route-sequence-card.tsx',
-    'sequence-transfer.tsx',
+    'sequence/waypoint-row.tsx',
+    'sequence/sequence-action-controls.tsx',
+    'controls/compact-axis-field.tsx',
+    'sequence/route-waypoint-list.tsx',
+    'sequence/route-sequence-card.tsx',
+    'sequence/sequence-transfer.tsx',
     'design-panel.tsx'
   ]) {
     const source = fs.readFileSync(path.join(designDir, file), 'utf8')
     assert.equal(source.includes('"./sequence-controls"'), false, `${file} must not import the barrel`)
   }
   assert.match(SEQUENCE_LIST_ITEM_CLASS, /^relative rounded-\[0\]/)
-  assert.match(SEQUENCE_LIST_ITEM_CLASS, / first:mt-\[0\]$/)
+  assert.match(SEQUENCE_LIST_ITEM_CLASS, /first:\[border-top-left-radius:var\(--radius\)\]/)
+  assert.match(SEQUENCE_LIST_ITEM_CLASS, /last:\[border-bottom-right-radius:var\(--radius\)\]/)
 })

@@ -27,7 +27,6 @@ import { useMissionStudioTestBridge } from "../features/studio/use-mission-studi
 import StudioLibraryRoute from "../features/studio/studio-library-route";
 import StudioShell from "../ui/layout/page-layout";
 import DevScenarioTool from "../features/dev-tools/dev-scenario-tool";
-import type { SimEventItem } from "../features/simulation/simulation";
 import { ImportAIModelDialog } from "../features/library/dialogs/import-ai-model-dialog.tsx";
 import { AccountMenuDialogs } from "../features/library/dialogs/account-menu-dialogs.tsx";
 import { useLibraryAccountSettings } from "../features/library/account/use-library-account-settings.ts";
@@ -36,12 +35,8 @@ import {
   getWorkspace,
   readActiveWorkspaceId,
 } from "../features/library/workspace/workspace-data.ts";
-import {
-  parseMissionViewSearch,
-  sameMissionViewState,
-  serializeMissionViewSearch,
-  type MissionViewState,
-} from "../features/studio/mission-view-url";
+import { useMissionViewUrlSync } from "../features/studio/use-mission-view-url-sync";
+import { useStudioSimulationEventFocus } from "../features/studio/use-studio-simulation-event-focus";
 import "../ui/styles/index.css";
 
 export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
@@ -65,17 +60,11 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
     createId: createAIModelId,
     onAnnounce: uiState.say,
   });
+  const { skytrackAIModels, workspaceAIModels, uploadedAIModels } =
+    modelResources;
   const aiModels = useMemo(
-    () => [
-      ...modelResources.skytrackAIModels,
-      ...modelResources.workspaceAIModels,
-      ...modelResources.uploadedAIModels,
-    ],
-    [
-      modelResources.skytrackAIModels,
-      modelResources.workspaceAIModels,
-      modelResources.uploadedAIModels,
-    ],
+    () => [...skytrackAIModels, ...workspaceAIModels, ...uploadedAIModels],
+    [skytrackAIModels, workspaceAIModels, uploadedAIModels],
   );
   const {
     stage,
@@ -189,32 +178,14 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
     return () => media.removeEventListener("change", handleSystemThemeChange);
   }, [section, accountSettings.themePreference, uiState.setBasemapStyle]);
 
-  useEffect(() => {
-    if (
-      route.kind !== "mission" ||
-      libraryEntry?.missionId !== route.missionId
-    ) {
-      return;
-    }
-
-    const currentSearch = window.location.search;
-    const currentViewState = parseMissionViewSearch(currentSearch);
-    const nextViewState: MissionViewState = {
-      appTab,
-      stage,
-      panelView: codeView ? "code" : previewView ? "preview" : "design",
-    };
-    const nextSearch = serializeMissionViewSearch(nextViewState, currentSearch);
-    const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}${window.location.hash}`;
-    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-    if (nextUrl === currentUrl) return;
-
-    if (sameMissionViewState(currentViewState, nextViewState)) {
-      window.history.replaceState({}, "", nextUrl);
-    } else {
-      window.history.pushState({}, "", nextUrl);
-    }
-  }, [appTab, codeView, libraryEntry, previewView, route, stage]);
+  useMissionViewUrlSync({
+    appTab,
+    codeView,
+    previewView,
+    stage,
+    libraryEntry,
+    route,
+  });
 
   const simulation = useStudioSimulationModel(
     mission,
@@ -354,20 +325,12 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
   });
   const { openCodeView, saveLocal, resetToSeed, newMission } = studioActions;
 
-  /* ------------------------- events ------------------------- */
-  const onSelectEvent = useCallback(
-    (ev: SimEventItem) => {
-      if (typeof ev.seq === "number") {
-        const wp = mission.waypoints.find((w) => w.seq === ev.seq);
-        if (wp) {
-          setSelection({ kind: "waypoint", id: wp.id });
-          sceneRef.current?.focusPoint(wp);
-          say(`Event focused: waypoint ${wp.seq}.`);
-        }
-      }
-    },
-    [mission.waypoints, say],
-  );
+  const { onSelectEvent } = useStudioSimulationEventFocus({
+    waypoints: mission.waypoints,
+    setSelection,
+    sceneRef,
+    say,
+  });
 
   useMissionKeyboard(
     {

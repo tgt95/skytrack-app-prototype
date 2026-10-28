@@ -50,7 +50,7 @@ test("wizard step views preserve the labels, empty states, and test hooks", () =
     "ms-wizard-toggle",
     "ms-wizard-dropzone",
     "ms-wizard-filebtn",
-    "Add or register a World",
+    "Import world",
   ]) {
     assert.ok(world.includes(hook), `World step should preserve ${hook}`);
   }
@@ -64,11 +64,10 @@ test("wizard step views preserve the labels, empty states, and test hooks", () =
   }
 });
 
-test("terrain upload delegates file selection and drop to the shared Dropzone", () => {
+test("terrain Dropzone remains separate from the 3D World GLB picker", () => {
   const world = read("create-wizard/world-step.tsx");
 
   assert.ok(world.includes("import { Dropzone } from 'skytrack-ui/dropzone'"));
-  assert.ok(world.includes("data-testid='ms-wizard-dropzone'"));
   assert.ok(world.includes("data-testid='ms-wizard-filebtn'"));
   assert.ok(world.includes("buttonLabel='Choose File'"));
   assert.ok(world.includes("multiple={false}"));
@@ -76,5 +75,8 @@ test("terrain upload delegates file selection and drop to the shared Dropzone", 
     world,
     /onFilesSelected=\{files =>[\s\S]*?onTerrainFileSelect\(file\.name\)/,
   );
-  assert.doesNotMatch(world, /terrainInputRef|type='file'/);
+  assert.doesNotMatch(world, /terrainInputRef/);
+  assert.ok(world.includes("data-testid='ms-wizard-world-file-input'"));
+  assert.ok(world.includes("accept='.glb,model/gltf-binary'"));
+  assert.match(world, /if \(file\) onImportWorld\(file\)/);
 });

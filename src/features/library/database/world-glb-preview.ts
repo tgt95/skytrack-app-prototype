@@ -10,7 +10,7 @@ export interface RenderGlbThumbnailOptions {
 export const DEFAULT_PREVIEW_WIDTH = 640;
 export const DEFAULT_PREVIEW_HEIGHT = 480;
 export const DEFAULT_PREVIEW_BACKGROUND = 0x000000;
-export const WORLD_GLB_THUMBNAIL_VERSION = 2;
+export const WORLD_GLB_THUMBNAIL_VERSION = 3;
 
 function checkWebGLAvailability(): void {
   if (typeof document === "undefined") {
@@ -18,11 +18,9 @@ function checkWebGLAvailability(): void {
   }
 
   const canvas = document.createElement("canvas");
-  const gl = (
-    canvas.getContext("webgl2") ??
+  const gl = (canvas.getContext("webgl2") ??
     canvas.getContext("webgl") ??
-    canvas.getContext("experimental-webgl")
-  ) as WebGLRenderingContext | null;
+    canvas.getContext("experimental-webgl")) as WebGLRenderingContext | null;
   if (!gl || typeof gl.getExtension !== "function") {
     throw new Error("WebGL is unavailable in this browser.");
   }
@@ -35,7 +33,11 @@ function disposeMaterial(
   disposedTextures: Set<THREE.Texture>,
 ): void {
   for (const value of Object.values(material)) {
-    if (!value || typeof value !== "object" || !(value as THREE.Texture).isTexture)
+    if (
+      !value ||
+      typeof value !== "object" ||
+      !(value as THREE.Texture).isTexture
+    )
       continue;
     const texture = value as THREE.Texture;
     if (disposedTextures.has(texture)) continue;
@@ -56,7 +58,9 @@ function disposeMeshResources(
     const materials = Array.isArray(mesh.material)
       ? mesh.material
       : [mesh.material];
-    materials.forEach((material) => disposeMaterial(material, disposedTextures));
+    materials.forEach((material) =>
+      disposeMaterial(material, disposedTextures),
+    );
   });
 }
 
@@ -125,7 +129,7 @@ export async function renderGlbThumbnail(
     const fov = 32;
     const halfFovY = THREE.MathUtils.degToRad(fov) / 2;
     const halfFovX = Math.atan(Math.tan(halfFovY) * aspect);
-    const distance = (radius / Math.sin(Math.min(halfFovY, halfFovX))) * 1.25;
+    const distance = (radius / Math.sin(Math.min(halfFovY, halfFovX))) * 1.0;
     const camera = new THREE.PerspectiveCamera(fov, aspect, 0.01, 10000);
     camera.position.set(1, 1, 1).normalize().multiplyScalar(distance);
     camera.up.set(0, 1, 0);
@@ -143,7 +147,11 @@ export async function renderGlbThumbnail(
     );
     scene.add(keyLight);
     const fillLight = new THREE.DirectionalLight(0x94a3b8, 0.8);
-    fillLight.position.set(-camera.position.x, camera.position.y * 0.5, -camera.position.z);
+    fillLight.position.set(
+      -camera.position.x,
+      camera.position.y * 0.5,
+      -camera.position.z,
+    );
     scene.add(fillLight);
     scene.add(new THREE.AmbientLight(0xffffff, 0.5));
 

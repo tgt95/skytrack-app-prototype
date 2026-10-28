@@ -86,6 +86,7 @@ export default function CreateMissionWizard({
   worlds,
   initialProjectId,
   initialTitle,
+  onImportWorld,
   onClose,
   onSubmit,
 }: {
@@ -95,6 +96,7 @@ export default function CreateMissionWizard({
   worlds: WorkspaceWorldRecord[];
   initialProjectId: string;
   initialTitle: string;
+  onImportWorld: (file: File) => Promise<WorkspaceWorldRecord>;
   onClose: () => void;
   onSubmit: (result: WizardResult) => void;
 }) {
@@ -103,6 +105,9 @@ export default function CreateMissionWizard({
   const [projectId, setProjectId] = useState(initialProjectId);
   const [worldType, setWorldType] = useState<"2D" | "3D">("2D");
   const [terrainFile, setTerrainFile] = useState<string | null>(null);
+  const [importingWorld, setImportingWorld] = useState(false);
+  const [worldImportError, setWorldImportError] = useState<string | null>(null);
+  const [worldImportMessage, setWorldImportMessage] = useState<string | null>(null);
   const [world, setWorld] = useState<string>(WORLDS[0]);
   const [worldId, setWorldId] = useState("");
   const [droneId, setDroneId] = useState<string>(drones[0]?.id ?? "");
@@ -116,7 +121,8 @@ export default function CreateMissionWizard({
       (worldProfile.status === "Draft" && Boolean(worldProfile.glbAssetId)),
   );
   const canNext = title.trim() !== "" && projectId !== "";
-  const canLeaveWorld = worldType === "2D" || worldId !== "";
+  const canLeaveWorld =
+    !importingWorld && (worldType === "2D" || worldId !== "");
   const goNext = () => {
     if (step === 1 && canNext) setStep(2);
     else if (step === 2 && canLeaveWorld) setStep(3);
@@ -141,6 +147,26 @@ export default function CreateMissionWizard({
     const selected = worldsForType.find((item) => item.id === id);
     setWorldId(id);
     if (selected) setWorld(selected.name);
+  };
+  const importWorld = async (file: File) => {
+    setWorldImportError(null);
+    setWorldImportMessage(null);
+    setImportingWorld(true);
+    try {
+      const imported = await onImportWorld(file);
+      setWorldType("3D");
+      setWorld(imported.name);
+      setWorldId(imported.id);
+      setWorldImportMessage(`${imported.name} imported and selected.`);
+    } catch (error) {
+      setWorldImportError(
+        error instanceof Error
+          ? error.message
+          : "The World could not be imported. Check the GLB file and try again.",
+      );
+    } finally {
+      setImportingWorld(false);
+    }
   };
   const doCreate = () => {
     if (!canNext || !selectedDrone) return;
@@ -197,6 +223,10 @@ export default function CreateMissionWizard({
               worlds={worldsForType}
               worldId={worldId}
               onWorldSelect={selectWorld}
+              onImportWorld={file => void importWorld(file)}
+              importingWorld={importingWorld}
+              worldImportError={worldImportError}
+              worldImportMessage={worldImportMessage}
               terrainFile={terrainFile}
               onTerrainFileSelect={setTerrainFile}
             />

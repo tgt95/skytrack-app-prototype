@@ -464,9 +464,7 @@ export default function StudioLibrary({
               profile: newDroneProfile(nextId("drone"), activeWorkspace.id),
             })
           }
-          onEditDrone={(drone) =>
-            setDroneEditor({ mode: "edit", profile: drone })
-          }
+          onEditDrone={(drone) => setDroneEditor({ mode: "edit", profile: drone })}
           onDeleteDrone={setDeleteDroneId}
           onImportAIModel={() => setImportModelOpen(true)}
           onDeleteAIModel={setDeleteModelId}
@@ -486,6 +484,7 @@ export default function StudioLibrary({
           wizardSeed,
           drones: workspaceDrones,
           worlds: selectableWorldsForWorkspace(activeWorkspace.id),
+          worldImport: { workspaceId: activeWorkspace.id, persistWorldProfile },
           submitWizard,
           projectDlg,
           setProjectDlg,

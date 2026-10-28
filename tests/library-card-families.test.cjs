@@ -8,7 +8,7 @@ const ts = require("typescript");
 
 const resolveFilename = Module._resolveFilename;
 Module._resolveFilename = function (request, ...args) {
-  return resolveFilename.call(this, request.replace(/\?raw$/, ""), ...args);
+  return resolveFilename.call(this, request.replace(/\?(?:raw|url)$/, ""), ...args);
 };
 
 const loadModule = Module._load;
@@ -39,15 +39,15 @@ require.extensions[".tsx"] = (module, filename) => {
   module._compile(output, filename);
 };
 
-for (const extension of [".svg", ".jpg", ".png", ".webp"]) {
+for (const extension of [".svg", ".jpg", ".png", ".webp", ".glb"]) {
   require.extensions[extension] = (module) => {
     module.exports = extension === ".svg" ? "<svg />" : "test-thumbnail";
   };
 }
 
-const missionCards = require("../src/features/library/mission-cards.tsx");
+const missionCards = require("../src/features/library/cards/mission-cards.tsx");
 const libraryCards = require("../src/features/library/library-cards.tsx");
-const libraryAvatar = require("../src/features/library/library-avatar.tsx");
+const libraryAvatar = require("../src/features/library/cards/library-avatar.tsx");
 const { emptyMission, snapshotOf } = require("../src/domain/mission-model.ts");
 
 function missionCard(missionData, worldType = "2D") {

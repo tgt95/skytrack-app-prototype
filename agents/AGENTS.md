@@ -24,3 +24,8 @@ Read this file before changing this standalone project. Also read
 - During active development, do not run `npm run build` by default. Run focused typecheck, lint, and runtime/system checks for affected behavior. Run `npm run build` only when the Owner asks or the task explicitly enters release/package validation. See `qc-test-cases.md` for the full planned regression suite; a planned case is not a claim that it passed.
 - Keep agent documentation in this `agents/` tree. Update architecture references when source boundaries change.
 - This app has separate storage under its own browser origin and does not sync with Prototype Hub.
+
+## Release notes
+
+- When the Owner asks to commit, push, or deploy Mission Studio to GitHub Pages, first add a concise reader-facing dated Markdown release note in [`docs/changelogs/`](../docs/changelogs/). Include the user-visible changes in that release, focusing on new features, UX/UI, behavior, and source improvements; omit internal task and implementation chatter.
+- Follow [`docs/changelogs/README.md`](../docs/changelogs/README.md) for the file format. Include the release note with the code changes so the Library What's New menu publishes the same update as the site.

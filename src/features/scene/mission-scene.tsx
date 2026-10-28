@@ -29,17 +29,14 @@ import { createMissionSceneHandle } from "./mission-scene-handle";
 import { startMissionSceneRuntime } from "./scene-viewer-runtime";
 import { fitMission } from "./scene-camera-gestures";
 import { MissionSceneStatus } from "./mission-scene-status";
-import { useSceneBasemap } from "./use-scene-basemap";
-import { useMissionWorldModelScene } from "./use-mission-world-model-scene";
+import { useMissionSceneWorldLayers } from "./use-mission-scene-world-layers";
 import { MissionSceneWorldModelStatus } from "./mission-scene-world-model-status";
 
 type CesiumNS = typeof import("cesium");
 
 import {
   enuToLngLat,
-  safeColor,
   syncSearchMarkerEntities,
-  themeColor,
 } from "./mission-scene-helpers";
 
 const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
@@ -390,7 +387,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
     const [without3d, setWithout3d] = useState(false);
     const fitRef = useRef(fitMission);
     fitRef.current = fitMission;
-    const worldModelScene = useMissionWorldModelScene({
+    const worldModelScene = useMissionSceneWorldLayers({
       viewerRef,
       cesiumRef,
       status,
@@ -398,28 +395,8 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
       missionRef,
       fitRef,
       source: worldModel,
-    });
-
-    useSceneBasemap({
-      viewer: viewerRef.current,
-      status,
       basemap,
-      worldType: mission.worldType,
-      world: mission.world,
-      worldModelActive: worldModelScene.active,
     });
-    useEffect(() => {
-      const viewer = viewerRef.current;
-      const Cesium = cesiumRef.current;
-      if (!viewer || !Cesium || viewer.isDestroyed() || status !== "ready")
-        return;
-      const sceneBaseColor = mission.worldType === "2D"
-        ? safeColor(Cesium, themeColor("--muted"), "--muted", 1)
-        : Cesium.Color.BLACK;
-      viewer.scene.globe.baseColor = sceneBaseColor;
-      viewer.scene.backgroundColor = sceneBaseColor;
-      viewer.scene.requestRender();
-    }, [mission.worldType, status]);
     /* Search pin is independently owned and never affects mission state or camera fitting. */
     useEffect(() => {
       const viewer = viewerRef.current;

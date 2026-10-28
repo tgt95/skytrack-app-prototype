@@ -5,7 +5,7 @@ const {
   RULER_MAX,
   RULER_MIN,
   RULER_STEP
-} = require('../src/features/design/drawing-altitude-utils.ts')
+} = require('../src/features/design/drawing/drawing-altitude-utils.ts')
 
 test('drawing altitude ruler keeps bounds, half-meter step, and non-finite fallback', () => {
   assert.equal(RULER_MIN, 0)

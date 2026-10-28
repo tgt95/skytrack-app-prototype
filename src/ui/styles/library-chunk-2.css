@@ -49,6 +49,121 @@
   @apply flex items-center justify-center w-full border-b border-b-border bg-(--muted) text-(--muted-foreground);
 }
 
+.ms-world-thumb {
+  @apply relative w-full p-0 border-0 border-b border-b-border bg-[#454b59] text-(--muted-foreground) cursor-pointer;
+}
+
+.ms-world-thumb:focus-visible {
+  @apply z-1 outline-2 outline-(--primary) outline-offset-[-2px];
+}
+
+.ms-world-thumb img {
+  @apply block size-full object-cover;
+}
+
+.ms-world-thumb-action {
+  @apply absolute right-2 bottom-2 rounded-(--radius) border border-border bg-(--background) px-2 py-1 text-xs text-foreground opacity-0 [transition:opacity_120ms_ease];
+}
+
+.ms-world-preview-dialog {
+  @apply flex w-[min(96vw,68rem)] max-w-none max-h-[min(92dvh,52rem)] flex-col overflow-hidden;
+}
+
+.ms-world-preview-layout {
+  @apply grid min-h-0 grid-cols-[minmax(0,1fr)_minmax(12rem,15rem)] gap-4 overflow-y-auto;
+}
+
+.ms-world-preview-viewer {
+  @apply flex min-w-0 flex-col;
+}
+
+.ms-world-preview-canvas-wrap {
+  @apply relative h-[min(58dvh,38rem)] min-h-72 overflow-hidden rounded-(--radius) bg-[#454b59];
+}
+
+.ms-world-preview-canvas {
+  @apply absolute inset-0 block size-full;
+}
+
+.ms-world-preview-state {
+  @apply absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[color-mix(in_srgb,var(--background)_55%,transparent)] p-4 text-center text-sm text-foreground;
+}
+
+.ms-world-preview-error {
+  @apply text-destructive;
+}
+
+.ms-world-preview-controls {
+  @apply absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 border-t border-border bg-[color-mix(in_srgb,var(--background)_88%,transparent)] p-2;
+}
+
+.ms-world-preview-hint {
+  @apply min-w-0 text-xs text-foreground;
+}
+
+.ms-world-preview-control-buttons {
+  @apply flex shrink-0 items-center gap-1.5;
+}
+
+.ms-world-preview-details {
+  @apply min-w-0 border-l border-border pl-4;
+}
+
+.ms-world-preview-meta {
+  @apply mt-3 mb-0 grid gap-3;
+}
+
+.ms-world-preview-meta div {
+  @apply min-w-0;
+}
+
+.ms-world-preview-meta dt {
+  @apply text-xs text-muted-foreground;
+}
+
+.ms-world-preview-meta dd {
+  @apply mt-0.5 mb-0 break-words text-sm text-foreground;
+}
+
+@media (hover: hover) {
+  .ms-world-thumb-action {
+    @apply opacity-0;
+  }
+
+  .ms-world-thumb:hover .ms-world-thumb-action,
+  .ms-world-thumb:focus-visible .ms-world-thumb-action {
+    @apply opacity-100;
+  }
+}
+
+@media (hover: none) {
+  .ms-world-thumb-action {
+    @apply opacity-100;
+  }
+}
+
+@media (max-width: 48rem) {
+  .ms-world-preview-layout {
+    @apply grid-cols-1;
+  }
+
+  .ms-world-preview-canvas-wrap {
+    @apply h-[44dvh] min-h-52;
+  }
+
+  .ms-world-preview-controls {
+    @apply items-end;
+  }
+
+  .ms-world-preview-hint {
+    @apply hidden;
+  }
+
+  .ms-world-preview-details {
+    @apply border-l-0 border-t border-border pt-3 pl-0;
+  }
+}
+
 @media (max-width: 61.25rem) {
   .ms-lib-nav-label,
   .ms-lib-sidebar-divider {

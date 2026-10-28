@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import missionThumbnailSvg from "../../../assets/img-empty-thumbnail-4_3.svg?raw";
-import { loadWorldGlbAsset } from "../database/world-glb-assets";
 
 const thumbnailSvg = missionThumbnailSvg.replace(
   "<svg ",
@@ -12,9 +11,10 @@ export default function MissionThumbnail({
 }: {
   worldAssetId?: string;
 }) {
-  const [preview, setPreview] = useState<
-    { assetId: string; url: string } | null
-  >(null);
+  const [preview, setPreview] = useState<{
+    assetId: string;
+    url: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!worldAssetId) {
@@ -24,10 +24,11 @@ export default function MissionThumbnail({
 
     let cancelled = false;
     let objectUrl: string | null = null;
-    void loadWorldGlbAsset(worldAssetId)
-      .then((asset) => {
-        if (cancelled || !asset) return;
-        objectUrl = URL.createObjectURL(asset.thumbnail);
+    void import("../database/world-glb-asset-access")
+      .then(({ loadWorldGlbThumbnail }) => loadWorldGlbThumbnail(worldAssetId))
+      .then((thumbnail) => {
+        if (cancelled || !thumbnail) return;
+        objectUrl = URL.createObjectURL(thumbnail);
         setPreview({ assetId: worldAssetId, url: objectUrl });
       })
       .catch(() => {

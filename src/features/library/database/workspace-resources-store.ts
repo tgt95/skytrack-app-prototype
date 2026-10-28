@@ -1,6 +1,6 @@
-import { WORLDS } from "../../../domain/mission-model";
 import { DEFAULT_WORKSPACE_ID, WORKSPACES } from "../workspace/workspace-data.ts";
 import { STORAGE_KEYS, STORAGE_VERSIONS } from "../../../shared/storage-keys";
+import { BUNDLED_WORLD_ASSETS } from "./bundled-world-assets";
 
 export type ResourceStatus = "Sample" | "Draft" | "Registered" | "Archived";
 export type AIModelStatus = ResourceStatus | "Ready";
@@ -64,24 +64,96 @@ function slug(value: string): string {
     .replace(/^-|-$/g, "");
 }
 
-function makeSampleWorld(
+function makeBundledSampleWorld(
   workspaceId: string,
-  name: string,
-  location: string,
+  asset: (typeof BUNDLED_WORLD_ASSETS)[number],
 ): WorkspaceWorldRecord {
   return {
-    id: `sample-world-${workspaceId}-${slug(name)}`,
+    id: `sample-world-${workspaceId}-${slug(asset.name)}`,
     workspaceId,
-    name,
-    location,
+    name: asset.name,
+    location: asset.location,
     status: "Sample",
     sourceType: "none",
     sourceMissionId: "",
     sourceMissionLabel: "",
     sourceFlightReference: "",
     reconstructionReference: "",
-    note: "",
+    note: "Bundled sample GLB World",
+    glbAssetId: asset.id,
+    glbFileName: asset.fileName,
+    glbFileSize: asset.fileSize,
   };
+}
+
+const LEGACY_SAMPLE_WORLD_FIXTURES = [
+  {
+    workspaceId: DEFAULT_WORKSPACE_ID,
+    name: "Field terrain",
+    location: "Redlands, CA",
+  },
+  {
+    workspaceId: "survey-operations",
+    name: "Quarry terrain",
+    location: "Benton County",
+  },
+  {
+    workspaceId: "survey-operations",
+    name: "Coastal world",
+    location: "Portland, ME",
+  },
+  ...["Courtyard block", "Rooftop pad", "Rolling hills", "Mountain ridge"].map(
+    (name) => ({
+      workspaceId: DEFAULT_WORKSPACE_ID,
+      name,
+      location: "Sample terrain",
+    }),
+  ),
+];
+
+function migrateLegacySampleWorlds(
+  state: WorkspaceResourceState,
+): WorkspaceResourceState | null {
+  const replacedWorkspaceIds = new Set<string>();
+  const retainedWorlds = state.worlds.filter((world) => {
+    const fixture = LEGACY_SAMPLE_WORLD_FIXTURES.find(
+      (candidate) =>
+        candidate.workspaceId === world.workspaceId &&
+        world.id === `sample-world-${candidate.workspaceId}-${slug(candidate.name)}`,
+    );
+    if (
+      !fixture ||
+      world.status !== "Sample" ||
+      world.name !== fixture.name ||
+      world.location !== fixture.location ||
+      world.sourceType !== "none" ||
+      world.sourceMissionId !== "" ||
+      world.sourceMissionLabel !== "" ||
+      world.sourceFlightReference !== "" ||
+      world.reconstructionReference !== "" ||
+      world.note !== "" ||
+      world.glbAssetId !== undefined ||
+      world.glbFileName !== undefined ||
+      world.glbFileSize !== undefined
+    ) {
+      return true;
+    }
+    replacedWorkspaceIds.add(world.workspaceId);
+    return false;
+  });
+
+  if (replacedWorkspaceIds.size === 0) return null;
+
+  const nextWorlds = [...retainedWorlds];
+  for (const workspaceId of replacedWorkspaceIds) {
+    for (const asset of BUNDLED_WORLD_ASSETS) {
+      const world = makeBundledSampleWorld(workspaceId, asset);
+      if (!nextWorlds.some((item) => item.id === world.id)) {
+        nextWorlds.push(world);
+      }
+    }
+  }
+  return { ...state, worlds: nextWorlds };
 }
 
 function makeSampleModel(
@@ -107,22 +179,11 @@ function makeSampleModel(
 }
 
 function seedState(): WorkspaceResourceState {
-  const worlds = WORKSPACES.flatMap((workspace) => {
-    const workspaceFixtures = workspace.worlds
-      .filter((world) => world.type === "3D")
-      .map((world) =>
-        makeSampleWorld(workspace.id, world.name, world.location),
-      );
-    const legacyFixtures =
-      workspace.id === DEFAULT_WORKSPACE_ID
-        ? WORLDS.filter(
-            (name) =>
-              name !== "Blank space" &&
-              !workspaceFixtures.some((world) => world.name === name),
-          ).map((name) => makeSampleWorld(workspace.id, name, "Sample terrain"))
-        : [];
-    return [...workspaceFixtures, ...legacyFixtures];
-  });
+  const worlds = WORKSPACES.flatMap((workspace) =>
+    BUNDLED_WORLD_ASSETS.map((asset) =>
+      makeBundledSampleWorld(workspace.id, asset),
+    ),
+  );
   const aiModels = WORKSPACES.flatMap((workspace) =>
     workspace.aiModels.map((name, index) =>
       makeSampleModel(
@@ -208,11 +269,17 @@ export function loadWorkspaceResources(): WorkspaceResourceState {
           legacySkyTrackAssignments.add(model.workspaceId);
           return { ...model, origin: "skytrack" as const };
         });
-        return {
+        const state = {
           version: STORAGE_VERSIONS.workspaceResources,
           worlds: parsed.worlds,
           aiModels,
         };
+        const migrated = migrateLegacySampleWorlds(state);
+        if (migrated) {
+          saveWorkspaceResources(migrated);
+          return migrated;
+        }
+        return state;
       }
     }
   } catch {

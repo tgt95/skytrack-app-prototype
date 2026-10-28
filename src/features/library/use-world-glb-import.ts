@@ -3,8 +3,8 @@ import {
   deleteWorldGlbAsset,
   prepareWorldGlbAsset,
   saveWorldGlbAsset,
-} from "../library/database/world-glb-assets";
-import type { WorkspaceWorldRecord } from "../library/database/workspace-resources-store";
+} from "./database/world-glb-assets";
+import type { WorkspaceWorldRecord } from "./database/workspace-resources-store";
 
 interface UseWorldGlbImportOptions {
   workspaceId: string;

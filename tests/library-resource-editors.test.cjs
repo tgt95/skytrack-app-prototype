@@ -2,7 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
   createLibraryResourceEditorActions,
-} = require("../src/features/library/use-library-resource-editors.ts");
+} = require("../src/features/library/workspace/use-library-resource-editors.ts");
 
 function setup(overrides = {}) {
   const calls = {

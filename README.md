@@ -19,7 +19,7 @@ npm run build
 
 ## GitHub Pages
 
-Live prototype: <https://tgt95.github.io/skytrack-app-prototype/>. Pushes to `main` build and deploy the site through [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml). The Pages build uses the repository path as its Vite base and emits a `404.html` fallback so direct mission and library URLs load correctly.
+Live prototype: <https://tgt95.github.io/skytrack-app-prototype/>. Pushes to `main` build and deploy the site through [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml). The Pages build uses the repository path as its Vite base and emits a `404.html` fallback so direct mission and library URLs load correctly. When preparing an Owner-requested commit, push, or deploy for a release, add a concise dated reader-facing note to [`docs/changelogs/`](./docs/changelogs/) before publishing; the Library What's New menu reads those files. See the [changelog guide](./docs/changelogs/README.md).
 
 ## Project map
 
@@ -38,36 +38,36 @@ Live prototype: <https://tgt95.github.io/skytrack-app-prototype/>. Pushes to `ma
 
 All source areas are direct children of `src/`; there is no extra `client/` wrapper. `domain/` stays pure, feature-owned screens stay in `features/`, app-owned reusable controls and page layout stay in `ui/`, and non-visual cross-feature helpers stay in `shared/`:
 
-| Folder | Responsibility | Examples |
-| --- | --- | --- |
-| `src/domain/` | Mission types and deterministic rules such as geometry, validation, generation, and serialization. Keep it independent of React, Cesium, the DOM, and browser storage. | `mission-generation.ts`, `mission-validation.ts` |
-| `src/features/` | Feature UI, state, and integrations. Subfolders group related responsibilities such as auth, Studio orchestration, Design inspectors, Cesium scene rendering, Library pages, address search, and development tools. Design modules are grouped into `controls/`, `drawing/`, `panels/`, and `sequence/`. | `auth/`, `studio/`, `design/{controls,drawing,panels,sequence}/`, `scene/`, `library/{account,cards,dialogs,workspace}/` plus `library/{pages,database,create-wizard,drone-profile}/`, `search/`, `dev-tools/` |
-| `src/shared/` | Feature-neutral state, storage keys, map data, and utilities. Keep React presentation and feature persistence out. | `theme-preference.ts`, `storage-keys.ts` |
-| `src/ui/components/` | Reusable app-owned React components and icons shared by features. | `sky-tooltip.tsx`, `map-control-tooltip.tsx`, `icons.tsx` |
-| `src/ui/layout/` | Studio page composition and its header/footer layout components. Keep feature state owners in `features/studio/`. | `page-layout.tsx`, `header.tsx`, `footer.tsx` |
-| `src/ui/styles/` | Global app styles and the ordered Library CSS chunks. | `index.css`, `library-chunk-1.css`–`library-chunk-4.css` |
+| Folder               | Responsibility                                                                                                                                                                                                                                                                                           | Examples                                                                                                                                                                                                       |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/domain/`        | Mission types and deterministic rules such as geometry, validation, generation, and serialization. Keep it independent of React, Cesium, the DOM, and browser storage.                                                                                                                                   | `mission-generation.ts`, `mission-validation.ts`                                                                                                                                                               |
+| `src/features/`      | Feature UI, state, and integrations. Subfolders group related responsibilities such as auth, Studio orchestration, Design inspectors, Cesium scene rendering, Library pages, address search, and development tools. Design modules are grouped into `controls/`, `drawing/`, `panels/`, and `sequence/`. | `auth/`, `studio/`, `design/{controls,drawing,panels,sequence}/`, `scene/`, `library/{account,cards,dialogs,workspace}/` plus `library/{pages,database,create-wizard,drone-profile}/`, `search/`, `dev-tools/` |
+| `src/shared/`        | Feature-neutral state, storage keys, map data, and utilities. Keep React presentation and feature persistence out.                                                                                                                                                                                       | `theme-preference.ts`, `storage-keys.ts`                                                                                                                                                                       |
+| `src/ui/components/` | Reusable app-owned React components and icons shared by features.                                                                                                                                                                                                                                        | `sky-tooltip.tsx`, `map-control-tooltip.tsx`, `icons.tsx`                                                                                                                                                      |
+| `src/ui/layout/`     | Studio page composition and its header/footer layout components. Keep feature state owners in `features/studio/`.                                                                                                                                                                                        | `page-layout.tsx`, `header.tsx`, `footer.tsx`                                                                                                                                                                  |
+| `src/ui/styles/`     | Global app styles and the ordered Library CSS chunks.                                                                                                                                                                                                                                                    | `index.css`, `library-chunk-1.css`–`library-chunk-4.css`                                                                                                                                                       |
 
 Features may use domain rules, shared helpers, and UI components. Domain, shared, and UI component code must not depend on feature modules. Design-system controls come from `skytrack-ui`.
 
 The app supports direct URLs for its pages:
 
-| Page | URL |
-| --- | --- |
-| Home | `/home` |
-| Recent | `/recent` |
-| Projects | `/projects` |
-| Project detail | `/projects/:projectId` |
-| Worlds | `/worlds` |
-| Drones | `/drones` |
-| Starred missions | `/starred-missions` |
-| Shared with me | `/shared-with-me` |
-| Shared project detail | `/shared-projects/:projectId` |
-| Shared accounts | `/shared-accounts/:missionId` |
-| Learn | `/learn` |
-| Templates | `/templates` |
-| Template detail | `/template/:templateId` |
-| Documentation, AI models, Logs, Notifications | `/docs`, `/ai-models`, `/logs`, `/notifications` |
-| Mission detail | `/mission/:missionId` (`/detail/:missionId` and `/mission-studio/:missionId` are legacy aliases) |
+| Page                                          | URL                                                                                              |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Home                                          | `/home`                                                                                          |
+| Recent                                        | `/recent`                                                                                        |
+| Projects                                      | `/projects`                                                                                      |
+| Project detail                                | `/projects/:projectId`                                                                           |
+| Worlds                                        | `/worlds`                                                                                        |
+| Drones                                        | `/drones`                                                                                        |
+| Starred missions                              | `/starred-missions`                                                                              |
+| Shared with me                                | `/shared-with-me`                                                                                |
+| Shared project detail                         | `/shared-projects/:projectId`                                                                    |
+| Shared accounts                               | `/shared-accounts/:missionId`                                                                    |
+| Learn                                         | `/learn`                                                                                         |
+| Templates                                     | `/templates`                                                                                     |
+| Template detail                               | `/template/:templateId`                                                                          |
+| Documentation, AI models, Logs, Notifications | `/docs`, `/ai-models`, `/logs`, `/notifications`                                                 |
+| Mission detail                                | `/mission/:missionId` (`/detail/:missionId` and `/mission-studio/:missionId` are legacy aliases) |
 
 The browser title follows the active page, project, template, or mission name. The favicon uses the SkyTrack brand mark.
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { QuestionIcon } from "@phosphor-icons/react";
+import ReactMarkdown, { type Components } from "react-markdown";
 import { Button } from "skytrack-ui/button";
 import { Badge } from "skytrack-ui/badge";
 import {
@@ -22,61 +23,52 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "skytrack-ui/popover";
+import { RELEASE_NOTES, type ReleaseNote } from "./release-notes-data";
 
-interface ReleaseNote {
-  id: string;
-  title: string;
-  category: string;
-  date: string;
-  dateTime: string;
-  summary: string;
-  details: string[];
-}
-
-const RELEASE_NOTES: ReleaseNote[] = [
-  {
-    id: "mission-summaries",
-    title: "Mission summaries, at a glance",
-    category: "Mission planning",
-    date: "Oct 24, 2026",
-    dateTime: "2026-10-24",
-    summary:
-      "Compare survey area, waypoints, actions, and photo coverage from the mission list.",
-    details: [
-      "Mission cards now show the mapped area and route totals beside the mission name.",
-      "2D mission cards open with a satellite preview of the survey location.",
-      "Area values use hectares for sites of one hectare or larger.",
-    ],
-  },
-  {
-    id: "world-reconstruction",
-    title: "Turn survey imagery into a 3D World",
-    category: "Worlds",
-    date: "Oct 20, 2026",
-    dateTime: "2026-10-20",
-    summary:
-      "Keep the 2D capture and the resulting 3D World connected in your workspace.",
-    details: [
-      "Start with a 2D photogrammetry mission and use its survey area as the source for reconstruction.",
-      "Find completed Worlds in one library alongside their source and flight references.",
-      "Choose a World when planning a later 3D mission.",
-    ],
-  },
-  {
-    id: "ai-model-library",
-    title: "Find models from across your workspace",
-    category: "AI models",
-    date: "Oct 16, 2026",
-    dateTime: "2026-10-16",
-    summary:
-      "Browse SkyTrack models, member uploads, and your own imports from one library.",
-    details: [
-      "All brings together every model available to the workspace.",
-      "Members shows models shared by other workspace members.",
-      "Me keeps your uploaded model packages in a separate view.",
-    ],
-  },
-];
+const markdownComponents: Components = {
+  h1: ({ children }) => (
+    <h1 className="heading m-0 text-base font-semibold">{children}</h1>
+  ),
+  h2: ({ children }) => (
+    <h2 className="heading m-0 text-base font-semibold">{children}</h2>
+  ),
+  h3: ({ children }) => (
+    <h3 className="heading m-0 text-sm font-semibold">{children}</h3>
+  ),
+  p: ({ children }) => <p className="m-0 leading-6">{children}</p>,
+  ul: ({ children }) => (
+    <ul className="m-0 list-disc space-y-2 pl-5">{children}</ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="m-0 list-decimal space-y-2 pl-5">{children}</ol>
+  ),
+  li: ({ children }) => <li className="pl-0.5 leading-6">{children}</li>,
+  a: ({ children, href }) => (
+    <a
+      className="text-(--primary) underline underline-offset-2"
+      href={href}
+      rel="noreferrer"
+      target="_blank"
+    >
+      {children}
+    </a>
+  ),
+  blockquote: ({ children }) => (
+    <blockquote className="m-0 border-l-2 border-(--border) pl-3 italic">
+      {children}
+    </blockquote>
+  ),
+  code: ({ children }) => (
+    <code className="rounded-sm bg-(--muted) px-1 py-0.5 font-mono text-xs">
+      {children}
+    </code>
+  ),
+  pre: ({ children }) => (
+    <pre className="m-0 overflow-x-auto rounded-(--radius) bg-(--muted) p-3">
+      {children}
+    </pre>
+  ),
+};
 
 export function ReleaseNotesPopover() {
   const [open, setOpen] = useState(false);
@@ -202,11 +194,11 @@ export function ReleaseNotesPopover() {
                     {selectedRelease.summary}
                   </DialogDescription>
                 </DialogHeader>
-                <ul className="m-0 flex list-disc flex-col gap-2 pl-5 text-sm text-(--muted-foreground)">
-                  {selectedRelease.details.map((detail) => (
-                    <li key={detail}>{detail}</li>
-                  ))}
-                </ul>
+                <div className="flex flex-col gap-3 text-sm text-(--muted-foreground)">
+                  <ReactMarkdown components={markdownComponents}>
+                    {selectedRelease.content}
+                  </ReactMarkdown>
+                </div>
                 <DialogFooter>
                   <DialogClose className="w-auto flex-[0_0_auto]">
                     Close

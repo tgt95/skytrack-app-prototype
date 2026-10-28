@@ -9,7 +9,7 @@ const source = (relativePath) =>
 test("Studio shell keeps scene composition and delegates inspector and footer boundaries", () => {
   const shell = source("src/ui/layout/page-layout.tsx");
 
-  assert.match(shell, /<StudioSceneViewport\s/);
+  assert.match(shell, /<StudioShellSceneViewport\s/);
   assert.match(shell, /<StudioInspectorContainer\s/);
   assert.match(shell, /<StudioStatusFooter\s/);
   assert.doesNotMatch(shell, /<StudioInspector\s/);

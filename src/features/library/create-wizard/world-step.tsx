@@ -1,8 +1,17 @@
+import { useRef } from 'react'
 import { GlobeHemisphereWestIcon } from '@phosphor-icons/react'
+import { Button } from 'skytrack-ui/button'
+import {
+  Attachment,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentMedia,
+  AttachmentTitle,
+} from 'skytrack-ui/attachment'
 import { Dropzone } from 'skytrack-ui/dropzone'
 import { RadioGroup, RadioRoot } from 'skytrack-ui/radio'
 import { Tabs, TabsList, TabsPanel, TabsTab } from 'skytrack-ui/tabs'
-import { FieldLabel, FieldRoot } from 'skytrack-ui/field'
+import { FieldDescription, FieldLabel, FieldRoot } from 'skytrack-ui/field'
 import type { WorkspaceWorldRecord } from '../database/workspace-resources-store'
 
 type WorldType = '2D' | '3D'
@@ -13,6 +22,10 @@ type WorldStepProps = {
   worlds: WorkspaceWorldRecord[]
   worldId: string
   onWorldSelect: (worldId: string) => void
+  onImportWorld: (file: File) => void
+  importingWorld: boolean
+  worldImportError: string | null
+  worldImportMessage: string | null
   terrainFile: string | null
   onTerrainFileSelect: (fileName: string) => void
 }
@@ -23,9 +36,15 @@ export function WorldStep ({
   worlds,
   worldId,
   onWorldSelect,
+  onImportWorld,
+  importingWorld,
+  worldImportError,
+  worldImportMessage,
   terrainFile,
   onTerrainFileSelect
 }: WorldStepProps) {
+  const worldFileInputRef = useRef<HTMLInputElement>(null)
+
   return (
     <TabsPanel value='2'>
       <FieldRoot name={worldType}>
@@ -55,10 +74,32 @@ export function WorldStep ({
           <TabsPanel value='2D' />
           <TabsPanel value='3D'>
             <FieldRoot>
-              <FieldLabel id='ms-wizard-world-label' className='w-full flex flex-row justify-between gap-3'>
-                World list
-                <a href='#' className='text-sm leading-none font-medium text-primary hover:text-primary/80'>Import world</a>
-              </FieldLabel>
+              <div className='flex w-full flex-row items-center justify-between gap-3'>
+                <FieldLabel id='ms-wizard-world-label'>World list</FieldLabel>
+                <Button
+                  type='button'
+                  size='sm'
+                  variant='link'
+                  disabled={importingWorld}
+                  onClick={() => worldFileInputRef.current?.click()}
+                >
+                  {importingWorld ? 'Importing…' : 'Import world'}
+                </Button>
+                <input
+                  ref={worldFileInputRef}
+                  type='file'
+                  accept='.glb,model/gltf-binary'
+                  className='sr-only'
+                  tabIndex={-1}
+                  aria-label='Choose a 3D World GLB file'
+                  data-testid='ms-wizard-world-file-input'
+                  onChange={event => {
+                    const file = event.currentTarget.files?.[0]
+                    if (file) onImportWorld(file)
+                    event.currentTarget.value = ''
+                  }}
+                />
+              </div>
               <RadioGroup
                 value={worldId}
                 onValueChange={(value: unknown) => onWorldSelect(String(value))}
@@ -66,31 +107,56 @@ export function WorldStep ({
                 className='w-full'
               >
                 {worlds.map(world => (
-                  <label key={world.id} className='ms-wizard-radio-row'>
-                    <span className='ms-wizard-thumb' aria-hidden='true'>
-                      <GlobeHemisphereWestIcon
-                        aria-hidden='true'
-                        className='w-9 h-9 text-muted-foreground'
+                  <label key={world.id} className='block w-full cursor-pointer'>
+                    <Attachment
+                      data-selected={world.id === worldId}
+                      className='w-full gap-2.5 px-3 py-2.5 transition-colors hover:border-primary/60 data-[selected=true]:border-primary has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring'
+                    >
+                      <AttachmentMedia>
+                        <GlobeHemisphereWestIcon
+                          aria-hidden='true'
+                          className='size-5 text-muted-foreground'
+                        />
+                      </AttachmentMedia>
+                      <AttachmentContent className='gap-1'>
+                        <AttachmentTitle>{world.name}</AttachmentTitle>
+                        <AttachmentDescription className='w-fit rounded-(--radius-sm) bg-muted px-2 py-0.5 font-semibold'>
+                          {world.status}
+                        </AttachmentDescription>
+                      </AttachmentContent>
+                      <RadioRoot
+                        value={world.id}
+                        aria-label={`${world.name} · ${world.status}`}
                       />
-                    </span>
-                    <span className='ms-wizard-row-text'>
-                      {world.name}
-                      <span className='ms-wizard-tags'>
-                        <span className='ms-wizard-tag'>{world.status}</span>
-                      </span>
-                    </span>
-                    <RadioRoot
-                      value={world.id}
-                      aria-label={`${world.name} · ${world.status}`}
-                    />
+                    </Attachment>
                   </label>
                 ))}
               </RadioGroup>
               {worlds.length === 0 ? (
-                <p className='ms-hint'>
-                  Add or register a World in this Workspace before creating a 3D
-                  mission.
-                </p>
+                <FieldDescription>
+                  Import a .glb file to add a 3D World. Imported files stay in
+                  this browser.
+                </FieldDescription>
+              ) : (
+                <FieldDescription>
+                  Select a World or import a .glb file. Imported models stay in
+                  this browser and replace the 3D World in the mission.
+                </FieldDescription>
+              )}
+              {importingWorld ? (
+                <FieldDescription role='status'>
+                  Importing the GLB and creating its local preview…
+                </FieldDescription>
+              ) : null}
+              {worldImportMessage ? (
+                <FieldDescription role='status'>
+                  {worldImportMessage}
+                </FieldDescription>
+              ) : null}
+              {worldImportError ? (
+                <FieldDescription role='alert'>
+                  {worldImportError}
+                </FieldDescription>
               ) : null}
             </FieldRoot>
           </TabsPanel>

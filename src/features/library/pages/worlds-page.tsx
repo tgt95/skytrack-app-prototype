@@ -1,6 +1,9 @@
-import { GlobeHemisphereWestIcon, PlusIcon } from "@phosphor-icons/react";
+import { PlusIcon } from "@phosphor-icons/react";
+import { useState } from "react";
 import { Badge } from "skytrack-ui/badge";
 import { Button } from "skytrack-ui/button";
+import { WorldPreviewDialog } from "../cards/world-preview-dialog";
+import { WorldThumbnail } from "../cards/world-thumbnail";
 import type { WorkspaceWorldRecord } from "../database/workspace-resources-store";
 import {
   LibraryCardFrame,
@@ -42,6 +45,9 @@ export function WorldsPage({
   onEdit: (world: WorkspaceWorldRecord) => void;
   onDelete: (worldId: string) => void;
 }) {
+  const [selectedWorld, setSelectedWorld] =
+    useState<WorkspaceWorldRecord | null>(null);
+
   return (
     <LibraryPageLayout
       titleId="ms-lib-worlds-title"
@@ -72,6 +78,7 @@ export function WorldsPage({
             label={world.name}
             className="ms-lib-resource-card"
             testId={`ms-lib-world-${world.id}`}
+            onOpen={() => setSelectedWorld(world)}
             actions={[
               {
                 id: "edit",
@@ -88,12 +95,11 @@ export function WorldsPage({
               },
             ]}
           >
-            <span className="ms-lib-resource-icon">
-              <GlobeHemisphereWestIcon
-                aria-hidden="true"
-                className="w-9 h-9"
-              />
-            </span>
+            <WorldThumbnail
+              assetId={world.glbAssetId}
+              worldName={world.name}
+              onPreview={() => setSelectedWorld(world)}
+            />
             <span className="ms-lib-card-body flex-1">
               <span className="text-sm font-medium">{world.name}</span>
               <span className="text-xs text-muted-foreground leading-[1.5]">
@@ -102,6 +108,14 @@ export function WorldsPage({
                   ? world.location
                   : "Terrain ready"}
               </span>
+              {world.glbFileName ? (
+                <span className="text-xs text-muted-foreground leading-[1.5]">
+                  {world.glbFileName}
+                  {world.glbFileSize
+                    ? ` · ${(world.glbFileSize / 1_000_000).toFixed(1)} MB`
+                    : ""}
+                </span>
+              ) : null}
               {world.status !== "Sample" ? (
                 <Badge
                   count={world.status}
@@ -130,6 +144,10 @@ export function WorldsPage({
           description="Add a 3D reconstruction to this Workspace."
         />
       ) : null}
+      <WorldPreviewDialog
+        world={selectedWorld}
+        onClose={() => setSelectedWorld(null)}
+      />
     </LibraryPageLayout>
   );
 }
