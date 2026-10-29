@@ -9,6 +9,7 @@ import { Button } from "skytrack-ui/button";
 import {
   Dialog,
   DialogBackdrop,
+  DialogClose,
   DialogFooter,
   DialogHeader,
   DialogPopup,
@@ -190,7 +191,7 @@ export default function CreateMissionWizard({
     >
       <DialogPortal>
         <DialogBackdrop />
-        <DialogPopup aria-label="Create mission" className='top-8 translate-y-0'>
+        <DialogPopup aria-label="Create mission">
           <DialogHeader>
             <DialogTitle>Create mission</DialogTitle>
           </DialogHeader>
@@ -255,9 +256,9 @@ export default function CreateMissionWizard({
               className="flex items-center gap-2"
               data-testid="ms-wizard-footer-end"
             >
-              <Button variant="secondary" onClick={onClose}>
+              <DialogClose variant="secondary">
                 Cancel
-              </Button>
+              </DialogClose>
               {step < 3 ? (
                 <Button
                   variant="default"

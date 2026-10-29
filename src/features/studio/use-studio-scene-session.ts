@@ -6,6 +6,7 @@ import type { Stage } from './studio-map-overlays'
 
 interface UseStudioSceneSessionArgs {
   mission: StudioMission
+  gate: { ok: boolean; reason: string | null }
   stage: Stage
   sceneReadiness: SceneReadiness
   setSceneReadiness: Dispatch<SetStateAction<SceneReadiness>>
@@ -16,6 +17,7 @@ interface UseStudioSceneSessionArgs {
 
 export function useStudioSceneSession({
   mission,
+  gate,
   stage,
   sceneReadiness,
   setSceneReadiness,
@@ -43,11 +45,15 @@ export function useStudioSceneSession({
   }, [mission, sceneReadiness])
 
   useEffect(() => {
-    if (sceneReadiness === 'ready' || stage !== 'simulation') return
+    if (stage !== 'simulation' || sceneReadiness === 'loading' || gate.ok) return
     if (sim.status === 'running' || sim.status === 'paused') sim.abort()
     setStage('design')
-    say('Simulation stopped. 3D scene unavailable; retry 3D from Design.')
-  }, [sceneReadiness, stage, sim, say, setStage])
+    say(
+      gate.reason
+        ? `Simulation locked. ${gate.reason}`
+        : 'Simulation stopped. 3D scene unavailable; retry 3D from Design.',
+    )
+  }, [gate, sceneReadiness, stage, sim, say, setStage])
 
   return { sceneRef, previewPositionRef, previewCaptureRef, sceneReadinessRef, onSceneReadinessChange }
 }

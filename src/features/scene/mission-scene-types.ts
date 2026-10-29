@@ -72,6 +72,9 @@ export interface MissionSceneProps {
   onPendingAltitudeChange?: (index: number, z: number) => void
   onInsertPendingPoint?: (index: number, point: { x: number; y: number; z: number }) => void
   onRemovePendingPoint?: (index: number) => void
+  onGroupMovePreview: (mission: StudioMission) => void
+  onGroupMoveCommit: (mission: StudioMission, label: string) => void
+  onGroupMoveCancel: () => void
   onReadinessChange: (readiness: SceneReadiness) => void
 }
 

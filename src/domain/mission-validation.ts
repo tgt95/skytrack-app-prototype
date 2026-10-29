@@ -177,6 +177,41 @@ function isAction(value: unknown): value is WaypointAction {
     (value.gimbalPitchDeg === undefined || isFiniteNumber(value.gimbalPitchDeg))
 }
 
+const aiWorkflowActionKinds = new Set(["camera-trigger", "spray"]);
+const aiWorkflowActionModes = new Set([
+  "snapshot",
+  "recording-on",
+  "recording-off",
+  "start",
+  "stop",
+]);
+
+function isAIWorkflowAction(value: unknown): boolean {
+  return isRecord(value) &&
+    typeof value.id === "string" &&
+    aiWorkflowActionKinds.has(String(value.kind)) &&
+    aiWorkflowActionModes.has(String(value.mode)) &&
+    (value.kind === "camera-trigger"
+      ? ["snapshot", "recording-on", "recording-off"].includes(String(value.mode))
+      : ["start", "stop"].includes(String(value.mode)));
+}
+
+function isAIWorkflow(value: unknown): boolean {
+  return isRecord(value) &&
+    typeof value.id === "string" &&
+    typeof value.label === "string" &&
+    (value.sequenceType === "route" || value.sequenceType === "area") &&
+    typeof value.sequenceId === "string" &&
+    typeof value.startWaypointId === "string" &&
+    (value.stopWaypointId === null || typeof value.stopWaypointId === "string") &&
+    (value.startAfterActionId === null || typeof value.startAfterActionId === "string") &&
+    (value.modelId === null || typeof value.modelId === "string") &&
+    typeof value.objectClass === "string" &&
+    isFiniteNumber(value.confidenceScore) && value.confidenceScore >= 0 && value.confidenceScore <= 1 &&
+    Array.isArray(value.ifActions) && value.ifActions.every(isAIWorkflowAction) &&
+    Array.isArray(value.elseActions) && value.elseActions.every(isAIWorkflowAction);
+}
+
 function isWaypoint(value: unknown): value is Waypoint {
   return isRecord(value) &&
     typeof value.id === 'string' &&
@@ -229,6 +264,8 @@ function isSnapshotMission(value: unknown): value is StudioMission {
   if (value.routes !== undefined && (!Array.isArray(value.routes) || !value.routes.every(isRoute))) return false
   if (value.sequenceOrder !== undefined &&
       (!Array.isArray(value.sequenceOrder) || !value.sequenceOrder.every(isSequenceOrderItem))) return false
+  if (value.aiWorkflows !== undefined &&
+      (!Array.isArray(value.aiWorkflows) || !value.aiWorkflows.every(isAIWorkflow))) return false
   if (value.areas !== undefined && (!Array.isArray(value.areas) || !value.areas.every(isZone))) return false
   if (value.avoids !== undefined && (!Array.isArray(value.avoids) || !value.avoids.every(isZone))) return false
   return true

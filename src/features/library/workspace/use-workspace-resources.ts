@@ -334,7 +334,8 @@ export function useWorkspaceResources({
   };
 
   const deleteAIModel = (id: string) => {
-    if (!modelToDelete) return false;
+    const target = resourceStateRef.current.aiModels.find((model) => model.id === id);
+    if (!target || target.origin !== "user-upload") return false;
     const nextModels = resourceStateRef.current.aiModels.filter(
       (model) => model.id !== id,
     );

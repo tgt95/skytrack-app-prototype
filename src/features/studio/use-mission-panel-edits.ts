@@ -69,6 +69,23 @@ export function useMissionPanelEdits({
     dispatchDocument({ type: 'set', next: preparePanelPreview(next, base) })
   }, [dispatchDocument, mission, panelPreviewBaseRef, preparePanelPreview])
 
+  const previewGroupMove = useCallback((next: StudioMission) => {
+    panelPreviewBaseRef.current ??= mission
+    dispatchDocument({ type: 'set', next })
+  }, [dispatchDocument, mission, panelPreviewBaseRef])
+
+  const commitGroupMove = useCallback((next: StudioMission, label?: string) => {
+    const base = panelPreviewBaseRef.current ?? mission
+    panelPreviewBaseRef.current = null
+    if (snapshotOf(base) === snapshotOf(next)) {
+      dispatchDocument({ type: 'set', next })
+      return
+    }
+    dispatchDocument({ type: 'commit', next, from: snapshotOf(base) })
+    if (selection) setSelection(selection)
+    if (label) say(label)
+  }, [dispatchDocument, mission, panelPreviewBaseRef, say, selection, setSelection])
+
   const commitPanelPreview = useCallback((next: StudioMission, label?: string) => {
     const base = panelPreviewBaseRef.current ?? mission
     const out = preparePanelPreview(next, base)
@@ -89,5 +106,5 @@ export function useMissionPanelEdits({
     if (base) dispatchDocument({ type: 'set', next: base })
   }, [dispatchDocument, panelPreviewBaseRef])
 
-  return { updateMissionFromPanel, previewMissionFromPanel, commitPanelPreview, cancelPanelPreview }
+  return { updateMissionFromPanel, previewMissionFromPanel, commitPanelPreview, previewGroupMove, commitGroupMove, cancelPanelPreview }
 }

@@ -52,6 +52,16 @@ export function WaypointRow(props: {
     toActionId?: string,
     position?: SequenceDropPosition,
   ) => void;
+  onMoveWorkflowStop?: (
+    workflowId: string,
+    waypointId: string,
+    position: SequenceDropPosition,
+  ) => void;
+  onMoveWorkflowStart?: (
+    workflowId: string,
+    waypointId: string,
+    position: SequenceDropPosition,
+  ) => void;
   onDeleteWaypoint: (id: string) => void;
   onAnnounce: (text: string) => void;
 }) {
@@ -73,6 +83,8 @@ export function WaypointRow(props: {
     onCancelPreviewWaypoint,
     onReorderWaypoint,
     onMoveAction,
+    onMoveWorkflowStart,
+    onMoveWorkflowStop,
     onDeleteWaypoint,
   } = props;
   const [dropPosition, setDropPosition] = useState<SequenceDropPosition | null>(
@@ -157,8 +169,12 @@ export function WaypointRow(props: {
         if (item.kind === "waypoint") {
           if (!generated)
             onReorderWaypoint(item.id, index + (position === "after" ? 1 : 0));
-        } else {
+        } else if (item.kind === "action") {
           onMoveAction(item.waypointId, item.id, wp.id);
+        } else if (item.kind === "ai-workflow-start") {
+          onMoveWorkflowStart?.(item.id, wp.id, position);
+        } else {
+          onMoveWorkflowStop?.(item.id, wp.id, position);
         }
       }}
     >
@@ -174,8 +190,8 @@ export function WaypointRow(props: {
             generated
               ? `Generated waypoint ${wp.seq} cannot be reordered`
               : grabbed
-              ? `Reorder waypoint ${wp.seq}, grabbed. Arrow keys move, Space drops, Escape cancels.`
-              : `Reorder waypoint ${wp.seq}. Press Space to pick up.`
+                ? `Reorder waypoint ${wp.seq}, grabbed. Arrow keys move, Space drops, Escape cancels.`
+                : `Reorder waypoint ${wp.seq}. Press Space to pick up.`
           }
           aria-grabbed={grabbed}
           data-testid={`ms-wp-handle-${wp.seq}`}
@@ -254,7 +270,11 @@ export function WaypointRow(props: {
           <Button
             size="icon-sm"
             variant="ghost"
-            aria-label={generated ? `Generated waypoint ${wp.seq} cannot be deleted` : `Delete waypoint ${wp.seq}`}
+            aria-label={
+              generated
+                ? `Generated waypoint ${wp.seq} cannot be deleted`
+                : `Delete waypoint ${wp.seq}`
+            }
             data-testid={`ms-wp-delete-${wp.seq}`}
             disabled={generated}
             onClick={() => onDeleteWaypoint(wp.id)}

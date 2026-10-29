@@ -35,6 +35,7 @@ import SliderField from "../controls/slider-field";
 import { EndMissionControl } from "./sequence-transfer";
 import { RouteWaypointList } from "./route-waypoint-list";
 import type { CameraActionKind, SceneSelection } from "../../../domain/mission-model";
+import type { AIModelCardModel } from "../../../ui/components/ai-model-card";
 import type { SequenceDropPosition } from "./sequence-drag";
 
 type Waypoint = StudioMission["waypoints"][number];
@@ -61,6 +62,9 @@ export interface AreaInspectorCardProps {
   onSetActionPitch: (wpId: string, actionId: string, pitch: number) => void;
   onSelect: (selection: SceneSelection | null) => void;
   onInsertActionAt: (wpId: string, actionIndex: number, kind: CameraActionKind) => void;
+  aiModels: AIModelCardModel[];
+  onImportAIModel: () => void;
+  onDeleteAIModel: (modelId: string) => boolean;
   onPickUpWaypoint: (id: string) => void;
   onPreviewMoveWaypoint: (id: string, dir: -1 | 1) => void;
   onDropPreviewWaypoint: (id: string) => void;
@@ -97,6 +101,9 @@ export default function AreaInspectorCard({
   onSetActionPitch,
   onSelect,
   onInsertActionAt,
+  aiModels,
+  onImportAIModel,
+  onDeleteAIModel,
   onPickUpWaypoint,
   onPreviewMoveWaypoint,
   onDropPreviewWaypoint,
@@ -368,6 +375,9 @@ export default function AreaInspectorCard({
             onSelect={onSelect}
             onUpdateMission={onUpdateMission}
             onInsertActionAt={onInsertActionAt}
+            aiModels={aiModels}
+            onImportAIModel={onImportAIModel}
+            onDeleteAIModel={onDeleteAIModel}
             onPickUpWaypoint={onPickUpWaypoint}
             onPreviewMoveWaypoint={onPreviewMoveWaypoint}
             onDropPreviewWaypoint={onDropPreviewWaypoint}

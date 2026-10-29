@@ -3,6 +3,7 @@ import { Button } from "skytrack-ui/button";
 import { Switch, SwitchThumb } from "skytrack-ui/switch";
 import { CompactAxisField } from "../controls/compact-axis-field";
 import type { SequenceDropPosition } from "./sequence-drag";
+import type { AIModelCardModel } from "../../../ui/components/ai-model-card";
 import { ReconCaptureSummary } from "../panels/reconnaissance-inspector";
 import { SkyTooltip } from "../../../ui/components/sky-tooltip";
 import {
@@ -44,6 +45,9 @@ export interface RouteSequenceCardProps {
     actionIndex: number,
     kind: CameraActionKind,
   ) => void;
+  aiModels: AIModelCardModel[];
+  onImportAIModel: () => void;
+  onDeleteAIModel: (modelId: string) => boolean;
   onSelect: (selection: SceneSelection | null) => void;
   onPickUpWaypoint: (id: string) => void;
   onPreviewMoveWaypoint: (id: string, dir: -1 | 1) => void;
@@ -81,6 +85,9 @@ export default function RouteSequenceCard({
   onUpdateMission,
   onDeleteRoute,
   onInsertActionAt,
+  aiModels,
+  onImportAIModel,
+  onDeleteAIModel,
   onSelect,
   onPickUpWaypoint,
   onPreviewMoveWaypoint,
@@ -252,6 +259,9 @@ export default function RouteSequenceCard({
             onSelect={onSelect}
             onUpdateMission={onUpdateMission}
             onInsertActionAt={onInsertActionAt}
+            aiModels={aiModels}
+            onImportAIModel={onImportAIModel}
+            onDeleteAIModel={onDeleteAIModel}
             onPickUpWaypoint={onPickUpWaypoint}
             onPreviewMoveWaypoint={onPreviewMoveWaypoint}
             onDropPreviewWaypoint={onDropPreviewWaypoint}

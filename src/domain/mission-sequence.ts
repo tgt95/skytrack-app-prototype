@@ -80,7 +80,58 @@ export function normalizeMissionRoutes(mission: StudioMission): StudioMission {
       )
     : mission.sequenceOrder
   const areas = (mission.areas ?? []).map(canonicalizeReconSettings)
-  return { ...mission, routes, areas, waypoints, sequenceOrder }
+  const normalizedMission = { ...mission, routes, areas, waypoints, sequenceOrder }
+  return normalizeMissionAIWorkflows(normalizedMission)
+}
+
+/** Keep workflow anchors valid after waypoint deletion, area regeneration, or
+    reordering. Missing/reversed stop points become an explicit unconfigured
+    stop; a missing start or sequence removes the orphaned workflow. */
+export function normalizeMissionAIWorkflows(mission: StudioMission): StudioMission {
+  const routes = getMissionRoutes(mission)
+  const waypoints = mission.waypoints
+  const areas = mission.areas ?? []
+  const aiWorkflows = (mission.aiWorkflows ?? []).flatMap((workflow) => {
+    const start = waypoints.find((waypoint) => waypoint.id === workflow.startWaypointId)
+    const stop = workflow.stopWaypointId
+      ? waypoints.find((waypoint) => waypoint.id === workflow.stopWaypointId)
+      : undefined
+    const belongsToSequence = (waypoint: Waypoint | undefined) =>
+      Boolean(waypoint) && (workflow.sequenceType === "area"
+        ? waypoint?.generatedByArea === workflow.sequenceId
+        : !waypoint?.generatedByArea && !waypoint?.generatedByAvoid &&
+          (waypoint?.routeId === workflow.sequenceId ||
+            (!waypoint?.routeId && routes[0]?.id === workflow.sequenceId)))
+    if (!belongsToSequence(start) ||
+      (workflow.sequenceType === "area" && !areas.some((area) => area.id === workflow.sequenceId)) ||
+      (workflow.sequenceType === "route" && !routes.some((route) => route.id === workflow.sequenceId)))
+      return []
+    const startActions = start?.actions ?? []
+    const startAfterActionId = workflow.startAfterActionId &&
+      startActions.some((action) => action.id === workflow.startAfterActionId)
+      ? workflow.startAfterActionId
+      : null
+    const sequenceWaypoints = waypoints.filter((waypoint) =>
+      workflow.sequenceType === "area"
+        ? waypoint.generatedByArea === workflow.sequenceId
+        : !waypoint.generatedByArea && !waypoint.generatedByAvoid &&
+          (waypoint.routeId === workflow.sequenceId ||
+            (!waypoint.routeId && routes[0]?.id === workflow.sequenceId)),
+    ).sort((a, b) => a.seq - b.seq)
+    const startIndex = sequenceWaypoints.findIndex((waypoint) => waypoint.id === workflow.startWaypointId)
+    const validStop = workflow.stopWaypointId && belongsToSequence(stop) ? stop : undefined
+    const stopIndex = validStop
+      ? sequenceWaypoints.findIndex((waypoint) => waypoint.id === workflow.stopWaypointId)
+      : -1
+    return [{
+      ...workflow,
+      startAfterActionId,
+      ...(workflow.stopWaypointId && (!validStop || stopIndex < startIndex)
+        ? { stopWaypointId: null }
+        : {}),
+    }]
+  })
+  return { ...mission, aiWorkflows }
 }
 
 export function getMissionRoutes(mission: StudioMission): MissionRouteMeta[] {

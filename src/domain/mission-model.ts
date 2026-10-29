@@ -19,12 +19,16 @@ export {
   getMissionRouteWaypoints,
   getMissionRoutes,
   getMissionSequence,
+  normalizeMissionAIWorkflows,
   normalizeMissionRoutes,
   reorderWaypoints,
   removeMissionSequenceItem,
   renumber
 } from './mission-sequence'
 export type {
+  AIWorkflowActionKind,
+  AIWorkflowBranch,
+  AIWorkflowDroneAction,
   AvoidZone,
   CameraActionKind,
   EnuPoint,
@@ -32,6 +36,7 @@ export type {
   GeoAttribution,
   GeoOrigin,
   MissionArea,
+  MissionAIWorkflow,
   MissionRouteMeta,
   MissionSequenceItem,
   PolyZone,
@@ -85,3 +90,5 @@ export {
 } from './avoid-detour'
 export { missionFromSnapshot, simGate, snapshotOf, validateMission } from './mission-validation'
 export { missionFromCode, missionToCode } from './mission-serialization'
+export { translateMissionGroup } from './mission-group-transform'
+export type { MissionGroupRef } from './mission-group-transform'

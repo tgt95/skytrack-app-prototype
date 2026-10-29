@@ -195,6 +195,12 @@ export default function SimulationPanel(props: SimulationPanelProps) {
         </Tabs>
       )}
 
+      {plan && gateReason ? (
+        <p className="ms-hint" role="status">
+          {gateReason}
+        </p>
+      ) : null}
+
       {status === "completed" ? (
         <p className="ms-issue is-ok" role="status">
           Mission run completed. Restart to replay.{" "}
@@ -246,7 +252,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
             size="sm"
             variant="default"
             onClick={ended ? onRestart : onRun}
-            disabled={!plan}
+            disabled={!plan || gateReason !== null}
             aria-label={ended ? "Restart simulation" : "Run simulation"}
           >
             <PlayIcon aria-hidden="true" />{" "}

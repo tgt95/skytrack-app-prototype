@@ -163,7 +163,7 @@ export function WorldStep ({
         </Tabs>
       </FieldRoot>
       {worldType === '2D' ? (
-        <FieldRoot name={worldType}>
+        <FieldRoot name={worldType} data-testid='ms-wizard-dropzone'>
           <FieldLabel id='ms-wizard-terrain-label'>
             Terrain layer (Optional)
           </FieldLabel>
@@ -179,10 +179,6 @@ export function WorldStep ({
               if (file) onTerrainFileSelect(file.name)
             }}
           />
-          {/* <div
-              data-testid='ms-wizard-dropzone'
-              className='w-full contents'
-            ></div> */}
         </FieldRoot>
       ) : null}
     </TabsPanel>

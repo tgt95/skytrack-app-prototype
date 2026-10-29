@@ -1,5 +1,10 @@
-import { CaretDownIcon, CaretUpIcon, QuestionIcon } from '@phosphor-icons/react'
+import {
+  CaretDownIcon,
+  CaretUpIcon,
+  QuestionIcon,
+} from '@phosphor-icons/react'
 import { Button } from 'skytrack-ui/button'
+import { Alert, AlertDescription } from 'skytrack-ui/alert'
 import {
   Select,
   SelectIcon,
@@ -59,21 +64,19 @@ export function MissionChecksCard ({
           Valid mission — Simulation is available.
         </p>
       ) : (
-        <ul
-          className=' [list-style:none] m-0 p-0 flex flex-col gap-1.5'
-          data-testid='ms-issue-list'
-        >
+        <div className='flex flex-col gap-1.5' data-testid='ms-issue-list'>
           {errors.map(issue => (
-            <li key={issue.id} className='ms-issue is-error' role='alert'>
-              {issue.message}
-            </li>
+            <Alert key={issue.id} variant='default' role='alert'>
+              {/* <WarningCircleIcon className='size-5 shrink-0' aria-hidden='true' /> */}
+              <AlertDescription>{issue.message}</AlertDescription>
+            </Alert>
           ))}
           {warnings.map(issue => (
-            <li key={issue.id} className='ms-issue is-warning' role='status'>
-              {issue.message}
-            </li>
+            <Alert key={issue.id} variant='default' role='status'>
+              <AlertDescription>{issue.message}</AlertDescription>
+            </Alert>
           ))}
-        </ul>
+        </div>
       )}
     </section>
   )

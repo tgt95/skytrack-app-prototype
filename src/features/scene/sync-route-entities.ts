@@ -7,11 +7,15 @@ import {
 import {
   droneMarkerImage,
   enuToLngLat,
+  MAX_AREA_WAYPOINT_LABELS_PER_AREA,
   plusMarkerImage,
+  ROUTE_DISTANCE_LABEL_DETAIL_DISTANCE_M,
   safeColor,
   themeColor,
+  WAYPOINT_LABEL_DETAIL_DISTANCE_M,
 } from "./mission-scene-helpers";
 import type { RouteEntityContext } from "./committed-entity-context";
+import { readMissionDesignPreferences } from "../../shared/mission-design-preferences";
 
 /** Add Route lines, derived transfers, waypoints, labels, insert markers, and vehicle. */
 export function addRouteEntities({
@@ -24,6 +28,12 @@ export function addRouteEntities({
   simActive,
   focusedPhotoWaypointId,
 }: RouteEntityContext): void {
+  const preferences = readMissionDesignPreferences();
+  const legLabelStyle = {
+    style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+    outlineColor: Cesium.Color.BLACK.withAlpha(0.9),
+    outlineWidth: 2,
+  };
   // Route polylines: render each Route independently.
   const routes = getMissionRoutes(mission);
   // The preview-capture scan overlay is owned by the preview layer: its
@@ -88,10 +98,15 @@ export function addRouteEntities({
         id: `ms-transfer-len-${transfer.id}`,
         position: Cesium.Cartesian3.fromDegrees(g.lng, g.lat, mid.z),
         label: {
+          ...legLabelStyle,
           text: `${transfer.distanceM.toFixed(1)} m · Transfer`,
-          font: "italic 11px sans-serif",
+          font: "italic 600 12px sans-serif",
           fillColor: Cesium.Color.fromCssColorString("#c4b5fd"),
-          pixelOffset: new Cesium.Cartesian2(0, -14),
+          pixelOffset: new Cesium.Cartesian2(0, -20),
+          distanceDisplayCondition: new Cesium.DistanceDisplayCondition(
+            0,
+            ROUTE_DISTANCE_LABEL_DETAIL_DISTANCE_M,
+          ),
           disableDepthTestDistance: Number.POSITIVE_INFINITY,
         },
       });
@@ -100,6 +115,28 @@ export function addRouteEntities({
 
   // Home remains a distinct ground marker. Mission geometry starts at its
   // first authored waypoint or Area scan point.
+
+  // Area scans generate a waypoint at each lane vertex; sample their sequence
+  // labels so a large scan grid does not paint a number beside every marker.
+  const sampledAreaWaypointIds = new Set<string>();
+  for (const area of mission.areas) {
+    const areaWaypoints = mission.waypoints
+      .filter((waypoint) => waypoint.generatedByArea === area.id)
+      .sort((a, b) => a.seq - b.seq);
+    const stride = Math.max(
+      1,
+      Math.ceil(areaWaypoints.length / MAX_AREA_WAYPOINT_LABELS_PER_AREA),
+    );
+    areaWaypoints.forEach((waypoint, index) => {
+      if (
+        index === 0 ||
+        index === areaWaypoints.length - 1 ||
+        index % stride === 0
+      ) {
+        sampledAreaWaypointIds.add(waypoint.id);
+      }
+    });
+  }
 
   // Numbered waypoints. Generated avoid-detour points use a distinct
   // destructive outline so they read as derived, not authored.
@@ -111,6 +148,9 @@ export function addRouteEntities({
       focusedPhotoWaypointId !== null &&
       wp.id !== focusedPhotoWaypointId &&
       wp.actions.some((action) => action.kind === "photo");
+    const showWaypointLabel =
+      preferences.showWaypointLabels &&
+      (selected || !wp.generatedByArea || sampledAreaWaypointIds.has(wp.id));
     viewer.entities.add({
       id: `ms-wp-${wp.id}`,
       name: isDetour ? `Generated detour ${wp.seq}` : `Waypoint ${wp.seq}`,
@@ -131,17 +171,26 @@ export function addRouteEntities({
         outlineWidth: 2,
         disableDepthTestDistance: Number.POSITIVE_INFINITY,
       },
-      label: {
-        text: String(wp.seq),
-        font: "600 11px sans-serif",
-        fillColor: selected
-          ? isDetour
-            ? cssColor("--destructive", 1)
-            : cssColor("--primary", 1)
-          : Cesium.Color.WHITE,
-        pixelOffset: new Cesium.Cartesian2(0, 18),
-        disableDepthTestDistance: Number.POSITIVE_INFINITY,
-      },
+      label: showWaypointLabel
+        ? {
+            ...legLabelStyle,
+            text: String(wp.seq),
+            font: "600 12px sans-serif",
+            fillColor: selected
+              ? isDetour
+                ? cssColor("--destructive", 1)
+                : cssColor("--primary", 1)
+              : Cesium.Color.WHITE,
+            pixelOffset: new Cesium.Cartesian2(0, 18),
+            distanceDisplayCondition: selected
+              ? undefined
+              : new Cesium.DistanceDisplayCondition(
+                  0,
+                  WAYPOINT_LABEL_DETAIL_DISTANCE_M,
+                ),
+            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+          }
+        : undefined,
     });
     // (T-016) no hover remove badge: deletion is click-again on the
     // selected waypoint. First click selects; the point itself stays the
@@ -151,6 +200,7 @@ export function addRouteEntities({
   // Straight-segment helpers: 1-decimal length labels on every leg within a route,
   // plus a midpoint insertion marker only between adjacent authored waypoints of the same route.
   routes.forEach((r) => {
+    if (!preferences.showRouteDistances) return;
     const rWaypoints = getMissionRouteWaypoints(mission, r.id);
     const routeForLabels = [...rWaypoints];
     for (let i = 1; i < routeForLabels.length; i += 1) {
@@ -167,10 +217,15 @@ export function addRouteEntities({
         id: `ms-route-len-${r.id}-${i}`,
         position: Cesium.Cartesian3.fromDegrees(g.lng, g.lat, mid.z),
         label: {
+          ...legLabelStyle,
           text: `${lengthM.toFixed(1)} m`,
-          font: "11px sans-serif",
+          font: "600 12px sans-serif",
           fillColor: Cesium.Color.WHITE,
-          pixelOffset: new Cesium.Cartesian2(0, -14),
+          pixelOffset: new Cesium.Cartesian2(0, -20),
+          distanceDisplayCondition: new Cesium.DistanceDisplayCondition(
+            0,
+            ROUTE_DISTANCE_LABEL_DETAIL_DISTANCE_M,
+          ),
           disableDepthTestDistance: Number.POSITIVE_INFINITY,
         },
       });

@@ -10,6 +10,7 @@ import {
 } from "react";
 import {
   missionFromSnapshot,
+  normalizeMissionAIWorkflows,
   snapshotOf,
   type SceneSelection,
   type StudioMission,
@@ -64,9 +65,10 @@ export function useMissionHistoryActions({
 }: UseMissionHistoryActionsArgs) {
   const commit = useCallback(
     (next: StudioMission, label?: string) => {
-      if (snapshotOf(missionRef.current) === snapshotOf(next)) return;
-      missionRef.current = next;
-      dispatchDocument({ type: "commit", next });
+      const normalizedNext = normalizeMissionAIWorkflows(next);
+      if (snapshotOf(missionRef.current) === snapshotOf(normalizedNext)) return;
+      missionRef.current = normalizedNext;
+      dispatchDocument({ type: "commit", next: normalizedNext });
       setSelection(null);
       if (sim.status === "running" || sim.status === "paused") {
         sim.abort();

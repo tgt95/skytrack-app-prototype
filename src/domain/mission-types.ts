@@ -79,6 +79,33 @@ export interface WaypointAction {
   gimbalPitchDeg?: number;
 }
 
+export type AIWorkflowActionKind = "camera-trigger" | "spray";
+export type AIWorkflowBranch = "if" | "else";
+
+export interface AIWorkflowDroneAction {
+  id: string;
+  kind: AIWorkflowActionKind;
+  mode: "snapshot" | "recording-on" | "recording-off" | "start" | "stop";
+}
+
+/** Local prototype configuration for an AI decision segment between two
+    mission waypoints. It stores references/configuration only; no model runs. */
+export interface MissionAIWorkflow {
+  id: string;
+  label: string;
+  sequenceType: "route" | "area";
+  sequenceId: string;
+  startWaypointId: string;
+  /** Null means the workflow is waiting for an end waypoint to be selected. */
+  stopWaypointId: string | null;
+  startAfterActionId: string | null;
+  modelId: string | null;
+  objectClass: string;
+  confidenceScore: number;
+  ifActions: AIWorkflowDroneAction[];
+  elseActions: AIWorkflowDroneAction[];
+}
+
 export interface Waypoint extends EnuVec {
   id: string;
   seq: number;
@@ -174,6 +201,8 @@ export interface StudioMission {
   routes?: MissionRouteMeta[];
   /** User-created Route/Area block order. Missing means legacy Route-first order. */
   sequenceOrder?: MissionSequenceItem[];
+  /** AI workflow mock configurations, persisted with the mission. */
+  aiWorkflows?: MissionAIWorkflow[];
   waypoints: Waypoint[];
   areas: MissionArea[];
   avoids: AvoidZone[];

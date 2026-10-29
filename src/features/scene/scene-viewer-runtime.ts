@@ -113,8 +113,8 @@ export function startMissionSceneRuntime(args: SceneRuntimeArgs): (() => void) |
         viewer.scene.postProcessStages.fxaa.enabled = !viewer.scene.msaaSupported
         /* Render at device density for crisp map tiles and geometry, capped to
         avoid unbounded canvas cost on very high-density displays. */
-        // viewer.resolutionScale = Math.min(window.devicePixelRatio || 1, 2)
         viewer.resolutionScale = 0.75
+        // viewer.resolutionScale = Math.min(Math.max(window.devicePixelRatio || 1, 1), 2)
         const sceneBaseColor = missionRef.current.worldType === '2D'
           ? safeColor(Cesium, themeColor('--muted'), '--muted', 1)
           : Cesium.Color.BLACK
@@ -123,6 +123,9 @@ export function startMissionSceneRuntime(args: SceneRuntimeArgs): (() => void) |
         // black around the mission model.
         viewer.scene.backgroundColor = sceneBaseColor
         viewer.scene.skyAtmosphere.show = false
+        // Hiding the skybox does not hide Cesium's Sun billboard. Keep the
+        // imported-world scene clean against its solid background.
+        viewer.scene.sun.show = false
         // Hide the default starfield skybox while keeping the scene base color
         // and mission grid visible.
         viewer.scene.skyBox.show = false

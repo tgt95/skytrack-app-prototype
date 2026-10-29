@@ -9,12 +9,12 @@ import {
 } from "react";
 import { flushSync } from "react-dom";
 import {
-  emptyMission,
   missionFromSnapshot,
   type SceneSelection,
   type SceneTool,
   type StudioMission,
 } from "../../domain/mission-model";
+import { createBlankMissionWithDefaults } from "./mission-defaults";
 import type { StudioMissionDocumentAction } from "./mission-document";
 import type { Stage } from "./studio-map-overlays";
 import type { PendingMissionPoint } from "./use-drawing-session";
@@ -210,9 +210,9 @@ export function useStudioRouting({
     try {
       restored = record.mission.missionData
         ? missionFromSnapshot(record.mission.missionData)
-        : emptyMission();
+        : createBlankMissionWithDefaults();
     } catch {
-      restored = emptyMission();
+      restored = createBlankMissionWithDefaults();
       snapshotWarning =
         " Saved mission data could not be read; a blank mission is open.";
     }

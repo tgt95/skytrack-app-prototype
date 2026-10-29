@@ -113,6 +113,7 @@ interface StudioInspectorContainerProps {
   onSelectEvent: (event: SimEventItem) => void;
   aiModels: AIModelCardModel[];
   onImportAIModel: () => void;
+  onDeleteAIModel: (modelId: string) => boolean;
   inspectorWidth: number | null;
   onInspectorWidthChange: (width: number) => void;
 }
@@ -128,6 +129,7 @@ export default function StudioInspectorContainer({
   onSelectEvent,
   aiModels,
   onImportAIModel,
+  onDeleteAIModel,
   inspectorWidth,
   onInspectorWidthChange,
 }: StudioInspectorContainerProps) {
@@ -208,6 +210,7 @@ export default function StudioInspectorContainer({
         onAIModelsOpenChange: ui.setAIModelsOpen,
         onSelectAIModel: ui.setSelectedAIModelId,
         onImportAIModel,
+        onDeleteAIModel,
         onJsonDraftChange: ui.setJsonDraft,
         onApplyJson: actions.handleApplyJson,
         onExportJson: actions.handleExportJson,

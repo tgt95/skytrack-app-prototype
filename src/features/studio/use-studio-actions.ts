@@ -1,6 +1,5 @@
 import { useCallback, type Dispatch, type SetStateAction } from "react";
 import {
-  emptyMission,
   missionFromCode,
   missionToCode,
   snapshotOf,
@@ -11,6 +10,7 @@ import {
 } from "../../domain/mission-model";
 import { recomputeGeneratedMission } from "../../domain/mission-generation";
 import { seedMission } from "../../domain/mission-data";
+import { createBlankMissionWithDefaults } from "./mission-defaults";
 import { saveMissionSnapshot } from "../library/database/store";
 import type { LibraryEntry } from "../library/library";
 import type { MissionWorldOption } from "./studio-dialogs";
@@ -183,7 +183,7 @@ export function useStudioActions({
   const newMission = useCallback(() => {
     const abortedPreviousRun =
       sim.status === "running" || sim.status === "paused";
-    const fresh = emptyMission();
+    const fresh = createBlankMissionWithDefaults();
     dispatchDocument({ type: "commit", next: fresh });
     setSelection(null);
     sim.reset();

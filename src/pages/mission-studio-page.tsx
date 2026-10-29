@@ -206,6 +206,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
   simResetRef.current = sim;
   const sceneSession = useStudioSceneSession({
     mission,
+    gate,
     stage,
     sceneReadiness,
     setSceneReadiness,
@@ -286,7 +287,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
 
   useEffect(() => {
     if (tool === "area")
-      setDraftAreaSettings({ lineSpacingM: 6, orientationDeg: 0, paddingM: 0 });
+      setDraftAreaSettings({ lineSpacingM: accountSettings.missionDesignPreferences.areaLineSpacingM, orientationDeg: 0, paddingM: 0 });
     if (tool === "avoid")
       setDraftAvoidSettings({ type: "obstacle", heightM: 15, clearanceM: 2 });
     if (
@@ -296,7 +297,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
       cancelPanelPreview();
       setDetailEditActive(false);
     }
-  }, [cancelPanelPreview, stage, tool]);
+  }, [accountSettings.missionDesignPreferences.areaLineSpacingM, cancelPanelPreview, stage, tool]);
 
   const studioActions = useStudioActions({
     mission,
@@ -427,6 +428,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
         announce={announce}
         aiModels={aiModels}
         onImportAIModel={() => setImportAIModelOpen(true)}
+        onDeleteAIModel={(modelId) => modelResources.deleteAIModel(modelId)}
         account={{
           profile: accountSettings.accountProfile,
           themePreference: accountSettings.themePreference,
@@ -456,9 +458,11 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
         panel={accountSettings.accountPanel}
         profile={accountSettings.accountProfile}
         notifications={accountSettings.notificationPreferences}
+        missionDesignPreferences={accountSettings.missionDesignPreferences}
         onClose={() => accountSettings.setAccountPanel(null)}
         onSaveProfile={accountSettings.updateAccountProfile}
         onChangeNotifications={accountSettings.updateNotificationPreferences}
+        onChangeMissionDesignPreferences={accountSettings.updateMissionDesignPreferences}
         onAnnounce={uiState.say}
         onLogout={onLogout}
       />

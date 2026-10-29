@@ -6,6 +6,7 @@ test('browser storage keys and versioned payloads remain explicit compatibility 
   assert.deepEqual(STORAGE_KEYS, {
     authentication: 'skytrack-mission-studio-authenticated',
     themePreference: 'skytrack-mission-studio-theme-v1',
+    missionDesignPreferences: 'skytrack-mission-design-preferences-v1',
     accountProfile: 'skytrack-mission-studio-profile-v1',
     accountNotifications: 'skytrack-mission-studio-notifications-v1',
     activeWorkspace: 'ms-lib-active-workspace-v1',
@@ -15,6 +16,7 @@ test('browser storage keys and versioned payloads remain explicit compatibility 
     workspaceResources: 'ms-lib-workspace-resources-v1'
   })
   assert.deepEqual(STORAGE_VERSIONS, {
+    missionDesignPreferences: 1,
     libraryDatabase: 1,
     droneProfiles: 2,
     legacyDroneProfiles: 1,
@@ -47,6 +49,7 @@ test('versioned stores and preference/workspace records round-trip through their
     const resources = require('../src/features/library/database/workspace-resources-store.ts')
     const theme = require('../src/shared/theme-preference.ts')
     const account = require('../src/features/library/account/account-menu-state.ts')
+    const missionDesign = require('../src/shared/mission-design-preferences.ts')
 
     const mission = {
       id: 'guardrail-mission', name: 'Contract mission', editedAgo: 'Just now', starred: false,
@@ -86,6 +89,10 @@ test('versioned stores and preference/workspace records round-trip through their
     const notifications = { missionActivity: false, sharedProjectActivity: true, workspaceUpdates: true }
     assert.equal(account.saveNotificationPreferences(notifications), true)
     assert.deepEqual(account.readNotificationPreferences(), notifications)
+    const designPreferences = { ...missionDesign.DEFAULT_MISSION_DESIGN_PREFERENCES, targetSpeedMS: 3.5 }
+    assert.equal(missionDesign.saveMissionDesignPreferences(designPreferences), true)
+    assert.deepEqual(missionDesign.readMissionDesignPreferences(), designPreferences)
+    assert.equal(JSON.parse(values.get(STORAGE_KEYS.missionDesignPreferences)).version, STORAGE_VERSIONS.missionDesignPreferences)
     saveActiveWorkspaceId(DEFAULT_WORKSPACE_ID)
     assert.equal(readActiveWorkspaceId(), DEFAULT_WORKSPACE_ID)
 
@@ -95,6 +102,7 @@ test('versioned stores and preference/workspace records round-trip through their
       STORAGE_KEYS.activeWorkspace,
       STORAGE_KEYS.droneProfiles,
       STORAGE_KEYS.libraryDatabase,
+      STORAGE_KEYS.missionDesignPreferences,
       STORAGE_KEYS.themePreference,
       STORAGE_KEYS.workspaceResources
     ].sort())

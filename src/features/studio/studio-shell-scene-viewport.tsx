@@ -103,6 +103,9 @@ export function StudioShellSceneViewport({
         onPendingAltitudeChange: drawing.onPendingAltitudeChange,
         onInsertPendingPoint: drawing.onInsertPendingPoint,
         onRemovePendingPoint: drawing.onRemovePendingPoint,
+        onGroupMovePreview: commands.previewGroupMove,
+        onGroupMoveCommit: commands.commitGroupMove,
+        onGroupMoveCancel: commands.cancelPanelPreview,
         onReadinessChange: onSceneReadinessChange,
       }}
       editModeActive={editModeActive}

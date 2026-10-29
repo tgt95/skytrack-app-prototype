@@ -16,6 +16,7 @@ import type {
 } from "../../../domain/mission-model";
 import type { DerivedTransfer } from "../../../domain/transfer-planner";
 import type { SequenceDropPosition } from "./sequence-drag";
+import type { AIModelCardModel } from "../../../ui/components/ai-model-card";
 
 type Waypoint = StudioMission["waypoints"][number];
 
@@ -45,6 +46,9 @@ export function DesignSequenceBlocks({
   onReorderWaypoint,
   onMoveAction,
   onInsertActionAt,
+  aiModels,
+  onImportAIModel,
+  onDeleteAIModel,
   onDeleteAction,
   onDeleteZone,
   onAnnounce,
@@ -103,6 +107,9 @@ export function DesignSequenceBlocks({
     actionIndex: number,
     kind: CameraActionKind,
   ) => void;
+  aiModels: AIModelCardModel[];
+  onImportAIModel: () => void;
+  onDeleteAIModel: (modelId: string) => boolean;
   onDeleteAction: (wpId: string, actionId: string) => void;
   onDeleteZone: (kind: "area" | "avoid", id: string) => void;
   onAnnounce: (text: string) => void;
@@ -174,6 +181,9 @@ export function DesignSequenceBlocks({
               onUpdateMission={onUpdateMission}
               onDeleteRoute={onDeleteRoute}
               onInsertActionAt={onInsertActionAt}
+              aiModels={aiModels}
+              onImportAIModel={onImportAIModel}
+              onDeleteAIModel={onDeleteAIModel}
               onSelect={onSelect}
               onPickUpWaypoint={onPickUpWaypoint}
               onPreviewMoveWaypoint={onPreviewMoveWaypoint}
@@ -233,6 +243,9 @@ export function DesignSequenceBlocks({
             onSetActionPitch={updateActionPitch}
             onSelect={onSelect}
             onInsertActionAt={onInsertActionAt}
+            aiModels={aiModels}
+            onImportAIModel={onImportAIModel}
+            onDeleteAIModel={onDeleteAIModel}
             onPickUpWaypoint={onPickUpWaypoint}
             onPreviewMoveWaypoint={onPreviewMoveWaypoint}
             onDropPreviewWaypoint={onDropPreviewWaypoint}

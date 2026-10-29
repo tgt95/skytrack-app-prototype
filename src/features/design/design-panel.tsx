@@ -40,6 +40,7 @@ export interface DesignPanelProps {
   onAIModelsOpenChange: (open: boolean) => void;
   onSelectAIModel: (modelId: string | null) => void;
   onImportAIModel: () => void;
+  onDeleteAIModel: (modelId: string) => boolean;
   jsonDraft: string;
   jsonError: string | null;
   onCodeViewChange: (code: boolean) => void;
@@ -322,6 +323,9 @@ function DesignPanel(props: DesignPanelProps) {
                 onReorderWaypoint={onReorderWaypoint}
                 onMoveAction={onMoveAction}
                 onInsertActionAt={onInsertActionAt}
+                aiModels={props.aiModels}
+                onImportAIModel={props.onImportAIModel}
+                onDeleteAIModel={props.onDeleteAIModel}
                 onDeleteAction={onDeleteAction}
                 onDeleteZone={onDeleteZone}
                 onAnnounce={onAnnounce}

@@ -31,6 +31,7 @@ import { fitMission } from "./scene-camera-gestures";
 import { MissionSceneStatus } from "./mission-scene-status";
 import { useMissionSceneWorldLayers } from "./use-mission-scene-world-layers";
 import { MissionSceneWorldModelStatus } from "./mission-scene-world-model-status";
+import { MISSION_DESIGN_PREFERENCES_CHANGE_EVENT, readMissionDesignPreferences } from "../../shared/mission-design-preferences";
 
 type CesiumNS = typeof import("cesium");
 
@@ -81,10 +82,14 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
       onPendingAltitudeChange,
       onInsertPendingPoint,
       onRemovePendingPoint,
+      onGroupMovePreview,
+      onGroupMoveCommit,
+      onGroupMoveCancel,
       onReadinessChange,
     },
     ref,
   ) {
+    const [preferencesRevision, setPreferencesRevision] = useState(0);
     const selectedPhotoWaypointId =
       selection?.kind === "waypoint" &&
       mission.waypoints
@@ -134,6 +139,9 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
       onPendingAltitudeChange,
       onInsertPendingPoint,
       onRemovePendingPoint,
+      onGroupMovePreview,
+      onGroupMoveCommit,
+      onGroupMoveCancel,
     });
     pickRef.current = {
       onPickWaypoint,
@@ -151,6 +159,9 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
       onPendingAltitudeChange,
       onInsertPendingPoint,
       onRemovePendingPoint,
+      onGroupMovePreview,
+      onGroupMoveCommit,
+      onGroupMoveCancel,
     };
     const readinessRef = useRef(onReadinessChange);
     readinessRef.current = onReadinessChange;
@@ -399,6 +410,50 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
     });
     /* Search pin is independently owned and never affects mission state or camera fitting. */
     useEffect(() => {
+      const updatePreferences = () => setPreferencesRevision((revision) => revision + 1);
+      window.addEventListener(MISSION_DESIGN_PREFERENCES_CHANGE_EVENT, updatePreferences);
+      return () => window.removeEventListener(MISSION_DESIGN_PREFERENCES_CHANGE_EVENT, updatePreferences);
+    }, []);
+
+    useEffect(() => {
+      const viewer = viewerRef.current;
+      const Cesium = cesiumRef.current;
+      if (!viewer || !Cesium || viewer.isDestroyed() || status !== "ready") return;
+      const controller = viewer.scene.screenSpaceCameraController;
+      const priorZoomEnabled = controller.enableZoom;
+      controller.enableZoom = false;
+      const handleWheel = (event: WheelEvent) => {
+        if (viewer.isDestroyed()) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const preferences = readMissionDesignPreferences();
+        const isZoomIn = (event.deltaY < 0) !== (preferences.zoomDirection === "reversed");
+        const distance = Math.max(1, viewer.camera.positionCartographic?.height ?? 100);
+        const amount = Math.max(0.5, distance * Math.min(0.2, Math.abs(event.deltaY) * 0.001));
+        const position = new Cesium.Cartesian2(event.offsetX, event.offsetY);
+        const anchor = preferences.zoomAnchor === "cursor"
+          ? viewer.camera.pickEllipsoid(position, viewer.scene.globe.ellipsoid)
+          : undefined;
+        if (isZoomIn) viewer.camera.zoomIn(amount);
+        else viewer.camera.zoomOut(amount);
+        if (anchor && preferences.zoomAnchor === "cursor") {
+          const after = viewer.camera.pickEllipsoid(position, viewer.scene.globe.ellipsoid);
+          if (after) {
+            const correction = Cesium.Cartesian3.subtract(anchor, after, new Cesium.Cartesian3());
+            const destination = Cesium.Cartesian3.add(viewer.camera.positionWC, correction, new Cesium.Cartesian3());
+            viewer.camera.setView({ destination, orientation: { heading: viewer.camera.heading, pitch: viewer.camera.pitch, roll: viewer.camera.roll } });
+          }
+        }
+        viewer.scene.requestRender();
+      };
+      viewer.canvas.addEventListener("wheel", handleWheel, { capture: true, passive: false });
+      return () => {
+        viewer.canvas.removeEventListener("wheel", handleWheel, true);
+        if (!viewer.isDestroyed()) controller.enableZoom = priorZoomEnabled;
+      };
+    }, [status, preferencesRevision]);
+
+    useEffect(() => {
       const viewer = viewerRef.current;
       const Cesium = cesiumRef.current;
       if (!viewer || !Cesium || viewer.isDestroyed() || status !== "ready")
@@ -560,7 +615,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
           viewer.entities.values.length,
         );
       revalidateWaypointGroundGuideRef.current(mission);
-    }, [mission, selection, simActive, status, showAreaSurface, worldModelScene.active]);
+    }, [mission, selection, simActive, status, showAreaSurface, worldModelScene.active, preferencesRevision]);
 
     /* Draft cursor/ruler changes refresh only draft-owned entities. */
     useEffect(() => {

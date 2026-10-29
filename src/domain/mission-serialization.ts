@@ -11,6 +11,7 @@ import {
   type EnuPoint,
   type GeoOrigin,
   type MissionArea,
+  type MissionAIWorkflow,
   type MissionRouteMeta,
   type MissionSequenceItem,
   type ReconFlightSettings,
@@ -56,6 +57,21 @@ interface CodeWaypoint {
   altitudeOverrideM?: number
 }
 
+interface CodeAIWorkflow {
+  id?: string
+  label?: string
+  sequenceType?: "route" | "area"
+  sequenceId?: string
+  startWaypointIndex?: number
+  stopWaypointIndex?: number | null
+  startAfterActionIndex?: number
+  modelId?: string | null
+  objectClass?: string
+  confidenceScore?: number
+  ifActions?: Array<{ kind?: string; mode?: string }>
+  elseActions?: Array<{ kind?: string; mode?: string }>
+}
+
 interface CodeArea {
   id?: string
   label?: string
@@ -99,6 +115,7 @@ interface CodeMission {
   origin?: GeoOrigin
   routes?: CodeRoute[]
   sequenceOrder?: CodeSequenceItem[]
+  aiWorkflows?: CodeAIWorkflow[]
   waypoints?: CodeWaypoint[]
   areas?: CodeArea[]
   avoids?: CodeAvoid[]
@@ -157,6 +174,31 @@ export function missionToCode(mission: StudioMission): string {
       ...(r.reconnaissance ? { reconnaissance: r.reconnaissance } : {})
     })),
     sequenceOrder: getMissionSequence(norm).map((item) => ({ type: item.type, id: item.id })),
+    aiWorkflows: (norm.aiWorkflows ?? []).flatMap((workflow) => {
+      const startWaypointIndex = norm.waypoints.findIndex((waypoint) => waypoint.id === workflow.startWaypointId)
+      const stopWaypointIndex = workflow.stopWaypointId === null
+        ? null
+        : norm.waypoints.findIndex((waypoint) => waypoint.id === workflow.stopWaypointId)
+      if (startWaypointIndex < 0 || (stopWaypointIndex !== null && stopWaypointIndex < 0)) return []
+      const start = norm.waypoints[startWaypointIndex]
+      const startAfterActionIndex = workflow.startAfterActionId === null
+        ? 0
+        : start.actions.findIndex((action) => action.id === workflow.startAfterActionId) + 1
+      return [{
+        id: workflow.id,
+        label: workflow.label,
+        sequenceType: workflow.sequenceType,
+        sequenceId: workflow.sequenceId,
+        startWaypointIndex,
+        stopWaypointIndex,
+        startAfterActionIndex,
+        modelId: workflow.modelId,
+        objectClass: workflow.objectClass,
+        confidenceScore: workflow.confidenceScore,
+        ifActions: workflow.ifActions.map(({ kind, mode }) => ({ kind, mode })),
+        elseActions: workflow.elseActions.map(({ kind, mode }) => ({ kind, mode })),
+      }]
+    }),
     waypoints: norm.waypoints.map((w) => ({
       x: Math.round(w.x * 100) / 100,
       y: Math.round(w.y * 100) / 100,
@@ -330,6 +372,7 @@ export function missionFromCode(
      - A waypoint carrying both valid flags keeps the Area flag in the base;
        the Avoid flag is dropped because Avoids are recomputed. */
   const baseWaypoints: Waypoint[] = []
+  const importedWaypointIds = new Map<number, string>()
   const importedAvoidOverrides: Array<{ avoidId: string; x: number; y: number; altitudeOverrideM: number }> = []
   for (let i = 0; i < code.waypoints.length; i += 1) {
     const w = code.waypoints[i]
@@ -373,6 +416,7 @@ export function missionFromCode(
       continue
     }
     const wp: Waypoint = { id: uid('wp'), seq: 0, x: w.x, y: w.y, z: w.z, actions }
+    importedWaypointIds.set(i, wp.id)
     if (areaId) wp.generatedByArea = areaId
     if (
       areaId && areaCoordinatesMatch && Number.isFinite(altitudeOverrideM) &&
@@ -381,6 +425,54 @@ export function missionFromCode(
     if (routeId) wp.routeId = routeId
     baseWaypoints.push(wp)
   }
+  const importWorkflowActions = (rawActions: unknown): MissionAIWorkflow['ifActions'] => {
+    if (!Array.isArray(rawActions)) return []
+    return rawActions.flatMap((raw): MissionAIWorkflow['ifActions'] => {
+      if (typeof raw !== 'object' || raw === null) return []
+      const action = raw as { kind?: unknown; mode?: unknown }
+      if (action.kind === 'camera-trigger' && ['snapshot', 'recording-on', 'recording-off'].includes(String(action.mode))) {
+        return [{ id: uid('ai-action'), kind: 'camera-trigger', mode: action.mode as 'snapshot' | 'recording-on' | 'recording-off' }]
+      }
+      if (action.kind === 'spray' && ['start', 'stop'].includes(String(action.mode))) {
+        return [{ id: uid('ai-action'), kind: 'spray', mode: action.mode as 'start' | 'stop' }]
+      }
+      return []
+    })
+  }
+  const aiWorkflows: MissionAIWorkflow[] = (Array.isArray(code.aiWorkflows) ? code.aiWorkflows : []).flatMap((raw, index) => {
+    if (!raw || (raw.sequenceType !== 'route' && raw.sequenceType !== 'area')) return []
+    const rawSequenceId = codeZoneKey(raw.sequenceId)
+    if (!rawSequenceId || !Number.isInteger(raw.startWaypointIndex)) return []
+    const sequenceId = raw.sequenceType === 'route'
+      ? routeKeyToId.get(rawSequenceId)
+      : areaKeyToId.get(rawSequenceId)
+    const startWaypointId = importedWaypointIds.get(raw.startWaypointIndex as number)
+    const stopIndex = raw.stopWaypointIndex
+    const stopWaypointId = stopIndex === null
+      ? null
+      : Number.isInteger(stopIndex) ? importedWaypointIds.get(stopIndex as number) ?? null : null
+    const startWaypoint = baseWaypoints.find((waypoint) => waypoint.id === startWaypointId)
+    if (!sequenceId || !startWaypointId || !startWaypoint || (stopIndex !== null && !stopWaypointId)) return []
+    const afterIndex = Number.isInteger(raw.startAfterActionIndex)
+      ? Math.max(0, raw.startAfterActionIndex as number)
+      : 0
+    return [{
+      id: uid('ai-flow'),
+      label: typeof raw.label === 'string' && raw.label.trim() ? raw.label.slice(0, 100) : `AI Flow ${index + 1}`,
+      sequenceType: raw.sequenceType,
+      sequenceId,
+      startWaypointId,
+      stopWaypointId,
+      startAfterActionId: afterIndex > 0 ? startWaypoint.actions[afterIndex - 1]?.id ?? null : null,
+      modelId: typeof raw.modelId === 'string' && raw.modelId.length <= 128 ? raw.modelId : null,
+      objectClass: typeof raw.objectClass === 'string' ? raw.objectClass.slice(0, 120) : 'Person',
+      confidenceScore: typeof raw.confidenceScore === 'number' && Number.isFinite(raw.confidenceScore)
+        ? Math.max(0, Math.min(1, raw.confidenceScore))
+        : 0.5,
+      ifActions: importWorkflowActions(raw.ifActions),
+      elseActions: importWorkflowActions(raw.elseActions),
+    }]
+  })
   const next: StudioMission = {
     ...base,
     name: typeof code.name === 'string' && code.name ? code.name : base.name,
@@ -407,6 +499,7 @@ export function missionFromCode(
     spawn: finitePoint(code.home) ? { x: code.home.x, y: code.home.y } : base.spawn,
     routes: routes.length > 0 ? routes : undefined,
     sequenceOrder: sequenceOrder.length > 0 ? sequenceOrder : undefined,
+    aiWorkflows,
     waypoints: baseWaypoints,
     areas,
     avoids

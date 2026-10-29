@@ -149,9 +149,11 @@ export default function StudioLibrary({
     accountPanel,
     setAccountPanel,
     themePreference,
+    missionDesignPreferences,
     updateAccountProfile,
     updateNotificationPreferences,
     updateThemePreference,
+    updateMissionDesignPreferences,
   } = useLibraryAccountSettings(onAnnounce);
   const [activeWorkspaceId, setActiveWorkspaceId] = useState(
     readActiveWorkspaceId,
@@ -541,9 +543,11 @@ export default function StudioLibrary({
           panel: accountPanel,
           profile: accountProfile,
           notifications: notificationPreferences,
+          missionDesignPreferences,
           onClose: () => setAccountPanel(null),
           onSaveProfile: updateAccountProfile,
           onChangeNotifications: updateNotificationPreferences,
+          onChangeMissionDesignPreferences: updateMissionDesignPreferences,
           onAnnounce,
           onLogout,
         }}

@@ -104,6 +104,8 @@ export function useMissionCommands({
     updateMissionFromPanel,
     previewMissionFromPanel,
     commitPanelPreview,
+    previewGroupMove,
+    commitGroupMove,
     cancelPanelPreview,
   } = panelEdits;
   const waypointCommands = useMissionWaypointCommands({
@@ -358,6 +360,8 @@ export function useMissionCommands({
     updateMissionFromPanel,
     previewMissionFromPanel,
     commitPanelPreview,
+    previewGroupMove,
+    commitGroupMove,
     cancelPanelPreview,
     onAvoidHeightChange,
     finishPending,

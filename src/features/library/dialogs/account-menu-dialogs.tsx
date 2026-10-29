@@ -13,30 +13,48 @@ import {
   DialogPortal,
   DialogTitle,
 } from "skytrack-ui/dialog";
-import { FieldControl, FieldLabel, FieldRoot } from "skytrack-ui/field";
+import { Field, FieldControl, FieldLabel, FieldRoot } from "skytrack-ui/field";
+import {
+  Select,
+  SelectIcon,
+  SelectItem,
+  SelectItemIndicator,
+  SelectItemText,
+  SelectList,
+  SelectPopup,
+  SelectPortal,
+  SelectPositioner,
+  SelectTrigger,
+  SelectValue,
+} from "skytrack-ui/select";
 import { Switch, SwitchThumb } from "skytrack-ui/switch";
 import type { AccountMenuPanel } from "../../../ui/components/account-menu";
 import type {
   AccountProfile,
   NotificationPreferences,
 } from "../account/account-menu-state.ts";
+import type { MissionDesignPreferences } from "../../../shared/mission-design-preferences";
 
 export function AccountMenuDialogs({
   panel,
   profile,
   notifications,
+  missionDesignPreferences,
   onClose,
   onSaveProfile,
   onChangeNotifications,
+  onChangeMissionDesignPreferences,
   onAnnounce,
   onLogout,
 }: {
   panel: AccountMenuPanel | null;
   profile: AccountProfile;
   notifications: NotificationPreferences;
+  missionDesignPreferences: MissionDesignPreferences;
   onClose: () => void;
   onSaveProfile: (name: string) => boolean;
   onChangeNotifications: (next: NotificationPreferences) => void;
+  onChangeMissionDesignPreferences: (next: MissionDesignPreferences) => void;
   onAnnounce: (message: string) => void;
   onLogout: () => void;
 }) {
@@ -154,6 +172,51 @@ export function AccountMenuDialogs({
                 <Badge count="Active" status="outline" size="sm" />
               </div>
               <AccountDetail label="Email address" value={profile.email} />
+              <h3 className="heading m-0 mt-3 text-[0.8125rem] font-semibold">Mission Design · this browser</h3>
+              <MissionPreferenceSelect
+                label="Wheel direction"
+                name="wheel-direction"
+                value={missionDesignPreferences.zoomDirection}
+                options={["normal", "reversed"] as const}
+                formatOption={(value) => value === "normal" ? "Normal" : "Reversed"}
+                onChange={(zoomDirection) => onChangeMissionDesignPreferences({ ...missionDesignPreferences, zoomDirection })}
+              />
+              <MissionPreferenceSelect
+                label="Zoom anchor"
+                name="zoom-anchor"
+                value={missionDesignPreferences.zoomAnchor}
+                options={["cursor", "center"] as const}
+                formatOption={(value) => value === "cursor" ? "Cursor" : "Map center"}
+                onChange={(zoomAnchor) => onChangeMissionDesignPreferences({ ...missionDesignPreferences, zoomAnchor })}
+              />
+              <MissionPreferenceNumber
+                label="Default target speed (m/s)"
+                name="default-target-speed"
+                value={missionDesignPreferences.targetSpeedMS}
+                min={0.1}
+                max={30}
+                description="Used for new blank missions. Existing missions and template values stay unchanged."
+                onChange={(targetSpeedMS) => onChangeMissionDesignPreferences({ ...missionDesignPreferences, targetSpeedMS })}
+              />
+              <MissionPreferenceNumber
+                label="Default take-off altitude (m)"
+                name="default-take-off-altitude"
+                value={missionDesignPreferences.takeoffAltitudeM}
+                min={0}
+                max={500}
+                onChange={(takeoffAltitudeM) => onChangeMissionDesignPreferences({ ...missionDesignPreferences, takeoffAltitudeM })}
+              />
+              <MissionPreferenceNumber
+                label="Default Area line spacing (m)"
+                name="default-area-line-spacing"
+                value={missionDesignPreferences.areaLineSpacingM}
+                min={0.1}
+                max={100}
+                onChange={(areaLineSpacingM) => onChangeMissionDesignPreferences({ ...missionDesignPreferences, areaLineSpacingM })}
+              />
+              <PreferenceRow title="Waypoint labels" checked={missionDesignPreferences.showWaypointLabels} onCheckedChange={(checked) => onChangeMissionDesignPreferences({ ...missionDesignPreferences, showWaypointLabels: checked })} />
+              <PreferenceRow title="Route distances" checked={missionDesignPreferences.showRouteDistances} onCheckedChange={(checked) => onChangeMissionDesignPreferences({ ...missionDesignPreferences, showRouteDistances: checked })} />
+              <PreferenceRow title="Area scan lanes" checked={missionDesignPreferences.showAreaScanLanes} onCheckedChange={(checked) => onChangeMissionDesignPreferences({ ...missionDesignPreferences, showAreaScanLanes: checked })} />
             </div>
           ) : null}
 
@@ -386,4 +449,118 @@ function NotificationRow({
       </Switch>
     </div>
   );
+}
+
+function MissionPreferenceSelect<T extends string>({
+  name,
+  label,
+  value,
+  options,
+  formatOption,
+  onChange,
+}: {
+  name: string;
+  label: string;
+  value: T;
+  options: readonly T[];
+  formatOption: (value: T) => string;
+  onChange: (value: T) => void;
+}) {
+  return (
+    <Field.Root name={name} className="ms-field">
+      <Field.Label className="text-sm font-medium text-foreground" nativeLabel={false} render={<div />}>
+        {label}
+      </Field.Label>
+      <Select<T>
+        items={options.map((option) => ({ value: option, label: formatOption(option) }))}
+        value={value}
+        onValueChange={(next: unknown) => onChange(String(next) as T)}
+      >
+        <SelectTrigger>
+          <SelectValue />
+          <SelectIcon />
+        </SelectTrigger>
+        <SelectPortal>
+          <SelectPositioner side="bottom" align="start" sideOffset={4}>
+            <SelectPopup>
+              <SelectList>
+                {options.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    <SelectItemIndicator />
+                    <SelectItemText>{formatOption(option)}</SelectItemText>
+                  </SelectItem>
+                ))}
+              </SelectList>
+            </SelectPopup>
+          </SelectPositioner>
+        </SelectPortal>
+      </Select>
+    </Field.Root>
+  );
+}
+
+function MissionPreferenceNumber({
+  name,
+  label,
+  value,
+  min,
+  max,
+  description,
+  onChange,
+}: {
+  name: string;
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  description?: string;
+  onChange: (value: number) => void;
+}) {
+  const errorId = `${name}-range-error`;
+  return (
+    <Field.Root
+      name={name}
+      className="ms-field"
+      validationMode="onChange"
+      validate={(next) => {
+        const numeric = Number(next);
+        if (!Number.isFinite(numeric) || numeric < min || numeric > max) {
+          return `Enter a value from ${min} to ${max}.`;
+        }
+        return undefined;
+      }}
+    >
+      <Field.Label className="text-sm font-medium text-foreground">
+        {label}
+      </Field.Label>
+      <Field.Control
+        type="number"
+        min={min}
+        max={max}
+        step="any"
+        value={String(value)}
+        aria-describedby={description ? `${name}-description` : undefined}
+        aria-errormessage={errorId}
+        onValueChange={(next) => {
+          const numeric = Number(next);
+          if (next.trim() && Number.isFinite(numeric)) onChange(numeric);
+        }}
+        className="flex h-10 w-full min-w-0 self-stretch rounded-(--radius) border border-input bg-background px-3 py-1 text-foreground shadow-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ring) data-invalid:border-destructive"
+      />
+      {description ? (
+        <Field.Description id={`${name}-description`} className="text-xs text-muted-foreground">
+          {description}
+        </Field.Description>
+      ) : null}
+      <Field.Error id={errorId} className="text-xs text-destructive" />
+    </Field.Root>
+  );
+}
+
+function PreferenceRow({ title, checked, onCheckedChange }: { title: string; checked: boolean; onCheckedChange: (checked: boolean) => void }) {
+  const id = `mission-pref-${title.toLowerCase().replace(/[^a-z0-9]+/gu, "-")}`;
+  return <div className="flex items-center justify-between gap-4 min-h-11 border-b border-b-border">
+    <label htmlFor={id} className="text-[0.8125rem] font-medium cursor-pointer">{title}</label>
+    <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} aria-label={title}><SwitchThumb /></Switch>
+  </div>;
 }

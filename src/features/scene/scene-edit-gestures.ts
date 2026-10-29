@@ -14,7 +14,7 @@
    idempotent. Viewer creation/destruction stays with MissionScene. */
 
 import type { Cartesian2, Viewer } from 'cesium'
-import type { SceneSelection, SceneTool, StudioMission } from '../../domain/mission-model'
+import { getMissionRoutes, type SceneSelection, type SceneTool, type StudioMission } from '../../domain/mission-model'
 import {
   avoidHandleId, isWaypointGroundGuideEntity, pendingPointIndex, photoWaypointId, waypointId
 } from './mission-scene-helpers'
@@ -28,6 +28,7 @@ import {
   type WaypointDownState, type WaypointDragState, type ZDragState
 } from './scene-point-drag'
 import { createSurfacePick } from './scene-surface-pick'
+import { translateMissionGroup, type MissionGroupRef } from '../../domain/mission-model'
 
 type CesiumNS = typeof import('cesium')
 
@@ -64,6 +65,9 @@ export interface ScenePickCallbacks {
   onPendingAltitudeChange?: (index: number, z: number) => void
   onInsertPendingPoint?: (index: number, point: { x: number; y: number; z: number }) => void
   onRemovePendingPoint?: (index: number) => void
+  onGroupMovePreview: (mission: StudioMission) => void
+  onGroupMoveCommit: (mission: StudioMission, label: string) => void
+  onGroupMoveCancel: () => void
 }
 
 interface SceneEditStateRefs {
@@ -195,6 +199,21 @@ export function createEditGestures(deps: {
     surface: surfacePick
   })
 
+  let groupDrag: {
+    group: MissionGroupRef; base: StudioMission; startX: number; startY: number;
+    startClientX: number; startClientY: number; moved: boolean
+  } | null = null
+  const groupFromEntity = (raw: string): MissionGroupRef | null => {
+    const route = /^ms-route-(?!len-|insert-|transfer-)(.+)$/.exec(raw)
+    if (route) return { kind: 'route', id: route[1] }
+    if (raw.startsWith('ms-area-len-')) return null
+    const area = /^ms-area-(?:outline-|scan-)?(.+)$/.exec(raw)
+    if (area && !['scan', 'len'].includes(area[1])) return { kind: 'area', id: area[1] }
+    const avoid = /^ms-avoid-(?:top-outline-|outline-)?(.+)$/.exec(raw)
+    if (avoid && !avoid[1].startsWith('height-')) return { kind: 'avoid', id: avoid[1] }
+    return null
+  }
+
   let screenHandler: import('cesium').ScreenSpaceEventHandler | null = null
   let disposed = false
   /* Remover closures — keep the concrete listener types (KeyboardEvent etc.)
@@ -217,15 +236,30 @@ export function createEditGestures(deps: {
 
   const hooks: EditGestureHooks = {
     isZPressActive: () => zdragRef.current !== null,
-    hasActiveEditDrag: () => zdragRef.current !== null || wpDragRef.current !== null || pendingDragRef.current !== null || avoidHeightDrag.isActive(),
+    hasActiveEditDrag: () => zdragRef.current !== null || wpDragRef.current !== null || pendingDragRef.current !== null || groupDrag !== null || avoidHeightDrag.isActive(),
     classifyCandidatePress: (e, raw) => {
       // Background-only allowlist: grid, route line,
       // leg labels and the drawing plane. Every other mission entity
       // retains priority.
-      if (raw === 'ms-grid-x' || raw === 'ms-grid-y' || raw.startsWith('ms-route') || raw.startsWith('ms-transfer') || raw.startsWith('ms-world-terrain') || raw === 'ms-draw-plane' || raw.startsWith('ms-route-len-') || raw === 'ms-pending-line') return 'skip'
+      if (raw === 'ms-grid-x' || raw === 'ms-grid-y' || raw.startsWith('ms-transfer') || raw.startsWith('ms-world-terrain') || raw === 'ms-draw-plane' || raw.startsWith('ms-route-len-') || raw.startsWith('ms-route-insert-') || raw === 'ms-pending-line') return 'skip'
       // Avoid height handles own their drag flow (they manage
       // enableInputs themselves); leave them fully untouched.
       if (avoidHandleId(raw)) return 'blocked'
+      const group = groupFromEntity(raw)
+      if (group && !simActiveRef.current && toolRef.current === 'select') {
+        if (group.kind === 'route') {
+          const routeIndex = getMissionRoutes(missionRef.current).findIndex((route) => route.id === group.id)
+          const member = missionRef.current.waypoints.find((waypoint) => waypoint.routeId === group.id || (!waypoint.routeId && routeIndex === 0))
+          if (member) pickRef.current.onPickWaypoint(member.id)
+        } else {
+          pickRef.current.onPickZone(group.kind, group.id)
+        }
+        const start = surfacePick.wpXyFromScreen(e.clientX, e.clientY, 0)
+        if (start) {
+          groupDrag = { group, base: missionRef.current, startX: start.x, startY: start.y, startClientX: e.clientX, startClientY: e.clientY, moved: false }
+          return 'hold'
+        }
+      }
       const pendingPressIdx = toolRef.current === 'route' ? pendingPointIndex(raw) : null
       if (pendingPressIdx !== null && pendingPointsRef.current[pendingPressIdx]) {
         pointDrag.beginPendingPress(e, pendingPressIdx, pendingPointsRef.current[pendingPressIdx])
@@ -259,6 +293,21 @@ export function createEditGestures(deps: {
       wpDownRef.current = null
     },
     advanceEditDrag: (e) => {
+      if (groupDrag) {
+        if (!groupDrag.moved) {
+          const dx = e.clientX - groupDrag.startClientX
+          const dy = e.clientY - groupDrag.startClientY
+          if (dx * dx + dy * dy < 16) return
+          groupDrag.moved = true
+          dragState.dragged = true
+          try { viewer.canvas.setPointerCapture(e.pointerId) } catch { /* ignore */ }
+          viewer.canvas.style.cursor = 'move'
+        }
+        const point = surfacePick.wpXyFromScreen(e.clientX, e.clientY, 0)
+        if (!point) return
+        pickRef.current.onGroupMovePreview(translateMissionGroup(groupDrag.base, groupDrag.group, { x: point.x - groupDrag.startX, y: point.y - groupDrag.startY }))
+        return
+      }
       // Drag mode was captured at pointer-down and stays stable even if
       // the parent switches tools mid-gesture.
       // Edit-press: native camera stays frozen. A waypoint press either
@@ -305,6 +354,21 @@ export function createEditGestures(deps: {
       pointDrag.previewWpDrag(e)
     },
     resolveEditPointer: (e) => {
+      if (groupDrag) {
+        const drag = groupDrag
+        groupDrag = null
+        if (drag.moved) {
+          const point = surfacePick.wpXyFromScreen(e.clientX, e.clientY, 0)
+          if (!point) {
+            pickRef.current.onGroupMoveCancel()
+            return
+          }
+          const next = translateMissionGroup(drag.base, drag.group, { x: point.x - drag.startX, y: point.y - drag.startY })
+          const name = drag.group.kind === 'area' ? 'Area' : drag.group.kind === 'avoid' ? 'Avoidance zone' : 'Route'
+          pickRef.current.onGroupMoveCommit(next, `${name} moved in XY; altitude and members preserved.`)
+        }
+        return
+      }
       // Waypoint or pending drag resolves on pointerup.
       if (pendingDragRef.current) {
         if (pendingDragRef.current.moved) pointDrag.commitPendingDrag(e.clientX, e.clientY)
@@ -319,6 +383,8 @@ export function createEditGestures(deps: {
       // Pointer cancel: never commit a partial drag; restore preview.
       abortPendingDrag()
       abortWpDrag()
+      if (groupDrag?.moved) pickRef.current.onGroupMoveCancel()
+      groupDrag = null
       abortZdrag()
       avoidHeightDrag.cancel()
       zHeldRef.current = false
@@ -326,6 +392,8 @@ export function createEditGestures(deps: {
     escAbortEdits: () => {
       abortPendingDrag()
       abortWpDrag()
+      if (groupDrag?.moved) pickRef.current.onGroupMoveCancel()
+      groupDrag = null
       abortZdrag()
       avoidHeightDrag.cancel()
       zHeldRef.current = false
@@ -334,6 +402,8 @@ export function createEditGestures(deps: {
     abortForBlur: () => {
       abortPendingDrag()
       abortWpDrag()
+      if (groupDrag?.moved) pickRef.current.onGroupMoveCancel()
+      groupDrag = null
       abortZdrag()
       avoidHeightDrag.cancel()
       zHeldRef.current = false

@@ -3,8 +3,13 @@ import {
   generateAreaTraversal,
   getAreaFlightAltitudeM,
 } from "../../domain/mission-model";
-import { enuToLngLat } from "./mission-scene-helpers";
+import {
+  enuToLngLat,
+  MAX_AREA_DISTANCE_LABELS_PER_AREA,
+  ROUTE_DISTANCE_LABEL_DETAIL_DISTANCE_M,
+} from "./mission-scene-helpers";
 import type { AreaEntityContext } from "./committed-entity-context";
+import { readMissionDesignPreferences } from "../../shared/mission-design-preferences";
 
 /** Add Area/Avoid boundaries, scan lanes, and selected Avoid height handles. */
 export function addAreaAndAvoidEntities({
@@ -16,6 +21,12 @@ export function addAreaAndAvoidEntities({
   selection,
   showAreaSurface,
 }: AreaEntityContext): void {
+  const preferences = readMissionDesignPreferences();
+  const areaLabelStyle = {
+    style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+    outlineColor: Cesium.Color.BLACK.withAlpha(0.9),
+    outlineWidth: 2,
+  };
   const zoneEntity = (
     kind: "area" | "avoid",
     id: string,
@@ -136,7 +147,7 @@ export function addAreaAndAvoidEntities({
         mission.worldType ?? "3D",
       );
     const traversal = generateAreaTraversal(area, lanes);
-    if (traversal.length >= 2) {
+    if (preferences.showAreaScanLanes && traversal.length >= 2) {
       const flat: number[] = [];
       for (let pointIndex = 0; pointIndex < traversal.length; pointIndex += 1) {
         const p = traversal[pointIndex];
@@ -159,7 +170,19 @@ export function addAreaAndAvoidEntities({
       // consecutive traversal points (restores the generated-leg labels
       // lost when route labels narrowed to authored-only). Traversal
       // vertices only — never the polygon boundary ring.
-      for (let i = 1; i < traversal.length; i += 1) {
+      // Sample dense scan traversals instead of placing a distance on every leg.
+      const distanceLabelStride = Math.max(
+        1,
+        Math.ceil((traversal.length - 1) / MAX_AREA_DISTANCE_LABELS_PER_AREA),
+      );
+      for (
+        let i = 1;
+        preferences.showRouteDistances && i < traversal.length;
+        i += 1
+      ) {
+        if ((i - 1) % distanceLabelStride !== 0 && i !== traversal.length - 1) {
+          continue;
+        }
         const a = traversal[i - 1];
         const b = traversal[i];
         const lengthM = Math.hypot(b.x - a.x, b.y - a.y);
@@ -173,10 +196,15 @@ export function addAreaAndAvoidEntities({
           id: `ms-area-len-${area.id}-${i}`,
           position: Cesium.Cartesian3.fromDegrees(g.lng, g.lat, labelAlt),
           label: {
+            ...areaLabelStyle,
             text: `${lengthM.toFixed(1)} m`,
-            font: "11px sans-serif",
+            font: "600 12px sans-serif",
             fillColor: Cesium.Color.WHITE,
-            pixelOffset: new Cesium.Cartesian2(0, -14),
+            pixelOffset: new Cesium.Cartesian2(0, -20),
+            distanceDisplayCondition: new Cesium.DistanceDisplayCondition(
+              0,
+              ROUTE_DISTANCE_LABEL_DETAIL_DISTANCE_M,
+            ),
             disableDepthTestDistance: Number.POSITIVE_INFINITY,
           },
         });

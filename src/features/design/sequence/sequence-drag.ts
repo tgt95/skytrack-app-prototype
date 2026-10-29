@@ -11,7 +11,9 @@ export const SEQUENCE_LIST_ITEM_CLASS = SEQUENCE_LIST_ITEM_BASE_CLASS;
 
 export type SequenceDragItem =
   | { kind: "waypoint"; id: string; routeId: string }
-  | { kind: "action"; id: string; waypointId: string; routeId: string };
+  | { kind: "action"; id: string; waypointId: string; routeId: string }
+  | { kind: "ai-workflow-start"; id: string; routeId: string }
+  | { kind: "ai-workflow-stop"; id: string; routeId: string };
 export type SequenceDropPosition = "before" | "after";
 
 export function sequenceDropPosition(
@@ -32,7 +34,13 @@ export function readSequenceDragItem(
     const value = JSON.parse(
       event.dataTransfer.getData(SEQUENCE_DRAG_MIME),
     ) as SequenceDragItem;
-    if (value && (value.kind === "waypoint" || value.kind === "action"))
+    if (
+      value &&
+      (value.kind === "waypoint" ||
+        value.kind === "action" ||
+        value.kind === "ai-workflow-start" ||
+        value.kind === "ai-workflow-stop")
+    )
       return value;
   } catch {
     // Ignore malformed or external drag payloads.

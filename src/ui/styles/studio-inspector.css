@@ -131,6 +131,11 @@
   --ms-code-selection: #264f78;
 }
 
+.ms-python-editor textarea::selection {
+  color: var(--ms-code-ink);
+  -webkit-text-fill-color: var(--ms-code-ink);
+}
+
 .ms-python-token-keyword {
   color: var(--ms-code-keyword);
 }

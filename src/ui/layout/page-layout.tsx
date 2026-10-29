@@ -52,6 +52,7 @@ export interface StudioShellProps {
   };
   aiModels: AIModelCardModel[];
   onImportAIModel: () => void;
+  onDeleteAIModel: (modelId: string) => boolean;
   account: {
     profile: AccountMenuProfile;
     themePreference: ThemePreference;
@@ -76,6 +77,7 @@ export default function StudioShell({
   handlers,
   aiModels,
   onImportAIModel,
+  onDeleteAIModel,
   account,
 }: StudioShellProps) {
   const { dirty } = document;
@@ -270,6 +272,7 @@ export default function StudioShell({
           mission={mission}
           aiModels={aiModels}
           onImportAIModel={onImportAIModel}
+          onDeleteAIModel={onDeleteAIModel}
           inspectorWidth={ui.inspectorWidth}
           onInspectorWidthChange={ui.setInspectorWidth}
           ui={{

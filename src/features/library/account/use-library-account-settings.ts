@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { readMissionDesignPreferences, saveMissionDesignPreferences, type MissionDesignPreferences } from '../../../shared/mission-design-preferences'
 import { applyThemePreference, readThemePreference, saveThemePreference, THEME_PREFERENCE_CHANGE_EVENT, type ThemePreference } from '../../../shared/theme-preference'
 import type { AccountMenuPanel } from '../../../ui/components/account-menu'
 import {
@@ -15,6 +16,7 @@ export function useLibraryAccountSettings(onAnnounce: (text: string) => void) {
   const [notificationPreferences, setNotificationPreferences] = useState<NotificationPreferences>(readNotificationPreferences)
   const [accountPanel, setAccountPanel] = useState<AccountMenuPanel | null>(null)
   const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference)
+  const [missionDesignPreferences, setMissionDesignPreferences] = useState<MissionDesignPreferences>(readMissionDesignPreferences)
 
   useEffect(() => {
     const syncThemePreference = (event: Event) => {
@@ -57,14 +59,33 @@ export function useLibraryAccountSettings(onAnnounce: (text: string) => void) {
     }
   }
 
+  const updateMissionDesignPreferences = (next: MissionDesignPreferences) => {
+    if (
+      !Number.isFinite(next.targetSpeedMS) || next.targetSpeedMS < 0.1 || next.targetSpeedMS > 30 ||
+      !Number.isFinite(next.takeoffAltitudeM) || next.takeoffAltitudeM < 0 || next.takeoffAltitudeM > 500 ||
+      !Number.isFinite(next.areaLineSpacingM) || next.areaLineSpacingM < 0.1 || next.areaLineSpacingM > 100
+    ) {
+      onAnnounce('Mission Design values are outside their supported ranges.')
+      return
+    }
+    setMissionDesignPreferences(next)
+    if (!saveMissionDesignPreferences(next)) {
+      onAnnounce('Mission Design preferences could not be saved in this browser.')
+      return
+    }
+    onAnnounce('Mission Design preferences saved in this browser.')
+  }
+
   return {
     accountProfile,
     notificationPreferences,
     accountPanel,
     setAccountPanel,
     themePreference,
+    missionDesignPreferences,
     updateAccountProfile,
     updateNotificationPreferences,
-    updateThemePreference
+    updateThemePreference,
+    updateMissionDesignPreferences,
   }
 }

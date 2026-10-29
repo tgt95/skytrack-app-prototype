@@ -5,6 +5,12 @@ import type { Viewer } from 'cesium'
 type CesiumNS = typeof import('cesium')
 
 export const MOCK_FOOTPRINT_RENDER_LIFT_M = 2
+// Keep annotation text for close inspection; leave overview space to geometry.
+export const WAYPOINT_LABEL_DETAIL_DISTANCE_M = 650
+export const ROUTE_DISTANCE_LABEL_DETAIL_DISTANCE_M = 350
+// Dense scan grids need a sparse label sample, even when viewed up close.
+export const MAX_AREA_WAYPOINT_LABELS_PER_AREA = 16
+export const MAX_AREA_DISTANCE_LABELS_PER_AREA = 16
 
 /* Scene compatibility exports. ENU-to-geodetic conversion is always
    origin-aware: every scene placement and pick resolves through the mission's
