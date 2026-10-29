@@ -10,6 +10,11 @@ import {
 } from "./mission-scene-helpers";
 import type { AreaEntityContext } from "./committed-entity-context";
 import { readMissionDesignPreferences } from "../../shared/mission-design-preferences";
+import {
+  distanceToDisplay,
+  distanceUnit,
+  formatDistance,
+} from "../../shared/measurement-units";
 
 /** Add Area/Avoid boundaries, scan lanes, and selected Avoid height handles. */
 export function addAreaAndAvoidEntities({
@@ -197,7 +202,7 @@ export function addAreaAndAvoidEntities({
           position: Cesium.Cartesian3.fromDegrees(g.lng, g.lat, labelAlt),
           label: {
             ...areaLabelStyle,
-            text: `${lengthM.toFixed(1)} m`,
+            text: formatDistance(lengthM, preferences.unitSystem),
             font: "600 12px sans-serif",
             fillColor: Cesium.Color.WHITE,
             pixelOffset: new Cesium.Cartesian2(0, -20),
@@ -263,7 +268,7 @@ export function addAreaAndAvoidEntities({
         disableDepthTestDistance: Number.POSITIVE_INFINITY,
       },
       label: {
-        text: `${height.toFixed(1)} m`,
+        text: `${distanceToDisplay(height, preferences.unitSystem).toFixed(1)} ${distanceUnit(preferences.unitSystem)}`,
         font: "600 11px sans-serif",
         fillColor: Cesium.Color.WHITE,
         pixelOffset: new Cesium.Cartesian2(0, -20),

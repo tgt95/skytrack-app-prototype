@@ -5,6 +5,7 @@ import {
   DesktopIcon,
   GearIcon,
   MoonIcon,
+  SlidersHorizontalIcon,
   SignOutIcon,
   SunIcon,
   UserIcon,
@@ -25,7 +26,12 @@ import {
 import type { ThemePreference } from "../../shared/theme-preference";
 
 export type AccountMenuPanel =
-  "profile" | "settings" | "notifications" | "switch" | "logout";
+  | "profile"
+  | "settings"
+  | "preferences"
+  | "notifications"
+  | "switch"
+  | "logout";
 
 export interface AccountMenuProfile {
   name: string;
@@ -119,6 +125,12 @@ export function AccountMenu({
               onClick={() => onOpenPanel("settings")}
             >
               <GearIcon aria-hidden="true" /> Account settings
+            </MenuItem>
+            <MenuItem
+              data-testid={`${testPrefix}-preferences`}
+              onClick={() => onOpenPanel("preferences")}
+            >
+              <SlidersHorizontalIcon aria-hidden="true" /> Preferences
             </MenuItem>
             <MenuSubmenuRoot>
               <MenuSubmenuTrigger data-testid={`${testPrefix}-theme`}>

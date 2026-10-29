@@ -6,6 +6,13 @@ import {
   getMockReconGsdCmPerPx,
 } from "../../../domain/mission-model";
 import { SkyTooltip } from "../../../ui/components/sky-tooltip";
+import {
+  distanceToDisplay,
+  distanceUnit,
+  formatMeasurementText,
+  formatResolution,
+  useMeasurementSystem,
+} from "../../../shared/measurement-units";
 import { ReconnaissanceSettingsForm } from "./reconnaissance-settings-form";
 
 type ReconTarget = { kind: "route" | "area"; id: string };
@@ -81,6 +88,7 @@ export function ReconCaptureSummary({
   pathLength: number;
   altitudeAgl?: boolean;
 }) {
+  const unitSystem = useMeasurementSystem();
   const captureCount = waypoints.reduce(
     (sum, waypoint) =>
       sum + waypoint.actions.filter((action) => action.kind === "photo").length,
@@ -105,7 +113,10 @@ export function ReconCaptureSummary({
     pitches.length > 1
       ? "Mixed"
       : `${(pitches[0] ?? settings.gimbalPitchDeg).toFixed(0)}°`;
-  const estimateNote = `* Payload (17.3 mm sensor, 12.3 mm focal length, 5280 px) and fixed 27-minute battery. This segment estimate excludes Home launch, transfers, and return; Preview includes the full route at planned mission speed.${altitudeAgl ? " Area AGL uses flat z=0; terrain is omitted." : ""} Planning estimates only.`;
+  const estimateNote = formatMeasurementText(
+    `* Payload (17.3 mm sensor, 12.3 mm focal length, 5280 px) and fixed 27-minute battery. This segment estimate excludes Home launch, transfers, and return; Preview includes the full route at planned mission speed.${altitudeAgl ? " Area AGL uses flat z=0; terrain is omitted." : ""} Planning estimates only.`,
+    unitSystem,
+  );
 
   return (
     <div
@@ -114,11 +125,9 @@ export function ReconCaptureSummary({
       data-testid="ms-recon-summary"
     >
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-(--muted-foreground) text-xs">
-          GSD estimate*
-        </span>
+        <span className="text-(--muted-foreground) text-xs">GSD estimate*</span>
         <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
-          {gsd.toFixed(1)} cm/px
+          {formatResolution(gsd, unitSystem)}
         </strong>
       </div>
       <div className="flex flex-col gap-1 min-w-0">
@@ -126,7 +135,8 @@ export function ReconCaptureSummary({
           {altitudeAgl ? "Altitude AGL" : "Altitude"}
         </span>
         <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
-          {settings.altitudeM} m
+          {distanceToDisplay(settings.altitudeM, unitSystem)}{" "}
+          {distanceUnit(unitSystem)}
         </strong>
       </div>
       <div className="flex flex-col gap-1 min-w-0">
@@ -138,9 +148,7 @@ export function ReconCaptureSummary({
         </strong>
       </div>
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-(--muted-foreground) text-xs">
-          Gimbal pitch
-        </span>
+        <span className="text-(--muted-foreground) text-xs">Gimbal pitch</span>
         <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
           {pitchSummary}
         </strong>

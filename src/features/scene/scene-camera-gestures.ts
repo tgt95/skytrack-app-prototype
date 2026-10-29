@@ -119,11 +119,11 @@ export function installCameraGestures(deps: {
       snapRaf = 0
     }
   }
-  const pushOrientation = () => {
+  const pushOrientation = (force = false) => {
     if (viewer.isDestroyed() || !isMounted()) return
     const h = viewer.camera.heading
     const p = viewer.camera.pitch
-    if (Math.abs(h - lastPushedH) < 0.004 && Math.abs(p - lastPushedP) < 0.004) return
+    if (!force && Math.abs(h - lastPushedH) < 0.004 && Math.abs(p - lastPushedP) < 0.004) return
     lastPushedH = h
     lastPushedP = p
     setOrientation({ heading: h, pitch: p })
@@ -426,7 +426,7 @@ export function installCameraGestures(deps: {
       const startH = viewer.camera.heading
       const startP = viewer.camera.pitch
       const targetH = snap.heading !== undefined ? Cesium.Math.zeroToTwoPi(snap.heading) : startH
-      const targetP = snap.pitch !== undefined ? Cesium.Math.clamp(snap.pitch, MIN_PITCH, MAX_PITCH) : startP
+      const targetP = snap.pitch !== undefined ? Cesium.Math.clamp(snap.pitch, -Math.PI / 2, MAX_PITCH) : startP
       let dH = 0
       if (snap.heading !== undefined) {
         dH = targetH - startH
@@ -435,15 +435,15 @@ export function installCameraGestures(deps: {
       }
       const dP = targetP - startP
       gestureModeRef.current = 'snap'
-      const commit = (h: number, p: number) => {
+      const commit = (h: number, p: number, force = false) => {
         if (viewer.isDestroyed() || !isMounted()) return
         viewer.camera.lookAt(pivot, new Cesium.HeadingPitchRange(h, p, range))
         viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY)
         viewer.scene.requestRender()
-        pushOrientation()
+        pushOrientation(force)
       }
       if (reducedRef.current || (Math.abs(dH) < 1e-6 && Math.abs(dP) < 1e-6)) {
-        commit(targetH, targetP)
+        commit(targetH, targetP, true)
         gestureModeRef.current = 'none'
         return
       }
@@ -457,7 +457,7 @@ export function installCameraGestures(deps: {
         }
         const t = Math.min((now - t0) / dur, 1)
         const ease = 1 - Math.pow(1 - t, 3)
-        commit(Cesium.Math.zeroToTwoPi(startH + dH * ease), startP + dP * ease)
+        commit(Cesium.Math.zeroToTwoPi(startH + dH * ease), startP + dP * ease, t >= 1)
         if (t < 1) snapRaf = requestAnimationFrame(step)
         else gestureModeRef.current = 'none'
       }

@@ -4,6 +4,17 @@ import type {
   WorkspaceDroneProfile,
 } from "../database/drone-store";
 import { NumberField, SelectField, TextField } from "./drone-profile-fields";
+import {
+  gramsFromDisplay,
+  gramsToDisplay,
+  millimetersFromDisplay,
+  millimetersToDisplay,
+  propellerInchesFromDisplay,
+  propellerInchesToDisplay,
+  smallLengthUnit,
+  useMeasurementSystem,
+  weightUnit,
+} from "../../../shared/measurement-units";
 
 const FIRMWARE_FAMILIES: DroneFirmwareFamily[] = [
   "PX4",
@@ -20,6 +31,7 @@ export function DronePlatformSection({
   profile: WorkspaceDroneProfile;
   onPatch: (patch: Partial<WorkspaceDroneProfile>) => void;
 }) {
+  const unitSystem = useMeasurementSystem();
   return (
     <>
       <section
@@ -121,34 +133,68 @@ export function DronePlatformSection({
         </div>
         <div className="ms-drone-form-grid">
           <NumberField
-            label="Frame size"
-            value={profile.frameSizeMm}
-            unit="mm"
-            onChange={(frameSizeMm) => onPatch({ frameSizeMm })}
+            label={`Frame size (${smallLengthUnit(unitSystem)})`}
+            value={
+              profile.frameSizeMm === null
+                ? null
+                : millimetersToDisplay(profile.frameSizeMm, unitSystem)
+            }
+            unit={smallLengthUnit(unitSystem)}
+            onChange={(value) =>
+              onPatch({
+                frameSizeMm:
+                  value === null
+                    ? null
+                    : millimetersFromDisplay(value, unitSystem),
+              })
+            }
           />
           <NumberField
-            label="Maximum propeller diameter"
-            value={profile.maxPropDiameterIn}
-            unit="in"
-            onChange={(maxPropDiameterIn) => onPatch({ maxPropDiameterIn })}
+            label={`Maximum propeller diameter (${unitSystem === "imperial" ? "in" : "mm"})`}
+            value={
+              profile.maxPropDiameterIn === null
+                ? null
+                : propellerInchesToDisplay(
+                    profile.maxPropDiameterIn,
+                    unitSystem,
+                  )
+            }
+            unit={unitSystem === "imperial" ? "in" : "mm"}
+            onChange={(value) =>
+              onPatch({
+                maxPropDiameterIn:
+                  value === null
+                    ? null
+                    : propellerInchesFromDisplay(value, unitSystem),
+              })
+            }
           />
           <TextField
             label="Motor mount pattern"
             value={profile.motorMountPatternMm}
             onChange={(motorMountPatternMm) => onPatch({ motorMountPatternMm })}
-            placeholder="e.g. 12 × 12 mm"
+            placeholder={`e.g. 12 × 12 ${smallLengthUnit(unitSystem)}`}
           />
           <TextField
             label="Flight controller / stack mount"
             value={profile.stackMountPatternMm}
             onChange={(stackMountPatternMm) => onPatch({ stackMountPatternMm })}
-            placeholder="e.g. 20 × 20 mm"
+            placeholder={`e.g. 20 × 20 ${smallLengthUnit(unitSystem)}`}
           />
           <NumberField
-            label="Frame weight"
-            value={profile.frameWeightG}
-            unit="g"
-            onChange={(frameWeightG) => onPatch({ frameWeightG })}
+            label={`Frame weight (${weightUnit(unitSystem)})`}
+            value={
+              profile.frameWeightG === null
+                ? null
+                : gramsToDisplay(profile.frameWeightG, unitSystem)
+            }
+            unit={weightUnit(unitSystem)}
+            onChange={(value) =>
+              onPatch({
+                frameWeightG:
+                  value === null ? null : gramsFromDisplay(value, unitSystem),
+              })
+            }
           />
         </div>
       </section>

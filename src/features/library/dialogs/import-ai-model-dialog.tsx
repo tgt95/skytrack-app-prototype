@@ -14,9 +14,11 @@ import {
 import {
   FieldControl,
   FieldDescription,
+  FieldError,
   FieldLabel,
   FieldRoot,
 } from "skytrack-ui/field";
+import { Dropzone } from "skytrack-ui/dropzone";
 
 export interface ImportedAIModelPackage {
   name: string;
@@ -133,23 +135,23 @@ export function ImportAIModelDialog({
               aria-invalid={Boolean(nameError) || hasDuplicate}
             />
             {nameError || hasDuplicate ? (
-              <FieldDescription role="alert">
+              <FieldError match={true}>
                 {nameError ||
                   "A model with this name already exists in this Workspace."}
-              </FieldDescription>
+              </FieldError>
             ) : null}
           </FieldRoot>
           <FieldRoot invalid={Boolean(fileError)}>
-            <FieldLabel>Model file *</FieldLabel>
-            <FieldControl
-              type="file"
-              required
+            <FieldLabel id="ms-ai-model-file-label">Model file *</FieldLabel>
+            <Dropzone
+              className="w-full"
               accept=".zip,application/zip"
-              aria-label="Choose model ZIP file"
-              onChange={(event) => {
-                pickFile(event.currentTarget.files?.[0]);
-                event.currentTarget.value = "";
-              }}
+              multiple={false}
+              aria-labelledby="ms-ai-model-file-label"
+              data-testid="ms-ai-model-file-dropzone"
+              buttonLabel={file ? "Choose another ZIP" : "Choose ZIP file"}
+              hint="Choose a ZIP file containing one ONNX model and one JSON class map."
+              onFilesSelected={(files) => pickFile(files[0])}
             />
             {file ? (
               <FieldDescription>
@@ -166,14 +168,9 @@ export function ImportAIModelDialog({
                   Remove file
                 </Button>
               </FieldDescription>
-            ) : (
-              <FieldDescription>
-                Choose a ZIP file containing one ONNX model and one JSON class
-                map.
-              </FieldDescription>
-            )}
+            ) : null}
             {fileError ? (
-              <FieldDescription role="alert">{fileError}</FieldDescription>
+              <FieldError match={true}>{fileError}</FieldError>
             ) : null}
             <FieldDescription>
               The class order in the ONNX model and JSON file must match.

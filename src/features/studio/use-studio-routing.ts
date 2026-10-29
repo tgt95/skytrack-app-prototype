@@ -24,6 +24,7 @@ import {
   findMissionRecord,
   loadProjects,
   seedTemplates,
+  STAKEHOLDER_DEMO_MISSION_ID,
 } from "../library/database/store";
 import {
   loadDroneProfiles,
@@ -53,6 +54,15 @@ const PAGE_TITLES: Record<LibrarySection, string> = {
   logs: "Logs",
   notifications: "Notifications",
 };
+
+function initialStudioRoute(): MissionStudioRoute {
+  const basePath = import.meta.env.BASE_URL.replace(/\/+$/, "");
+  const pathname = window.location.pathname;
+  if (pathname === basePath || pathname === `${basePath}/`) {
+    return { kind: "mission", missionId: STAKEHOLDER_DEMO_MISSION_ID };
+  }
+  return parseMissionStudioRoute(pathname, import.meta.env.BASE_URL);
+}
 
 interface UseStudioRoutingArgs {
   mission: StudioMission;
@@ -92,7 +102,7 @@ export function useStudioRouting({
   pythonSample,
 }: UseStudioRoutingArgs) {
   const [route, setRoute] = useState<MissionStudioRoute>(() =>
-    parseMissionStudioRoute(window.location.pathname, import.meta.env.BASE_URL),
+    initialStudioRoute(),
   );
   const [libraryEntry, setLibraryEntry] = useState<LibraryEntry | null>(null);
   const [workspaceDroneProfiles, setWorkspaceDroneProfiles] =
@@ -272,15 +282,12 @@ export function useStudioRouting({
     simResetRef,
   ]);
 
-  const {
-    selectableMissionWorlds,
-    missionWorldOptions,
-    persistImportedWorld,
-  } = useStudioWorldOptions({
-    mission,
-    workspaceId: libraryEntry?.workspaceId ?? "tuan-workspace",
-    route,
-  });
+  const { selectableMissionWorlds, missionWorldOptions, persistImportedWorld } =
+    useStudioWorldOptions({
+      mission,
+      workspaceId: libraryEntry?.workspaceId ?? "tuan-workspace",
+      route,
+    });
   const availableDrones = useMemo(
     () =>
       workspaceDroneProfiles.filter(

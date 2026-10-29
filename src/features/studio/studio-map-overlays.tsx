@@ -24,14 +24,14 @@ export type Stage = "design" | "simulation";
 const stageToggleClassName = [
   "group relative inline-flex items-center gap-2 h-auto py-2.5 px-3.5 rounded-[0] bg-transparent text-(--muted-foreground) text-[0.8125rem] font-semibold whitespace-nowrap",
   "hover:bg-transparent hover:text-(--foreground) disabled:opacity-[0.55] aria-disabled:opacity-[0.55] aria-disabled:cursor-not-allowed",
-  "data-[pressed=true]:bg-transparent data-[pressed=true]:text-(--foreground) aria-pressed:bg-transparent aria-pressed:text-(--foreground)",
+  "data-[active]:bg-transparent data-[active]:text-primary data-[active]:hover:text-primary aria-pressed:bg-transparent aria-pressed:text-primary",
   '[&[data-pressed="true"]::after]:[content:""] [&[data-pressed="true"]::after]:absolute [&[data-pressed="true"]::after]:left-2.5 [&[data-pressed="true"]::after]:right-2.5 [&[data-pressed="true"]::after]:-bottom-0.25 [&[data-pressed="true"]::after]:h-0.5 [&[data-pressed="true"]::after]:rounded-[0.125rem] [&[data-pressed="true"]::after]:bg-(--primary)',
   '[&[aria-pressed="true"]::after]:[content:""] [&[aria-pressed="true"]::after]:absolute [&[aria-pressed="true"]::after]:left-2.5 [&[aria-pressed="true"]::after]:right-2.5 [&[aria-pressed="true"]::after]:-bottom-0.25 [&[aria-pressed="true"]::after]:h-0.5 [&[aria-pressed="true"]::after]:rounded-[0.125rem] [&[aria-pressed="true"]::after]:bg-(--primary)',
+  '[&[data-active]::after]:[content:""] [&[data-active]::after]:absolute [&[data-active]::after]:left-2.5 [&[data-active]::after]:right-2.5 [&[data-active]::after]:-bottom-0.25 [&[data-active]::after]:h-0.5 [&[data-active]::after]:rounded-[0.125rem] [&[data-active]::after]:bg-(--primary)',
   "[@media_(max-width:_61.25rem)]:py-2 [@media_(max-width:_61.25rem)]:px-2.5 [@media_(max-width:_61.25rem)]:text-xs",
 ].join(" ");
 
-const stageNumberClassName =
-  "ms-stage-num group-data-[pressed=true]:bg-(--primary) group-data-[pressed=true]:[border-color:transparent] group-data-[pressed=true]:text-(--primary-foreground) group-aria-pressed:bg-(--primary) group-aria-pressed:[border-color:transparent] group-aria-pressed:text-(--primary-foreground)";
+const stageNumberClassName = "ms-stage-num";
 
 interface StudioMapOverlaysProps {
   appTab: AppTab;
@@ -123,8 +123,13 @@ export default function StudioMapOverlays({
             value="design"
             aria-label="Design stage (1)"
             aria-current={stage === "design" ? "step" : undefined}
+            data-active={stage === "design" ? "" : undefined}
           >
-            <span className={stageNumberClassName} aria-hidden="true">
+            <span
+              className={stageNumberClassName}
+              data-active={stage === "design" ? "" : undefined}
+              aria-hidden="true"
+            >
               1
             </span>
             <span className="ms-stage-label">Design</span>
@@ -140,8 +145,13 @@ export default function StudioMapOverlays({
               value="simulation"
               aria-label="Simulation stage (2)"
               aria-current={stage === "simulation" ? "step" : undefined}
+              data-active={stage === "simulation" ? "" : undefined}
             >
-              <span className={stageNumberClassName} aria-hidden="true">
+              <span
+                className={stageNumberClassName}
+                data-active={stage === "simulation" ? "" : undefined}
+                aria-hidden="true"
+              >
                 2
               </span>
               <span className="ms-stage-label">Simulation</span>
@@ -156,6 +166,7 @@ export default function StudioMapOverlays({
                       value="simulation"
                       aria-label="Simulation stage (2)"
                       aria-current={stage === "simulation" ? "step" : undefined}
+                      data-active={stage === "simulation" ? "" : undefined}
                       aria-disabled="true"
                       tabIndex={0}
                       onClick={(event) => {
@@ -172,7 +183,11 @@ export default function StudioMapOverlays({
                     />
                   }
                 >
-                  <span className={stageNumberClassName} aria-hidden="true">
+                  <span
+                    className={stageNumberClassName}
+                    data-active={stage === "simulation" ? "" : undefined}
+                    aria-hidden="true"
+                  >
                     2
                   </span>
                   <span className="ms-stage-label">Simulation</span>

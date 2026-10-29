@@ -4,6 +4,15 @@ import {
   type WorkspaceDroneProfile,
 } from "../database/drone-store";
 import { NumberField, SelectField, TextField } from "./drone-profile-fields";
+import {
+  massFromDisplay,
+  massToDisplay,
+  massUnit,
+  speedFromDisplay,
+  speedToDisplay,
+  speedUnit,
+  useMeasurementSystem,
+} from "../../../shared/measurement-units";
 
 export function DronePerformanceSourceSection({
   profile,
@@ -12,6 +21,7 @@ export function DronePerformanceSourceSection({
   profile: WorkspaceDroneProfile;
   onPatch: (patch: Partial<WorkspaceDroneProfile>) => void;
 }) {
+  const unitSystem = useMeasurementSystem();
   return (
     <>
       <section
@@ -37,22 +47,49 @@ export function DronePerformanceSourceSection({
             onChange={(maxFlightTimeMin) => onPatch({ maxFlightTimeMin })}
           />
           <NumberField
-            label="Maximum speed"
-            value={profile.maxSpeedMps}
-            unit="m/s"
-            onChange={(maxSpeedMps) => onPatch({ maxSpeedMps })}
+            label={`Maximum speed (${speedUnit(unitSystem)})`}
+            value={
+              profile.maxSpeedMps === null
+                ? null
+                : speedToDisplay(profile.maxSpeedMps, unitSystem)
+            }
+            unit={speedUnit(unitSystem)}
+            onChange={(value) =>
+              onPatch({
+                maxSpeedMps:
+                  value === null ? null : speedFromDisplay(value, unitSystem),
+              })
+            }
           />
           <NumberField
-            label="Maximum takeoff weight"
-            value={profile.maxTakeoffWeightKg}
-            unit="kg"
-            onChange={(maxTakeoffWeightKg) => onPatch({ maxTakeoffWeightKg })}
+            label={`Maximum takeoff weight (${massUnit(unitSystem)})`}
+            value={
+              profile.maxTakeoffWeightKg === null
+                ? null
+                : massToDisplay(profile.maxTakeoffWeightKg, unitSystem)
+            }
+            unit={massUnit(unitSystem)}
+            onChange={(value) =>
+              onPatch({
+                maxTakeoffWeightKg:
+                  value === null ? null : massFromDisplay(value, unitSystem),
+              })
+            }
           />
           <NumberField
-            label="Maximum payload"
-            value={profile.maxPayloadKg}
-            unit="kg"
-            onChange={(maxPayloadKg) => onPatch({ maxPayloadKg })}
+            label={`Maximum payload (${massUnit(unitSystem)})`}
+            value={
+              profile.maxPayloadKg === null
+                ? null
+                : massToDisplay(profile.maxPayloadKg, unitSystem)
+            }
+            unit={massUnit(unitSystem)}
+            onChange={(value) =>
+              onPatch({
+                maxPayloadKg:
+                  value === null ? null : massFromDisplay(value, unitSystem),
+              })
+            }
           />
         </div>
       </section>

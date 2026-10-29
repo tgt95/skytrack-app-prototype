@@ -75,7 +75,7 @@ export function useStudioUiState() {
   }));
   const [editOpen, setEditOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
-  const [simSettingsOpen, setSimSettingsOpen] = useState(false);
+  const [simSettingsOpen, setSimSettingsOpen] = useState(true);
   const [sceneReadiness, setSceneReadiness] =
     useState<SceneReadiness>("loading");
   const [basemapStyle, setBasemapStyle] = useState<MissionBasemapStyle>(() =>

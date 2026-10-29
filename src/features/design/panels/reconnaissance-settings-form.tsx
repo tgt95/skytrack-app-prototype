@@ -13,6 +13,16 @@ import {
   getMockReconGsdCmPerPx,
   type ReconFlightSettings,
 } from "../../../domain/mission-model";
+import {
+  distanceFromDisplay,
+  distanceToDisplay,
+  distanceUnit,
+  formatResolution,
+  speedFromDisplay,
+  speedToDisplay,
+  speedUnit,
+  useMeasurementSystem,
+} from "../../../shared/measurement-units";
 
 interface ReconnaissanceSettingsFormProps {
   value: ReconFlightSettings;
@@ -120,9 +130,7 @@ function ReconSlider({
   const toPct = (mark: number) => ((mark - min) / (max - min)) * 100;
   return (
     <div
-      className={
-        " grid gap-2 pt-3.5 px-0.5 pb-2.5 border-t border-t-border"
-      }
+      className={" grid gap-2 pt-3.5 px-0.5 pb-2.5 border-t border-t-border"}
       data-testid="ms-recon-slider"
     >
       <Slider
@@ -209,6 +217,7 @@ export function ReconnaissanceSettingsForm({
   showFlightPattern = false,
   altitudeReference,
 }: ReconnaissanceSettingsFormProps) {
+  const unitSystem = useMeasurementSystem();
   const updateNumber = (key: NumericSetting) => (nextValue: number) => {
     if (!Number.isFinite(nextValue)) return;
     onChange({ ...value, [key]: nextValue });
@@ -238,26 +247,69 @@ export function ReconnaissanceSettingsForm({
       >
         {numericFields.map(
           ({ key, label, min, max, step, unit, marks, hint }) => {
+            const isAltitude = key === "altitudeM";
+            const isSpeed = key === "flightSpeedMS";
+            const displayValue = isAltitude
+              ? distanceToDisplay(value[key], unitSystem)
+              : isSpeed
+                ? speedToDisplay(value[key], unitSystem)
+                : value[key];
+            const displayMin = isAltitude
+              ? distanceToDisplay(min, unitSystem)
+              : isSpeed
+                ? speedToDisplay(min, unitSystem)
+                : min;
+            const displayMax = isAltitude
+              ? distanceToDisplay(max, unitSystem)
+              : isSpeed
+                ? speedToDisplay(max, unitSystem)
+                : max;
+            const displayStep =
+              unitSystem === "imperial" && isAltitude
+                ? 5
+                : unitSystem === "imperial" && isSpeed
+                  ? 0.5
+                  : step;
+            const displayUnit = isAltitude
+              ? distanceUnit(unitSystem)
+              : isSpeed
+                ? speedUnit(unitSystem)
+                : unit;
+            const displayMarks = marks?.map((mark) =>
+              isAltitude
+                ? distanceToDisplay(mark, unitSystem)
+                : isSpeed
+                  ? speedToDisplay(mark, unitSystem)
+                  : mark,
+            );
+            const commitDisplayValue = (next: number) =>
+              updateNumber(key)(
+                isAltitude
+                  ? distanceFromDisplay(next, unitSystem)
+                  : isSpeed
+                    ? speedFromDisplay(next, unitSystem)
+                    : next,
+              );
             const fieldLabel =
               key === "altitudeM" && altitudeReference === "AGL"
                 ? "Flight altitude (AGL)"
                 : label;
             const fieldHint =
               key === "altitudeM"
-                ? `Resolution estimate: GSD ${getMockReconGsdCmPerPx(value.altitudeM).toFixed(1)} cm/px`
+                ? `Resolution estimate: GSD ${formatResolution(getMockReconGsdCmPerPx(value.altitudeM), unitSystem)}`
                 : hint;
             return (
               <ReconSlider
                 key={key}
                 label={fieldLabel}
-                value={value[key]}
-                min={min}
-                max={max}
-                step={step}
-                unit={unit}
-                marks={marks}
+                value={displayValue}
+                min={displayMin}
+                max={displayMax}
+                step={displayStep}
+                unit={displayUnit}
+                marks={displayMarks}
                 hint={fieldHint}
-                onChange={updateNumber(key)}
+                onChange={commitDisplayValue}
               />
             );
           },

@@ -1,6 +1,6 @@
 import { CloudIcon, DiscordLogoIcon } from '@phosphor-icons/react'
 import { Button } from 'skytrack-ui/button'
-import { Tabs, TabsIndicator, TabsList, TabsTab } from 'skytrack-ui/tabs'
+import { Tabs, TabsList, TabsTab } from 'skytrack-ui/tabs'
 import {
   Tooltip,
   TooltipArrow,
@@ -210,7 +210,6 @@ export default function LibraryTopbar ({
                       </TooltipPositioner>
                     </TooltipPortal>
                   </Tooltip>
-                  <TabsIndicator variant='pill' />
                 </TabsList>
               </Tabs>
             </TooltipProvider>

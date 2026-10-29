@@ -10,6 +10,13 @@ import {
   RULER_MIN,
   RULER_STEP,
 } from "./drawing-altitude-utils";
+import {
+  distanceFromDisplay,
+  distanceToDisplay,
+  distanceUnit,
+  formatDistance,
+  useMeasurementSystem,
+} from "../../../shared/measurement-units";
 
 export function DrawingAltitudeRuler({
   value,
@@ -20,9 +27,13 @@ export function DrawingAltitudeRuler({
   onCommit: (v: number) => void;
   onAnnounce: (text: string) => void;
 }) {
+  const unitSystem = useMeasurementSystem();
+  const unit = distanceUnit(unitSystem);
+  const displayStep = unitSystem === "imperial" ? 1 : RULER_STEP;
   const [text, setText] = useState<string | null>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const shown = text ?? value.toFixed(1);
+  const displayValue = distanceToDisplay(value, unitSystem);
+  const shown = text ?? displayValue.toFixed(1);
   const pct = Math.min(
     100,
     Math.max(0, ((value - RULER_MIN) / (RULER_MAX - RULER_MIN)) * 100),
@@ -50,17 +61,21 @@ export function DrawingAltitudeRuler({
       setText(null);
       return;
     }
-    onCommit(clampSnapRuler(parsed));
+    onCommit(clampSnapRuler(distanceFromDisplay(parsed, unitSystem)));
     setText(null);
   };
 
   const stepCommit = (delta: number) => {
-    const anchor = text !== null && text.trim() !== "" ? Number(text) : value;
+    const anchorDisplay =
+      text !== null && text.trim() !== "" ? Number(text) : displayValue;
     const next = clampSnapRuler(
-      (Number.isFinite(anchor) ? anchor : value) + delta,
+      distanceFromDisplay(
+        (Number.isFinite(anchorDisplay) ? anchorDisplay : displayValue) + delta,
+        unitSystem,
+      ),
     );
     onCommit(next);
-    return next;
+    return distanceToDisplay(next, unitSystem);
   };
 
   const onTrackPointerDown = (e: React.PointerEvent) => {
@@ -84,18 +99,24 @@ export function DrawingAltitudeRuler({
   const onKnobKeyDown = (e: React.KeyboardEvent) => {
     let next: number | null = null;
     if (e.key === "ArrowUp" || e.key === "ArrowRight")
-      next = clampSnapRuler(value + RULER_STEP);
+      next = clampSnapRuler(
+        distanceFromDisplay(displayValue + displayStep, unitSystem),
+      );
     else if (e.key === "ArrowDown" || e.key === "ArrowLeft")
-      next = clampSnapRuler(value - RULER_STEP);
+      next = clampSnapRuler(
+        distanceFromDisplay(displayValue - displayStep, unitSystem),
+      );
     else if (e.key === "Home") next = RULER_MIN;
     else if (e.key === "End") next = RULER_MAX;
-    else if (e.key === "PageUp") next = clampSnapRuler(value + 5);
-    else if (e.key === "PageDown") next = clampSnapRuler(value - 5);
+    else if (e.key === "PageUp")
+      next = clampSnapRuler(distanceFromDisplay(displayValue + 5, unitSystem));
+    else if (e.key === "PageDown")
+      next = clampSnapRuler(distanceFromDisplay(displayValue - 5, unitSystem));
     if (next === null) return;
     e.preventDefault();
     onCommit(next);
     onAnnounce(
-      `Drawing altitude ${next.toFixed(1)} meters. Future geometry only.`,
+      `Drawing altitude ${formatDistance(next, unitSystem)}. Future geometry only.`,
     );
   };
 
@@ -111,11 +132,11 @@ export function DrawingAltitudeRuler({
       setText(null);
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      const next = stepCommit(RULER_STEP);
+      const next = stepCommit(displayStep);
       setText(next.toFixed(1));
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      const next = stepCommit(-RULER_STEP);
+      const next = stepCommit(-displayStep);
       setText(next.toFixed(1));
     }
   };
@@ -124,7 +145,7 @@ export function DrawingAltitudeRuler({
     <div
       className=" [@media_(max-width:_61.25rem)]:right-0 absolute right-0 top-0 bottom-0 z-6 pointer-events-none flex flex-col items-stretch min-h-0"
       role="group"
-      aria-label="Drawing altitude in meters, 0 to 500 in half-meter steps"
+      aria-label={`Drawing altitude in ${unit}, 0 to ${distanceToDisplay(RULER_MAX, unitSystem)} in ${displayStep} ${unit} steps`}
     >
       <div
         className=" relative flex-[1_1_auto] flex flex-row items-stretch gap-1.5 min-h-0"
@@ -148,9 +169,9 @@ export function DrawingAltitudeRuler({
               inputMode="decimal"
               autoComplete="off"
               spellCheck={false}
-              aria-label="Drawing altitude in meters"
+              aria-label={`Drawing altitude in ${unit}`}
               onFocus={(e) => {
-                setText(value.toFixed(1));
+                setText(displayValue.toFixed(1));
                 e.target.select();
               }}
               onChange={(e) => setText(e.target.value)}
@@ -162,7 +183,7 @@ export function DrawingAltitudeRuler({
               aria-hidden="true"
               data-testid="ms-alt-unit"
             >
-              m
+              {unit}
             </span>
           </div>
         </div>
@@ -201,11 +222,11 @@ export function DrawingAltitudeRuler({
             data-testid="ms-alt-ruler-knob"
             role="slider"
             tabIndex={0}
-            aria-label="Drawing altitude in meters, 0 to 500 in half-meter steps"
-            aria-valuemin={RULER_MIN}
-            aria-valuemax={RULER_MAX}
-            aria-valuenow={value}
-            aria-valuetext={`${value.toFixed(1)} meters`}
+            aria-label={`Drawing altitude in ${unit}, 0 to ${distanceToDisplay(RULER_MAX, unitSystem)} in ${displayStep} ${unit} steps`}
+            aria-valuemin={distanceToDisplay(RULER_MIN, unitSystem)}
+            aria-valuemax={distanceToDisplay(RULER_MAX, unitSystem)}
+            aria-valuenow={displayValue}
+            aria-valuetext={`${displayValue.toFixed(1)} ${unit}`}
             aria-orientation="vertical"
             onKeyDown={onKnobKeyDown}
           />

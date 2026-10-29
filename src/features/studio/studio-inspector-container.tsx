@@ -235,21 +235,8 @@ export default function StudioInspectorContainer({
         onCollapsePane: collapseInspectorPane,
         onAnnounce: ui.say,
       }}
-      simulationSettingsOpen={ui.simSettingsOpen}
       inspectorWidth={inspectorWidth}
       onInspectorWidthChange={onInspectorWidthChange}
-      simulationSettings={{
-        settings: ui.settings,
-        maxSeq: mission.waypoints.length,
-        onChange: (nextSettings) => {
-          ui.setSettings(nextSettings);
-          ui.say("Simulation settings updated.");
-        },
-        onClose: () => {
-          ui.setSimSettingsOpen(false);
-          ui.say("Simulation settings closed.");
-        },
-      }}
       simulation={{
         mission,
         plan: simulation.plan,
@@ -262,6 +249,12 @@ export default function StudioInspectorContainer({
         log: simulation.sim.log,
         fired: simulation.sim.fired,
         settings: ui.settings,
+        settingsOpen: ui.simSettingsOpen,
+        onSettingsOpenChange: ui.setSimSettingsOpen,
+        onSettingsChange: (nextSettings) => {
+          ui.setSettings(nextSettings);
+          ui.say("Simulation settings updated.");
+        },
         showConsole: ui.codeView,
         onRun: simulation.sim.start,
         onPause: simulation.sim.pause,

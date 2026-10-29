@@ -13,8 +13,8 @@ export interface MissionCubeSnapDef extends MissionCubeSnap {
 const DEG = Math.PI / 180;
 /** Side-view pitch clamp, mirroring Planner (-10 deg, never through horizon). */
 export const MISSION_CUBE_SIDE_PITCH = -10 * DEG;
-/** Nadir top-view pitch, mirroring Planner (-89.5 deg). */
-export const MISSION_CUBE_TOP_PITCH = -89.5 * DEG;
+/** Exact nadir top-view pitch. */
+export const MISSION_CUBE_TOP_PITCH = -90 * DEG;
 /** Oblique edge/corner pitch: halfway between nadir and side clamp. */
 export const MISSION_CUBE_OBLIQUE_PITCH = -45 * DEG;
 
@@ -80,7 +80,7 @@ function sideKeyFor(heading: number): "south" | "west" | "north" | "east" {
 
 /** Full snap catalog: 5 faces, 4 diagonal sides, 4 oblique sides, 4 oblique diagonals. */
 export const MISSION_CUBE_SNAPS: MissionCubeSnapDef[] = [
-  { id: "top", label: "Top view", pitch: MISSION_CUBE_TOP_PITCH },
+  { id: "top", label: "Top view", heading: 0, pitch: MISSION_CUBE_TOP_PITCH },
   {
     id: "south",
     label: "South view",

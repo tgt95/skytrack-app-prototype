@@ -26,6 +26,10 @@ import type {
   MissionRouteMeta,
   StudioMission,
 } from "../../../domain/mission-model";
+import {
+  formatDistance,
+  useMeasurementSystem,
+} from "../../../shared/measurement-units";
 
 type Waypoint = StudioMission["waypoints"][number];
 
@@ -62,6 +66,7 @@ export function RouteSequenceCardHeader({
   onDeleteRoute,
   onInsertActionAt,
 }: RouteSequenceCardHeaderProps) {
+  const unitSystem = useMeasurementSystem();
   const totalWaypoints = waypointCount ?? routeWaypoints?.length ?? 0;
   const totalActions = actionCount ?? routeActions ?? 0;
   const targetWaypoint = latestWaypoint ?? routeWaypoints?.at(-1);
@@ -82,10 +87,10 @@ export function RouteSequenceCardHeader({
           <span
             className="inline-flex items-center gap-1 text-xs text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
             title="Waypoint-to-waypoint route length; excludes Home launch and return, transfers, and Area scan legs."
-            aria-label={`Waypoint-to-waypoint route length ${routeLength.toFixed(1)} meters; excludes Home launch and return, transfers, and Area scan legs`}
+            aria-label={`Waypoint-to-waypoint route length ${formatDistance(routeLength, unitSystem)}; excludes Home launch and return, transfers, and Area scan legs`}
           >
             <RulerIcon aria-hidden="true" className="w-3.5 h-3.5" />
-            {routeLength.toFixed(1)} m
+            {formatDistance(routeLength, unitSystem)}
           </span>
         </SkyTooltip>
         <span aria-hidden="true">·</span>

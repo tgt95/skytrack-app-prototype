@@ -18,6 +18,13 @@ import {
   type StudioMission,
 } from "../../domain/mission-model";
 import { getMissionRoutes } from "../../domain/mission-model";
+import { readMissionDesignPreferences } from "../../shared/mission-design-preferences";
+import {
+  distanceToDisplay,
+  distanceUnit,
+  formatDistance,
+  formatMeasurementText,
+} from "../../shared/measurement-units";
 import {
   recomputeGeneratedMission,
   refreshAvoidDetours,
@@ -81,7 +88,7 @@ export function useMissionDrawingCommands({
         const y = Math.round(p.y * 10) / 10;
         commit(
           { ...mission, spawn: { x, y } },
-          `Home point set at ${x.toFixed(1)}, ${y.toFixed(1)} m.`,
+          `Home point set at ${distanceToDisplay(x, readMissionDesignPreferences().unitSystem).toFixed(1)}, ${distanceToDisplay(y, readMissionDesignPreferences().unitSystem).toFixed(1)} ${distanceUnit(readMissionDesignPreferences().unitSystem)}.`,
         );
         setSelection(null);
         setTool("select");
@@ -113,7 +120,10 @@ export function useMissionDrawingCommands({
           const radiusM = Math.hypot(point.x - center.x, point.y - center.y);
           if (radiusM < 0.5) {
             say(
-              "Move farther from the center to set a cylinder radius of at least 0.5 m.",
+              formatMeasurementText(
+                "Move farther from the center to set a cylinder radius of at least 0.5 m.",
+                readMissionDesignPreferences().unitSystem,
+              ),
             );
             return;
           }
@@ -146,7 +156,7 @@ export function useMissionDrawingCommands({
       const out = refreshAvoidDetours(next, mission);
       commit(
         out,
-        `Avoid height set to ${clamped.toFixed(1)} m.${detourNote(out)}`,
+        `Avoid height set to ${formatDistance(clamped, readMissionDesignPreferences().unitSystem)}.${detourNote(out)}`,
       );
       if (keepSelection) setSelection(keepSelection);
       else setSelection({ kind: "avoid", id });
@@ -284,7 +294,10 @@ export function useMissionDrawingCommands({
           );
           commit(
             next,
-            `${label} added as a 15 m prism with 2 m clearance.${detourNote(next)}`,
+            formatMeasurementText(
+              `${label} added as a 15 m prism with 2 m clearance.${detourNote(next)}`,
+              readMissionDesignPreferences().unitSystem,
+            ),
           );
           setSelection({ kind: "avoid", id: zone.id });
         }

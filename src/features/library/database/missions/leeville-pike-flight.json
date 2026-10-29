@@ -1,0 +1,380 @@
+{
+  "id": "m-local-mvrqcly0-101",
+  "name": "Leeville Pike Flight",
+  "world": "Leeville Pike roof assessment",
+  "worldType": "3D",
+  "vehicle": "Mini-Pro",
+  "spawn": { "x": -6, "y": 2.2 },
+  "takeoffAltM": 12,
+  "targetSpeedMS": 2,
+  "returnHomeOnEnd": true,
+  "cameraSafetyCheck": true,
+  "routes": [
+    { "id": "route-mvt9fe0u-4", "label": "Route 1", "targetSpeedMS": 2 }
+  ],
+  "waypoints": [
+    {
+      "id": "wp-mvrqk08s-6",
+      "seq": 1,
+      "x": -2.23,
+      "y": -3.09,
+      "z": 12,
+      "actions": [
+        { "id": "act-mvrqo335-79", "kind": "lidar-scan", "label": "LiDAR scan" }
+      ],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqk08s-7",
+      "seq": 2,
+      "x": 2.23,
+      "y": -3.09,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqk08s-8",
+      "seq": 3,
+      "x": 3.55,
+      "y": -1.84,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqk08s-9",
+      "seq": 4,
+      "x": -3.55,
+      "y": -1.84,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqk08s-10",
+      "seq": 5,
+      "x": -4.15,
+      "y": -0.59,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqk08s-11",
+      "seq": 6,
+      "x": 4.15,
+      "y": -0.59,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqk08s-12",
+      "seq": 7,
+      "x": 4.32,
+      "y": 0.66,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqk08s-13",
+      "seq": 8,
+      "x": -4.32,
+      "y": 0.66,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqk08s-14",
+      "seq": 9,
+      "x": -4.11,
+      "y": 1.91,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqk08s-15",
+      "seq": 10,
+      "x": 4.11,
+      "y": 1.91,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqk08s-16",
+      "seq": 11,
+      "x": 3.47,
+      "y": 3.16,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqk08s-17",
+      "seq": 12,
+      "x": -3.47,
+      "y": 3.16,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqk08s-18",
+      "seq": 13,
+      "x": -2.03,
+      "y": 4.41,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqk08s-19",
+      "seq": 14,
+      "x": 2.03,
+      "y": 4.41,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqk08r-5"
+    },
+    {
+      "id": "wp-mvrqnnxw-21",
+      "seq": 15,
+      "x": 8.6,
+      "y": -10.77,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqnnxv-20"
+    },
+    {
+      "id": "wp-mvrqnnxw-22",
+      "seq": 16,
+      "x": 14.37,
+      "y": -10.77,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqnnxv-20"
+    },
+    {
+      "id": "wp-mvrqnvw1-23",
+      "seq": 17,
+      "x": 14.51,
+      "y": -9.52,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqnnxv-20"
+    },
+    {
+      "id": "wp-mvrqnvw1-24",
+      "seq": 18,
+      "x": 8.57,
+      "y": -9.52,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqnnxv-20"
+    },
+    {
+      "id": "wp-mvrqnx34-25",
+      "seq": 19,
+      "x": 8.55,
+      "y": -8.27,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqnnxv-20"
+    },
+    {
+      "id": "wp-mvrqnx34-26",
+      "seq": 20,
+      "x": 14.65,
+      "y": -8.27,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqnnxv-20"
+    },
+    {
+      "id": "wp-mvrqnx8y-27",
+      "seq": 21,
+      "x": 14.8,
+      "y": -7.02,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqnnxv-20"
+    },
+    {
+      "id": "wp-mvrqnx8y-28",
+      "seq": 22,
+      "x": 8.53,
+      "y": -7.02,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqnnxv-20"
+    },
+    {
+      "id": "wp-mvrqnx8y-29",
+      "seq": 23,
+      "x": 8.5,
+      "y": -5.77,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqnnxv-20"
+    },
+    {
+      "id": "wp-mvrqnx8y-30",
+      "seq": 24,
+      "x": 9.7,
+      "y": -5.77,
+      "z": 12,
+      "actions": [],
+      "generatedByArea": "area-mvrqnnxv-20"
+    },
+    {
+      "id": "wp-mvt9fe0u-5",
+      "seq": 25,
+      "x": -3.9,
+      "y": -11.5,
+      "z": 12,
+      "actions": [],
+      "routeId": "route-mvt9fe0u-4"
+    },
+    {
+      "id": "wp-mvt9fe0u-6",
+      "seq": 26,
+      "x": 3.3,
+      "y": -11.4,
+      "z": 12,
+      "actions": [],
+      "routeId": "route-mvt9fe0u-4"
+    }
+  ],
+  "areas": [
+    {
+      "id": "area-mvrqk08r-5",
+      "label": "Area 1",
+      "points": [
+        { "x": 4.319, "y": 0.6 },
+        { "x": 4.282, "y": 1.164 },
+        { "x": 4.171, "y": 1.718 },
+        { "x": 3.99, "y": 2.253 },
+        { "x": 3.74, "y": 2.759 },
+        { "x": 3.426, "y": 3.229 },
+        { "x": 3.054, "y": 3.654 },
+        { "x": 2.629, "y": 4.026 },
+        { "x": 2.159, "y": 4.34 },
+        { "x": 1.653, "y": 4.59 },
+        { "x": 1.118, "y": 4.771 },
+        { "x": 0.564, "y": 4.882 },
+        { "x": 0, "y": 4.919 },
+        { "x": -0.564, "y": 4.882 },
+        { "x": -1.118, "y": 4.771 },
+        { "x": -1.653, "y": 4.59 },
+        { "x": -2.159, "y": 4.34 },
+        { "x": -2.629, "y": 4.026 },
+        { "x": -3.054, "y": 3.654 },
+        { "x": -3.426, "y": 3.229 },
+        { "x": -3.74, "y": 2.759 },
+        { "x": -3.99, "y": 2.253 },
+        { "x": -4.171, "y": 1.718 },
+        { "x": -4.282, "y": 1.164 },
+        { "x": -4.319, "y": 0.6 },
+        { "x": -4.282, "y": 0.036 },
+        { "x": -4.171, "y": -0.518 },
+        { "x": -3.99, "y": -1.053 },
+        { "x": -3.74, "y": -1.559 },
+        { "x": -3.426, "y": -2.029 },
+        { "x": -3.054, "y": -2.454 },
+        { "x": -2.629, "y": -2.826 },
+        { "x": -2.159, "y": -3.14 },
+        { "x": -1.653, "y": -3.39 },
+        { "x": -1.118, "y": -3.571 },
+        { "x": -0.564, "y": -3.682 },
+        { "x": 0, "y": -3.719 },
+        { "x": 0.564, "y": -3.682 },
+        { "x": 1.118, "y": -3.571 },
+        { "x": 1.653, "y": -3.39 },
+        { "x": 2.159, "y": -3.14 },
+        { "x": 2.629, "y": -2.826 },
+        { "x": 3.054, "y": -2.454 },
+        { "x": 3.426, "y": -2.029 },
+        { "x": 3.74, "y": -1.559 },
+        { "x": 3.99, "y": -1.053 },
+        { "x": 4.171, "y": -0.518 },
+        { "x": 4.282, "y": 0.036 }
+      ],
+      "shape": "cylinder",
+      "center": { "x": 0, "y": 0.6 },
+      "radiusM": 4.318564576337837,
+      "lineSpacingM": 1.25,
+      "baseAltM": 2
+    },
+    {
+      "id": "area-mvrqnnxv-20",
+      "label": "Area 2",
+      "points": [
+        { "x": 8.5, "y": -5.7 },
+        { "x": 14.9, "y": -6.1 },
+        { "x": 14.3, "y": -11.4 },
+        { "x": 8.6, "y": -10.9 }
+      ],
+      "shape": "polygon",
+      "lineSpacingM": 1.25,
+      "baseAltM": 2
+    }
+  ],
+  "avoids": [
+    {
+      "id": "avoid-mvt9hs99-15",
+      "label": "Avoid 1",
+      "points": [
+        { "x": -13.93, "y": -10.45 },
+        { "x": -22.73, "y": -10.85 },
+        { "x": -23.23, "y": 9.85 },
+        { "x": -10.93, "y": 9.75 },
+        { "x": -10.33, "y": 3.15 },
+        { "x": -12.83, "y": 1.05 },
+        { "x": -13.83, "y": -1.25 }
+      ],
+      "shape": "polygon",
+      "type": "obstacle",
+      "baseAltM": 2,
+      "heightM": 8
+    }
+  ],
+  "worldId": "sample-world-tuan-workspace-leeville-pike-roof-assessment",
+  "droneId": "mini-pro-v6",
+  "sequenceOrder": [
+    { "type": "area", "id": "area-mvrqk08r-5" },
+    { "type": "area", "id": "area-mvrqnnxv-20" },
+    { "type": "route", "id": "route-mvt9fe0u-4" }
+  ],
+  "aiWorkflows": [
+    {
+      "id": "ai-flow-mvt7xufg-3",
+      "label": "AI Flow 1",
+      "sequenceType": "area",
+      "sequenceId": "area-mvrqk08r-5",
+      "startWaypointId": "wp-mvrqk08s-6",
+      "stopWaypointId": "wp-mvrqk08s-7",
+      "startAfterActionId": "act-mvrqo335-79",
+      "modelId": null,
+      "objectClass": "Person",
+      "confidenceScore": 0.5,
+      "ifActions": [
+        {
+          "id": "ai-action-mvt9aag1-3",
+          "kind": "camera-trigger",
+          "mode": "recording-on"
+        },
+        {
+          "id": "ai-action-mvt9jh9n-16",
+          "kind": "camera-trigger",
+          "mode": "snapshot"
+        }
+      ],
+      "elseActions": []
+    }
+  ]
+}

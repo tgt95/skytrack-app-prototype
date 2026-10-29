@@ -11,7 +11,7 @@ import {
   CUBE_SIZE,
   HALF_SIZE,
   MISSION_CUBE_SNAPS,
-  resolveRegionSnap,
+  resolveMissionSnap,
   type CubeFace,
   type MissionCubeSnap,
 } from "./mission-compass-model";
@@ -56,8 +56,6 @@ export function MissionCompassCube({
   orbitRef.current = { onOrbitBy, onOrbitEnd };
   const snapRef = useRef(onSnap);
   snapRef.current = onSnap;
-  const headingRef = useRef(heading);
-  headingRef.current = heading;
 
   const endDrag = useCallback((wasDrag: boolean) => {
     if (activePointerIdRef.current !== null && viewportRef.current) {
@@ -101,24 +99,17 @@ export function MissionCompassCube({
     };
   }, [endDrag]);
 
-  const fireSnap = useCallback((face: CubeFace, u: number, v: number) => {
+  const fireSnap = useCallback((face: CubeFace) => {
     if (!interactiveRef.current) return;
     if (dragThresholdPassedRef.current) return;
     // Ignore the click that terminates a drag (pointerup precedes click).
     if (performance.now() - lastDragEndAtRef.current < 350) return;
-    const snap = resolveRegionSnap(face, u, v, headingRef.current);
+    const snap = resolveMissionSnap(face.toLowerCase());
     if (snap) snapRef.current(snap);
   }, []);
 
   const handleFaceClick = useCallback(
-    (face: CubeFace) => (e: React.MouseEvent<HTMLButtonElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const u =
-        rect.width > 0 ? ((e.clientX - rect.left) / rect.width) * 2 - 1 : 0;
-      const v =
-        rect.height > 0 ? ((e.clientY - rect.top) / rect.height) * 2 - 1 : 0;
-      fireSnap(face, u, v);
-    },
+    (face: CubeFace) => () => fireSnap(face),
     [fireSnap],
   );
 

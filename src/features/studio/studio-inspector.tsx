@@ -7,15 +7,12 @@ import {
 import DesignPanel, { ZoneDraftPanel } from "../design/design-panel";
 import RouteDraftPanel from "../design/drawing/route-draft-panel";
 import { AIModelPickerPanel } from "../design/panels/ai-model-picker-panel";
-import SimulationPanel, {
-  SimulationSettingsForm,
-} from "../simulation/simulation-panel";
+import SimulationPanel from "../simulation/simulation-panel";
 
 type DraftPanelProps = ComponentProps<typeof RouteDraftPanel>;
 type ZonePanelProps = ComponentProps<typeof ZoneDraftPanel>;
 type DesignInspectorProps = ComponentProps<typeof DesignPanel>;
 type SimulationInspectorProps = ComponentProps<typeof SimulationPanel>;
-type SimulationSettingsProps = ComponentProps<typeof SimulationSettingsForm>;
 
 const MIN_INSPECTOR_WIDTH = 320;
 const MAX_INSPECTOR_WIDTH = 1440;
@@ -62,8 +59,6 @@ export interface StudioInspectorProps {
   routeDraft: DraftPanelProps;
   zoneDraft: ZonePanelProps;
   design: DesignInspectorProps;
-  simulationSettingsOpen: boolean;
-  simulationSettings: SimulationSettingsProps;
   simulation: SimulationInspectorProps;
   inspectorWidth: number | null;
   onInspectorWidthChange: (width: number) => void;
@@ -78,8 +73,6 @@ export default function StudioInspector({
   routeDraft,
   zoneDraft,
   design,
-  simulationSettingsOpen,
-  simulationSettings,
   simulation,
   inspectorWidth,
   onInspectorWidthChange,
@@ -202,20 +195,6 @@ export default function StudioInspector({
           <ZoneDraftPanel {...zoneDraft} />
         ) : stageIsDesign ? (
           <DesignPanel {...design} />
-        ) : simulationSettingsOpen ? (
-          <div className="ms-inspector" data-testid="ms-sim-settings">
-            <div
-              className="flex items-start justify-between gap-2"
-              data-testid="ms-inspector-head"
-            >
-              <div>
-                <h2 className="heading ms-inspector-title">
-                  Simulation settings
-                </h2>
-              </div>
-            </div>
-            <SimulationSettingsForm {...simulationSettings} />
-          </div>
         ) : (
           <SimulationPanel {...simulation} />
         )}

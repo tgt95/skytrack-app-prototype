@@ -15,6 +15,13 @@ import { ToggleGroup } from "skytrack-ui/toggle-group";
 import { SkyTooltip } from "../../../ui/components/sky-tooltip";
 import { AvoidZoneIcon } from "../../../ui/components/icons";
 import type { AvoidZone } from "../../../domain/mission-model";
+import {
+  distanceFromDisplay,
+  distanceToDisplay,
+  distanceUnit,
+  formatDistance,
+  useMeasurementSystem,
+} from "../../../shared/measurement-units";
 import SliderField from "../controls/slider-field";
 
 export interface AvoidInspectorCardProps {
@@ -38,6 +45,7 @@ export default function AvoidInspectorCard({
   onCancelEdit,
   onCommitEdit,
 }: AvoidInspectorCardProps) {
+  const unitSystem = useMeasurementSystem();
   return (
     <section
       className={`ms-card ms-object-block${editing ? " is-editing" : ""}`}
@@ -125,25 +133,31 @@ export default function AvoidInspectorCard({
             <Toggle value="privacy">People / Privacy</Toggle>
           </ToggleGroup>
           <SliderField
-            label="Zone height (m)"
-            value={draft.heightM ?? 15}
-            min={1}
-            max={150}
-            step={0.5}
-            unit="m"
+            label={`Zone height (${distanceUnit(unitSystem)})`}
+            value={distanceToDisplay(draft.heightM ?? 15, unitSystem)}
+            min={distanceToDisplay(1, unitSystem)}
+            max={distanceToDisplay(150, unitSystem)}
+            step={unitSystem === "imperial" ? 1 : 0.5}
+            unit={distanceUnit(unitSystem)}
             onChange={(value) =>
-              onPreviewDraft({ ...draft, heightM: Math.max(1, value) })
+              onPreviewDraft({
+                ...draft,
+                heightM: Math.max(1, distanceFromDisplay(value, unitSystem)),
+              })
             }
           />
           <SliderField
-            label="Flight clearance (m)"
-            value={draft.clearanceM ?? 2}
-            min={0}
-            max={50}
-            step={0.5}
-            unit="m"
+            label={`Flight clearance (${distanceUnit(unitSystem)})`}
+            value={distanceToDisplay(draft.clearanceM ?? 2, unitSystem)}
+            min={distanceToDisplay(0, unitSystem)}
+            max={distanceToDisplay(50, unitSystem)}
+            step={unitSystem === "imperial" ? 1 : 0.5}
+            unit={distanceUnit(unitSystem)}
             onChange={(value) =>
-              onPreviewDraft({ ...draft, clearanceM: Math.max(0, value) })
+              onPreviewDraft({
+                ...draft,
+                clearanceM: Math.max(0, distanceFromDisplay(value, unitSystem)),
+              })
             }
           />
           <div className="ms-btnrow">
@@ -162,8 +176,8 @@ export default function AvoidInspectorCard({
         </form>
       ) : (
         <p className="ms-hint p-3">
-          Height {(zone.heightM ?? 15).toFixed(1)} m · Clearance{" "}
-          {(zone.clearanceM ?? 2).toFixed(1)} m
+          Height {formatDistance(zone.heightM ?? 15, unitSystem)} · Clearance{" "}
+          {formatDistance(zone.clearanceM ?? 2, unitSystem)}
         </p>
       )}
     </section>

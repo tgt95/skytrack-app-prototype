@@ -15,6 +15,11 @@ import {
 import type { DerivedTransfer } from "../../../domain/transfer-planner";
 import type { StudioMission } from "../../../domain/mission-model";
 import { SEQUENCE_LIST_ITEM_CLASS } from "./sequence-drag";
+import {
+  formatDistance,
+  formatMeasurementText,
+  useMeasurementSystem,
+} from "../../../shared/measurement-units";
 
 export function TransferRow({
   transfer,
@@ -23,19 +28,18 @@ export function TransferRow({
   transfer?: DerivedTransfer;
   as?: "div" | "li";
 }) {
+  const unitSystem = useMeasurementSystem();
   if (!transfer) return null;
+  const distance = formatDistance(transfer.distanceM, unitSystem);
   const Tag = as;
   return (
     <Tag
       className={`flex flex-wrap items-center gap-2 min-w-0 border-dashed bg-[color-mix(in_srgb,var(--primary)_6%,var(--background))] py-1.5 px-3 flex-nowrap ${as === "li" ? `${SEQUENCE_LIST_ITEM_CLASS} border-b border-border last:border-b-0` : "rounded-(--radius)"}`}
       role="note"
       data-testid={`ms-trans-${transfer.id}`}
-      aria-label={`Generated transfer from ${transfer.fromLabel} to ${transfer.toLabel}, ${transfer.distanceM.toFixed(1)} meters`}
+      aria-label={`Generated transfer from ${transfer.fromLabel} to ${transfer.toLabel}, ${distance}`}
     >
-      <Badge
-        count="TRANS"
-        status="outline"
-      />
+      <Badge count="TRANS" status="outline" />
       <span className="flex-[1_1_auto] min-w-0 text-sm text-(--muted-foreground)">
         Go to the next {transfer.toType}
       </span>
@@ -43,11 +47,12 @@ export function TransferRow({
         className="flex-[0_0_auto] text-[0.6875rem] text-(--muted-foreground) [font-variant-numeric:tabular-nums]"
         data-testid="ms-seq-dist"
       >
-        {transfer.distanceM.toFixed(1)} m{transfer.hasDetour ? " · detour" : ""}
+        {distance}
+        {transfer.hasDetour ? " · detour" : ""}
       </span>
       {transfer.errorMessage ? (
         <span className="m-0 text-xs leading-[1.5] border border-(--border) rounded-(--radius) py-1.5 px-2 bg-(--card) text-(--muted-foreground)">
-          {transfer.errorMessage}
+          {formatMeasurementText(transfer.errorMessage, unitSystem)}
         </span>
       ) : null}
     </Tag>
@@ -68,10 +73,7 @@ export function EndMissionControl({
     <Tag
       className={`flex flex-row items-center gap-2 min-w-0 py-1.5 px-3 flex-nowrap bg-(--accent) ${as === "li" ? SEQUENCE_LIST_ITEM_CLASS : "rounded-(--radius)"}`}
     >
-      <Badge
-        count="END"
-        status="outline"
-      />
+      <Badge count="END" status="outline" />
       <Select<string>
         items={[
           { value: "home", label: "Drone - Return to home" },

@@ -15,7 +15,12 @@ import MissionMapThumbnail from "./mission-map-thumbnail.tsx";
 import type { LibMission } from "../database/store";
 import type { SharedMissionFixture } from "../workspace/workspace-data.ts";
 import type { MapTileOrigin } from "../../../shared/map-tiles";
-import { formatMetricArea, roundTo } from "../../../shared/number-utils";
+import { roundTo } from "../../../shared/number-utils";
+import {
+  formatArea,
+  formatDistance,
+  useMeasurementSystem,
+} from "../../../shared/measurement-units";
 import {
   actionCount,
   missionFromSnapshot,
@@ -57,6 +62,7 @@ function MissionCardSummary({
 }: {
   mission: Pick<MissionCardRecord, "missionData" | "worldType">;
 }) {
+  const unitSystem = useMeasurementSystem();
   if (!mission.missionData) return null;
 
   let snapshot: StudioMission;
@@ -95,12 +101,16 @@ function MissionCardSummary({
           <span
             className="inline-flex items-center gap-1"
             aria-label={
-              hasArea ? `${areaM2} square meters` : `${lengthM} meters`
+              hasArea
+                ? formatArea(areaM2, unitSystem)
+                : formatDistance(lengthM, unitSystem, 0)
             }
             title={hasArea ? "Area" : "Route length"}
           >
             <RulerIcon aria-hidden="true" className="size-4" />
-            {hasArea ? formatMetricArea(areaM2) : `${lengthM} m`}
+            {hasArea
+              ? formatArea(areaM2, unitSystem)
+              : formatDistance(lengthM, unitSystem, 0)}
           </span>
         </SkyTooltip>
       ) : null}

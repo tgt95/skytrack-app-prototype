@@ -97,7 +97,10 @@ export default function CreateMissionWizard({
   worlds: WorkspaceWorldRecord[];
   initialProjectId: string;
   initialTitle: string;
-  onImportWorld: (file: File) => Promise<WorkspaceWorldRecord>;
+  onImportWorld: (
+    file: File,
+    worldName?: string,
+  ) => Promise<WorkspaceWorldRecord>;
   onClose: () => void;
   onSubmit: (result: WizardResult) => void;
 }) {
@@ -107,8 +110,9 @@ export default function CreateMissionWizard({
   const [worldType, setWorldType] = useState<"2D" | "3D">("2D");
   const [terrainFile, setTerrainFile] = useState<string | null>(null);
   const [importingWorld, setImportingWorld] = useState(false);
-  const [worldImportError, setWorldImportError] = useState<string | null>(null);
-  const [worldImportMessage, setWorldImportMessage] = useState<string | null>(null);
+  const [worldImportMessage, setWorldImportMessage] = useState<string | null>(
+    null,
+  );
   const [world, setWorld] = useState<string>(WORLDS[0]);
   const [worldId, setWorldId] = useState("");
   const [droneId, setDroneId] = useState<string>(drones[0]?.id ?? "");
@@ -149,22 +153,15 @@ export default function CreateMissionWizard({
     setWorldId(id);
     if (selected) setWorld(selected.name);
   };
-  const importWorld = async (file: File) => {
-    setWorldImportError(null);
+  const importWorld = async (file: File, worldName?: string) => {
     setWorldImportMessage(null);
     setImportingWorld(true);
     try {
-      const imported = await onImportWorld(file);
+      const imported = await onImportWorld(file, worldName);
       setWorldType("3D");
       setWorld(imported.name);
       setWorldId(imported.id);
       setWorldImportMessage(`${imported.name} imported and selected.`);
-    } catch (error) {
-      setWorldImportError(
-        error instanceof Error
-          ? error.message
-          : "The World could not be imported. Check the GLB file and try again.",
-      );
     } finally {
       setImportingWorld(false);
     }
@@ -224,9 +221,8 @@ export default function CreateMissionWizard({
               worlds={worldsForType}
               worldId={worldId}
               onWorldSelect={selectWorld}
-              onImportWorld={file => void importWorld(file)}
+              onImportWorld={importWorld}
               importingWorld={importingWorld}
-              worldImportError={worldImportError}
               worldImportMessage={worldImportMessage}
               terrainFile={terrainFile}
               onTerrainFileSelect={setTerrainFile}
@@ -256,9 +252,7 @@ export default function CreateMissionWizard({
               className="flex items-center gap-2"
               data-testid="ms-wizard-footer-end"
             >
-              <DialogClose variant="secondary">
-                Cancel
-              </DialogClose>
+              <DialogClose variant="secondary">Cancel</DialogClose>
               {step < 3 ? (
                 <Button
                   variant="default"

@@ -7,10 +7,10 @@ import {
   TrashIcon,
   XIcon
 } from '@phosphor-icons/react'
-import { Field } from '@base-ui/react/field'
 import { useState, type DragEvent } from 'react'
 import { Badge } from 'skytrack-ui/badge'
 import { Button } from 'skytrack-ui/button'
+import { FieldLabel, FieldRoot } from 'skytrack-ui/field'
 import { SkyTooltip } from '../../../ui/components/sky-tooltip'
 import {
   Select,
@@ -88,7 +88,7 @@ export function AIWorkflowStopRow ({
   waypoints,
   sequenceId,
   waypointId,
-  onMoveAction,
+  onMoveAction
 }: {
   workflow: MissionAIWorkflow
   waypoints: Waypoint[]
@@ -251,79 +251,82 @@ export function AIWorkflowCard ({
                 key={action.id}
                 className='flex min-w-0 items-center gap-2 border-t border-border py-2'
               >
-                <Select
-                  items={[...ACTION_TYPES]}
-                  value={action.kind}
-                  onValueChange={(value: unknown) => {
-                    if (value !== 'camera-trigger' && value !== 'spray') return
-                    replaceAction(action.id, {
-                      kind: value,
-                      mode: value === 'spray' ? 'start' : 'snapshot'
-                    })
-                  }}
-                >
-                  <SelectTrigger
-                    aria-label='Drone action type'
-                    className='min-w-0 flex-1'
-                  >
-                    <SelectValue />
-                    <SelectIcon />
-                  </SelectTrigger>
-                  <SelectPortal>
-                    <SelectPositioner
-                      side='bottom'
-                      align='start'
-                      sideOffset={4}
-                    >
-                      <SelectPopup>
-                        <SelectList>
-                          {ACTION_TYPES.map(item => (
-                            <SelectItem key={item.value} value={item.value}>
-                              <SelectItemIndicator />
-                              <SelectItemText>{item.label}</SelectItemText>
-                            </SelectItem>
-                          ))}
-                        </SelectList>
-                      </SelectPopup>
-                    </SelectPositioner>
-                  </SelectPortal>
-                </Select>
-                <Select
-                  items={[...options]}
-                  value={action.mode}
-                  onValueChange={(value: unknown) => {
-                    if (options.some(option => option.value === value))
+                <div className='flex min-w-0 items-center gap-2 border-t border-border py-2'>
+                  <Select
+                    items={[...ACTION_TYPES]}
+                    value={action.kind}
+                    onValueChange={(value: unknown) => {
+                      if (value !== 'camera-trigger' && value !== 'spray')
+                        return
                       replaceAction(action.id, {
-                        mode: value as AIWorkflowDroneAction['mode']
+                        kind: value,
+                        mode: value === 'spray' ? 'start' : 'snapshot'
                       })
-                  }}
-                >
-                  <SelectTrigger
-                    aria-label='Drone action mode'
-                    className='min-w-0 flex-1'
+                    }}
                   >
-                    <SelectValue />
-                    <SelectIcon />
-                  </SelectTrigger>
-                  <SelectPortal>
-                    <SelectPositioner
-                      side='bottom'
-                      align='start'
-                      sideOffset={4}
+                    <SelectTrigger
+                      aria-label='Drone action type'
+                      className='min-w-0 flex-1'
                     >
-                      <SelectPopup>
-                        <SelectList>
-                          {options.map(item => (
-                            <SelectItem key={item.value} value={item.value}>
-                              <SelectItemIndicator />
-                              <SelectItemText>{item.label}</SelectItemText>
-                            </SelectItem>
-                          ))}
-                        </SelectList>
-                      </SelectPopup>
-                    </SelectPositioner>
-                  </SelectPortal>
-                </Select>
+                      <SelectValue />
+                      <SelectIcon />
+                    </SelectTrigger>
+                    <SelectPortal>
+                      <SelectPositioner
+                        side='bottom'
+                        align='start'
+                        sideOffset={4}
+                      >
+                        <SelectPopup>
+                          <SelectList>
+                            {ACTION_TYPES.map(item => (
+                              <SelectItem key={item.value} value={item.value}>
+                                <SelectItemIndicator />
+                                <SelectItemText>{item.label}</SelectItemText>
+                              </SelectItem>
+                            ))}
+                          </SelectList>
+                        </SelectPopup>
+                      </SelectPositioner>
+                    </SelectPortal>
+                  </Select>
+                  <Select
+                    items={[...options]}
+                    value={action.mode}
+                    onValueChange={(value: unknown) => {
+                      if (options.some(option => option.value === value))
+                        replaceAction(action.id, {
+                          mode: value as AIWorkflowDroneAction['mode']
+                        })
+                    }}
+                  >
+                    <SelectTrigger
+                      aria-label='Drone action mode'
+                      className='min-w-0 flex-1'
+                    >
+                      <SelectValue />
+                      <SelectIcon />
+                    </SelectTrigger>
+                    <SelectPortal>
+                      <SelectPositioner
+                        side='bottom'
+                        align='start'
+                        sideOffset={4}
+                      >
+                        <SelectPopup>
+                          <SelectList>
+                            {options.map(item => (
+                              <SelectItem key={item.value} value={item.value}>
+                                <SelectItemIndicator />
+                                <SelectItemText>{item.label}</SelectItemText>
+                              </SelectItem>
+                            ))}
+                          </SelectList>
+                        </SelectPopup>
+                      </SelectPositioner>
+                    </SelectPortal>
+                  </Select>
+                </div>
                 <Button
                   size='icon-sm'
                   variant='ghost'
@@ -427,7 +430,7 @@ export function AIWorkflowCard ({
               <TrashIcon aria-hidden='true' />
             </Button>
           </CollapsibleTrigger>
-          <CollapsiblePanel className='min-w-0 relative flex flex-col gap-3 p-3 bg-muted/80'>
+          <CollapsiblePanel className='min-w-0 relative flex flex-col gap-3 p-3 bg-muted/80 border-t border-border'>
             <span
               className='pointer-events-none absolute bottom-5 left-1/2 top-5 w-px -translate-x-1/2 bg-border'
               aria-hidden='true'
@@ -442,13 +445,11 @@ export function AIWorkflowCard ({
                 Detection starts
               </h4>
               <div className='flex flex-col p-3'>
-                <Field.Root name={`ai-model-${workflow.id}`}>
-                  <div className='flex flex-row gap-3'>
-                    <Field.Label className='min-w-0 w-full'>
-                      AI model
-                    </Field.Label>
+                <FieldRoot name={`ai-model-${workflow.id}`}>
+                  <div className='flex flex-row items-center justify-between gap-3 w-full'>
+                    <FieldLabel className='min-w-0'>AI model</FieldLabel>
                     <Button
-                      className='p-0! h-auto!'
+                      className='shrink-0 p-0! h-auto!'
                       size='sm'
                       variant='link'
                       onClick={onImportModel}
@@ -497,7 +498,7 @@ export function AIWorkflowCard ({
                       </SelectPositioner>
                     </SelectPortal>
                   </Select>
-                </Field.Root>
+                </FieldRoot>
                 {selectedModel?.origin === 'user-upload' ? (
                   <div className='mt-2 flex items-center justify-between gap-2 text-xs text-muted-foreground'>
                     {confirmModelDeleteId === selectedModel.id ? (
@@ -548,8 +549,8 @@ export function AIWorkflowCard ({
                   </p>
                 ) : null}
                 <div className='mt-3 grid grid-cols-[minmax(0,1fr)_7rem] gap-3'>
-                  <Field.Root name={`object-class-${workflow.id}`}>
-                    <Field.Label>What to detect</Field.Label>
+                  <FieldRoot name={`object-class-${workflow.id}`}>
+                    <FieldLabel>What to detect</FieldLabel>
                     <Select
                       items={detectionTargets}
                       value={workflow.objectClass}
@@ -559,6 +560,7 @@ export function AIWorkflowCard ({
                       }}
                     >
                       <SelectTrigger
+                        size='default'
                         aria-label='What to detect'
                         className='w-full'
                       >
@@ -589,9 +591,9 @@ export function AIWorkflowCard ({
                         </SelectPositioner>
                       </SelectPortal>
                     </Select>
-                  </Field.Root>
-                  <Field.Root name={`confidence-score-${workflow.id}`}>
-                    <Field.Label>Confidence score</Field.Label>
+                  </FieldRoot>
+                  <FieldRoot name={`confidence-score-${workflow.id}`}>
+                    <FieldLabel>Confidence score</FieldLabel>
                     <NumberField
                       value={workflow.confidenceScore}
                       min={0}
@@ -604,9 +606,9 @@ export function AIWorkflowCard ({
                           })
                       }}
                     >
-                      <NumberFieldInput />
+                      <NumberFieldInput className='w-full' />
                     </NumberField>
-                  </Field.Root>
+                  </FieldRoot>
                 </div>
               </div>
             </section>

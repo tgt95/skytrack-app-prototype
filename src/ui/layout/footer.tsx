@@ -3,6 +3,12 @@ import { Button } from "skytrack-ui/button";
 import type { useDrawingSession } from "../../features/studio/use-drawing-session";
 import type { useStudioSimulationModel } from "../../features/studio/use-studio-simulation-model";
 import type { useStudioUiState } from "../../features/studio/use-studio-ui-state";
+import {
+  formatDistance,
+  speedToDisplay,
+  speedUnit,
+  useMeasurementSystem,
+} from "../../shared/measurement-units";
 
 type FooterUiState = Pick<
   ReturnType<typeof useStudioUiState>,
@@ -34,8 +40,9 @@ export default function StudioStatusFooter({
   onOpenShortcuts,
   onToggleInspector,
 }: StudioStatusFooterProps) {
+  const unitSystem = useMeasurementSystem();
   const simActive = ui.stage === "simulation";
-  const statusLine = `${ui.stage === "design" ? "Design" : "Simulation"} · ${drawing.tool} tool${ui.selection ? ` · selected ${ui.selection.kind}` : ""}${drawing.pending.length > 0 ? ` · ${drawing.pending.length} pts` : ""} · sim ${simulation.sim.status}${simulation.plan ? ` · t=${simulation.sim.simT.toFixed(1)}s/${simulation.totalT.toFixed(0)}s` : ""}${simulation.telemetry && simActive ? ` · home ${simulation.telemetry.homeDistM.toFixed(0)} m · wind ${ui.settings.windMS} m/s · GPS RTK` : ""}${dirty ? " · unsaved" : " · saved"}`;
+  const statusLine = `${ui.stage === "design" ? "Design" : "Simulation"} · ${drawing.tool} tool${ui.selection ? ` · selected ${ui.selection.kind}` : ""}${drawing.pending.length > 0 ? ` · ${drawing.pending.length} pts` : ""} · sim ${simulation.sim.status}${simulation.plan ? ` · t=${simulation.sim.simT.toFixed(1)}s/${simulation.totalT.toFixed(0)}s` : ""}${simulation.telemetry && simActive ? ` · home ${formatDistance(simulation.telemetry.homeDistM, unitSystem, 0)} · wind ${speedToDisplay(ui.settings.windMS, unitSystem)} ${speedUnit(unitSystem)} · GPS RTK` : ""}${dirty ? " · unsaved" : " · saved"}`;
 
   return (
     <footer

@@ -13,6 +13,10 @@ import {
 import DroneProfileDialog from "../drone-profile-dialog";
 import { WorldProfileDialog } from "./workspace-resource-dialogs.tsx";
 import { ImportAIModelDialog } from "./import-ai-model-dialog.tsx";
+import {
+  useWorldGlbImport,
+  type ImportedWorldDetails,
+} from "../use-world-glb-import";
 import type { WorkspaceDroneProfile } from "../database/drone-store";
 import type {
   WorkspaceAIModelRecord,
@@ -30,6 +34,14 @@ export interface LibraryResourceEditorDialogsProps {
   setWorldEditor: (next: ProfileEditor<WorkspaceWorldRecord>) => void;
   sourceMissions: { id: string; projectName: string; missionName: string }[];
   saveWorldProfile: (profile: WorkspaceWorldRecord) => void;
+  worldImport: {
+    workspaceId: string;
+    persistWorldProfile: (
+      profile: WorkspaceWorldRecord,
+      mode: "create" | "edit",
+    ) => boolean;
+    onAnnounce: (message: string) => void;
+  };
   importModelOpen: boolean;
   setImportModelOpen: (open: boolean) => void;
   existingAIModelNames: string[];
@@ -48,11 +60,44 @@ export function LibraryResourceEditorDialogs({
   setWorldEditor,
   sourceMissions,
   saveWorldProfile,
+  worldImport,
   importModelOpen,
   setImportModelOpen,
   existingAIModelNames,
   importAIModel,
 }: LibraryResourceEditorDialogsProps) {
+  const { importWorld, replaceWorldFile } = useWorldGlbImport({
+    workspaceId: worldImport.workspaceId,
+    persistWorld: (profile, mode) =>
+      worldImport.persistWorldProfile(profile, mode),
+  });
+
+  const importWorldProfile = async (
+    profile: WorkspaceWorldRecord,
+    file: File,
+    mode: "create" | "edit",
+  ) => {
+    if (mode === "edit") {
+      const { cleanupWarning } = await replaceWorldFile(profile, file);
+      setWorldEditor(null);
+      if (cleanupWarning) worldImport.onAnnounce(cleanupWarning);
+      return;
+    }
+
+    const details: ImportedWorldDetails = {
+      location: profile.location,
+      status: profile.status,
+      sourceType: profile.sourceType,
+      sourceMissionId: profile.sourceMissionId,
+      sourceMissionLabel: profile.sourceMissionLabel,
+      sourceFlightReference: profile.sourceFlightReference,
+      reconstructionReference: profile.reconstructionReference,
+      note: profile.note,
+    };
+    await importWorld(file, profile.name, details);
+    setWorldEditor(null);
+  };
+
   return (
     <>
       <DroneProfileDialog
@@ -69,6 +114,9 @@ export function LibraryResourceEditorDialogs({
         sourceMissions={sourceMissions}
         onClose={() => setWorldEditor(null)}
         onSave={saveWorldProfile}
+        onImportWorld={(profile, file, mode) =>
+          importWorldProfile(profile, file, mode)
+        }
       />
       <ImportAIModelDialog
         open={importModelOpen}

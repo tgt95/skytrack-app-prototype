@@ -1,31 +1,21 @@
 [
   {
     "id": "p1",
-    "name": "Default project",
+    "name": "Tuan's project",
     "workspaceId": "tuan-workspace",
     "missions": [
       {
-        "id": "m1",
-        "name": "Santorini coastal survey",
-        "editedAgo": "Edited 1 hour ago",
+        "id": "m-local-mvrqcly0-101",
+        "name": "Leeville Pike Flight",
+        "editedAgo": "Edited just now",
         "starred": false,
-        "shared": true,
+        "shared": false,
         "viewOnly": false,
-        "worldType": "2D",
-        "world": "Blank space",
-        "missionData": "{\"id\":\"m1\",\"name\":\"Santorini coastal survey\",\"world\":\"Blank space\",\"worldType\":\"2D\",\"vehicle\":\"Drone x500 Livox Mid 360\",\"spawn\":{\"x\":0,\"y\":-18},\"takeoffAltM\":12,\"targetSpeedMS\":2,\"returnHomeOnEnd\":true,\"cameraSafetyCheck\":true,\"routes\":[],\"waypoints\":[],\"areas\":[],\"avoids\":[],\"origin\":{\"lat\":36.3932,\"lng\":25.4615}}"
-      },
-      {
-        "id": "m2",
-        "name": "750 Railroad Ave property survey",
-        "editedAgo": "Edited 1 hour ago",
-        "starred": false,
-        "shared": true,
-        "viewOnly": false,
+        "world": "Leeville Pike roof assessment",
         "worldType": "3D",
-        "world": "750 Railroad Ave",
-        "worldId": "bundled-world-750-railroad-ave",
-        "missionData": "{\"id\":\"m2\",\"name\":\"750 Railroad Ave property survey\",\"world\":\"750 Railroad Ave\",\"worldType\":\"3D\",\"vehicle\":\"Drone x500 Livox Mid 360\",\"spawn\":{\"x\":0,\"y\":-18},\"takeoffAltM\":12,\"targetSpeedMS\":2,\"returnHomeOnEnd\":true,\"cameraSafetyCheck\":true,\"routes\":[],\"waypoints\":[],\"areas\":[],\"avoids\":[],\"worldId\":\"bundled-world-750-railroad-ave\",\"origin\":{\"lat\":35.4923,\"lng\":-86.4592}}"
+        "worldId": "sample-world-tuan-workspace-leeville-pike-roof-assessment",
+        "vehicle": "Mini-Pro",
+        "droneId": "mini-pro-v6"
       }
     ]
   }

@@ -9,174 +9,253 @@
    - Clear the `skytrack-library-db-v1` localStorage key (or wipe site data)
      to fall back to seeds. */
 
-import projectsSeed from './projects.json'
-import templatesSeed from './templates.json'
-import { getWorkspace } from '../workspace/workspace-data.ts'
-import { STORAGE_KEYS, STORAGE_VERSIONS } from '../../../shared/storage-keys'
+import projectsSeed from "./projects.json";
+import leevilleMissionSeed from "./missions/leeville-pike-flight.json";
+import templatesSeed from "./templates.json";
+import { getWorkspace } from "../workspace/workspace-data.ts";
+import { STORAGE_KEYS, STORAGE_VERSIONS } from "../../../shared/storage-keys";
 
 export interface LibMission {
-  id: string
-  name: string
-  editedAgo: string
-  starred: boolean
-  shared: boolean
-  viewOnly: boolean
-  world?: string
-  worldType?: '2D' | '3D'
-  worldId?: string
-  vehicle?: string
-  droneId?: string
+  id: string;
+  name: string;
+  editedAgo: string;
+  starred: boolean;
+  shared: boolean;
+  viewOnly: boolean;
+  world?: string;
+  worldType?: "2D" | "3D";
+  worldId?: string;
+  vehicle?: string;
+  droneId?: string;
   /** Canonical Studio mission snapshot saved locally by the Design Save action. */
-  missionData?: string
+  missionData?: string;
 }
 
 export interface LibProject {
-  id: string
-  name: string
-  workspaceId?: string
-  missions: LibMission[]
+  id: string;
+  name: string;
+  workspaceId?: string;
+  missions: LibMission[];
 }
 
 export interface LibTemplate {
-  id: string
-  title: string
-  desc: string
-  byline: string
+  id: string;
+  title: string;
+  desc: string;
+  byline: string;
 }
 
-export const DB_KEY = STORAGE_KEYS.libraryDatabase
-export const DB_VERSION = STORAGE_VERSIONS.libraryDatabase
+export const DB_KEY = STORAGE_KEYS.libraryDatabase;
+export const DB_VERSION = STORAGE_VERSIONS.libraryDatabase;
+export const STAKEHOLDER_DEMO_MISSION_ID = "m-local-mvrqcly0-101";
 
 interface DatabaseShape {
-  version: number
-  projects: LibProject[]
+  version: number;
+  projects: LibProject[];
 }
 
 function isMission(value: unknown): value is LibMission {
-  const m = value as Partial<LibMission>
+  const m = value as Partial<LibMission>;
   return (
-    typeof m === 'object' &&
+    typeof m === "object" &&
     m !== null &&
-    typeof m.id === 'string' &&
-    typeof m.name === 'string' &&
-    typeof m.editedAgo === 'string' &&
-    typeof m.starred === 'boolean' &&
-    typeof m.shared === 'boolean' &&
-    typeof m.viewOnly === 'boolean' &&
-    (m.world === undefined || typeof m.world === 'string') &&
-    (m.worldType === undefined || m.worldType === '2D' || m.worldType === '3D') &&
-    (m.vehicle === undefined || typeof m.vehicle === 'string') &&
-    (m.droneId === undefined || (typeof m.droneId === 'string' && m.droneId.length <= 128)) &&
-    (m.worldId === undefined || (typeof m.worldId === 'string' && m.worldId.length <= 128)) &&
-    (m.missionData === undefined || typeof m.missionData === 'string')
-  )
+    typeof m.id === "string" &&
+    typeof m.name === "string" &&
+    typeof m.editedAgo === "string" &&
+    typeof m.starred === "boolean" &&
+    typeof m.shared === "boolean" &&
+    typeof m.viewOnly === "boolean" &&
+    (m.world === undefined || typeof m.world === "string") &&
+    (m.worldType === undefined ||
+      m.worldType === "2D" ||
+      m.worldType === "3D") &&
+    (m.vehicle === undefined || typeof m.vehicle === "string") &&
+    (m.droneId === undefined ||
+      (typeof m.droneId === "string" && m.droneId.length <= 128)) &&
+    (m.worldId === undefined ||
+      (typeof m.worldId === "string" && m.worldId.length <= 128)) &&
+    (m.missionData === undefined || typeof m.missionData === "string")
+  );
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function isProject(value: unknown): value is LibProject {
-  const p = value as Partial<LibProject>
+  const p = value as Partial<LibProject>;
   return (
-    typeof p === 'object' &&
+    typeof p === "object" &&
     p !== null &&
-    typeof p.id === 'string' &&
-    typeof p.name === 'string' &&
-    (p.workspaceId === undefined || typeof p.workspaceId === 'string') &&
+    typeof p.id === "string" &&
+    typeof p.name === "string" &&
+    (p.workspaceId === undefined || typeof p.workspaceId === "string") &&
     Array.isArray(p.missions) &&
     p.missions.every(isMission)
-  )
+  );
 }
 
 function isDatabase(value: unknown): value is DatabaseShape {
-  return isRecord(value) && value.version === DB_VERSION &&
-    Array.isArray(value.projects) && value.projects.every(isProject)
+  return (
+    isRecord(value) &&
+    value.version === DB_VERSION &&
+    Array.isArray(value.projects) &&
+    value.projects.every(isProject)
+  );
 }
 
-function parseSnapshotMetadata(raw: string | undefined): Record<string, unknown> | null {
-  if (!raw) return null
+function parseSnapshotMetadata(
+  raw: string | undefined,
+): Record<string, unknown> | null {
+  if (!raw) return null;
   try {
-    const parsed: unknown = JSON.parse(raw) as unknown
-    return isRecord(parsed) ? parsed : null
+    const parsed: unknown = JSON.parse(raw) as unknown;
+    return isRecord(parsed) ? parsed : null;
   } catch {
-    return null
+    return null;
   }
 }
 
 function seedProjects(): LibProject[] {
-  return Array.isArray(projectsSeed) && projectsSeed.every(isProject)
-    ? (projectsSeed as LibProject[])
-    : []
+  if (!Array.isArray(projectsSeed) || !projectsSeed.every(isProject)) return [];
+
+  return (projectsSeed as LibProject[]).map((project) => ({
+    ...project,
+    missions: project.missions.map((mission) =>
+      mission.id === STAKEHOLDER_DEMO_MISSION_ID
+        ? { ...mission, missionData: JSON.stringify(leevilleMissionSeed) }
+        : mission,
+    ),
+  }));
+}
+
+function ensureStakeholderDemoMission(projects: LibProject[]): LibProject[] {
+  const demoProject = seedProjects().find((project) =>
+    project.missions.some(
+      (mission) => mission.id === STAKEHOLDER_DEMO_MISSION_ID,
+    ),
+  );
+  const demoMission = demoProject?.missions.find(
+    (mission) => mission.id === STAKEHOLDER_DEMO_MISSION_ID,
+  );
+  if (!demoProject || !demoMission) return projects;
+
+  const existingMission = projects
+    .flatMap((project) => project.missions)
+    .find((mission) => mission.id === STAKEHOLDER_DEMO_MISSION_ID);
+  if (existingMission) {
+    return projects.map((project) => ({
+      ...project,
+      missions: project.missions.map((mission) =>
+        mission.id === STAKEHOLDER_DEMO_MISSION_ID
+          ? {
+              ...demoMission,
+              ...mission,
+              missionData: mission.missionData ?? demoMission.missionData,
+            }
+          : mission,
+      ),
+    }));
+  }
+
+  const existingProject = projects.find(
+    (project) => project.id === demoProject.id,
+  );
+  if (!existingProject) return [...projects, demoProject];
+
+  return projects.map((project) =>
+    project.id === existingProject.id
+      ? {
+          ...project,
+          name:
+            project.name === "Default project"
+              ? demoProject.name
+              : project.name,
+          missions: [...project.missions, demoMission],
+        }
+      : project,
+  );
 }
 
 function normalizeProjects(projects: LibProject[]): LibProject[] {
   const seededMissionById = new Map(
-    seedProjects().flatMap((project) => project.missions.map((mission) => [mission.id, mission] as const))
-  )
+    seedProjects().flatMap((project) =>
+      project.missions.map((mission) => [mission.id, mission] as const),
+    ),
+  );
   return projects.map((project) => ({
     ...project,
     workspaceId: getWorkspace(project.workspaceId).id,
     missions: project.missions.map((mission) => {
-      const seeded = seededMissionById.get(mission.id)
-      const snapshot = parseSnapshotMetadata(mission.missionData)
-      const snapshotWorldType = snapshot?.worldType === '2D' || snapshot?.worldType === '3D' ? snapshot.worldType : undefined
-      const snapshotWorld = typeof snapshot?.world === 'string' ? snapshot.world : undefined
-      const snapshotWorldId = typeof snapshot?.worldId === 'string' ? snapshot.worldId : undefined
-      const snapshotVehicle = typeof snapshot?.vehicle === 'string' ? snapshot.vehicle : undefined
-      const snapshotDroneId = typeof snapshot?.droneId === 'string' ? snapshot.droneId : undefined
+      const seeded = seededMissionById.get(mission.id);
+      const snapshot = parseSnapshotMetadata(mission.missionData);
+      const snapshotWorldType =
+        snapshot?.worldType === "2D" || snapshot?.worldType === "3D"
+          ? snapshot.worldType
+          : undefined;
+      const snapshotWorld =
+        typeof snapshot?.world === "string" ? snapshot.world : undefined;
+      const snapshotWorldId =
+        typeof snapshot?.worldId === "string" ? snapshot.worldId : undefined;
+      const snapshotVehicle =
+        typeof snapshot?.vehicle === "string" ? snapshot.vehicle : undefined;
+      const snapshotDroneId =
+        typeof snapshot?.droneId === "string" ? snapshot.droneId : undefined;
       return {
         ...mission,
         worldType: mission.worldType ?? snapshotWorldType ?? seeded?.worldType,
         world: mission.world ?? snapshotWorld ?? seeded?.world,
         worldId: mission.worldId ?? snapshotWorldId,
         vehicle: mission.vehicle ?? snapshotVehicle ?? seeded?.vehicle,
-        droneId: mission.droneId ?? snapshotDroneId
-      }
-    })
-  }))
+        droneId: mission.droneId ?? snapshotDroneId,
+      };
+    }),
+  }));
 }
 
 export function seedTemplates(): LibTemplate[] {
-  return Array.isArray(templatesSeed) ? (templatesSeed as LibTemplate[]) : []
+  return Array.isArray(templatesSeed) ? (templatesSeed as LibTemplate[]) : [];
 }
 
 /** Load persisted state, falling back to the JSON seeds. Never throws. */
 export function loadProjects(): LibProject[] {
   try {
-    const raw = localStorage.getItem(DB_KEY)
+    const raw = localStorage.getItem(DB_KEY);
     if (raw) {
-      const parsed: unknown = JSON.parse(raw) as unknown
+      const parsed: unknown = JSON.parse(raw) as unknown;
       if (isDatabase(parsed)) {
-        return normalizeProjects(parsed.projects)
+        return ensureStakeholderDemoMission(normalizeProjects(parsed.projects));
       }
     }
   } catch {
     /* storage unavailable or corrupt: fall through to seeds */
   }
-  return normalizeProjects(seedProjects())
+  return normalizeProjects(seedProjects());
 }
 
 /** Find the owning project and mission for a stable Library mission ID. */
 export function findMissionRecord(
   projects: LibProject[],
-  missionId: string
+  missionId: string,
 ): { project: LibProject; mission: LibMission } | null {
   for (const project of projects) {
-    const mission = project.missions.find((item) => item.id === missionId)
-    if (mission) return { project, mission }
+    const mission = project.missions.find((item) => item.id === missionId);
+    if (mission) return { project, mission };
   }
-  return null
+  return null;
 }
 
 /** Persist the current state. Returns false if browser storage is unavailable. */
 export function saveProjects(projects: LibProject[]): boolean {
   try {
-    const shape: DatabaseShape = { version: DB_VERSION, projects: normalizeProjects(projects) }
-    localStorage.setItem(DB_KEY, JSON.stringify(shape))
-    return true
+    const shape: DatabaseShape = {
+      version: DB_VERSION,
+      projects: normalizeProjects(projects),
+    };
+    localStorage.setItem(DB_KEY, JSON.stringify(shape));
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -184,47 +263,50 @@ export function saveProjects(projects: LibProject[]): boolean {
 export function saveMissionSnapshot(
   missionId: string,
   missionData: string,
-  metadata: Pick<LibMission, 'name' | 'world' | 'worldType' | 'worldId' | 'vehicle' | 'droneId'>
+  metadata: Pick<
+    LibMission,
+    "name" | "world" | "worldType" | "worldId" | "vehicle" | "droneId"
+  >,
 ): boolean {
-  const projects = loadProjects()
-  let found = false
+  const projects = loadProjects();
+  let found = false;
   const next = projects.map((project) => ({
     ...project,
     missions: project.missions.map((mission) => {
-      if (mission.id !== missionId) return mission
-      found = true
+      if (mission.id !== missionId) return mission;
+      found = true;
       return {
         ...mission,
         ...metadata,
         missionData,
-        editedAgo: 'Edited just now'
-      }
-    })
-  }))
-  return found && saveProjects(next)
+        editedAgo: "Edited just now",
+      };
+    }),
+  }));
+  return found && saveProjects(next);
 }
 
 /** Keep a cloned snapshot's internal identity aligned with its new Library ID. */
 export function cloneMissionSnapshotIdentity(
   missionData: string | undefined,
   missionId: string,
-  name: string
+  name: string,
 ): string | undefined {
-  if (!missionData) return undefined
+  if (!missionData) return undefined;
   try {
-    const parsed: unknown = JSON.parse(missionData) as unknown
-    if (!isRecord(parsed)) return undefined
-    const mission = parsed
-    return JSON.stringify({ ...mission, id: missionId, name })
+    const parsed: unknown = JSON.parse(missionData) as unknown;
+    if (!isRecord(parsed)) return undefined;
+    const mission = parsed;
+    return JSON.stringify({ ...mission, id: missionId, name });
   } catch {
-    return undefined
+    return undefined;
   }
 }
 
 /** Forget persisted state so seeds load again. Never throws. */
 export function clearProjects(): void {
   try {
-    localStorage.removeItem(DB_KEY)
+    localStorage.removeItem(DB_KEY);
   } catch {
     /* ignore */
   }
@@ -235,15 +317,17 @@ export function exportProjects(projects: LibProject[]): void {
   const shape: DatabaseShape & { exportedAt: string } = {
     version: DB_VERSION,
     projects,
-    exportedAt: new Date().toISOString()
-  }
-  const blob = new Blob([JSON.stringify(shape, null, 2)], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  const anchor = document.createElement('a')
-  anchor.href = url
-  anchor.download = 'skytrack-library.json'
-  document.body.appendChild(anchor)
-  anchor.click()
-  anchor.remove()
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+    exportedAt: new Date().toISOString(),
+  };
+  const blob = new Blob([JSON.stringify(shape, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = "skytrack-library.json";
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

@@ -2,7 +2,7 @@
    waypoint/END sequence, zones, validation, mission props, code view. */
 
 import { memo, useState } from "react";
-import { Tabs, TabsIndicator, TabsList, TabsTab } from "skytrack-ui/tabs";
+import { Tabs, TabsList, TabsTab } from "skytrack-ui/tabs";
 import {
   type CameraActionKind,
   type MissionArea,
@@ -254,7 +254,6 @@ function DesignPanel(props: DesignPanelProps) {
                 >
                   Preview
                 </TabsTab>
-                <TabsIndicator variant="pill" />
               </TabsList>
             </Tabs>
           </div>

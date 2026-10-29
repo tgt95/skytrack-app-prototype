@@ -20,6 +20,12 @@ import { EndMissionControl } from "./sequence-transfer";
 import { RouteWaypointList } from "./route-waypoint-list";
 import { InspectorField } from "../controls/inspector-field";
 import { RouteSequenceCardHeader } from "./route-sequence-card-header";
+import {
+  speedFromDisplay,
+  speedToDisplay,
+  speedUnit,
+  useMeasurementSystem,
+} from "../../../shared/measurement-units";
 
 type Waypoint = StudioMission["waypoints"][number];
 
@@ -100,6 +106,7 @@ export default function RouteSequenceCard({
   onSetActionPitch,
   onAnnounce,
 }: RouteSequenceCardProps) {
+  const unitSystem = useMeasurementSystem();
   const routeWaypoints = orderedWaypoints.filter(
     (waypoint) =>
       !waypoint.generatedByArea &&
@@ -132,12 +139,12 @@ export default function RouteSequenceCard({
     >
       <span className="flex shrink-0 items-center gap-1.5">
         <CompactAxisField
-          label={`${route.label} target speed in meters per second`}
+          label={`${route.label} target speed in ${speedUnit(unitSystem)}`}
           short=""
-          value={speed}
-          min={0.5}
-          max={15}
-          step={0.5}
+          value={speedToDisplay(speed, unitSystem)}
+          min={speedToDisplay(0.5, unitSystem)}
+          max={speedToDisplay(15, unitSystem)}
+          step={unitSystem === "imperial" ? 0.5 : 0.5}
           inputSize="xs"
           inputWidth="fixed"
           axisClassName="hidden"
@@ -148,7 +155,10 @@ export default function RouteSequenceCard({
                 item.id === route.id
                   ? {
                       ...item,
-                      targetSpeedMS: Math.min(15, Math.max(0.5, value)),
+                      targetSpeedMS: Math.min(
+                        15,
+                        Math.max(0.5, speedFromDisplay(value, unitSystem)),
+                      ),
                     }
                   : item,
               ),
@@ -160,7 +170,7 @@ export default function RouteSequenceCard({
           aria-hidden="true"
           data-testid="ms-unit"
         >
-          m/s
+          {speedUnit(unitSystem)}
         </span>
         <SkyTooltip>
           <Button

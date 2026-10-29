@@ -14,6 +14,12 @@ import type {
 import { SkyTooltip } from "../../../ui/components/sky-tooltip";
 import { CompactAxisField } from "../controls/compact-axis-field";
 import {
+  distanceFromDisplay,
+  distanceToDisplay,
+  distanceUnit,
+  useMeasurementSystem,
+} from "../../../shared/measurement-units";
+import {
   hasSequenceDrag,
   readSequenceDragItem,
   SEQUENCE_LIST_ITEM_CLASS,
@@ -65,6 +71,8 @@ export function WaypointRow(props: {
   onDeleteWaypoint: (id: string) => void;
   onAnnounce: (text: string) => void;
 }) {
+  const unitSystem = useMeasurementSystem();
+  const unit = distanceUnit(unitSystem);
   const {
     wp,
     sequenceId,
@@ -230,36 +238,42 @@ export function WaypointRow(props: {
         data-testid="ms-seq-fields"
       >
         <CompactAxisField
-          label={`Waypoint ${wp.seq} X`}
-          short="X"
-          value={wp.x}
+          label={`Waypoint ${wp.seq} X (${unit})`}
+          short={`X ${unit}`}
+          value={distanceToDisplay(wp.x, unitSystem)}
           className="flex-[1_1_0] min-w-0"
-          min={-500}
-          max={500}
-          step={0.5}
+          min={distanceToDisplay(-500, unitSystem)}
+          max={distanceToDisplay(500, unitSystem)}
+          step={unitSystem === "imperial" ? 1 : 0.5}
           disabled={generated}
-          onChange={(v) => patchWaypoint({ x: v })}
+          onChange={(v) =>
+            patchWaypoint({ x: distanceFromDisplay(v, unitSystem) })
+          }
         />
         <CompactAxisField
-          label={`Waypoint ${wp.seq} Y`}
-          short="Y"
-          value={wp.y}
+          label={`Waypoint ${wp.seq} Y (${unit})`}
+          short={`Y ${unit}`}
+          value={distanceToDisplay(wp.y, unitSystem)}
           className="flex-[1_1_0] min-w-0"
-          min={-500}
-          max={500}
-          step={0.5}
+          min={distanceToDisplay(-500, unitSystem)}
+          max={distanceToDisplay(500, unitSystem)}
+          step={unitSystem === "imperial" ? 1 : 0.5}
           disabled={generated}
-          onChange={(v) => patchWaypoint({ y: v })}
+          onChange={(v) =>
+            patchWaypoint({ y: distanceFromDisplay(v, unitSystem) })
+          }
         />
         <CompactAxisField
-          label={`Waypoint ${wp.seq} altitude`}
-          short="Z"
-          value={wp.z}
+          label={`Waypoint ${wp.seq} altitude (${unit})`}
+          short={`Z ${unit}`}
+          value={distanceToDisplay(wp.z, unitSystem)}
           className="flex-[1_1_0] min-w-0"
-          min={0}
-          max={150}
-          step={0.5}
-          onChange={(v) => patchWaypoint({ z: v })}
+          min={distanceToDisplay(0, unitSystem)}
+          max={distanceToDisplay(150, unitSystem)}
+          step={unitSystem === "imperial" ? 1 : 0.5}
+          onChange={(v) =>
+            patchWaypoint({ z: distanceFromDisplay(v, unitSystem) })
+          }
         />
       </div>
       <div

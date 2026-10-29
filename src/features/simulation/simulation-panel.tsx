@@ -4,19 +4,21 @@
 import { useEffect, useState } from "react";
 import {
   ArrowCounterClockwiseIcon,
+  CaretDownIcon,
+  CaretUpIcon,
   PauseIcon,
   PlayIcon,
+  QuestionIcon,
   StopIcon,
 } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
-import {
-  Tabs,
-  TabsIndicator,
-  TabsList,
-  TabsPanel,
-  TabsTab,
-} from "skytrack-ui/tabs";
+import { Tabs, TabsList, TabsPanel, TabsTab } from "skytrack-ui/tabs";
 import SimulationDetails from "./simulation-details";
+import { SimulationSettingsForm } from "./simulation-settings-form";
+import {
+  formatMeasurementText,
+  useMeasurementSystem,
+} from "../../shared/measurement-units";
 import type { StudioMission } from "../../domain/mission-model";
 import {
   type SimEventItem,
@@ -39,6 +41,9 @@ export interface SimulationPanelProps {
   log: SimLogLine[];
   fired: SimEventItem[];
   settings: SimSettings;
+  settingsOpen: boolean;
+  onSettingsOpenChange: (open: boolean) => void;
+  onSettingsChange: (settings: SimSettings) => void;
   showConsole: boolean;
   tab: string;
   onTabChange: (tab: string) => void;
@@ -57,6 +62,7 @@ export type { SimulationSettingsFormProps } from "./simulation-settings-form";
 export const AUTO_RESTART_DELAY_S = 5;
 
 export default function SimulationPanel(props: SimulationPanelProps) {
+  const unitSystem = useMeasurementSystem();
   const {
     mission,
     plan,
@@ -69,6 +75,9 @@ export default function SimulationPanel(props: SimulationPanelProps) {
     log,
     fired,
     settings,
+    settingsOpen,
+    onSettingsOpenChange,
+    onSettingsChange,
     showConsole,
     tab,
     onTabChange,
@@ -111,7 +120,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
     status === "completed" || status === "aborted" || status === "failed";
 
   return (
-    <div className="ms-inspector" data-testid="ms-sim-panel">
+    <div className="ms-inspector gap-0!" data-testid="ms-sim-panel">
       {!plan ? (
         <section className="ms-card" role="status">
           <h3 className="heading ms-card-title">Simulation locked</h3>
@@ -121,15 +130,69 @@ export default function SimulationPanel(props: SimulationPanelProps) {
         <Tabs
           value={activeTab}
           onValueChange={(v: unknown) => onTabChange(String(v))}
+          className="gap-0!"
         >
-          <TabsList aria-label="Simulation views">
-            <TabsTab value="details">Mission details</TabsTab>
-            <TabsTab value="events">Events</TabsTab>
-            {showConsole ? <TabsTab value="console">Console</TabsTab> : null}
-            <TabsIndicator />
-          </TabsList>
+          <div className="ms-pane-head sticky top-0 bg-(--card) z-2 in-[.ms-inspector]:bg-(--card)">
+            <div className="ms-pane-tabs flex items-center justify-between gap-2 p-3 min-h-16 border-b border-border">
+              <TabsList variant="filled" aria-label="Simulation views">
+                <TabsTab value="details">Mission details</TabsTab>
+                <TabsTab value="events">Events</TabsTab>
+                {showConsole ? (
+                  <TabsTab value="console">Console</TabsTab>
+                ) : null}
+              </TabsList>
+            </div>
+          </div>
 
           <TabsPanel value="details">
+            <section
+              className="flex flex-col gap-3 p-3 border-b border-border"
+              aria-label="Simulation settings"
+              data-testid="ms-sim-settings"
+            >
+              <div
+                className="flex items-center gap-1"
+                data-testid="ms-sim-settings-head"
+              >
+                <h3 className="h6 m-0">Simulation settings</h3>
+                <Button
+                  size="icon-xs"
+                  variant="ghost"
+                  aria-label="About simulation settings"
+                  title="Adjust playback, motion, wind, and failure injection."
+                >
+                  <QuestionIcon aria-hidden="true" />
+                </Button>
+                <span className="flex-[1_1_auto]" />
+                <Button
+                  size="icon-xs"
+                  variant="ghost"
+                  aria-expanded={settingsOpen}
+                  aria-label={
+                    settingsOpen
+                      ? "Collapse simulation settings"
+                      : "Expand simulation settings"
+                  }
+                  data-testid="ms-sim-settings-toggle"
+                  onClick={() => onSettingsOpenChange(!settingsOpen)}
+                >
+                  {settingsOpen ? (
+                    <CaretUpIcon aria-hidden="true" />
+                  ) : (
+                    <CaretDownIcon aria-hidden="true" />
+                  )}
+                </Button>
+              </div>
+              {settingsOpen ? (
+                <div className="flex flex-col gap-3">
+                  <SimulationSettingsForm
+                    settings={settings}
+                    maxSeq={mission.waypoints.length}
+                    onChange={onSettingsChange}
+                  />
+                </div>
+              ) : null}
+            </section>
             <SimulationDetails
               mission={mission}
               plan={plan}
@@ -144,28 +207,33 @@ export default function SimulationPanel(props: SimulationPanelProps) {
 
           <TabsPanel value="events">
             {fired.length === 0 ? (
-              <section className="ms-card" role="status">
-                <h3 className="heading ms-card-title">No events yet</h3>
-                <p className="ms-hint">
-                  Events appear here during a run — waypoint arrivals, actions,
-                  and return home.
-                </p>
-              </section>
+              <div className="p-3">
+                <section className="ms-card" role="status">
+                  <h3 className="heading ms-card-title">No events yet</h3>
+                  <p className="ms-hint">
+                    Events appear here during a run — waypoint arrivals,
+                    actions, and return home.
+                  </p>
+                </section>
+              </div>
             ) : (
               <ol
-                className=" [list-style:none] m-0 p-0 flex flex-col gap-1"
+                className=" [list-style:none] m-0 p-3 flex flex-col gap-1"
                 aria-label="Simulation events"
               >
                 {fired.map((ev, i) => (
                   <li key={`${ev.t}-${i}`}>
                     <button
                       type="button"
-                      className=" w-full flex gap-2 items-baseline text-left text-xs bg-(--background) text-(--foreground) border border-border rounded-(--radius) py-1.5 px-2 cursor-pointer [&:hover]:bg-(--accent) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
+                      className=" w-full flex gap-2 items-baseline text-left text-sm bg-(--background) text-(--foreground) border border-border rounded-(--radius) py-1.5 px-2 cursor-pointer [&:hover]:bg-(--accent) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
                       onClick={() => onSelectEvent(ev)}
-                      aria-label={`Focus ${ev.label}`}
+                      aria-label={`Focus ${formatMeasurementText(
+                        ev.label,
+                        unitSystem,
+                      )}`}
                     >
                       <span className="ms-event-t">{ev.t.toFixed(1)}s</span>
-                      <span>{ev.label}</span>
+                      <span>{formatMeasurementText(ev.label, unitSystem)}</span>
                     </button>
                   </li>
                 ))}
@@ -308,9 +376,6 @@ export default function SimulationPanel(props: SimulationPanelProps) {
           </>
         ) : null}
       </div>
-      <p className="ms-foot-note">
-        Flight path, LiDAR, and telemetry estimates follow simulation time.
-      </p>
     </div>
   );
 }

@@ -16,6 +16,7 @@ import {
 } from "./mission-scene-helpers";
 import type { RouteEntityContext } from "./committed-entity-context";
 import { readMissionDesignPreferences } from "../../shared/mission-design-preferences";
+import { formatDistance } from "../../shared/measurement-units";
 
 /** Add Route lines, derived transfers, waypoints, labels, insert markers, and vehicle. */
 export function addRouteEntities({
@@ -99,7 +100,7 @@ export function addRouteEntities({
         position: Cesium.Cartesian3.fromDegrees(g.lng, g.lat, mid.z),
         label: {
           ...legLabelStyle,
-          text: `${transfer.distanceM.toFixed(1)} m · Transfer`,
+          text: `${formatDistance(transfer.distanceM, preferences.unitSystem)} · Transfer`,
           font: "italic 600 12px sans-serif",
           fillColor: Cesium.Color.fromCssColorString("#c4b5fd"),
           pixelOffset: new Cesium.Cartesian2(0, -20),
@@ -218,7 +219,7 @@ export function addRouteEntities({
         position: Cesium.Cartesian3.fromDegrees(g.lng, g.lat, mid.z),
         label: {
           ...legLabelStyle,
-          text: `${lengthM.toFixed(1)} m`,
+          text: formatDistance(lengthM, preferences.unitSystem),
           font: "600 12px sans-serif",
           fillColor: Cesium.Color.WHITE,
           pixelOffset: new Cesium.Cartesian2(0, -20),

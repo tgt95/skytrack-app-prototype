@@ -14,6 +14,11 @@ import {
   type StudioMission,
 } from "../../domain/mission-model";
 import { refreshAvoidDetours } from "../../domain/mission-generation";
+import { readMissionDesignPreferences } from "../../shared/mission-design-preferences";
+import {
+  distanceToDisplay,
+  distanceUnit,
+} from "../../shared/measurement-units";
 
 interface UseMissionWaypointCommandsArgs {
   mission: StudioMission;
@@ -78,7 +83,7 @@ export function useMissionWaypointCommands({
       );
       commit(
         out,
-        `Waypoint ${wp.seq} added at ${wp.x}, ${wp.y}, altitude ${wp.z} m.${detourNote(out)}`,
+        `Waypoint ${wp.seq} added at ${distanceToDisplay(wp.x, readMissionDesignPreferences().unitSystem)}, ${distanceToDisplay(wp.y, readMissionDesignPreferences().unitSystem)}, altitude ${distanceToDisplay(wp.z, readMissionDesignPreferences().unitSystem)} ${distanceUnit(readMissionDesignPreferences().unitSystem)}.${detourNote(out)}`,
       );
       setSelection({ kind: "waypoint", id: wp.id });
     },
@@ -191,7 +196,7 @@ export function useMissionWaypointCommands({
       const out = refreshAvoidDetours(changedMission, changedMission);
       commit(
         out,
-        `Waypoint ${wp.seq} altitude set to ${rounded.toFixed(1)} m.${detourNote(out)}`,
+        `Waypoint ${wp.seq} altitude set to ${distanceToDisplay(rounded, readMissionDesignPreferences().unitSystem).toFixed(1)} ${distanceUnit(readMissionDesignPreferences().unitSystem)}.${detourNote(out)}`,
       );
       setSelection({ kind: "waypoint", id });
     },
@@ -226,7 +231,7 @@ export function useMissionWaypointCommands({
       );
       commit(
         out,
-        `Waypoint ${wp.seq} moved to ${nx}, ${ny}; altitude kept at ${wp.z.toFixed(1)} m.${detourNote(out)}`,
+        `Waypoint ${wp.seq} moved to ${distanceToDisplay(nx, readMissionDesignPreferences().unitSystem)}, ${distanceToDisplay(ny, readMissionDesignPreferences().unitSystem)}; altitude kept at ${distanceToDisplay(wp.z, readMissionDesignPreferences().unitSystem).toFixed(1)} ${distanceUnit(readMissionDesignPreferences().unitSystem)}.${detourNote(out)}`,
       );
       setSelection({ kind: "waypoint", id });
     },

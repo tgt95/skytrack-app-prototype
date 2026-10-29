@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "skytrack-ui/button";
+import { Dropzone } from "skytrack-ui/dropzone";
 import {
   Dialog,
   DialogBackdrop,
@@ -11,7 +12,13 @@ import {
   DialogPortal,
   DialogTitle,
 } from "skytrack-ui/dialog";
-import { FieldControl, FieldLabel, FieldRoot } from "skytrack-ui/field";
+import {
+  FieldControl,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+  FieldRoot,
+} from "skytrack-ui/field";
 import {
   Select,
   SelectIcon,
@@ -49,15 +56,17 @@ function TextField({
   placeholder,
   onChange,
   required = false,
+  error,
 }: {
   label: string;
   value: string;
   placeholder?: string;
   onChange: (value: string) => void;
   required?: boolean;
+  error?: string;
 }) {
   return (
-    <FieldRoot className="ms-field">
+    <FieldRoot className="ms-field" invalid={Boolean(error)}>
       <FieldLabel>{label}</FieldLabel>
       <FieldControl
         value={value}
@@ -65,6 +74,7 @@ function TextField({
         placeholder={placeholder}
         required={required}
       />
+      {error ? <FieldError match={true}>{error}</FieldError> : null}
     </FieldRoot>
   );
 }
@@ -125,6 +135,7 @@ export function WorldProfileDialog({
   sourceMissions,
   onClose,
   onSave,
+  onImportWorld,
 }: {
   open: boolean;
   mode: "create" | "edit";
@@ -132,23 +143,38 @@ export function WorldProfileDialog({
   sourceMissions: SourceMissionOption[];
   onClose: () => void;
   onSave: (profile: WorkspaceWorldRecord) => void;
+  onImportWorld: (
+    profile: WorkspaceWorldRecord,
+    file: File,
+    mode: "create" | "edit",
+  ) => Promise<void>;
 }) {
   const [draft, setDraft] = useState<WorkspaceWorldRecord | null>(profile);
   const [error, setError] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [worldFile, setWorldFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     setDraft(profile);
     setError("");
+    setNameError("");
+    setWorldFile(null);
+    setFileError("");
+    setSubmitting(false);
   }, [profile, open]);
   if (!draft) return null;
 
   const patch = (values: Partial<WorkspaceWorldRecord>) =>
     setDraft((current) => (current ? { ...current, ...values } : current));
-  const save = () => {
-    if (!draft.name.trim()) {
-      setError("Enter a World name.");
-      return;
-    }
+  const save = async () => {
+    setError("");
+    const hasName = Boolean(draft.name.trim());
+    const hasFile = mode !== "create" || Boolean(worldFile);
+    setNameError(hasName ? "" : "Enter a World name.");
+    setFileError(hasFile ? "" : "Choose a .glb file.");
+    if (!hasName || !hasFile) return;
     if (draft.status === "Registered") {
       const hasSource =
         draft.sourceType === "mission"
@@ -162,7 +188,24 @@ export function WorldProfileDialog({
         return;
       }
     }
-    onSave({ ...draft, name: draft.name.trim() });
+    const cleanDraft = { ...draft, name: draft.name.trim() };
+    if (worldFile) {
+      setSubmitting(true);
+      setError("");
+      try {
+        await onImportWorld(cleanDraft, worldFile, mode);
+      } catch (importError) {
+        setFileError(
+          importError instanceof Error
+            ? importError.message
+            : "The World could not be imported. Check the GLB file and try again.",
+        );
+      } finally {
+        setSubmitting(false);
+      }
+      return;
+    }
+    onSave(cleanDraft);
   };
 
   return (
@@ -193,7 +236,7 @@ export function WorldProfileDialog({
               this World.
             </DialogDescription>
           </DialogHeader>
-          <div className="ms-drone-dialog-body">
+          <div className="ms-drone-dialog-body flex-1">
             <section className="ms-drone-form-section">
               <div className="ms-drone-section-heading">
                 <h2 className="heading m-0 text-sm font-semibold">
@@ -204,13 +247,17 @@ export function WorldProfileDialog({
                   World.
                 </p>
               </div>
-              <div className="ms-drone-form-grid">
+              <div className="ms-drone-form-grid gap-2">
                 <TextField
-                  label="World name"
+                  label="World name *"
                   value={draft.name}
-                  onChange={(name) => patch({ name })}
+                  onChange={(name) => {
+                    patch({ name });
+                    setNameError("");
+                  }}
                   placeholder="e.g. East campus reconstruction"
                   required
+                  error={nameError}
                 />
                 <TextField
                   label="Location"
@@ -336,9 +383,90 @@ export function WorldProfileDialog({
                   }
                   placeholder="URL or storage path; reference only"
                 />
+                <FieldRoot
+                  className="ms-field ms-drone-form-wide"
+                  invalid={Boolean(fileError)}
+                >
+                  <FieldLabel id="ms-world-glb-file-label">
+                    {mode === "create" ? "World file *" : "World file"}
+                  </FieldLabel>
+                  {mode === "edit" && draft.glbFileName ? (
+                    <FieldDescription>
+                      Current file: {draft.glbFileName}
+                      {draft.glbFileSize
+                        ? ` · ${(draft.glbFileSize / 1_000_000).toFixed(1)} MB`
+                        : ""}
+                    </FieldDescription>
+                  ) : null}
+                  <Dropzone
+                    className="w-full min-h-28 p-2"
+                    accept=".glb,model/gltf-binary"
+                    multiple={false}
+                    disabled={submitting}
+                    aria-labelledby="ms-world-glb-file-label"
+                    data-testid="ms-world-glb-file-dropzone"
+                    buttonLabel={
+                      worldFile
+                        ? "Choose another GLB"
+                        : mode === "edit" && draft.glbFileName
+                          ? "Replace GLB file"
+                          : "Choose GLB file"
+                    }
+                    hint="Choose a .glb model or drop it here."
+                    onFilesSelected={(files) => {
+                      const file = files[0];
+                      if (!file) return;
+                      if (!file.name.toLowerCase().endsWith(".glb")) {
+                        setWorldFile(null);
+                        setFileError("Choose a .glb file.");
+                        return;
+                      }
+                      setWorldFile(file);
+                      setFileError("");
+                      if (mode === "create" && !draft.name.trim()) {
+                        patch({
+                          name: file.name.replace(/\.glb$/iu, "").trim(),
+                        });
+                        setNameError("");
+                      }
+                    }}
+                  />
+                  {worldFile ? (
+                    <FieldDescription>
+                      Selected: {worldFile.name}
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        disabled={submitting}
+                        onClick={() => {
+                          setWorldFile(null);
+                          setFileError("");
+                        }}
+                      >
+                        Remove file
+                      </Button>
+                    </FieldDescription>
+                  ) : null}
+                  {mode === "edit" && worldFile ? (
+                    <FieldDescription
+                      role="alert"
+                      className="text-(--warning)"
+                      data-testid="ms-world-glb-replacement-warning"
+                    >
+                      {draft.glbFileName
+                        ? `Saving will replace ${draft.glbFileName} with ${worldFile.name}.`
+                        : `Saving will add ${worldFile.name} to this World.`}
+                    </FieldDescription>
+                  ) : null}
+                  {fileError ? (
+                    <FieldError match={true}>{fileError}</FieldError>
+                  ) : null}
+                </FieldRoot>
                 <div className="ms-resource-note ms-drone-form-wide">
-                  Source and reconstruction references are saved as text only.
-                  No flight or reconstruction asset is verified.
+                  {mode === "create"
+                    ? "The GLB file is stored in this browser. Source and reconstruction references remain text only."
+                    : "Source and reconstruction references are saved as text only. The GLB file is stored in this browser."}
                 </div>
                 <TextField
                   label="Note"
@@ -359,14 +487,28 @@ export function WorldProfileDialog({
             ) : null}
           </div>
           <DialogFooter>
-            <DialogClose className="w-auto flex-[0_0_auto]">Cancel</DialogClose>
+            <DialogClose
+              disabled={submitting}
+              className="w-auto flex-[0_0_auto]"
+            >
+              Cancel
+            </DialogClose>
             <Button
               size="sm"
               variant="default"
               onClick={save}
+              disabled={submitting}
               className="w-auto flex-[0_0_auto]"
             >
-              {mode === "create" ? "Save World" : "Save changes"}
+              {submitting
+                ? "Importing World…"
+                : mode === "create"
+                  ? "Save World"
+                  : worldFile
+                    ? draft.glbFileName
+                      ? "Replace file & save"
+                      : "Add file & save"
+                    : "Save changes"}
             </Button>
           </DialogFooter>
         </DialogPopup>

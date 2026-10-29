@@ -58,7 +58,7 @@ export function useStudioStageActions({
       setStage(next);
       setTool("select");
       setPending([]);
-      setSimSettingsOpen(false);
+      setSimSettingsOpen(next === "simulation");
       say(
         next === "simulation"
           ? "Simulation stage. Design preserved."

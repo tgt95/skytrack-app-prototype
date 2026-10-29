@@ -65,6 +65,10 @@
   @apply inline-flex items-center justify-center min-w-4.5 h-4.5 py-0 px-1.25 border border-border rounded-full bg-(--muted) text-(--muted-foreground) text-[0.6875rem] font-bold leading-none;
 }
 
+.ms-stage-num[data-active] {
+  @apply bg-primary text-primary-foreground [border-color:transparent];
+}
+
 /* ------------------------- app tabs (Plan / Fly / Report) ------------------------- */
 
 /* ------------------------- Fly / Report placeholders ------------------------- */

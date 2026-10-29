@@ -7,7 +7,7 @@ import {
   ListChecksIcon,
   PathIcon,
 } from "@phosphor-icons/react";
-import { Tabs, TabsIndicator, TabsList, TabsTab } from "skytrack-ui/tabs";
+import { Tabs, TabsList, TabsTab } from "skytrack-ui/tabs";
 import { Toolbar, ToolbarGroup } from "skytrack-ui/toolbar";
 import { Separator } from "skytrack-ui/separator";
 import { AreaIcon, AvoidZoneIcon } from "../../ui/components/icons";
@@ -114,7 +114,6 @@ function StudioLeftRail({
               </TabsTab>
             );
           })}
-          <TabsIndicator />
         </TabsList>
       </Tabs>
       <Toolbar

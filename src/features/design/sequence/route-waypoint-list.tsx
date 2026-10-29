@@ -5,13 +5,11 @@
 import { Fragment } from "react";
 import { Badge } from "skytrack-ui/badge";
 import type {
-  MissionAIWorkflow,
   CameraActionKind,
   ReconFlightSettings,
   SceneSelection,
   StudioMission,
 } from "../../../domain/mission-model";
-import { uid } from "../../../domain/mission-model";
 import type { AIModelCardModel } from "../../../ui/components/ai-model-card";
 import { AIWorkflowCard, AIWorkflowStopRow } from "./ai-workflow-card";
 import type { DerivedTransfer } from "../../../domain/transfer-planner";
@@ -20,6 +18,7 @@ import {
   SequenceActionRow,
 } from "./sequence-action-controls";
 import { WaypointRow } from "./waypoint-row";
+import { createAIWorkflowAt } from "./ai-workflow-utils";
 import {
   SEQUENCE_LIST_ITEM_CLASS,
   type SequenceDropPosition,
@@ -170,17 +169,6 @@ export function RouteWaypointList({
           sequenceId={sequenceId}
           waypointId={waypoint.id}
           onMoveAction={onMoveAction}
-          onDelete={() =>
-            onUpdateMission(
-              {
-                ...mission,
-                aiWorkflows: (mission.aiWorkflows ?? []).filter(
-                  (item) => item.id !== workflow.id,
-                ),
-              },
-              `${workflow.label} removed.`,
-            )
-          }
         />
       ));
   const moveWorkflowStart = (
@@ -272,26 +260,14 @@ export function RouteWaypointList({
     );
     const waypoint = routeWaypoints[waypointIndex];
     if (!waypoint) return;
-    const workflowCount = (mission.aiWorkflows ?? []).filter(
-      (workflow) => workflow.sequenceId === workflowSequenceId,
-    ).length;
-    const workflow: MissionAIWorkflow = {
-      id: uid("ai-flow"),
-      label: `AI Flow ${workflowCount + 1}`,
-      sequenceType: generatedWaypoints ? "area" : "route",
+    const workflow = createAIWorkflowAt({
       sequenceId: workflowSequenceId,
-      startWaypointId: wpId,
-      stopWaypointId: routeWaypoints[waypointIndex + 1]?.id ?? wpId,
-      startAfterActionId:
-        actionIndex > 0
-          ? (waypoint.actions[actionIndex - 1]?.id ?? null)
-          : null,
-      modelId: null,
-      objectClass: "Person",
-      confidenceScore: 0.5,
-      ifActions: [],
-      elseActions: [],
-    };
+      sequenceType: generatedWaypoints ? "area" : "route",
+      waypoint,
+      nextWaypointId: routeWaypoints[waypointIndex + 1]?.id,
+      actionIndex,
+      existingWorkflows: mission.aiWorkflows ?? [],
+    });
     onUpdateMission(
       { ...mission, aiWorkflows: [...(mission.aiWorkflows ?? []), workflow] },
       `${workflow.label} added.`,
