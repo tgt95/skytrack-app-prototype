@@ -167,7 +167,7 @@ test("mission summaries use Area metrics when Area geometry exists", () => {
   );
 
   assert.match(markup, /data-testid="ms-lib-card-summary"/);
-  assert.match(markup, /aria-label="10000 square meters"/);
+  assert.match(markup, /aria-label="1 ha"/);
   assert.match(markup, />1 ha</);
   assert.match(markup, /aria-label="3 waypoints"/);
   assert.match(markup, /aria-label="1 drone actions"/);
@@ -196,7 +196,7 @@ test("mission summaries use rounded route length when no Area exists", () => {
     }),
   );
 
-  assert.match(markup, /aria-label="100 meters"/);
+  assert.match(markup, /aria-label="100 m"/);
   assert.match(markup, />100 m</);
   assert.doesNotMatch(markup, /square meters/);
 });

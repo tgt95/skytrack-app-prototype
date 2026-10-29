@@ -51,6 +51,13 @@ class FakePolylineDashMaterialProperty {
   }
 }
 
+class FakeDistanceDisplayCondition {
+  constructor(near, far) {
+    this.near = near;
+    this.far = far;
+  }
+}
+
 const FakeCartesian3 = {
   fromDegrees(lng, lat, height) {
     return { kind: "point", lng, lat, height };
@@ -73,6 +80,8 @@ const Cesium = {
     },
   },
   Color: FakeColor,
+  DistanceDisplayCondition: FakeDistanceDisplayCondition,
+  LabelStyle: { FILL_AND_OUTLINE: "FILL_AND_OUTLINE" },
   PolygonHierarchy: FakePolygonHierarchy,
   PolylineDashMaterialProperty: FakePolylineDashMaterialProperty,
   VerticalOrigin: { CENTER: "CENTER" },

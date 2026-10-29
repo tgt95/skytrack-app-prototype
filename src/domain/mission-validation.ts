@@ -152,7 +152,9 @@ export function snapshotOf(mission: StudioMission): string {
     return snapshotAvoid
   })
   const routes = mission.routes?.map(canonicalizeReconSettings)
-  return JSON.stringify({ ...mission, routes, areas, avoids })
+  const snapshot = { ...mission, routes, areas, avoids }
+  if (!snapshot.aiWorkflows?.length) delete snapshot.aiWorkflows
+  return JSON.stringify(snapshot)
 }
 
 const cameraActionKinds = new Set<CameraActionKind>(['photo', 'video-start', 'video-stop', 'lidar-scan'])

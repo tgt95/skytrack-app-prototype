@@ -45,6 +45,7 @@ test("compass catalog retains every face, diagonal, and oblique snap ID", () => 
     ],
   );
   assert.deepEqual(resolveMissionSnap("top"), {
+    heading: 0,
     pitch: MISSION_CUBE_TOP_PITCH,
   });
   assert.equal(resolveMissionSnap("unknown"), null);
@@ -53,6 +54,7 @@ test("compass catalog retains every face, diagonal, and oblique snap ID", () => 
 
 test("compass center regions retain the five face snaps", () => {
   assert.deepEqual(resolveRegionSnap("TOP", 0, 0), {
+    heading: 0,
     pitch: MISSION_CUBE_TOP_PITCH,
   });
   for (const [face, heading] of [

@@ -91,7 +91,7 @@ export default function SimulationDetails ({
           </AccordionHeader>
           <AccordionPanel>
             {telemetry ? (
-              <>
+              <div data-testid='ms-telemetry'>
                 <dl
                   className='m-0 grid grid-cols-[2.1fr_1fr] gap-3 px-3 pb-3'
                   data-testid='ms-telemetry-1'
@@ -136,7 +136,7 @@ export default function SimulationDetails ({
                     value={formatDistance(telemetry.homeDistM, unitSystem)}
                   />
                 </dl>
-              </>
+              </div>
             ) : (
               <p className='ms-hint'>Run the simulation to view telemetry.</p>
             )}

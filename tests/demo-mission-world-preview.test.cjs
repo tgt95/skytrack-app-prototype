@@ -3,6 +3,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const projects = require("../src/features/library/database/projects.json");
+const leevilleMission = require("../src/features/library/database/missions/leeville-pike-flight.json");
 const { missionFromSnapshot } = require("../src/domain/mission-model.ts");
 const {
   resolveMissionWorldAssetId,
@@ -13,34 +14,32 @@ const previewDir = path.join(
   "../src/features/library/database/worlds/previews",
 );
 
-test("p1 seeds a restorable Santorini 2D mission and 750 Railroad 3D mission", () => {
+test("p1 seeds the restorable Leeville Pike stakeholder mission", () => {
   const project = projects.find((item) => item.id === "p1");
   assert.ok(project, "the p1 project seed exists");
+  assert.equal(project.name, "Tuan's project");
 
-  const santoriniRecord = project.missions.find((item) => item.id === "m1");
-  assert.ok(santoriniRecord, "the Santorini demo record exists");
-  const santorini = missionFromSnapshot(santoriniRecord.missionData);
-  assert.equal(santorini.name, "Santorini coastal survey");
-  assert.equal(santorini.worldType, "2D");
-  assert.equal(santorini.world, "Blank space");
-  assert.deepEqual(santorini.origin, { lat: 36.3932, lng: 25.4615 });
-
-  const railroadRecord = project.missions.find((item) => item.id === "m2");
-  assert.ok(railroadRecord, "the 750 Railroad demo record exists");
-  const railroad = missionFromSnapshot(railroadRecord.missionData);
-  assert.equal(railroad.name, "750 Railroad Ave property survey");
-  assert.equal(railroad.worldType, "3D");
-  assert.equal(railroad.world, "750 Railroad Ave");
-  assert.equal(railroad.worldId, "bundled-world-750-railroad-ave");
+  const missionRecord = project.missions.find(
+    (item) => item.id === "m-local-mvrqcly0-101",
+  );
+  assert.ok(missionRecord, "the Leeville Pike mission record exists");
+  const mission = missionFromSnapshot(JSON.stringify(leevilleMission));
+  assert.equal(mission.name, "Leeville Pike Flight");
+  assert.equal(mission.worldType, "3D");
+  assert.equal(mission.world, "Leeville Pike roof assessment");
+  assert.equal(mission.waypoints.length, 26);
+  assert.equal(mission.areas.length, 2);
+  assert.equal(mission.avoids.length, 1);
+  assert.equal(mission.aiWorkflows.length, 1);
   assert.equal(
-    resolveMissionWorldAssetId(railroad, [
+    resolveMissionWorldAssetId(mission, [
       {
-        id: "sample-world-tuan-workspace-750-railroad-ave",
-        name: "750 Railroad Ave",
-        glbAssetId: "bundled-world-750-railroad-ave",
+        id: "sample-world-tuan-workspace-leeville-pike-roof-assessment",
+        name: "Leeville Pike roof assessment",
+        glbAssetId: "bundled-world-leeville-pike-roof-assessment",
       },
     ]),
-    "bundled-world-750-railroad-ave",
+    "bundled-world-leeville-pike-roof-assessment",
   );
 });
 

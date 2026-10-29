@@ -42,6 +42,7 @@ test("status footer preserves its live status and accessible actions", () => {
   assert.match(footer, /data-testid="ms-status-actions"/);
   assert.match(footer, /aria-label="Keyboard shortcuts"/);
   assert.match(footer, /aria-label="Toggle inspector panel"/);
-  assert.match(footer, /wind \$\{ui\.settings\.windMS\} m\/s · GPS RTK/);
+  assert.match(footer, /formatDistance\(simulation\.telemetry\.homeDistM, unitSystem, 0\)/);
+  assert.match(footer, /speedToDisplay\(ui\.settings\.windMS, unitSystem\)/);
   assert.match(footer, /dirty \? " · unsaved" : " · saved"/);
 });

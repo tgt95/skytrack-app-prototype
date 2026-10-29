@@ -67,16 +67,19 @@ test("wizard step views preserve the labels, empty states, and test hooks", () =
 test("terrain Dropzone remains separate from the 3D World GLB picker", () => {
   const world = read("create-wizard/world-step.tsx");
 
-  assert.ok(world.includes("import { Dropzone } from 'skytrack-ui/dropzone'"));
-  assert.ok(world.includes("data-testid='ms-wizard-filebtn'"));
-  assert.ok(world.includes("buttonLabel='Choose File'"));
+  assert.match(
+    world,
+    /import\s*\{\s*Dropzone\s*\}\s*from\s*["']skytrack-ui\/dropzone["']/,
+  );
+  assert.match(world, /data-testid=["']ms-wizard-filebtn["']/);
+  assert.match(world, /buttonLabel=["']Choose File["']/);
   assert.ok(world.includes("multiple={false}"));
   assert.match(
     world,
-    /onFilesSelected=\{files =>[\s\S]*?onTerrainFileSelect\(file\.name\)/,
+    /onFilesSelected=\{\(files\)\s*=>\s*\{[\s\S]*?onTerrainFileSelect\(file\.name\)/,
   );
   assert.doesNotMatch(world, /terrainInputRef/);
-  assert.ok(world.includes("data-testid='ms-wizard-world-file-input'"));
-  assert.ok(world.includes("accept='.glb,model/gltf-binary'"));
-  assert.match(world, /if \(file\) onImportWorld\(file\)/);
+  assert.match(world, /data-testid=["']ms-wizard-world-file-dropzone["']/);
+  assert.match(world, /accept=["']\.glb,model\/gltf-binary["']/);
+  assert.match(world, /await onImportWorld\(worldFile, cleanName\)/);
 });

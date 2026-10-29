@@ -152,11 +152,11 @@ test("Library source has one status region and routes dynamic messages through i
   assert.equal(jsxStatusElements(worldStepPath).length, 2);
   assert.match(
     worldStepSource,
-    /importingWorld \? \([\s\S]*?<FieldDescription role='status'>/,
+    /importingWorld \? \([\s\S]*?<FieldDescription role=["']status["']>/,
   );
   assert.match(
     worldStepSource,
-    /worldImportMessage \? \([\s\S]*?<FieldDescription role='status'>/,
+    /worldImportMessage \? \([\s\S]*?<FieldDescription role=["']status["']>/,
   );
 
   const librarySource = fs.readFileSync(

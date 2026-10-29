@@ -20,9 +20,9 @@ test("simulation panel keeps tab selection, countdown, and run controls", () => 
 
 test("simulation detail view owns telemetry and route rendering without state", () => {
   assert.match(panel, /<SimulationDetails/);
-  assert.match(details, /data-testid="ms-telemetry"/);
-  assert.match(details, /data-testid="ms-route-progress"/);
-  assert.match(details, /data-testid="ms-route-list"/);
+  assert.match(details, /data-testid=["']ms-telemetry["']/);
+  assert.match(details, /data-testid=["']ms-route-progress["']/);
+  assert.match(details, /data-testid=["']ms-route-list["']/);
   assert.doesNotMatch(details, /useEffect|useState/);
   assert.doesNotMatch(details, /from ["']\.\/simulation-panel["']/);
 });
@@ -36,7 +36,7 @@ test("settings form keeps limits and the compatibility export", () => {
   assert.match(settings, /Math\.min\(20, Math\.max\(1, Math\.round\(v\)\)\)/);
   assert.match(
     settings,
-    /Math\.min\(maxSeq, Math\.max\(0, Math\.round\(v\)\)\)/,
+    /Math\.min\(\s*maxSeq,\s*Math\.max\(0,\s*Math\.round\(v\)\),?\s*\)/,
   );
   assert.match(settings, /from ["']\.\/simulation-types["']/);
   assert.doesNotMatch(settings, /from ["']\.\/simulation-panel["']/);
