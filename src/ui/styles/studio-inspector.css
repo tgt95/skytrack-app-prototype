@@ -34,7 +34,7 @@
 }
 
 .ms-zone-settings {
-  @apply flex flex-col gap-2 mt-2.5 pt-2.5 border-t border-t-border;
+  @apply flex flex-col gap-2 p-3 border-t border-t-border;
 }
 
 .ms-field {
@@ -78,7 +78,7 @@
 }
 
 .ms-axis {
-  @apply grow-0 shrink-0 basis-3 text-[0.6875rem] font-semibold text-(--muted-foreground);
+  @apply grow-0 shrink-0 basis-3 whitespace-nowrap text-[0.6875rem] font-semibold text-(--muted-foreground);
 }
 
 .ms-issue {

@@ -355,7 +355,7 @@ export default function AreaInspectorCard({
         <>
           {editing ? (
             <form
-              className="flex flex-col gap-2 mt-2.5 pt-2.5 pb-3 mb-3 border-y border-border"
+              className="flex flex-col gap-2 mt-2.5 p-3"
               aria-label={`${area.label} scan settings`}
               onKeyDown={(event) => {
                 if (event.key === "Escape") {

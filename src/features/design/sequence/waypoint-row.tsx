@@ -239,7 +239,7 @@ export function WaypointRow(props: {
       >
         <CompactAxisField
           label={`Waypoint ${wp.seq} X (${unit})`}
-          short={`X ${unit}`}
+          short="X"
           value={distanceToDisplay(wp.x, unitSystem)}
           className="flex-[1_1_0] min-w-0"
           min={distanceToDisplay(-500, unitSystem)}
@@ -252,7 +252,7 @@ export function WaypointRow(props: {
         />
         <CompactAxisField
           label={`Waypoint ${wp.seq} Y (${unit})`}
-          short={`Y ${unit}`}
+          short="Y"
           value={distanceToDisplay(wp.y, unitSystem)}
           className="flex-[1_1_0] min-w-0"
           min={distanceToDisplay(-500, unitSystem)}
@@ -265,7 +265,7 @@ export function WaypointRow(props: {
         />
         <CompactAxisField
           label={`Waypoint ${wp.seq} altitude (${unit})`}
-          short={`Z ${unit}`}
+          short="Z"
           value={distanceToDisplay(wp.z, unitSystem)}
           className="flex-[1_1_0] min-w-0"
           min={distanceToDisplay(0, unitSystem)}

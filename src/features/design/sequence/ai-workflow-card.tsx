@@ -371,6 +371,7 @@ export function AIWorkflowCard ({
       <div className={`${WORKFLOW_BOUNDARY_ROW_CLASS} items-start py-0`}>
         <Collapsible defaultOpen className='min-w-0 flex-1'>
           <CollapsibleTrigger
+            nativeButton={false}
             className='group flex w-full min-w-0 cursor-pointer items-center gap-2 rounded-none border-0 bg-transparent text-left text-xs text-foreground hover:bg-transparent focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1'
             aria-label={`${workflow.label} Start workflow details`}
             data-testid={`ms-ai-workflow-toggle-${workflow.id}`}
@@ -612,7 +613,6 @@ export function AIWorkflowCard ({
                 </div>
               </div>
             </section>
-
             <section
               className='relative rounded-(--radius) border border-border bg-(--card) shadow-xs'
               aria-label='Drone actions'
