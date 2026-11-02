@@ -121,10 +121,12 @@ function StudioLeftRail({
         aria-label="Mission tools"
         className="ms-rail-bottom [@media_(max-width:_61.25rem)]:mt-0 [@media_(max-width:_61.25rem)]:flex-row [@media_(max-width:_61.25rem)]:items-center [@media_(max-width:_61.25rem)]:justify-start [@media_(max-width:_61.25rem)]:overflow-x-auto [@media_(max-width:_61.25rem)]:pb-0.5 mt-auto flex flex-col items-center gap-2.5 [.ms-rail-bottom&]:bg-transparent [.ms-rail-bottom&]:[border:0] [.ms-rail-bottom&]:rounded-none [.ms-rail-bottom&]:p-0"
       >
-        <ToolbarGroup
-          aria-label="Draw tools"
-          className=" [@media_(max-width:_61.25rem)]:flex-row [@media_(max-width:_61.25rem)]:items-center [@media_(max-width:_61.25rem)]:flex-[0_0_auto] flex flex-col items-center gap-1"
-        >
+        {appTab !== "report" ? (
+          <>
+            <ToolbarGroup
+              aria-label="Draw tools"
+              className=" [@media_(max-width:_61.25rem)]:flex-row [@media_(max-width:_61.25rem)]:items-center [@media_(max-width:_61.25rem)]:flex-[0_0_auto] flex flex-col items-center gap-1"
+            >
           <ToolButton
             label="Cursor"
             hint="Select · Esc"
@@ -202,12 +204,14 @@ function StudioLeftRail({
           >
             <AvoidZoneIcon aria-hidden="true" />
           </ToolButton>
-        </ToolbarGroup>
-        <Separator
-          orientation="horizontal"
-          aria-hidden="true"
-          className="w-8"
-        />
+            </ToolbarGroup>
+            <Separator
+              orientation="horizontal"
+              aria-hidden="true"
+              className="w-8"
+            />
+          </>
+        ) : null}
         <AccountMenu
           profile={accountProfile}
           themePreference={themePreference}
