@@ -622,6 +622,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
               requestRenderMode: true,
               maximumRenderTimeChange: Number.POSITIVE_INFINITY,
               msaaSamples: 4,
+              contextOptions: { webgl: { alpha: true } },
               showRenderLoopErrors: false,
             }),
           destroyViewer: (viewer) => {

@@ -28,6 +28,54 @@ interface MissionSceneHandleArgs {
 
 export function createMissionSceneHandle({ viewerRef, cesiumRef, fitRef, missionRef, planRef, reducedRef, clockRef, topDownRef, zdragRef, wpDragRef, pendingDragRef, editControlsRef, abortPendingDrag, abortWpDrag, abortZdrag }: MissionSceneHandleArgs): MissionSceneHandle {
   return {
+    downloadMapImage: () => {
+      const viewer = viewerRef.current
+      const Cesium = cesiumRef.current
+      if (!viewer || !Cesium || viewer.isDestroyed()) return false
+
+      const previousBackground = viewer.scene.backgroundColor.clone()
+      const imageCanvas: { current: HTMLCanvasElement | null } = { current: null }
+      let removePostRender: (() => void) | undefined
+      try {
+        // Capture Cesium's scene canvas only. DOM controls and review markup stay out.
+        viewer.scene.backgroundColor = Cesium.Color.TRANSPARENT
+        removePostRender = viewer.scene.postRender.addEventListener(() => {
+          const canvas = document.createElement('canvas')
+          canvas.width = viewer.canvas.width
+          canvas.height = viewer.canvas.height
+          const context = canvas.getContext('2d')
+          if (context) {
+            context.drawImage(viewer.canvas, 0, 0)
+            imageCanvas.current = canvas
+          }
+          removePostRender?.()
+        })
+        viewer.scene.requestRender()
+        viewer.render()
+        if (!imageCanvas.current) return false
+
+        const link = document.createElement('a')
+        const safeName = (missionRef.current.name || 'mission')
+          .replace(/[<>:"/\\|?*]/g, '-')
+          .replace(/\s+/g, ' ')
+          .trim()
+        link.download = `${safeName || 'mission'}-map.png`
+        link.href = imageCanvas.current.toDataURL('image/png')
+        document.body.append(link)
+        try {
+          link.click()
+        } finally {
+          link.remove()
+        }
+        return true
+      } catch {
+        return false
+      } finally {
+        removePostRender?.()
+        viewer.scene.backgroundColor = previousBackground
+        viewer.scene.requestRender()
+      }
+    },
     resetCamera: () => {
       const viewer = viewerRef.current
       const Cesium = cesiumRef.current

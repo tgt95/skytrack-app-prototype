@@ -1,5 +1,6 @@
 import {
   CrosshairIcon,
+  DownloadSimpleIcon,
   GearIcon,
   MagnifyingGlassMinusIcon,
   MagnifyingGlassPlusIcon,
@@ -269,6 +270,26 @@ export function StudioMapControls ({
                         </div>
                       ) : null}
                     </div>
+                  </div>
+                  <div className='border-t border-(--border) pt-3'>
+                    <Button
+                      type='button'
+                      variant='outline'
+                      size='sm'
+                      className='w-full justify-start'
+                      data-testid='ms-map-image-download'
+                      onClick={() => {
+                        const downloaded = sceneRef.current?.downloadMapImage() ?? false
+                        onAnnounce(
+                          downloaded
+                            ? 'Map image downloaded as a transparent PNG.'
+                            : 'Map image could not be downloaded.'
+                        )
+                      }}
+                    >
+                      <DownloadSimpleIcon aria-hidden='true' />
+                      Download map image
+                    </Button>
                   </div>
                 </PopoverPopup>
               </PopoverPositioner>
