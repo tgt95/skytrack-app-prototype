@@ -22,7 +22,7 @@
 
 /* Focus ring for both card triggers (kept for keyboard access). */
 .ms-drone-card {
-  @apply flex items-stretch gap-0 bg-(--card) border border-border rounded-(--radius) p-0.5 pointer-events-auto;
+  @apply flex items-center gap-0 bg-(--card) border border-border rounded-(--radius) p-0.5 pointer-events-auto;
 }
 
 .ms-drone-thumb {
