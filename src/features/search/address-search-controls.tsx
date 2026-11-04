@@ -201,7 +201,7 @@ export default function AddressSearchControls({
           data-testid="ms-address-suggestions"
         >
           {addressSuggestionBusy ? (
-            <div className="ms-address-suggestions-status" role="status">
+            <div className="ms-address-suggestions-status py-2 px-2.5 text-(--muted-foreground) text-xs" role="status">
               Searching places…
             </div>
           ) : null}
@@ -230,7 +230,7 @@ export default function AddressSearchControls({
           ) : addressSuggestionResolvedQuery === addressQuery.trim() &&
             addressQuery.trim().length >= 3 &&
             !addressSuggestionBusy ? (
-            <div className="ms-address-suggestions-status">
+            <div className="ms-address-suggestions-status py-2 px-2.5 text-(--muted-foreground) text-xs">
               No matching places.
             </div>
           ) : null}

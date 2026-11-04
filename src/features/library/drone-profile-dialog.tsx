@@ -180,7 +180,7 @@ export default function DroneProfileDialog({
               compatibility is not checked and no flight hardware is connected.
             </DialogDescription>
           </DialogHeader>
-          <div className="ms-drone-dialog-body">
+          <div className="ms-drone-dialog-body flex flex-col gap-6 min-h-0 overflow-auto [@media_(max-width:_45rem)]:pt-1 [@media_(max-width:_45rem)]:px-3.5 [@media_(max-width:_45rem)]:pb-2">
             <DronePlatformSection profile={draft} onPatch={patchDraft} />
             <DronePerformanceSourceSection
               profile={draft}
@@ -196,7 +196,7 @@ export default function DroneProfileDialog({
               onRemoveSpecification={removeSpecification}
             />
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex-row flex-wrap items-center justify-end">
             <Button
               variant="secondary"
               onClick={onClose}

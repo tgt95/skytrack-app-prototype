@@ -293,28 +293,28 @@ export function WorldModelViewer({
 
   return (
     <section
-      className="ms-world-preview-viewer"
+      className="ms-world-preview-viewer flex min-w-0 flex-col"
       aria-label={`${worldName} 3D preview`}
     >
-      <div className="ms-world-preview-canvas-wrap">
+      <div className="ms-world-preview-canvas-wrap relative h-[min(58dvh,38rem)] min-h-72 overflow-hidden rounded-(--radius) bg-[#454b59] [@media_(max-width:_48rem)]:h-[44dvh] [@media_(max-width:_48rem)]:min-h-52">
         <canvas
           ref={canvasRef}
-          className="ms-world-preview-canvas"
+          className="ms-world-preview-canvas absolute inset-0 block size-full"
           aria-label={`Interactive 3D model of ${worldName}`}
         />
         {status === "loading" ? (
-          <div className="ms-world-preview-state" role="status">
+          <div className="ms-world-preview-state absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[color-mix(in_srgb,var(--background)_55%,transparent)] p-4 text-center text-sm text-foreground" role="status">
             Loading 3D preview…
           </div>
         ) : null}
         {status === "unavailable" ? (
-          <div className="ms-world-preview-state" role="status">
+          <div className="ms-world-preview-state absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[color-mix(in_srgb,var(--background)_55%,transparent)] p-4 text-center text-sm text-foreground" role="status">
             This World has no 3D model to preview.
           </div>
         ) : null}
         {status === "error" ? (
           <div
-            className="ms-world-preview-state ms-world-preview-error"
+            className="ms-world-preview-state absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[color-mix(in_srgb,var(--background)_55%,transparent)] p-4 text-center text-sm ms-world-preview-error text-destructive"
             role="alert"
           >
             <span>{errorMessage}</span>
@@ -325,13 +325,13 @@ export function WorldModelViewer({
         ) : null}
         {status === "ready" ? (
           <div
-            className="ms-world-preview-controls"
+            className="ms-world-preview-controls absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 border-t border-border bg-[color-mix(in_srgb,var(--background)_88%,transparent)] p-2 [@media_(max-width:_48rem)]:items-end"
             aria-label="3D preview controls"
           >
-            <span className="ms-world-preview-hint">
+            <span className="ms-world-preview-hint min-w-0 text-xs text-foreground [@media_(max-width:_48rem)]:hidden">
               Drag to orbit · Right-drag to pan · Scroll to zoom
             </span>
-            <div className="ms-world-preview-control-buttons">
+            <div className="ms-world-preview-control-buttons flex shrink-0 items-center gap-1.5">
               <Button
                 size="sm"
                 variant={panMode ? "default" : "outline"}

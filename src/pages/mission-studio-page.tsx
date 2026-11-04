@@ -37,7 +37,6 @@ import {
 } from "../features/library/workspace/workspace-data.ts";
 import { useMissionViewUrlSync } from "../features/studio/use-mission-view-url-sync";
 import { useStudioSimulationEventFocus } from "../features/studio/use-studio-simulation-event-focus";
-import "../ui/styles/index.css";
 
 export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
   const [importAIModelOpen, setImportAIModelOpen] = useState(false);

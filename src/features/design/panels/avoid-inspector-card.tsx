@@ -48,24 +48,24 @@ export default function AvoidInspectorCard({
   const unitSystem = useMeasurementSystem();
   return (
     <section
-      className={`ms-card ms-object-block${editing ? " is-editing" : ""}`}
+      className={`ms-card border border-border rounded-(--radius) bg-(--background) gap-3 ms-object-block p-0 [&.is-editing]:border-(--primary) ${editing ? " is-editing" : ""}`}
       aria-label={zone.label}
     >
-      <div className="ms-route-head flex-row! items-center gap-2 min-w-0 p-3 max-sm:flex-wrap">
-        <div className="ms-route-title-group">
-          <AvoidZoneIcon aria-hidden="true" className="ms-route-icon" />
-          <span className="ms-route-name flex-[0_0_auto] min-w-0 whitespace-nowrap">
+      <div className="ms-route-head flex flex-col gap-1 flex-row! items-center min-w-0 p-3 max-sm:flex-wrap">
+        <div className="ms-route-title-group flex items-center gap-1.5 flex-[0_0_auto] min-w-0 whitespace-nowrap">
+          <AvoidZoneIcon aria-hidden="true" className="ms-route-icon w-4 h-4 text-(--foreground) shrink-0" />
+          <span className="ms-route-name text-sm font-semibold flex-[0_0_auto] min-w-0 whitespace-nowrap">
             {zone.label}
           </span>
         </div>
-        <span className="ms-route-stats block flex-[1_1_0] ml-auto min-w-0 overflow-hidden text-right text-ellipsis whitespace-nowrap max-sm:ml-0 max-sm:text-left">
-          <Badge
+        <span className="ms-route-stats text-xs text-(--muted-foreground) block flex-[1_1_0] ml-auto min-w-0 overflow-hidden text-right text-ellipsis whitespace-nowrap max-sm:ml-0 max-sm:text-left">
+          <Badge className="rounded-(--radius)"
             count={zone.type === "privacy" ? "People / Privacy" : "Obstacle"}
             status="secondary"
             size="sm"
           />
         </span>
-        <div className="ms-route-actions">
+        <div className="ms-route-actions flex items-center gap-0 ml-auto shrink-0">
           <Menu>
             <SkyTooltip>
               <MenuTrigger
@@ -90,7 +90,7 @@ export default function AvoidInspectorCard({
       </div>
       {editing ? (
         <form
-          className="ms-zone-settings"
+          className="ms-zone-settings flex flex-col gap-2 p-3 border-t border-t-border"
           aria-label={`${zone.label} settings`}
           onKeyDown={(event) => {
             if (event.key === "Escape") {
@@ -113,7 +113,7 @@ export default function AvoidInspectorCard({
             onCommitEdit(draft);
           }}
         >
-          <p className="ms-hint p-3">
+          <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5] p-3">
             Choose whether this is a static physical obstacle or a
             people/privacy exclusion zone.
           </p>
@@ -122,7 +122,7 @@ export default function AvoidInspectorCard({
             variant="segmented"
             size="xs"
             aria-label={`${zone.label} type`}
-            className="ms-avoid-type-toggle"
+            className="ms-avoid-type-toggle mb-2.5"
             onValueChange={(values) => {
               const value = values[0];
               if (value === "obstacle" || value === "privacy")
@@ -160,7 +160,7 @@ export default function AvoidInspectorCard({
               })
             }
           />
-          <div className="ms-btnrow">
+          <div className="ms-btnrow flex justify-end flex-row gap-1.5">
             <Button
               type="button"
               size="sm"
@@ -175,7 +175,7 @@ export default function AvoidInspectorCard({
           </div>
         </form>
       ) : (
-        <p className="ms-hint p-3">
+        <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5] p-3">
           Height {formatDistance(zone.heightM ?? 15, unitSystem)} · Clearance{" "}
           {formatDistance(zone.clearanceM ?? 2, unitSystem)}
         </p>

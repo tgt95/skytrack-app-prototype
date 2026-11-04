@@ -59,7 +59,7 @@ const markdownComponents: Components = {
     </blockquote>
   ),
   code: ({ children }) => (
-    <code className="rounded-sm bg-(--muted) px-1 py-0.5 font-mono text-xs">
+    <code className="rounded-(--radius) bg-(--muted) px-1 py-0.5 font-mono text-xs">
       {children}
     </code>
   ),
@@ -138,14 +138,14 @@ export function ReleaseNotesPopover() {
                         status="processing"
                         dot={true}
                         aria-hidden="true"
-                        className="shrink-0"
+                        className="shrink-0 rounded-(--radius)"
                       />
                     </div>
                     <span className="min-w-0 flex-1">
                       <span className="mb-1 flex items-center gap-2 text-xs text-(--muted-foreground)">
                         <span>{release.date}</span>
                         {index === 0 ? (
-                          <span className="rounded-sm bg-(--accent) px-1.5 py-0.5 font-medium text-(--accent-foreground)">
+                          <span className="rounded-(--radius) bg-(--accent) px-1.5 py-0.5 font-medium text-(--accent-foreground)">
                             New
                           </span>
                         ) : null}
@@ -199,7 +199,7 @@ export function ReleaseNotesPopover() {
                     {selectedRelease.content}
                   </ReactMarkdown>
                 </div>
-                <DialogFooter>
+                <DialogFooter className="flex-row flex-wrap items-center justify-end">
                   <DialogClose className="w-auto flex-[0_0_auto]">
                     Close
                   </DialogClose>

@@ -55,6 +55,7 @@ export function parseMissionStudioRoute(pathname: string, basePath = '/'): Missi
   if (first === 'worlds' && !second) return { kind: 'library', section: 'worlds' }
   if (first === 'drones' && !second) return { kind: 'library', section: 'drones' }
   if (first === 'notifications' && !second) return { kind: 'library', section: 'notifications' }
+  if (first === 'download' && !second) return { kind: 'library', section: 'download' }
   if (first === 'starred-missions' && !second) return { kind: 'library', section: 'starred' }
   if (first === 'shared-with-me' && !second) return { kind: 'library', section: 'shared' }
   if (first === 'shared-projects' && second && !third) {
@@ -101,7 +102,8 @@ export function missionStudioRoutePath(route: MissionStudioRoute, basePath = '/'
     docs: '/docs',
     aimodels: '/ai-models',
     logs: '/logs',
-    notifications: '/notifications'
+    notifications: '/notifications',
+    download: '/download'
   }
   return addBasePath(paths[route.section], basePath)
 }

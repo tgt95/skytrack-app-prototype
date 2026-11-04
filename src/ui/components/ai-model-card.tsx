@@ -46,11 +46,11 @@ export function AIModelCardContent({
   return (
     <>
       {showThumbnail ? (
-        <span className="ms-lib-resource-icon">
+        <span className="ms-lib-resource-icon flex items-center justify-center w-full aspect-4/3 border-b border-b-border bg-(--muted) text-(--muted-foreground)">
           <PackageIcon aria-hidden="true" className="w-9 h-9" />
         </span>
       ) : null}
-      <span className="ms-lib-card-body min-w-0 flex-1">
+      <span className="ms-lib-card-body flex flex-col gap-1 p-3 min-w-0 flex-1">
         <span className="flex min-w-0 items-center gap-2">
           <span className="min-w-0 flex-1 truncate text-sm font-medium">
             {model.name}

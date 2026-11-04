@@ -24,6 +24,7 @@ export type LibrarySection =
   | "docs"
   | "aimodels"
   | "logs"
-  | "notifications";
+  | "notifications"
+  | "download";
 
 export type AIModelCategory = "all" | "members" | "me";

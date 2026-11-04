@@ -36,7 +36,7 @@ export function ReconSettingsPage({
 }) {
   return (
     <div
-      className={`ms-inspector${codeView ? " ms-inspector-code" : ""}`}
+      className={`ms-inspector flex flex-col gap-3${codeView ? " ms-inspector-code h-full min-h-0 box-border" : ""}`}
       data-testid="ms-design-panel"
     >
       <section className="p-3" aria-label="Reconnaissance flight settings">
@@ -57,14 +57,14 @@ export function ReconSettingsPage({
               : "Route reconnaissance settings"}
           </span>
         </div>
-        <p className="ms-hint">Configure capture settings for this mission.</p>
+        <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">Configure capture settings for this mission.</p>
         <ReconnaissanceSettingsForm
           value={value}
           onChange={onChange}
           showFlightPattern={target.kind === "area"}
           altitudeReference={target.kind === "area" ? "AGL" : undefined}
         />
-        <div className="ms-btnrow mt-8">
+        <div className="ms-btnrow flex justify-end flex-row gap-1.5 mt-8">
           <Button size="sm" variant="outline" onClick={onCancel}>
             Cancel
           </Button>

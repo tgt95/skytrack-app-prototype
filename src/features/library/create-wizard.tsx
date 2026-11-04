@@ -233,7 +233,7 @@ export default function CreateMissionWizard({
               onDroneSelect={setDroneId}
             />
           </Tabs>
-          <DialogFooter data-testid="ms-wizard-footer">
+          <DialogFooter className="flex-row flex-wrap items-center justify-end" data-testid="ms-wizard-footer">
             <span
               className="mr-auto flex items-center gap-2"
               data-testid="ms-wizard-footer-start"

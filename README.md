@@ -9,7 +9,7 @@ npm ci
 npm run dev
 ```
 
-Set `VITE_LOGIN_PASSWORD` in `.env` before starting the dev server. The GitHub Pages workflow reads the same value from the repository's `VITE_LOGIN_PASSWORD` Actions secret. The login form checks the password against this value; the username field is temporarily commented out. After sign-in, this browser stores a session flag in `localStorage` until logout or site data is cleared. Vite embeds `VITE_` variables in browser code, so this prototype gate is not secure authentication; use only a demo password that is safe to expose.
+This is a public demo; no password or runtime environment variables are required. Select **Open public demo** to enter. Mission and project data stays in this browser and does not sync to a server. The prototype does not connect to or control a drone. The entry choice is stored in `localStorage` until you exit the demo or clear site data.
 
 Build and typecheck:
 
@@ -26,7 +26,7 @@ Live prototype: <https://tgt95.github.io/skytrack-app-prototype/>. Pushes to `ma
 - `src/` — standalone app source.
 - `src/main.tsx` and `src/App.tsx` — browser bootstrap and host wrapper.
 - `src/pages/mission-studio-page.tsx` — route entry and stage composition.
-- `src/assets/` — browser app images, icons, and login illustration assets.
+- `src/assets/` — browser app images, icons, and public demo illustration assets.
 - `src/ui/components/` — reusable app-owned React controls and icons.
 - `src/ui/layout/` — Studio page composition, header, and footer.
 - `src/ui/styles/` — app CSS and ordered Library chunks.
@@ -64,6 +64,7 @@ The app supports direct URLs for its pages:
 | Shared project detail                         | `/shared-projects/:projectId`                                                                    |
 | Shared accounts                               | `/shared-accounts/:missionId`                                                                    |
 | Learn                                         | `/learn`                                                                                         |
+| Download                                      | `/download`                                                                                      |
 | Templates                                     | `/templates`                                                                                     |
 | Template detail                               | `/template/:templateId`                                                                          |
 | Documentation, AI models, Logs, Notifications | `/docs`, `/ai-models`, `/logs`, `/notifications`                                                 |

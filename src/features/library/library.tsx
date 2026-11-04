@@ -374,7 +374,7 @@ export default function StudioLibrary({
         canUseCloudSIM={canUseCloudSIM}
         onEnvironmentChange={setRunEnvironment}
         onAnnounce={onAnnounce}
-        onNavigateHome={() => goto("home")}
+        onNavigate={goto}
       />
 
       <div

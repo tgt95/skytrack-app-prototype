@@ -63,10 +63,10 @@ export function MissionChecksCard({
   const errors = issues.filter((issue) => issue.level === "error");
   const warnings = issues.filter((issue) => issue.level === "warning");
   return (
-    <section className="ms-card" aria-label="Validation">
-      <h3 className="heading ms-card-title">Checks</h3>
+    <section className="ms-card border border-border rounded-(--radius) bg-(--background) p-3 flex flex-col gap-2" aria-label="Validation">
+      <h3 className="heading ms-card-title m-0 text-sm font-semibold">Checks</h3>
       {issues.length === 0 ? (
-        <p className="ms-issue is-ok" role="status">
+        <p className="ms-issue m-0 text-xs leading-[1.5] border border-border rounded-(--radius) py-1.5 px-2 bg-(--card) [&.is-error]:border-(--destructive) [&.is-error]:text-(--destructive) [&.is-warning]:border-(--border) [&.is-warning]:text-(--muted-foreground) [&.is-ok]:border-(--primary) is-ok" role="status">
           Valid mission — Simulation is available.
         </p>
       ) : (

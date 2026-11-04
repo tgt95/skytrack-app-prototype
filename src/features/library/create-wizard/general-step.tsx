@@ -32,7 +32,7 @@ export function GeneralStep({
 }: GeneralStepProps) {
   return (
     <TabsPanel value="1">
-      <div className="ms-lib-form">
+      <div className="ms-lib-form flex flex-col gap-3 py-1 px-0">
         <FieldRoot name="wizard-mission-name">
           <FieldLabel>Mission name</FieldLabel>
           <FieldControl

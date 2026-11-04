@@ -139,7 +139,7 @@ export function SequenceActionBadge({ kind }: { kind: CameraActionKind }) {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger render={<span className="inline-flex" tabIndex={0} />}>
-          <Badge
+          <Badge className="rounded-(--radius)"
             count={
               isLidar ? (
                 <ScanIcon aria-hidden="true" />

@@ -61,7 +61,7 @@ export function DroneComponentRow({
         {String(index + 1).padStart(2, "0")}
       </span>
       <FieldRoot
-        className="ms-field  [@media_(max-width:_45rem)]:in-[.ms-drone-component-row]:col-2"
+        className="ms-field flex flex-col gap-1  [@media_(max-width:_45rem)]:in-[.ms-drone-component-row]:col-2"
         data-testid="ms-drone-group-field"
       >
         <FieldLabel>Group</FieldLabel>
@@ -95,7 +95,7 @@ export function DroneComponentRow({
           </SelectPortal>
         </Select>
       </FieldRoot>
-      <FieldRoot className="ms-field">
+      <FieldRoot className="ms-field flex flex-col gap-1">
         <FieldLabel>Component name</FieldLabel>
         <FieldControl
           value={component.name}
@@ -104,7 +104,7 @@ export function DroneComponentRow({
         />
       </FieldRoot>
       <FieldRoot
-        className="ms-field  [@media_(max-width:_45rem)]:in-[.ms-drone-component-row]:col-2"
+        className="ms-field flex flex-col gap-1  [@media_(max-width:_45rem)]:in-[.ms-drone-component-row]:col-2"
         data-testid="ms-drone-purpose-field"
       >
         <FieldLabel>Role / note</FieldLabel>
@@ -139,7 +139,7 @@ export function DroneComponentRow({
           className=" flex flex-col gap-4 pt-3"
           data-testid="ms-drone-component-detail-body"
         >
-          <div className="ms-drone-form-grid">
+          <div className="ms-drone-form-grid grid grid-cols-2 gap-3 [@media_(max-width:_45rem)]:grid-cols-[minmax(0,1fr)]">
             <TextField
               label="Manufacturer"
               value={component.manufacturer}
@@ -220,7 +220,7 @@ export function DroneComponentRow({
             </Button>
           </div>
           {component.specifications.length === 0 ? (
-            <p className="ms-drone-empty-components">
+            <p className="ms-drone-empty-components m-0 text-(--muted-foreground) text-xs leading-[1.5]">
               No specifications added.
             </p>
           ) : (

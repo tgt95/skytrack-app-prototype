@@ -37,7 +37,7 @@ export function HomePage({
       }
     >
       <section aria-labelledby="ms-lib-recent-title" className="mb-8">
-        <div className="ms-section-header">
+        <div className="ms-section-header flex items-start justify-between gap-3 mb-4">
           <h2
             id="ms-lib-recent-title"
             className="h4 m-0"
@@ -58,7 +58,7 @@ export function HomePage({
         </div>
       </section>
       <section aria-labelledby="ms-lib-templates-title">
-        <div className="ms-section-header">
+        <div className="ms-section-header flex items-start justify-between gap-3 mb-4">
           <h2
             id="ms-lib-templates-title"
             className="h4 m-0"

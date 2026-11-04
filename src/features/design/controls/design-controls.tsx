@@ -129,9 +129,9 @@ export function DraftAxisInput({
   };
 
   return (
-    <label className="ms-axis-compact min-w-0 whitespace-nowrap">
+    <label className="ms-axis-compact flex items-center gap-1 min-w-0 min-w-0 whitespace-nowrap">
       <span
-        className="ms-axis flex-[0_0_auto] min-w-0 whitespace-nowrap"
+        className="ms-axis grow-0 shrink-0 basis-3 whitespace-nowrap text-[0.6875rem] font-semibold text-(--muted-foreground) flex-[0_0_auto] min-w-0 whitespace-nowrap"
         aria-hidden="true"
       >
         {axis}

@@ -116,36 +116,36 @@ export function MissionWorldPickerDialog ({
                 <TabsTab
                   value='2D'
                   variant='filled'
-                  className='ms-world-type-tab'
+                  className='ms-world-type-tab flex-[1_1_0] justify-center'
                 >
                   2D
                 </TabsTab>
                 <TabsTab
                   value='3D'
                   variant='filled'
-                  className='ms-world-type-tab'
+                  className='ms-world-type-tab flex-[1_1_0] justify-center'
                 >
                   3D
                 </TabsTab>
               </TabsList>
-              <TabsPanel value='2D' className='ms-world-type-panel pb-2'>
+              <TabsPanel value='2D' className='ms-world-type-panel w-full [border:0] rounded-none bg-transparent p-0 text-inherit'>
                 <span className='text-sm text-muted-foreground'>
                   2D photogrammetry missions use reconnaissance planning
                 </span>
-                <span className='ms-sr'>
+                <span className='ms-sr absolute w-px h-px overflow-hidden [clip:rect(0_0_0_0)] whitespace-nowrap'>
                   2D photogrammetry does not require selecting a World.
                 </span>
               </TabsPanel>
               <TabsPanel
                 value='3D'
-                className='ms-world-type-panel flex flex-col gap-4 pb-2'
+                className='ms-world-type-panel w-full [border:0] rounded-none bg-transparent p-0 text-inherit flex flex-col gap-4'
               >
                 <p className='m-0 text-sm text-muted-foreground'>
                   Import a GLB to replace this mission’s 3D World. Its origin
                   anchors to the mission location. Routes and mission geometry
                   stay in place. The file and card preview stay in this browser.
                 </p>
-                <FieldRoot className='ms-field'>
+                <FieldRoot className='ms-field flex flex-col gap-1'>
                   <FieldLabel>World</FieldLabel>
                   <Select<string>
                     items={selectOptions}
@@ -186,7 +186,7 @@ export function MissionWorldPickerDialog ({
                     ) : null}
                   </FieldDescription>
                 </FieldRoot>
-                <FieldRoot className='ms-field'>
+                <FieldRoot className='ms-field flex flex-col gap-1'>
                   <FieldLabel>Import 3D World</FieldLabel>
                   <Dropzone
                     accept='.glb,model/gltf-binary'
@@ -212,7 +212,7 @@ export function MissionWorldPickerDialog ({
               </TabsPanel>
             </Tabs>
           </FieldRoot>
-          <DialogFooter>
+          <DialogFooter className="flex-row flex-wrap items-center justify-end">
             <DialogClose className='w-auto flex-[0_0_auto]'>Done</DialogClose>
           </DialogFooter>
         </DialogPopup>

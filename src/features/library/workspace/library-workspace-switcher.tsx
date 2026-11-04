@@ -101,7 +101,7 @@ export function LibraryWorkspaceSwitcher({
           className=" mt-0.5 mr-0 mb-0 ml-1.5 [@media_(max-width:_61.25rem)]:hidden"
           data-testid="ms-lib-workspace-role"
         >
-          <Badge count={activeWorkspace.role} status="default" />
+          <Badge className="rounded-(--radius)" count={activeWorkspace.role} status="default" />
         </div>
       </div>
       <SkyTooltip>

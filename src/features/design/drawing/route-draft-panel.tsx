@@ -28,8 +28,8 @@ export default function RouteDraftPanel({
     >
       <header className=" min-w-0" data-testid="ms-route-draft-head">
         <div>
-          <h2 className="heading ms-inspector-title">Route draft</h2>
-          <p className="ms-inspector-sub mt-1.5 leading-[1.45]">
+          <h2 className="heading ms-inspector-title m-0 text-sm font-semibold">Route draft</h2>
+          <p className="ms-inspector-sub mt-0.5 mx-0 mb-0 text-xs text-(--muted-foreground) leading-[1.45]">
             Click the scene to add waypoints. Add at least 2, then press Enter
             to commit. Press Escape to cancel.
           </p>
@@ -47,7 +47,7 @@ export default function RouteDraftPanel({
       </p>
       {pending.length > 0 ? (
         <ol
-          className=" flex flex-col gap-1.5 m-0 p-0 [list-style:none] [.ms-seq-row&]:py-1.5 [.ms-seq-row&]:px-3 [.ms-seq-row&]:[flex-wrap:unset] [.ms-seq-row&]:bg-(--accent)"
+          className=" flex flex-col gap-1.5 m-0 p-0 [list-style:none]"
           aria-label="Pending route waypoints"
         >
           {pending.map((point, index) => {
@@ -67,7 +67,7 @@ export default function RouteDraftPanel({
                 data-testid="ms-route-draft-row"
               >
                 <span
-                  className=" grid place-items-center w-6 h-6 rounded-[50%] bg-(--muted) text-(--foreground) text-xs font-semibold"
+                  className=" grid place-items-center w-6 h-6 rounded-full bg-(--muted) text-(--foreground) text-xs font-semibold"
                   data-testid="ms-route-draft-seq"
                 >
                   {sequence}

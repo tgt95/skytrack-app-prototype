@@ -270,7 +270,7 @@ export function WorldStep({
                 <DialogTitle className="heading">Import World</DialogTitle>
               </div>
             </DialogHeader>
-            <div className="ms-lib-form">
+            <div className="ms-lib-form flex flex-col gap-3 py-1 px-0">
               <FieldRoot name="world-name" invalid={Boolean(nameError)}>
                 <FieldLabel>World name *</FieldLabel>
                 <FieldControl
@@ -334,7 +334,7 @@ export function WorldStep({
                 ) : null}
               </FieldRoot>
             </div>
-            <DialogFooter>
+            <DialogFooter className="flex-row flex-wrap items-center justify-end">
               <Button
                 type="button"
                 variant="secondary"

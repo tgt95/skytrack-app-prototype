@@ -116,14 +116,14 @@ export function ShortcutsDialog({
                       data-testid="ms-shortcut-row"
                     >
                       <span>{shortcut.what}</span>
-                      <Badge count={shortcut.keys} status="outline" />
+                      <Badge className="rounded-(--radius)" count={shortcut.keys} status="outline" />
                     </li>
                   ))}
                 </ul>
               </section>
             ))}
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex-row flex-wrap items-center justify-end">
             <DialogClose className="w-auto flex-[0_0_auto]">Close</DialogClose>
           </DialogFooter>
         </DialogPopup>

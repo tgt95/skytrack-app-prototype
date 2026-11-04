@@ -169,11 +169,11 @@ export function AIWorkflowStopRow ({
       >
         <DotsSixVerticalIcon aria-hidden='true' />
       </Button>
-      <Badge count={<SparkleIcon aria-hidden='true' />} status='outline' />
+      <Badge className="rounded-(--radius)" count={<SparkleIcon aria-hidden='true' />} status='outline' />
       <span className='flex-[1_1_auto] min-w-0 truncate font-medium text-foreground'>
         {workflow.label}
       </span>
-      <Badge count='STOP' status='outline' />
+      <Badge className="rounded-(--radius)" count='STOP' status='outline' />
       <span className='sr-only'>
         Drop a drone action here to add it to waypoint {currentWaypoint?.seq}.
       </span>
@@ -237,7 +237,7 @@ export function AIWorkflowCard ({
         aria-label={`${branch.toUpperCase()} drone actions`}
       >
         <div className='flex items-center gap-2 px-3 py-2'>
-          <Badge count={branch.toUpperCase()} status='outline' />
+          <Badge className="rounded-(--radius)" count={branch.toUpperCase()} status='outline' />
           <span className='text-sm text-muted-foreground'>
             {branch === 'if' ? 'Target detected' : 'Target not detected'}
           </span>
@@ -249,84 +249,82 @@ export function AIWorkflowCard ({
             return (
               <li
                 key={action.id}
-                className='flex min-w-0 items-center gap-2 border-t border-border py-2'
+                className='grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] items-center gap-2 not-last:pb-3'
               >
-                <div className='flex min-w-0 items-center gap-2 border-t border-border py-2'>
-                  <Select
-                    items={[...ACTION_TYPES]}
-                    value={action.kind}
-                    onValueChange={(value: unknown) => {
-                      if (value !== 'camera-trigger' && value !== 'spray')
-                        return
+                <Select
+                  items={[...ACTION_TYPES]}
+                  value={action.kind}
+                  onValueChange={(value: unknown) => {
+                    if (value !== 'camera-trigger' && value !== 'spray')
+                      return
+                    replaceAction(action.id, {
+                      kind: value,
+                      mode: value === 'spray' ? 'start' : 'snapshot'
+                    })
+                  }}
+                >
+                  <SelectTrigger
+                    aria-label='Drone action type'
+                    className='w-full min-w-0'
+                  >
+                    <SelectValue />
+                    <SelectIcon />
+                  </SelectTrigger>
+                  <SelectPortal>
+                    <SelectPositioner
+                      side='bottom'
+                      align='start'
+                      sideOffset={4}
+                    >
+                      <SelectPopup>
+                        <SelectList>
+                          {ACTION_TYPES.map(item => (
+                            <SelectItem key={item.value} value={item.value}>
+                              <SelectItemIndicator />
+                              <SelectItemText>{item.label}</SelectItemText>
+                            </SelectItem>
+                          ))}
+                        </SelectList>
+                      </SelectPopup>
+                    </SelectPositioner>
+                  </SelectPortal>
+                </Select>
+                <Select
+                  items={[...options]}
+                  value={action.mode}
+                  onValueChange={(value: unknown) => {
+                    if (options.some(option => option.value === value))
                       replaceAction(action.id, {
-                        kind: value,
-                        mode: value === 'spray' ? 'start' : 'snapshot'
+                        mode: value as AIWorkflowDroneAction['mode']
                       })
-                    }}
+                  }}
+                >
+                  <SelectTrigger
+                    aria-label='Drone action mode'
+                    className='w-full min-w-0'
                   >
-                    <SelectTrigger
-                      aria-label='Drone action type'
-                      className='min-w-0 flex-1'
+                    <SelectValue />
+                    <SelectIcon />
+                  </SelectTrigger>
+                  <SelectPortal>
+                    <SelectPositioner
+                      side='bottom'
+                      align='start'
+                      sideOffset={4}
                     >
-                      <SelectValue />
-                      <SelectIcon />
-                    </SelectTrigger>
-                    <SelectPortal>
-                      <SelectPositioner
-                        side='bottom'
-                        align='start'
-                        sideOffset={4}
-                      >
-                        <SelectPopup>
-                          <SelectList>
-                            {ACTION_TYPES.map(item => (
-                              <SelectItem key={item.value} value={item.value}>
-                                <SelectItemIndicator />
-                                <SelectItemText>{item.label}</SelectItemText>
-                              </SelectItem>
-                            ))}
-                          </SelectList>
-                        </SelectPopup>
-                      </SelectPositioner>
-                    </SelectPortal>
-                  </Select>
-                  <Select
-                    items={[...options]}
-                    value={action.mode}
-                    onValueChange={(value: unknown) => {
-                      if (options.some(option => option.value === value))
-                        replaceAction(action.id, {
-                          mode: value as AIWorkflowDroneAction['mode']
-                        })
-                    }}
-                  >
-                    <SelectTrigger
-                      aria-label='Drone action mode'
-                      className='min-w-0 flex-1'
-                    >
-                      <SelectValue />
-                      <SelectIcon />
-                    </SelectTrigger>
-                    <SelectPortal>
-                      <SelectPositioner
-                        side='bottom'
-                        align='start'
-                        sideOffset={4}
-                      >
-                        <SelectPopup>
-                          <SelectList>
-                            {options.map(item => (
-                              <SelectItem key={item.value} value={item.value}>
-                                <SelectItemIndicator />
-                                <SelectItemText>{item.label}</SelectItemText>
-                              </SelectItem>
-                            ))}
-                          </SelectList>
-                        </SelectPopup>
-                      </SelectPositioner>
-                    </SelectPortal>
-                  </Select>
-                </div>
+                      <SelectPopup>
+                        <SelectList>
+                          {options.map(item => (
+                            <SelectItem key={item.value} value={item.value}>
+                              <SelectItemIndicator />
+                              <SelectItemText>{item.label}</SelectItemText>
+                            </SelectItem>
+                          ))}
+                        </SelectList>
+                      </SelectPopup>
+                    </SelectPositioner>
+                  </SelectPortal>
+                </Select>
                 <Button
                   size='icon-sm'
                   variant='ghost'
@@ -368,47 +366,46 @@ export function AIWorkflowCard ({
 
   return (
     <li className='list-none' data-testid={`ms-ai-workflow-${workflow.id}`}>
-      <div className={`${WORKFLOW_BOUNDARY_ROW_CLASS} items-start py-0`}>
-        <Collapsible defaultOpen className='min-w-0 flex-1'>
+      <Collapsible defaultOpen className='w-full min-w-0'>
+        <div className={`${WORKFLOW_BOUNDARY_ROW_CLASS} items-center py-0`}>
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon-xs'
+            className={`flex-[0_0_auto] self-center inline-flex h-8.5 w-5.5 items-center justify-center rounded-(--radius) border border-transparent bg-transparent text-sm text-(--muted-foreground) opacity-100 cursor-grab touch-none hover:bg-(--accent) hover:text-(--foreground) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 active:cursor-grabbing${
+              draggingStart ? ' text-(--primary) cursor-grabbing' : ''
+            }`}
+            draggable
+            aria-label={`Drag to move ${workflow.label} start boundary`}
+            data-testid={`ms-ai-workflow-start-handle-${workflow.id}`}
+            onDragStart={event => {
+              event.stopPropagation()
+              writeSequenceDragItem(event, {
+                kind: 'ai-workflow-start',
+                id: workflow.id,
+                routeId: sequenceId
+              })
+              setDraggingStart(true)
+            }}
+            onDragEnd={() => setDraggingStart(false)}
+          >
+            <DotsSixVerticalIcon
+              aria-hidden='true'
+              className='size-4 shrink-0'
+            />
+          </Button>
+          <SkyTooltip side='left'>
+            <Badge className="rounded-(--radius)"
+              aria-label='AI workflow'
+              count={<SparkleIcon aria-hidden='true' />}
+              status='outline'
+            />
+          </SkyTooltip>
           <CollapsibleTrigger
-            nativeButton={false}
-            className='group flex w-full min-w-0 cursor-pointer items-center gap-2 rounded-none border-0 bg-transparent text-left text-xs text-foreground hover:bg-transparent focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1'
+            className='group flex min-w-0 flex-[1_1_auto] cursor-pointer items-center gap-2 rounded-none border-0 bg-transparent text-left text-xs text-foreground hover:bg-transparent focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1'
             aria-label={`${workflow.label} Start workflow details`}
             data-testid={`ms-ai-workflow-toggle-${workflow.id}`}
           >
-            <Button
-              type='button'
-              variant='ghost'
-              size='icon-xs'
-              className={`flex-[0_0_auto] self-center inline-flex h-8.5 w-5.5 items-center justify-center rounded-(--radius) border border-transparent bg-transparent text-sm text-(--muted-foreground) opacity-100 cursor-grab touch-none hover:bg-(--accent) hover:text-(--foreground) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 active:cursor-grabbing${
-                draggingStart ? ' text-(--primary) cursor-grabbing' : ''
-              }`}
-              draggable
-              aria-label={`Drag to move ${workflow.label} start boundary`}
-              data-testid={`ms-ai-workflow-start-handle-${workflow.id}`}
-              onDragStart={event => {
-                event.stopPropagation()
-                writeSequenceDragItem(event, {
-                  kind: 'ai-workflow-start',
-                  id: workflow.id,
-                  routeId: sequenceId
-                })
-                setDraggingStart(true)
-              }}
-              onDragEnd={() => setDraggingStart(false)}
-            >
-              <DotsSixVerticalIcon
-                aria-hidden='true'
-                className='size-4 shrink-0'
-              />
-            </Button>
-            <SkyTooltip side='left'>
-              <Badge
-                aria-label='AI workflow'
-                count={<SparkleIcon aria-hidden='true' />}
-                status='outline'
-              />
-            </SkyTooltip>
             <div className='flex-[1_1_auto] flex flex-row items-center gap-1 min-w-0 truncate font-medium text-foreground'>
               {workflow.label}
               <CaretDownIcon
@@ -416,22 +413,20 @@ export function AIWorkflowCard ({
                 className='shrink-0 transition-transform duration-150 group-data-panel-open:rotate-180'
               />
             </div>
-            <Badge count='START' status='outline' />
-            <Button
-              type='button'
-              size='icon-sm'
-              variant='ghost'
-              aria-label={`Delete ${workflow.label}`}
-              data-testid={`ms-ai-workflow-delete-${workflow.id}`}
-              onClick={event => {
-                event.stopPropagation()
-                onDelete()
-              }}
-            >
-              <TrashIcon aria-hidden='true' />
-            </Button>
+            <Badge className="rounded-(--radius)" count='START' status='outline' />
           </CollapsibleTrigger>
-          <CollapsiblePanel className='min-w-0 relative flex flex-col gap-3 p-3 bg-muted/80 border-t border-border'>
+          <Button
+            type='button'
+            size='icon-sm'
+            variant='ghost'
+            aria-label={`Delete ${workflow.label}`}
+            data-testid={`ms-ai-workflow-delete-${workflow.id}`}
+            onClick={onDelete}
+          >
+            <TrashIcon aria-hidden='true' />
+          </Button>
+        </div>
+        <CollapsiblePanel className='min-w-0 relative flex flex-col gap-3 p-3 bg-muted/80 border-t border-border'>
             <span
               className='pointer-events-none absolute bottom-5 left-1/2 top-5 w-px -translate-x-1/2 bg-border'
               aria-hidden='true'
@@ -640,9 +635,8 @@ export function AIWorkflowCard ({
                 </div>
               </div>
             </footer>
-          </CollapsiblePanel>
-        </Collapsible>
-      </div>
+        </CollapsiblePanel>
+      </Collapsible>
 
       <div className='sr-only'>
         {`Workflow runs from waypoint ${

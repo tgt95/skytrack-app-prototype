@@ -280,7 +280,7 @@ export function RouteWaypointList({
         className={`${SEQUENCE_LIST_ITEM_CLASS} flex flex-wrap items-center gap-2 bg-(--accent) min-w-0 py-1.5 px-3 flex-nowrap [list-style:none] border-b border-border last:border-b-0`}
         aria-label={`Sequence start for ${sequenceLabel}`}
       >
-        <Badge count="START" status="outline" />
+        <Badge className="rounded-(--radius)" count="START" status="outline" />
         <span className="flex-[1_1_auto] min-w-0 text-sm text-(--muted-foreground)">
           Drone active
         </span>

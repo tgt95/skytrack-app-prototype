@@ -53,6 +53,7 @@ const PAGE_TITLES: Record<LibrarySection, string> = {
   aimodels: "AI models",
   logs: "Logs",
   notifications: "Notifications",
+  download: "Download",
 };
 
 function initialStudioRoute(): MissionStudioRoute {

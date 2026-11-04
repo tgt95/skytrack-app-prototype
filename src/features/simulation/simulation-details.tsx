@@ -138,7 +138,7 @@ export default function SimulationDetails ({
                 </dl>
               </div>
             ) : (
-              <p className='ms-hint'>Run the simulation to view telemetry.</p>
+              <p className='ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]'>Run the simulation to view telemetry.</p>
             )}
           </AccordionPanel>
         </AccordionItem>
@@ -154,7 +154,7 @@ export default function SimulationDetails ({
                 <ProgressIndicator />
               </ProgressTrack>
             </Progress>
-            <p className='ms-hint' data-testid='ms-route-progress'>
+            <p className='ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]' data-testid='ms-route-progress'>
               {pct.toFixed(0)}% · {formatDistance(plan.totalDist, unitSystem)} ·
               run {runIndex + 1}/{settings.runTimes}
             </p>
@@ -182,14 +182,14 @@ export default function SimulationDetails ({
                     {distanceUnit(unitSystem)})
                   </span>
                   {wp.actions.length > 0 ? (
-                    <span className='ms-hint'>
+                    <span className='ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]'>
                       {wp.actions.map(a => a.label).join(' · ')}
                     </span>
                   ) : null}
                 </li>
               ))}
             </ol>
-            <p className='ms-hint'>
+            <p className='ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]'>
               END — {mission.returnHomeOnEnd ? 'Return home' : 'Land in place'}
             </p>
           </AccordionPanel>

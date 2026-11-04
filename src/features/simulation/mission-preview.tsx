@@ -154,7 +154,7 @@ export default function MissionPreview({
       />
 
       <p
-        className=" m-0 p-3 border border-border rounded-[7px] bg-(--card) text-sm"
+        className=" m-0 p-3 border border-border rounded-(--radius) bg-(--card) text-sm"
         aria-live="polite"
         data-testid="ms-preview-current-event"
       >
@@ -179,7 +179,7 @@ export default function MissionPreview({
       <div className="flex flex-col gap-2">
         <div className="flex justify-between gap-2">
           <div className="font-medium">Waypoints in flight order</div>
-          <Badge
+          <Badge className="rounded-(--radius)"
             count={`${preview.rows.length} waypoint${preview.rows.length === 1 ? "" : "s"}`}
             status="outline"
           />

@@ -120,11 +120,11 @@ export default function SimulationPanel(props: SimulationPanelProps) {
     status === "completed" || status === "aborted" || status === "failed";
 
   return (
-    <div className="ms-inspector gap-0!" data-testid="ms-sim-panel">
+    <div className="ms-inspector flex flex-col gap-3 gap-0!" data-testid="ms-sim-panel">
       {!plan ? (
-        <section className="ms-card" role="status">
-          <h3 className="heading ms-card-title">Simulation locked</h3>
-          <p className="ms-hint">{gateReason ?? "Add mission logic first."}</p>
+        <section className="ms-card border border-border rounded-(--radius) bg-(--background) p-3 flex flex-col gap-2" role="status">
+          <h3 className="heading ms-card-title m-0 text-sm font-semibold">Simulation locked</h3>
+          <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">{gateReason ?? "Add mission logic first."}</p>
         </section>
       ) : (
         <Tabs
@@ -208,9 +208,9 @@ export default function SimulationPanel(props: SimulationPanelProps) {
           <TabsPanel value="events">
             {fired.length === 0 ? (
               <div className="p-3">
-                <section className="ms-card" role="status">
-                  <h3 className="heading ms-card-title">No events yet</h3>
-                  <p className="ms-hint">
+                <section className="ms-card border border-border rounded-(--radius) bg-(--background) p-3 flex flex-col gap-2" role="status">
+                  <h3 className="heading ms-card-title m-0 text-sm font-semibold">No events yet</h3>
+                  <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">
                     Events appear here during a run — waypoint arrivals,
                     actions, and return home.
                   </p>
@@ -232,7 +232,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
                         unitSystem,
                       )}`}
                     >
-                      <span className="ms-event-t">{ev.t.toFixed(1)}s</span>
+                      <span className="ms-event-t flex-[0_0_auto] [font-variant-numeric:tabular-nums] text-(--muted-foreground)">{ev.t.toFixed(1)}s</span>
                       <span>{formatMeasurementText(ev.label, unitSystem)}</span>
                     </button>
                   </li>
@@ -248,11 +248,11 @@ export default function SimulationPanel(props: SimulationPanelProps) {
                 aria-label="Simulation console"
               >
                 {log.length === 0 ? (
-                  <li className="ms-hint">Console is empty — start a run.</li>
+                  <li className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">Console is empty — start a run.</li>
                 ) : (
                   log.map((line, i) => (
                     <li key={i} data-testid="ms-console-line">
-                      <span className="ms-event-t">[{line.t.toFixed(1)}s]</span>{" "}
+                      <span className="ms-event-t flex-[0_0_auto] [font-variant-numeric:tabular-nums] text-(--muted-foreground)">[{line.t.toFixed(1)}s]</span>{" "}
                       {line.text}
                     </li>
                   ))
@@ -264,13 +264,13 @@ export default function SimulationPanel(props: SimulationPanelProps) {
       )}
 
       {plan && gateReason ? (
-        <p className="ms-hint" role="status">
+        <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]" role="status">
           {gateReason}
         </p>
       ) : null}
 
       {status === "completed" ? (
-        <p className="ms-issue is-ok" role="status">
+        <p className="ms-issue m-0 text-xs leading-[1.5] border border-border rounded-(--radius) py-1.5 px-2 bg-(--card) [&.is-error]:border-(--destructive) [&.is-error]:text-(--destructive) [&.is-warning]:border-(--border) [&.is-warning]:text-(--muted-foreground) [&.is-ok]:border-(--primary) is-ok" role="status">
           Mission run completed. Restart to replay.{" "}
           {autoRestartIn !== null ? (
             <>
@@ -288,7 +288,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
         </p>
       ) : null}
       {status === "failed" ? (
-        <p className="ms-issue is-error" role="alert">
+        <p className="ms-issue m-0 text-xs leading-[1.5] border border-border rounded-(--radius) py-1.5 px-2 bg-(--card) [&.is-error]:border-(--destructive) [&.is-error]:text-(--destructive) [&.is-warning]:border-(--border) [&.is-warning]:text-(--muted-foreground) [&.is-ok]:border-(--primary) is-error" role="alert">
           Run failed — design preserved. Adjust settings or Restart.{" "}
           {autoRestartIn !== null ? (
             <>
@@ -306,7 +306,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
         </p>
       ) : null}
       {status === "aborted" ? (
-        <p className="ms-issue is-warning" role="status">
+        <p className="ms-issue m-0 text-xs leading-[1.5] border border-border rounded-(--radius) py-1.5 px-2 bg-(--card) [&.is-error]:border-(--destructive) [&.is-error]:text-(--destructive) [&.is-warning]:border-(--border) [&.is-warning]:text-(--muted-foreground) [&.is-ok]:border-(--primary) is-warning" role="status">
           Run aborted by operator — not completed. Restart to replay.
         </p>
       ) : null}

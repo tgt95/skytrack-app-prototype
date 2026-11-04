@@ -243,7 +243,7 @@ export function NotificationsPage() {
                             <span>{item.actor}</span>
                             <span aria-hidden="true">·</span>
                             <span>{item.time}</span>
-                            <Badge
+                            <Badge className="rounded-(--radius)"
                               count={CATEGORY_LABELS[item.category]}
                               status="outline"
                             />

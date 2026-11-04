@@ -149,7 +149,7 @@ export function AccountMenu({
                       <SunIcon aria-hidden="true" /> Light
                       {themePreference === "light" ? (
                         <CheckIcon
-                          className="ms-lib-account-theme-check"
+                          className="ms-lib-account-theme-check w-4 h-4 ml-auto text-(--primary)"
                           aria-hidden="true"
                         />
                       ) : null}
@@ -161,7 +161,7 @@ export function AccountMenu({
                       <MoonIcon aria-hidden="true" /> Dark
                       {themePreference === "dark" ? (
                         <CheckIcon
-                          className="ms-lib-account-theme-check"
+                          className="ms-lib-account-theme-check w-4 h-4 ml-auto text-(--primary)"
                           aria-hidden="true"
                         />
                       ) : null}
@@ -173,7 +173,7 @@ export function AccountMenu({
                       <DesktopIcon aria-hidden="true" /> System
                       {themePreference === "system" ? (
                         <CheckIcon
-                          className="ms-lib-account-theme-check"
+                          className="ms-lib-account-theme-check w-4 h-4 ml-auto text-(--primary)"
                           aria-hidden="true"
                         />
                       ) : null}

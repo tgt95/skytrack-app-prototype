@@ -44,7 +44,7 @@ export function BasemapPickerGrid({
                   onClick={() => onChange(id)}
                 >
                   <span
-                    className='relative block w-full h-13 overflow-hidden border border-border rounded-[calc(var(--radius)-0.0625rem)] bg-(--muted) [&_img]:block [&_img]:w-full [&_img]:h-full [&_img]:object-cover'
+                    className='relative block w-full h-13 overflow-hidden border border-border rounded-(--radius) bg-(--muted) [&_img]:block [&_img]:w-full [&_img]:h-full [&_img]:object-cover'
                     data-testid="ms-basemap-thumb"
                   >
                     <img

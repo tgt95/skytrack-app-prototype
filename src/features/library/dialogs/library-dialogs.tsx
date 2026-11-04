@@ -77,7 +77,7 @@ export function MissionDialog({
               onCommit={doSubmit}
             />
           ) : null}
-          <DialogFooter>
+          <DialogFooter className="flex-row flex-wrap items-center justify-end">
             <DialogClose className="w-auto flex-[0_0_auto]">Cancel</DialogClose>
             <Button
               size="sm"
@@ -111,7 +111,7 @@ function MissionDialogForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div className="ms-lib-form">
+    <div className="ms-lib-form flex flex-col gap-3 py-1 px-0">
       <FieldRoot name="mission-title">
         <FieldLabel>Mission title</FieldLabel>
         <FieldControl
@@ -183,7 +183,7 @@ export function ProjectDialog({
                 : "Create project to manage your missions"}
             </DialogDescription>
           </DialogHeader>
-          <div className="ms-lib-form" key={key}>
+          <div className="ms-lib-form flex flex-col gap-3 py-1 px-0" key={key}>
             <FieldRoot name="project-title">
               <FieldLabel>Project title</FieldLabel>
               <FieldControl
@@ -202,7 +202,7 @@ export function ProjectDialog({
               />
             </FieldRoot>
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex-row flex-wrap items-center justify-end">
             <DialogClose className="w-auto flex-[0_0_auto]">Cancel</DialogClose>
             <Button
               size="sm"
@@ -254,7 +254,7 @@ export function ShareDialog({
               {dlg ? <>Invite someone to &ldquo;{dlg.name}&rdquo;.</> : null}
             </DialogDescription>
           </DialogHeader>
-          <div className="ms-lib-form">
+          <div className="ms-lib-form flex flex-col gap-3 py-1 px-0">
             <FieldRoot
               name="share-email"
               validationMode="onChange"
@@ -300,7 +300,7 @@ export function ShareDialog({
               </Select>
             </FieldRoot>
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex-row flex-wrap items-center justify-end">
             <DialogClose className="w-auto flex-[0_0_auto]">Cancel</DialogClose>
             <Button
               size="sm"
@@ -329,7 +329,7 @@ export function CloneProjectPicker({
 }) {
   const [pid, setPid] = useState(projects[0]?.id ?? "");
   return (
-    <div className="ms-lib-form">
+    <div className="ms-lib-form flex flex-col gap-3 py-1 px-0">
       <FieldRoot name="clone-project">
         <FieldLabel id="ms-lib-clone-project-label">
           Project
@@ -361,7 +361,7 @@ export function CloneProjectPicker({
           </SelectPortal>
         </Select>
       </FieldRoot>
-      <div className="ms-btnrow">
+      <div className="ms-btnrow flex justify-end flex-row gap-1.5">
         <Button
           size="sm"
           variant="default"

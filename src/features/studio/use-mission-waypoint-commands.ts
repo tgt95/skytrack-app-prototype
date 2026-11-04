@@ -180,14 +180,14 @@ export function useMissionWaypointCommands({
       const wp = mission.waypoints.find((w) => w.id === id);
       if (!wp) return;
       const clamped = Math.max(0, Number.isFinite(z) ? z : wp.z);
-      const rounded = Math.round(clamped * 100) / 100;
+      const roundedValue = Math.round(clamped * 100) / 100;
       const changedWaypoints = mission.waypoints.map((w) =>
         w.id === id
           ? {
               ...w,
-              z: rounded,
+              z: roundedValue,
               ...(w.generatedByArea || w.generatedByAvoid
-                ? { altitudeOverrideM: rounded }
+                ? { altitudeOverrideM: roundedValue }
                 : {}),
             }
           : w,
@@ -196,7 +196,7 @@ export function useMissionWaypointCommands({
       const out = refreshAvoidDetours(changedMission, changedMission);
       commit(
         out,
-        `Waypoint ${wp.seq} altitude set to ${distanceToDisplay(rounded, readMissionDesignPreferences().unitSystem).toFixed(1)} ${distanceUnit(readMissionDesignPreferences().unitSystem)}.${detourNote(out)}`,
+        `Waypoint ${wp.seq} altitude set to ${distanceToDisplay(roundedValue, readMissionDesignPreferences().unitSystem).toFixed(1)} ${distanceUnit(readMissionDesignPreferences().unitSystem)}.${detourNote(out)}`,
       );
       setSelection({ kind: "waypoint", id });
     },

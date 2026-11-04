@@ -21,12 +21,12 @@ export function MissionSceneStatus({
   if (status === "loading" && !without3d) {
     return (
       <div
-        className="ms-scene-overlay"
+        className="ms-scene-overlay absolute inset-0 flex flex-col items-center justify-center gap-1.5 text-center bg-(--background) text-(--foreground) p-6"
         role="status"
         aria-label="3D scene loading"
       >
-        <p className="ms-scene-overlay-title">Loading 3D scene…</p>
-        <p className="ms-scene-overlay-sub">Loading mission scene.</p>
+        <p className="ms-scene-overlay-title m-0 text-sm font-semibold">Loading 3D scene…</p>
+        <p className="ms-scene-overlay-sub mt-0 mx-0 mb-2 text-xs text-(--muted-foreground) max-w-105">Loading mission scene.</p>
       </div>
     );
   }
@@ -34,12 +34,12 @@ export function MissionSceneStatus({
   if (status === "error" && !without3d) {
     return (
       <div
-        className="ms-scene-overlay"
+        className="ms-scene-overlay absolute inset-0 flex flex-col items-center justify-center gap-1.5 text-center bg-(--background) text-(--foreground) p-6"
         role="alert"
         data-testid="ms-scene-error"
       >
-        <p className="ms-scene-overlay-title">3D scene unavailable</p>
-        <p className="ms-scene-overlay-sub">
+        <p className="ms-scene-overlay-title m-0 text-sm font-semibold">3D scene unavailable</p>
+        <p className="ms-scene-overlay-sub mt-0 mx-0 mb-2 text-xs text-(--muted-foreground) max-w-105">
           {errorMessage ?? "Renderer failed to start."}
         </p>
         <div

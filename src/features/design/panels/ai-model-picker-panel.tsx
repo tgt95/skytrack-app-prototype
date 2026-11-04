@@ -206,7 +206,7 @@ export function AIModelPickerPanel({
               return (
                 <article
                   key={model.id}
-                  className={`group ms-lib-card relative cursor-pointer ${
+                  className={`group ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-(--card) text-(--foreground) text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default relative cursor-pointer ${
                     selected ? "border-(--primary) ring-1 ring-(--primary)" : ""
                   }`}
                   onClick={(event) => {

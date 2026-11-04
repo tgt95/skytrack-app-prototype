@@ -237,7 +237,7 @@ export function ReconnaissanceSettingsForm({
   return (
     <div data-testid="ms-recon-form">
       {altitudeReference === "AGL" ? (
-        <p className="ms-hint">
+        <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">
           Altitude AGL uses a flat z=0 reference plane; terrain is not modeled.
         </p>
       ) : null}
@@ -345,11 +345,11 @@ export function ReconnaissanceSettingsForm({
                   Double grid
                 </TabsTab>
               </TabsList>
-              <TabsPanel value="single" className="ms-recon-pattern-panel">
-                <span className="ms-sr">Single grid flight pattern.</span>
+              <TabsPanel value="single" className="ms-recon-pattern-panel absolute w-px h-px m-0 overflow-hidden p-0 [border:0] [clip:rect(0_0_0_0)] whitespace-nowrap">
+                <span className="ms-sr absolute w-px h-px overflow-hidden [clip:rect(0_0_0_0)] whitespace-nowrap">Single grid flight pattern.</span>
               </TabsPanel>
-              <TabsPanel value="double" className="ms-recon-pattern-panel">
-                <span className="ms-sr">Double grid flight pattern.</span>
+              <TabsPanel value="double" className="ms-recon-pattern-panel absolute w-px h-px m-0 overflow-hidden p-0 [border:0] [clip:rect(0_0_0_0)] whitespace-nowrap">
+                <span className="ms-sr absolute w-px h-px overflow-hidden [clip:rect(0_0_0_0)] whitespace-nowrap">Double grid flight pattern.</span>
               </TabsPanel>
             </Tabs>
           </div>
@@ -357,7 +357,7 @@ export function ReconnaissanceSettingsForm({
       </div>
 
       {showFlightPattern ? (
-        <p className="ms-recon-form-help">
+        <p className="ms-recon-form-help text-(--muted-foreground) text-[0.6875rem]">
           For Area scans, Front overlap sets photo spacing and Side overlap sets
           lane spacing using the camera footprint.
         </p>
@@ -381,7 +381,7 @@ export function ReconnaissanceSettingsForm({
           data-testid="ms-recon-form-toggle-copy"
         >
           <span className="ms-recon-form-label">Terrain awareness</span>
-          <span className="ms-recon-form-help">
+          <span className="ms-recon-form-help text-(--muted-foreground) text-[0.6875rem]">
             Adjust the route to follow changes in terrain elevation.
           </span>
         </span>

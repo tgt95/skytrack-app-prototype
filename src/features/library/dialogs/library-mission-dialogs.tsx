@@ -189,7 +189,7 @@ export function LibraryMissionActionDialogs({
                 ) : null}
               </DialogDescription>
             </DialogHeader>
-            <div className="ms-lib-form">
+            <div className="ms-lib-form flex flex-col gap-3 py-1 px-0">
               <CloneProjectPicker
                 projects={projects}
                 onPick={cloneMission}
@@ -199,7 +199,7 @@ export function LibraryMissionActionDialogs({
                 }}
               />
             </div>
-            <DialogFooter>
+            <DialogFooter className="flex-row flex-wrap items-center justify-end">
               <DialogClose className="w-auto flex-[0_0_auto]">
                 Cancel
               </DialogClose>
@@ -228,7 +228,7 @@ export function LibraryMissionActionDialogs({
                 ) : null}
               </DialogDescription>
             </DialogHeader>
-            <DialogFooter>
+            <DialogFooter className="flex-row flex-wrap items-center justify-end">
               <DialogClose className="w-auto flex-[0_0_auto]">
                 Cancel
               </DialogClose>
@@ -269,7 +269,7 @@ export function LibraryMissionActionDialogs({
                 ) : null}
               </DialogDescription>
             </DialogHeader>
-            <DialogFooter>
+            <DialogFooter className="flex-row flex-wrap items-center justify-end">
               <DialogClose className="w-auto flex-[0_0_auto]">
                 Cancel
               </DialogClose>

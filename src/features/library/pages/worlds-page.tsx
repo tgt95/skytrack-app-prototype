@@ -56,7 +56,7 @@ export function WorldsPage({
           titleId="ms-lib-worlds-title"
           title="Worlds"
           description={
-            <p className="ms-lib-sub mt-0 hidden">
+            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground) hidden">
               3D reconstructions for {workspaceName}.
             </p>
           }
@@ -76,7 +76,7 @@ export function WorldsPage({
           <LibraryCardFrame
             key={world.id}
             label={world.name}
-            className="ms-lib-resource-card"
+            className="ms-lib-resource-card min-h-39"
             testId={`ms-lib-world-${world.id}`}
             onOpen={() => setSelectedWorld(world)}
             actions={[
@@ -100,7 +100,7 @@ export function WorldsPage({
               worldName={world.name}
               onPreview={() => setSelectedWorld(world)}
             />
-            <span className="ms-lib-card-body flex-1">
+            <span className="ms-lib-card-body flex flex-col gap-1 p-3 flex-1">
               <span className="text-sm font-medium">{world.name}</span>
               <span className="text-xs text-muted-foreground leading-[1.5]">
                 3D World ·{" "}
@@ -121,7 +121,7 @@ export function WorldsPage({
                   count={world.status}
                   status="secondary"
                   size="sm"
-                  className="self-start"
+                  className="self-start rounded-(--radius)"
                 />
               ) : null}
               {worldSourceSummary(world) ? (

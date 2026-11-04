@@ -76,6 +76,16 @@ const PYTHON_TYPES = new Set([
   "tuple",
 ]);
 const PYTHON_CONSTANTS = new Set(["False", "None", "True"]);
+const PYTHON_TOKEN_TAILWIND_CLASS: Record<string, string> = {
+  keyword: "text-(--ms-code-keyword)",
+  string: "text-(--ms-code-string)",
+  number: "text-(--ms-code-number)",
+  comment: "text-(--ms-code-comment)",
+  type: "text-(--ms-code-type)",
+  function: "text-(--ms-code-function)",
+  constant: "text-(--ms-code-constant)",
+  punctuation: "text-(--ms-code-punctuation)",
+};
 
 function pythonTokens(line: string) {
   const pattern =
@@ -112,7 +122,10 @@ function pythonTokens(line: string) {
     }
     parts.push(
       kind ? (
-        <span className={`ms-python-token-${kind}`} key={index}>
+        <span
+          className={`ms-python-token-${kind} ${PYTHON_TOKEN_TAILWIND_CLASS[kind]}`}
+          key={index}
+        >
           {token}
         </span>
       ) : (
@@ -138,7 +151,11 @@ export function PythonEditor({
 
   return (
     <div
-      className='ms-python-editor relative flex-[1_1_auto] min-h-0 bg-(--ms-code-canvas) text-(--ms-code-ink) font-["IBM_Plex_Mono",ui-monospace,SFMono-Regular,Menlo,monospace] text-sm [font-variant-ligatures:none]'
+      className={[
+        "ms-python-editor relative flex-[1_1_auto] min-h-0 bg-(--ms-code-canvas) text-(--ms-code-ink) font-[\"IBM_Plex_Mono\",ui-monospace,SFMono-Regular,Menlo,monospace] text-sm [font-variant-ligatures:none]",
+        "[--ms-code-canvas:#ffffff] [--ms-code-ink:#000000] [--ms-code-keyword:#af00db] [--ms-code-string:#a31515] [--ms-code-number:#098658] [--ms-code-comment:#008000] [--ms-code-type:#267f99] [--ms-code-function:#795e26] [--ms-code-constant:#0000ff] [--ms-code-punctuation:#000000] [--ms-code-line-number:#858585] [--ms-code-line-number-active:#000000] [--ms-code-active-line:#f3f3f3] [--ms-code-selection:#add6ff]",
+        "[.dark_&]:[--ms-code-canvas:#1e1e1e] [.dark_&]:[--ms-code-ink:#d4d4d4] [.dark_&]:[--ms-code-keyword:#c586c0] [.dark_&]:[--ms-code-string:#ce9178] [.dark_&]:[--ms-code-number:#b5cea8] [.dark_&]:[--ms-code-comment:#6a9955] [.dark_&]:[--ms-code-type:#4ec9b0] [.dark_&]:[--ms-code-function:#dcdcaa] [.dark_&]:[--ms-code-constant:#569cd6] [.dark_&]:[--ms-code-punctuation:#d4d4d4] [.dark_&]:[--ms-code-line-number:#858585] [.dark_&]:[--ms-code-line-number-active:#d4d4d4] [.dark_&]:[--ms-code-active-line:#282828] [.dark_&]:[--ms-code-selection:#264f78]",
+      ].join(" ")}
       data-testid="ms-python-editor"
     >
       <div
@@ -151,14 +168,14 @@ export function PythonEditor({
           <div
             className={[
               `ms-python-line${activeLine === index + 1 ? " is-active" : ""}`,
-              "grid grid-cols-[2.375rem_minmax(0,1fr)] min-h-[1.55em]",
+              "grid grid-cols-[2.375rem_minmax(0,1fr)] min-h-[1.55em] [&.is-active_.ms-python-line-number]:bg-(--ms-code-active-line) [&.is-active_.ms-python-line-number]:text-(--ms-code-line-number-active) [&.is-active_[data-testid=ms-python-source]]:bg-(--ms-code-active-line)",
             ]
               .filter(Boolean)
               .join(" ")}
             key={index}
           >
             <span
-              className="ms-python-line-number pr-2 text-right [user-select:none]"
+              className="ms-python-line-number pr-2 text-right text-(--ms-code-line-number) [user-select:none]"
               data-testid="ms-python-number"
             >
               {index + 1}
@@ -174,7 +191,7 @@ export function PythonEditor({
       </div>
       <textarea
         id="ms-code-editor"
-        className="absolute inset-0 box-border w-full h-full m-0 overflow-auto [font:inherit] leading-[inherit] tracking-[inherit] tab-4 z-1 block pt-3 pr-3 pb-3 pl-12 [border:0] rounded-none resize-none outline-none bg-transparent text-transparent [-webkit-text-fill-color:transparent] caret-(--ms-code-ink) whitespace-pre-wrap wrap-anywhere [&::selection]:bg-(--ms-code-selection)"
+        className="absolute inset-0 box-border w-full h-full m-0 overflow-auto [font:inherit] leading-[inherit] tracking-[inherit] tab-4 z-1 block pt-3 pr-3 pb-3 pl-12 [border:0] rounded-none resize-none outline-none bg-transparent text-transparent [-webkit-text-fill-color:transparent] caret-(--ms-code-ink) whitespace-pre-wrap wrap-anywhere [&::selection]:bg-(--ms-code-selection) [&::selection]:text-(--ms-code-ink) [&::selection]:[-webkit-text-fill-color:var(--ms-code-ink)]"
         aria-label="Python mission script draft"
         aria-describedby="ms-code-limit"
         value={value}

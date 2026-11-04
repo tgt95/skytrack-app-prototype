@@ -66,7 +66,7 @@ function TextField({
   error?: string;
 }) {
   return (
-    <FieldRoot className="ms-field" invalid={Boolean(error)}>
+    <FieldRoot className="ms-field flex flex-col gap-1" invalid={Boolean(error)}>
       <FieldLabel>{label}</FieldLabel>
       <FieldControl
         value={value}
@@ -87,7 +87,7 @@ function StatusField({
   onChange: (value: ResourceStatus) => void;
 }) {
   return (
-    <FieldRoot className="ms-field">
+    <FieldRoot className="ms-field flex flex-col gap-1">
       <FieldLabel>Status</FieldLabel>
       <Select<ResourceStatus>
         items={RESOURCE_STATUSES.map((status) => ({
@@ -236,9 +236,9 @@ export function WorldProfileDialog({
               this World.
             </DialogDescription>
           </DialogHeader>
-          <div className="ms-drone-dialog-body flex-1">
-            <section className="ms-drone-form-section">
-              <div className="ms-drone-section-heading">
+          <div className="ms-drone-dialog-body flex flex-col gap-6 min-h-0 overflow-auto [@media_(max-width:_45rem)]:pt-1 [@media_(max-width:_45rem)]:px-3.5 [@media_(max-width:_45rem)]:pb-2 flex-1">
+            <section className="ms-drone-form-section flex flex-col gap-3">
+              <div className="ms-drone-section-heading flex flex-col gap-0.75">
                 <h2 className="heading m-0 text-sm font-semibold">
                   World details
                 </h2>
@@ -247,7 +247,7 @@ export function WorldProfileDialog({
                   World.
                 </p>
               </div>
-              <div className="ms-drone-form-grid gap-2">
+              <div className="ms-drone-form-grid grid grid-cols-2 gap-3 [@media_(max-width:_45rem)]:grid-cols-[minmax(0,1fr)]">
                 <TextField
                   label="World name *"
                   value={draft.name}
@@ -269,7 +269,7 @@ export function WorldProfileDialog({
                   value={draft.status}
                   onChange={(status) => patch({ status })}
                 />
-                <FieldRoot className="ms-field">
+                <FieldRoot className="ms-field flex flex-col gap-1">
                   <FieldLabel>Source</FieldLabel>
                   <Select<WorldSourceType>
                     items={WORLD_SOURCE_TYPES}
@@ -311,7 +311,7 @@ export function WorldProfileDialog({
                   </Select>
                 </FieldRoot>
                 {draft.sourceType === "mission" ? (
-                  <FieldRoot className="ms-field ms-drone-form-wide">
+                  <FieldRoot className="ms-field flex flex-col gap-1 ms-drone-form-wide col-span-full [@media_(max-width:_45rem)]:col-auto">
                     <FieldLabel>Source 2D mission</FieldLabel>
                     <Select<string>
                       items={sourceMissions.map((mission) => ({
@@ -384,7 +384,7 @@ export function WorldProfileDialog({
                   placeholder="URL or storage path; reference only"
                 />
                 <FieldRoot
-                  className="ms-field ms-drone-form-wide"
+                  className="ms-field flex flex-col gap-1 ms-drone-form-wide col-span-full [@media_(max-width:_45rem)]:col-auto"
                   invalid={Boolean(fileError)}
                 >
                   <FieldLabel id="ms-world-glb-file-label">
@@ -463,7 +463,7 @@ export function WorldProfileDialog({
                     <FieldError match={true}>{fileError}</FieldError>
                   ) : null}
                 </FieldRoot>
-                <div className="ms-resource-note ms-drone-form-wide">
+                <div className="ms-resource-note m-0 text-(--muted-foreground) text-xs leading-[1.5] col-span-full py-2.5 px-3 border border-border rounded-(--radius) bg-(--muted) ms-drone-form-wide col-span-full [@media_(max-width:_45rem)]:col-auto">
                   {mode === "create"
                     ? "The GLB file is stored in this browser. Source and reconstruction references remain text only."
                     : "Source and reconstruction references are saved as text only. The GLB file is stored in this browser."}
@@ -486,7 +486,7 @@ export function WorldProfileDialog({
               </p>
             ) : null}
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex-row flex-wrap items-center justify-end">
             <DialogClose
               disabled={submitting}
               className="w-auto flex-[0_0_auto]"

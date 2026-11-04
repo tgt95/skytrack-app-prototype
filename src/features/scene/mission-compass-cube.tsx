@@ -276,7 +276,7 @@ export function MissionCompassCube({
               <button
                 key={face}
                 type="button"
-                className={`ms-cube-face ${face === "TOP" ? "text-(--primary)! border-(--primary)!" : ""}`}
+                className={`ms-cube-face absolute inset-0 flex items-center justify-center text-[0.625rem] font-bold tracking-[0.03em] text-(--foreground) bg-(--card) border border-border rounded-(--radius) cursor-pointer [user-select:none] backface-hidden transform-(--ms-cube-face-transform) [pointer-events:var(--ms-cube-face-pointer-events)] [visibility:var(--ms-cube-face-visibility)] hover:bg-(--accent) hover:text-(--primary) hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--ring) focus-visible:outline-offset-1 focus-visible:z-10 ${face === "TOP" ? "text-(--primary)! border-(--primary)!" : ""}`}
                 style={
                   {
                     "--ms-cube-face-transform": st.transform,
@@ -301,7 +301,7 @@ export function MissionCompassCube({
             );
           })}
           <div
-            className="ms-cube-face  bg-(--muted) border border-border pointer-events-none"
+            className="ms-cube-face absolute inset-0 flex items-center justify-center text-[0.625rem] font-bold tracking-[0.03em] text-(--foreground) bg-(--card) border border-border rounded-(--radius) cursor-pointer [user-select:none] backface-hidden transform-(--ms-cube-face-transform) [pointer-events:var(--ms-cube-face-pointer-events)] [visibility:var(--ms-cube-face-visibility)] hover:bg-(--accent) hover:text-(--primary) hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--ring) focus-visible:outline-offset-1 focus-visible:z-10"
             style={
               {
                 "--ms-cube-face-transform": `rotateX(180deg) translateZ(${HALF_SIZE}px)`,

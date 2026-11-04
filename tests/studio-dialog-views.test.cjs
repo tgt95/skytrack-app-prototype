@@ -23,11 +23,11 @@ test("world picker and mission editor remain controlled leaf views", () => {
   assert.match(parent, /restoreDialogFocus/);
   assert.match(focusReturn, /activeElement instanceof HTMLElement/);
   assert.match(focusReturn, /openWithFocusReturn/);
-  assert.match(world, /data-testid="ms-world-picker"/);
-  assert.match(world, /data-testid="ms-world-type-tabs"/);
+  assert.match(world, /data-testid=["']ms-world-picker["']/);
+  assert.match(world, /data-testid=["']ms-world-type-tabs["']/);
   assert.match(world, /onSelectWorldType/);
   assert.match(world, /finalFocus=\{restoreDialogFocus\}/);
-  assert.match(edit, /aria-label="Edit mission"/);
+  assert.match(edit, /aria-label=["']Edit mission["']/);
   assert.match(edit, /initialFocus=\{missionNameRef\}/);
   assert.match(edit, /finalFocus=\{restoreDialogFocus\}/);
   assert.match(edit, /onNameChange\(String\(value\)\)/);

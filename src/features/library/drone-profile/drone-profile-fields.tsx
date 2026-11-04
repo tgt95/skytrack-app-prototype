@@ -35,7 +35,7 @@ export function TextField({
   type?: string;
 }) {
   return (
-    <FieldRoot className="ms-field">
+    <FieldRoot className="ms-field flex flex-col gap-1">
       <FieldLabel>{label}</FieldLabel>
       <FieldControl
         type={type}
@@ -62,7 +62,7 @@ export function SelectField<T extends string>({
   onChange: (value: T) => void;
 }) {
   return (
-    <FieldRoot className="ms-field">
+    <FieldRoot className="ms-field flex flex-col gap-1">
       <FieldLabel>{label}</FieldLabel>
       <Select<T>
         items={options.map((option) => ({
@@ -107,7 +107,7 @@ export function NumberField({
   onChange: (value: number | null) => void;
 }) {
   return (
-    <FieldRoot className="ms-field">
+    <FieldRoot className="ms-field flex flex-col gap-1">
       <FieldLabel>{label}</FieldLabel>
       <FieldControl
         type="number"

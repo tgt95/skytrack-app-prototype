@@ -25,10 +25,10 @@ export function DronePerformanceSourceSection({
   return (
     <>
       <section
-        className="ms-drone-form-section"
+        className="ms-drone-form-section flex flex-col gap-3"
         aria-labelledby="ms-drone-performance-title"
       >
-        <div className="ms-drone-section-heading">
+        <div className="ms-drone-section-heading flex flex-col gap-0.75">
           <h2
             id="ms-drone-performance-title"
             className="heading m-0 text-sm font-semibold"
@@ -39,7 +39,7 @@ export function DronePerformanceSourceSection({
             Optional descriptive values. Leave unknown values blank.
           </p>
         </div>
-        <div className="ms-drone-form-grid">
+        <div className="ms-drone-form-grid grid grid-cols-2 gap-3 [@media_(max-width:_45rem)]:grid-cols-[minmax(0,1fr)]">
           <NumberField
             label="Maximum flight time"
             value={profile.maxFlightTimeMin}
@@ -95,10 +95,10 @@ export function DronePerformanceSourceSection({
       </section>
 
       <section
-        className="ms-drone-form-section"
+        className="ms-drone-form-section flex flex-col gap-3"
         aria-labelledby="ms-drone-profile-source-title"
       >
-        <div className="ms-drone-section-heading">
+        <div className="ms-drone-section-heading flex flex-col gap-0.75">
           <h2
             id="ms-drone-profile-source-title"
             className="heading m-0 text-sm font-semibold"
@@ -110,7 +110,7 @@ export function DronePerformanceSourceSection({
             sources for component-specific facts.
           </p>
         </div>
-        <div className="ms-drone-form-grid">
+        <div className="ms-drone-form-grid grid grid-cols-2 gap-3 [@media_(max-width:_45rem)]:grid-cols-[minmax(0,1fr)]">
           <SelectField<DroneDataSourceType>
             label="Data source status"
             value={profile.profileSourceType}

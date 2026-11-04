@@ -65,7 +65,7 @@ export function SimulationSettingsForm({
               </NumberFieldIncrement>
             </NumberFieldGroup>
           </NumberField>
-          <p className="ms-hint">Enter 1–20.</p>
+          <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">Enter 1–20.</p>
         </div>
       </InspectorField>
       <InspectorField

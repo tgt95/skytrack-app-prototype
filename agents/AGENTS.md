@@ -22,7 +22,7 @@ Read this file before changing this standalone project. Also read
 - Use one supported action list for the More menu and right-click `skytrack-ui` ContextMenu. Order primary actions first, common actions next, and destructive actions last, with dividers between groups. Do not add inert actions or controls.
 - Keep library menu items text-only; do not add leading icons.
 - During active development, do not run `npm run build` by default. Run focused typecheck, lint, and runtime/system checks for affected behavior. Run `npm run build` only when the Owner asks or the task explicitly enters release/package validation. See `qc-test-cases.md` for the full planned regression suite; a planned case is not a claim that it passed.
-- Keep agent documentation in this `skills/agent-workspace/` tree. Update architecture references when source boundaries change.
+- Keep agent documentation in this `agents/` tree. Update architecture references when source boundaries change.
 - This app has separate storage under its own browser origin and does not sync with Prototype Hub.
 
 ## Release notes

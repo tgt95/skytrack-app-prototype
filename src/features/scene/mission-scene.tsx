@@ -39,7 +39,11 @@ import {
 
 type CesiumNS = typeof import("cesium");
 
-import { enuToLngLat, syncSearchMarkerEntities } from "./mission-scene-helpers";
+import {
+  enuToLngLat,
+  getSelectedPhotoId,
+  syncSearchMarkerEntities,
+} from "./mission-scene-helpers";
 
 const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
   function MissionScene(
@@ -91,13 +95,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
     ref,
   ) {
     const [preferencesRevision, setPreferencesRevision] = useState(0);
-    const selectedPhotoWaypointId =
-      selection?.kind === "waypoint" &&
-      mission.waypoints
-        .find((waypoint) => waypoint.id === selection.id)
-        ?.actions.some((action) => action.kind === "photo")
-        ? selection.id
-        : null;
+    const selectedPhotoWaypointId = getSelectedPhotoId(mission, selection);
     const focusedPhotoWaypointId = showPhotoMarkers
       ? selectedPhotoWaypointId
       : null;
@@ -735,7 +733,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
       <div className="ms-scene absolute inset-0" data-testid="ms-scene">
         <div
           ref={hostRef}
-          className=" absolute inset-0 [&_canvas]:block [&_canvas]:w-full [&_canvas]:h-full"
+          className=" absolute inset-0 [&_canvas]:block [&_canvas]:w-full [&_canvas]:h-full [&_.cesium-credit-wrapper]:hidden"
           aria-hidden={status !== "ready"}
           data-testid="ms-scene-host"
         />

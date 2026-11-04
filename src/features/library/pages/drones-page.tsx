@@ -28,7 +28,7 @@ export function DronesPage({
           titleId="ms-lib-drones-title"
           title="Drones"
           description={
-            <p className="ms-lib-sub mt-0 hidden">
+            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground) hidden">
               Reference builds and hardware profiles for {workspaceName}.
             </p>
           }
@@ -48,7 +48,7 @@ export function DronesPage({
           <LibraryCardFrame
             key={drone.id}
             label={drone.name}
-            className="ms-lib-resource-card  relative cursor-default"
+            className="ms-lib-resource-card min-h-39  relative cursor-default"
             actions={[
               {
                 id: "edit",
@@ -66,13 +66,13 @@ export function DronesPage({
             ]}
             data-testid="ms-lib-drone-profile-card"
           >
-            <span className="ms-lib-resource-icon">
+            <span className="ms-lib-resource-icon flex items-center justify-center w-full aspect-4/3 border-b border-b-border bg-(--muted) text-(--muted-foreground)">
               <DroneIcon
                 aria-hidden="true"
                 className="w-9 h-9"
               />
             </span>
-            <span className="ms-lib-card-body flex-1">
+            <span className="ms-lib-card-body flex flex-col gap-1 p-3 flex-1">
               <span className="text-sm font-medium">{drone.name}</span>
               <span className="text-xs text-muted-foreground leading-[1.5]">
                 {drone.firmwareFamily === "Unspecified"

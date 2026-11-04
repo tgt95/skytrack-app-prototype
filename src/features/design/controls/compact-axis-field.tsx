@@ -45,9 +45,9 @@ export function CompactAxisField({
     if (Number.isFinite(v)) onChange(Math.min(max, Math.max(min, v)));
   };
   return (
-    <label className={["ms-axis-compact", className].filter(Boolean).join(" ")}>
+    <label className={["ms-axis-compact flex items-center gap-1 min-w-0", className].filter(Boolean).join(" ")}>
       <span
-        className={["ms-axis flex-[0_0_auto]", axisClassName]
+        className={["ms-axis grow-0 shrink-0 basis-3 whitespace-nowrap text-[0.6875rem] font-semibold text-(--muted-foreground) flex-[0_0_auto]", axisClassName]
           .filter(Boolean)
           .join(" ")}
         aria-hidden="true"

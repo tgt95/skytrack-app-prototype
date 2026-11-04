@@ -1,0 +1,195 @@
+{
+  "spawnLocation": [
+    0,
+    0,
+    0
+  ],
+  "avoidZones": [],
+  "sequences": [
+    {
+      "id": "335e3164-376c-5614-862a-2f0cfbadf0e6",
+      "type": "route",
+      "targetSpeed": 3.0,
+      "actions": [
+        {
+          "type": "navigate",
+          "id": "b8008d12-116a-5c95-b1c1-a23f598d2d7b",
+          "data": [
+            5,
+            5,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "eda53aa3-5def-54ef-af25-123756c41c96",
+          "data": [
+            55,
+            5,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "65349ec6-7a10-50dd-bfd7-6b0187450f35",
+          "data": [
+            55,
+            15,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "d5ad0441-adc2-535a-b381-931cb56220e8",
+          "data": [
+            5,
+            15,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "5b592ff5-8fb3-5c39-ac64-4dee621ad2a0",
+          "data": [
+            5,
+            25,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "a78c2bf7-087c-579b-a223-c6600c8db18f",
+          "data": [
+            55,
+            25,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "dfd127b9-9258-59e9-b219-3109284529c6",
+          "data": [
+            55,
+            35,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "531c92ad-e22f-53ed-a4d4-c4a6d65a64a9",
+          "data": [
+            5,
+            35,
+            12.0
+          ]
+        },
+        {
+          "id": "31941fdc-baf4-5e89-822f-21d107d7ba2d",
+          "type": "ai-flow",
+          "data": {
+            "confidenceThreshold": 0.5,
+            "onDetected": [
+              {
+                "id": "cec59345-df19-5334-b087-a0c799d6ce07"
+              }
+            ]
+          }
+        },
+        {
+          "id": "2e59a15a-18e5-591d-b6cf-8653aa446082",
+          "type": "break-not-assigned"
+        }
+      ],
+      "originalActions": [
+        {
+          "type": "navigate",
+          "id": "b8008d12-116a-5c95-b1c1-a23f598d2d7b",
+          "data": [
+            5,
+            5,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "eda53aa3-5def-54ef-af25-123756c41c96",
+          "data": [
+            55,
+            5,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "65349ec6-7a10-50dd-bfd7-6b0187450f35",
+          "data": [
+            55,
+            15,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "d5ad0441-adc2-535a-b381-931cb56220e8",
+          "data": [
+            5,
+            15,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "5b592ff5-8fb3-5c39-ac64-4dee621ad2a0",
+          "data": [
+            5,
+            25,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "a78c2bf7-087c-579b-a223-c6600c8db18f",
+          "data": [
+            55,
+            25,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "dfd127b9-9258-59e9-b219-3109284529c6",
+          "data": [
+            55,
+            35,
+            12.0
+          ]
+        },
+        {
+          "type": "navigate",
+          "id": "531c92ad-e22f-53ed-a4d4-c4a6d65a64a9",
+          "data": [
+            5,
+            35,
+            12.0
+          ]
+        },
+        {
+          "id": "31941fdc-baf4-5e89-822f-21d107d7ba2d",
+          "type": "ai-flow",
+          "data": {
+            "confidenceThreshold": 0.5,
+            "onDetected": [
+              {
+                "id": "cec59345-df19-5334-b087-a0c799d6ce07"
+              }
+            ]
+          }
+        },
+        {
+          "id": "2e59a15a-18e5-591d-b6cf-8653aa446082",
+          "type": "break-not-assigned"
+        }
+      ]
+    }
+  ]
+}

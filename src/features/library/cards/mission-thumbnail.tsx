@@ -3,7 +3,7 @@ import missionThumbnailSvg from "../../../assets/img-empty-thumbnail-4_3.svg?raw
 
 const thumbnailSvg = missionThumbnailSvg.replace(
   "<svg ",
-  '<svg class="w-full h-full block rounded-[inherit]" ',
+  '<svg class="w-full h-full block rounded-(--radius)" ',
 );
 
 export default function MissionThumbnail({
@@ -49,7 +49,7 @@ export default function MissionThumbnail({
     preview && preview.assetId === worldAssetId ? preview.url : null;
   if (previewUrl) {
     return (
-      <span className="absolute inset-0 block overflow-hidden rounded-[inherit]">
+      <span className="absolute inset-0 block overflow-hidden rounded-(--radius)">
         <img
           src={previewUrl}
           alt=""
@@ -63,7 +63,7 @@ export default function MissionThumbnail({
 
   return (
     <span
-      className="block w-full h-full rounded-[inherit]"
+      className="block w-full h-full rounded-(--radius)"
       aria-hidden="true"
       dangerouslySetInnerHTML={{ __html: thumbnailSvg }}
     />

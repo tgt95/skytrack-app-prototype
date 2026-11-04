@@ -42,23 +42,23 @@ export function ZoneDraftPanel({
   const unitSystem = useMeasurementSystem();
   return (
     <section
-      className={`ms-card ms-zone-draft-panel ${className}`}
+      className={`ms-card border border-border rounded-(--radius) bg-(--background) p-3 flex flex-col gap-2 ms-zone-draft-panel ${className}`}
       aria-label={`${kind === "area" ? "Area" : "Avoid zone"} drawing settings`}
       data-testid="ms-zone-draft-panel"
     >
-      <div className="ms-route-head">
-        <div className="ms-route-title-group">
+      <div className="ms-route-head flex flex-col gap-1">
+        <div className="ms-route-title-group flex items-center gap-1.5 flex-[0_0_auto] min-w-0 whitespace-nowrap">
           {kind === "area" ? (
-            <AreaIcon aria-hidden="true" className="ms-route-icon" />
+            <AreaIcon aria-hidden="true" className="ms-route-icon w-4 h-4 text-(--foreground) shrink-0" />
           ) : (
-            <AvoidZoneIcon aria-hidden="true" className="ms-route-icon" />
+            <AvoidZoneIcon aria-hidden="true" className="ms-route-icon w-4 h-4 text-(--foreground) shrink-0" />
           )}
-          <span className="ms-route-name">
+          <span className="ms-route-name text-sm font-semibold">
             {kind === "area" ? "Area draft" : "Avoid zone draft"}
           </span>
         </div>
       </div>
-      <div className="ms-zone-settings">
+      <div className="ms-zone-settings flex flex-col gap-2 p-3 border-t border-t-border">
         {kind === "area" ? (
           <>
             <div className="flex flex-col gap-1.5">
@@ -120,14 +120,14 @@ export function ZoneDraftPanel({
                 })
               }
             />
-            <p className="ms-hint" aria-live="polite">
+            <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]" aria-live="polite">
               {pointCount} outline point{pointCount === 1 ? "" : "s"} · scan
               preview updates as settings change.
             </p>
           </>
         ) : (
           <>
-            <p className="ms-hint">
+            <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">
               Choose whether this is a physical obstacle or a people/privacy
               exclusion zone.
             </p>
@@ -136,7 +136,7 @@ export function ZoneDraftPanel({
               variant="segmented"
               size="xs"
               aria-label="Avoid zone type"
-              className="ms-avoid-type-toggle"
+              className="ms-avoid-type-toggle mb-2.5"
               onValueChange={(values) => {
                 const value = values[0];
                 if (value === "obstacle" || value === "privacy")
@@ -177,13 +177,13 @@ export function ZoneDraftPanel({
                 })
               }
             />
-            <p className="ms-hint" aria-live="polite">
+            <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]" aria-live="polite">
               {pointCount} outline point{pointCount === 1 ? "" : "s"} · volume
               preview updates as settings change.
             </p>
           </>
         )}
-        <div className="ms-btnrow">
+        <div className="ms-btnrow flex justify-end flex-row gap-1.5">
           <Button size="sm" variant="outline" onClick={onCancel}>
             Cancel
           </Button>

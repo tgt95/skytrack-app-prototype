@@ -340,13 +340,13 @@ export function generateAreaCapturePath(
 
   const path: AreaCapturePathPoint[] = []
   const append = (point: EnuPoint, capturePhoto: boolean) => {
-    const rounded = { x: round2(point.x), y: round2(point.y) }
+    const roundedPoint = { x: round2(point.x), y: round2(point.y) }
     const previous = path[path.length - 1]
-    if (previous && Math.hypot(previous.x - rounded.x, previous.y - rounded.y) <= 0.001) {
+    if (previous && Math.hypot(previous.x - roundedPoint.x, previous.y - roundedPoint.y) <= 0.001) {
       previous.capturePhoto ||= capturePhoto
       return
     }
-    path.push({ ...rounded, capturePhoto })
+    path.push({ ...roundedPoint, capturePhoto })
   }
 
   const photoSpacingM = getAreaPhotoSpacingM(area)

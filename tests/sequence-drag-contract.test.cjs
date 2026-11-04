@@ -86,7 +86,7 @@ test('sequence row modules import leaf owners instead of the compatibility barre
     const source = fs.readFileSync(path.join(designDir, file), 'utf8')
     assert.equal(source.includes('"./sequence-controls"'), false, `${file} must not import the barrel`)
   }
-  assert.match(SEQUENCE_LIST_ITEM_CLASS, /^relative rounded-\[0\]/)
+  assert.match(SEQUENCE_LIST_ITEM_CLASS, /^relative rounded-none\b/)
   assert.match(SEQUENCE_LIST_ITEM_CLASS, /first:\[border-top-left-radius:var\(--radius\)\]/)
   assert.match(SEQUENCE_LIST_ITEM_CLASS, /last:\[border-bottom-right-radius:var\(--radius\)\]/)
 })

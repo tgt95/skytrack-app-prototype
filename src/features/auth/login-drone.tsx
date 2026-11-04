@@ -138,12 +138,12 @@ export default function LoginDrone({ isDark, reducedMotion }: LoginDroneProps) {
   return (
     <div
       data-testid="ms-login-drone"
-      className="[--login-drone-width:min(12rem,42vw)] relative z-3 grid box-border w-[min(var(--login-drone-width),calc(100vw-3rem))] aspect-[1] place-items-center overflow-hidden bg-(--card) outline-8 outline-(--muted) [border:1px_solid_var(--border)] rounded-[100%] mx-auto -mt-[(var(--login-drone-width)-3rem)] text-base"
+      className="[--login-drone-width:min(12rem,42vw)] relative z-3 grid box-border w-[min(var(--login-drone-width),calc(100vw-3rem))] aspect-[1] place-items-center overflow-hidden bg-(--card) outline-8 outline-(--muted) [border:1px_solid_var(--border)] rounded-full mx-auto -mt-[(var(--login-drone-width)-3rem)] text-base"
       aria-hidden="true"
     >
       <canvas
         ref={canvasRef}
-        className="animate-[ms-login-hover_4s_ease-in-out_infinite] block w-full h-full overflow-hidden opacity-[.4] motion-reduce:animate-none"
+        className="animate-ms-login-hover block w-full h-full overflow-hidden opacity-[.4] motion-reduce:animate-none"
       />
     </div>
   );

@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { ArrowSquareOutIcon, BookOpenIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
 import type { LibMission, LibProject, LibTemplate } from "./database/store";
 import type { WorkspaceDroneProfile } from "./database/drone-store";
@@ -8,7 +7,6 @@ import type {
   WorkspaceWorldRecord,
 } from "./database/workspace-resources-store";
 import {
-  LibraryCardFrame,
   LibraryEmptyState,
   LibraryPageHeader,
   LibraryPageLayout,
@@ -30,16 +28,11 @@ import {
   WorldsPage,
 } from "./workspace-resource-pages";
 import { ProjectDetailPage, ProjectsPage } from "./project-pages";
+import DownloadPage from "./pages/download-page";
+import LearnPage from "./pages/learn-page";
 import type { AIModelCategory, LibrarySection } from "./library-types";
 
 type MissionEntry = { projectId: string; project: string; mission: LibMission };
-
-const LEARN_URL = "https://getskytrack.com/help/category/get-builders-insights";
-const LEARN_FEATURED = {
-  title: "Use simulation effectively when building autonomous missions",
-  desc: "How simulation fits into a responsible mission-building workflow.",
-  url: "https://getskytrack.com/en/resources/how-to-use-simulation-effectively-when-building-autonomous-missions-en-394",
-};
 
 interface LibraryMainContentProps {
   section: LibrarySection;
@@ -161,9 +154,9 @@ export default function LibraryMainContent({
           : "Library";
 
   return (
-    <main
+    <section
       className={
-        "ms-route-content min-h-0 flex-[1_1_auto] min-w-0 overflow-y-auto overscroll-contain flex flex-col gap-0"
+        "ms-route-content [view-transition-name:ms-route-content] min-h-0 flex-[1_1_auto] min-w-0 overflow-y-auto overscroll-contain flex flex-col gap-0"
       }
       data-section={section}
       aria-label={label}
@@ -201,6 +194,8 @@ export default function LibraryMainContent({
             onOpenTemplateDetail(id);
           }}
         />
+      ) : section === "download" ? (
+        <DownloadPage onGoHome={() => onNavigate("home", null)} />
       ) : section === "recent" ? (
         <RecentPage missions={homeMissions} renderMission={renderRecent} />
       ) : section === "projects" ? (
@@ -256,102 +251,7 @@ export default function LibraryMainContent({
           onOpenTemplate={onOpenTemplateDetail}
         />
       ) : section === "learn" ? (
-        <LibraryPageLayout
-          titleId="ms-lib-learn-page-title"
-          header={
-            <LibraryPageHeader
-              titleId="ms-lib-learn-page-title"
-              title="Learn"
-              description={
-                <p className="ms-lib-sub mt-0">
-                  Guides from the SkyTrack help center open in a new tab.
-                </p>
-              }
-            />
-          }
-        >
-          <div
-            className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
-            aria-label="Featured learning resources"
-          >
-            <LibraryCardFrame
-              label={LEARN_FEATURED.title}
-              actions={[
-                {
-                  id: "open",
-                  label: "Open",
-                  group: "primary",
-                  onSelect: () =>
-                    window.open(
-                      LEARN_FEATURED.url,
-                      "_blank",
-                      "noopener,noreferrer",
-                    ),
-                },
-              ]}
-            >
-              <span
-                className="ms-lib-thumb is-learn tint-3 [.ms-lib-thumb&]:bg-[color-mix(in_srgb,var(--accent)_70%,var(--card))]"
-                aria-hidden="true"
-              >
-                <BookOpenIcon className="w-11 h-11 opacity-[0.85]" />
-              </span>
-              <span className="ms-lib-card-body">
-                <a
-                  className="border-0 p-0 bg-transparent text-inherit [font:inherit] text-sm font-medium text-left cursor-pointer rounded-(--radius) hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
-                  href={LEARN_FEATURED.url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {LEARN_FEATURED.title}{" "}
-                  <ArrowSquareOutIcon
-                    aria-hidden="true"
-                    className="w-3 h-3 align-[-1px]"
-                  />
-                </a>
-                <span className="text-xs text-muted-foreground leading-[1.5]">
-                  {LEARN_FEATURED.desc}
-                </span>
-              </span>
-            </LibraryCardFrame>
-            <LibraryCardFrame
-              label="SkyTrack help center"
-              actions={[
-                {
-                  id: "open",
-                  label: "Open",
-                  group: "primary",
-                  onSelect: () =>
-                    window.open(LEARN_URL, "_blank", "noopener,noreferrer"),
-                },
-              ]}
-            >
-              <span
-                className="ms-lib-thumb is-learn tint-1 [.ms-lib-thumb&]:bg-[color-mix(in_srgb,var(--primary)_16%,var(--muted))]"
-                aria-hidden="true"
-              >
-                <BookOpenIcon className="w-11 h-11 opacity-[0.85]" />
-              </span>
-              <span className="ms-lib-card-body">
-                <a
-                  className="border-0 p-0 bg-transparent text-inherit [font:inherit] text-sm font-medium text-left cursor-pointer rounded-(--radius) hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
-                  href={LEARN_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  SkyTrack help center{" "}
-                  <ArrowSquareOutIcon
-                    aria-hidden="true"
-                    className="w-3 h-3 align-[-1px]"
-                  />
-                </a>
-                <span className="text-xs text-muted-foreground leading-[1.5]">
-                  Browse guides for planning and flying missions.
-                </span>
-              </span>
-            </LibraryCardFrame>
-          </div>
-        </LibraryPageLayout>
+        <LearnPage />
       ) : section === "aimodels" ? (
         <AIModelsPage
           workspaceName={workspaceName}
@@ -380,7 +280,7 @@ export default function LibraryMainContent({
       ) : (
         <LibraryPageLayout
           titleId="ms-lib-placeholder-title"
-          sectionClassName="ms-placeholder"
+          sectionClassName="ms-placeholder max-w-130 border border-border rounded-(--radius) bg-(--card) py-5 px-5.5 flex flex-col gap-2"
           header={
             <LibraryPageHeader
               titleId="ms-lib-placeholder-title"
@@ -388,12 +288,12 @@ export default function LibraryMainContent({
             />
           }
         >
-          <p className="ms-hint">No {section.toLowerCase()} available.</p>
+          <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">No {section.toLowerCase()} available.</p>
           <Button size="sm" variant="outline" onClick={onGoHome}>
             Back to Home
           </Button>
         </LibraryPageLayout>
       )}
-    </main>
+    </section>
   );
 }

@@ -154,7 +154,7 @@ function MissionPreferenceSelect<T extends string>({
   onChange: (value: T) => void;
 }) {
   return (
-    <Field.Root name={name} className={`ms-field ${className ?? ""}`}>
+    <Field.Root name={name} className={`ms-field flex flex-col gap-1 ${className ?? ""}`}>
       <Field.Label
         className="text-sm font-medium text-foreground"
         nativeLabel={false}
@@ -221,7 +221,7 @@ function MissionPreferenceNumber({
   return (
     <Field.Root
       name={name}
-      className={`ms-field ${className ?? ""}`}
+      className={`ms-field flex flex-col gap-1 ${className ?? ""}`}
       validationMode="onChange"
       validate={(next) => {
         const numeric = Number(next);

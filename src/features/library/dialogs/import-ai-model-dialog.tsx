@@ -176,7 +176,7 @@ export function ImportAIModelDialog({
               The class order in the ONNX model and JSON file must match.
             </FieldDescription>
           </FieldRoot>
-          <DialogFooter>
+          <DialogFooter className="flex-row flex-wrap items-center justify-end">
             <DialogClose className="w-auto flex-[0_0_auto]">Cancel</DialogClose>
             <Button
               size="sm"

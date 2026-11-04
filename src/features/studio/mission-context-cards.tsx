@@ -46,7 +46,7 @@ export function MissionContextCards({
       aria-label="Mission context"
     >
       <div
-        className="ms-drone-card pointer-events-auto"
+        className="ms-drone-card flex items-center gap-0 bg-(--card) border border-border rounded-(--radius) p-0.5 pointer-events-auto pointer-events-auto"
         data-testid="ms-drone-card"
       >
         <Select<string>
@@ -68,17 +68,17 @@ export function MissionContextCards({
             data-testid="ms-drone-select"
             aria-label={`Vehicle: ${mission.vehicle}`}
           >
-            <span className="ms-drone-thumb" aria-hidden="true">
+            <span className="ms-drone-thumb flex-[0_0_auto] inline-flex items-center justify-center w-10 h-10 text-[1.375rem] border border-border rounded-(--radius) bg-(--background) text-(--muted-foreground) [@media_(max-width:_61.25rem)]:w-8 [@media_(max-width:_61.25rem)]:h-8 [@media_(max-width:_61.25rem)]:text-lg" aria-hidden="true">
               <DroneIcon />
             </span>
-            <span className="ms-drone-meta">
-              <span className="ms-drone-name-row">
-                <span className="ms-drone-name" title={mission.vehicle}>
+            <span className="ms-drone-meta flex-[1_1_auto] flex flex-col justify-center gap-px min-w-0">
+              <span className="ms-drone-name-row flex items-center gap-1.5 min-w-0">
+                <span className="ms-drone-name flex-[0_1_auto] text-[0.8125rem] font-bold overflow-hidden text-ellipsis whitespace-nowrap min-w-0 max-w-55 [@media_(max-width:_61.25rem)]:max-w-35" title={mission.vehicle}>
                   {mission.vehicle}
                 </span>
-                <CaretDownIcon aria-hidden="true" className="ms-drone-caret" />
+                <CaretDownIcon aria-hidden="true" className="ms-drone-caret flex-[0_0_auto] text-sm text-(--muted-foreground)" />
               </span>
-              <span className="ms-drone-routes">All routes</span>
+              <span className="ms-drone-routes text-[0.6875rem] text-(--muted-foreground)">All routes</span>
             </span>
           </SelectTrigger>
           <SelectPortal>
@@ -115,7 +115,7 @@ export function MissionContextCards({
         </SkyTooltip>
       </div>
       <div
-        className="ms-drone-card  pointer-events-auto"
+        className="ms-drone-card flex items-center gap-0 bg-(--card) border border-border rounded-(--radius) p-0.5 pointer-events-auto  pointer-events-auto"
         data-testid="ms-drone-card"
       >
         <Button
@@ -126,17 +126,17 @@ export function MissionContextCards({
           aria-label={`Choose world and mission type; current world ${mission.world}, ${mission.worldType ?? "3D"}`}
           onClick={onOpenWorldPicker}
         >
-          <span className="ms-drone-thumb" aria-hidden="true">
+          <span className="ms-drone-thumb flex-[0_0_auto] inline-flex items-center justify-center w-10 h-10 text-[1.375rem] border border-border rounded-(--radius) bg-(--background) text-(--muted-foreground) [@media_(max-width:_61.25rem)]:w-8 [@media_(max-width:_61.25rem)]:h-8 [@media_(max-width:_61.25rem)]:text-lg" aria-hidden="true">
             <MapTrifoldIcon />
           </span>
-          <span className="ms-drone-meta justify-center">
-            <span className="ms-drone-name-row">
-              <span className="ms-drone-name" title={mission.world}>
+          <span className="ms-drone-meta flex-[1_1_auto] flex flex-col justify-center gap-px min-w-0 justify-center">
+            <span className="ms-drone-name-row flex items-center gap-1.5 min-w-0">
+              <span className="ms-drone-name flex-[0_1_auto] text-[0.8125rem] font-bold overflow-hidden text-ellipsis whitespace-nowrap min-w-0 max-w-55 [@media_(max-width:_61.25rem)]:max-w-35" title={mission.world}>
                 {mission.world}
               </span>
-              <CaretDownIcon aria-hidden="true" className="ms-drone-caret" />
+              <CaretDownIcon aria-hidden="true" className="ms-drone-caret flex-[0_0_auto] text-sm text-(--muted-foreground)" />
             </span>
-            <span className="ms-drone-routes">{mission.worldType ?? "3D"}</span>
+            <span className="ms-drone-routes text-[0.6875rem] text-(--muted-foreground)">{mission.worldType ?? "3D"}</span>
           </span>
         </Button>
       </div>

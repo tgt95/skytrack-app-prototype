@@ -232,7 +232,7 @@ test("Recent and Shared mission variants retain titles, read-only state, and fal
       ownerName: "Maya Nguyen",
     }),
   );
-  assert.match(shared, /class="ms-lib-card is-readonly"/);
+  assert.match(shared, /class="[^"]*\bms-lib-card\b[^"]*\bis-readonly\b[^"]*"/);
   assert.match(shared, /Harbor orthomosaic/);
   assert.match(shared, />View only</);
   assert.doesNotMatch(shared, /data-testid="ms-lib-card-summary"/);

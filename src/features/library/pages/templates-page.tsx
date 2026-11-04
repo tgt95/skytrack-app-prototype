@@ -45,13 +45,13 @@ export default function TemplatesPage({
             titleId="ms-lib-template-title"
             title={activeTemplate.title}
             description={
-              <p className="ms-lib-sub mt-0">
+              <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
                 {activeTemplate.byline} · full template content arrives with
                 backend templates
               </p>
             }
             context={
-              <button type="button" className="ms-lib-back" onClick={onBack}>
+              <button type="button" className="ms-lib-back inline-flex items-center gap-1.5 mb-0 py-1 px-0 [border:0] bg-transparent text-(--muted-foreground) text-[0.8125rem] cursor-pointer hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1" onClick={onBack}>
                 <ArrowLeftIcon aria-hidden="true" /> Mission templates
               </button>
             }
@@ -73,7 +73,7 @@ export default function TemplatesPage({
         >
           <span
             className={[
-              `ms-lib-thumb is-template large tint-${activeTemplate.id.charCodeAt(1) % 6}`,
+              `ms-lib-thumb relative flex items-center justify-center aspect-4/3 overflow-hidden text-(--muted-foreground) bg-(--background) bg-[repeating-linear-gradient(to_right,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem),repeating-linear-gradient(to_bottom,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem)] border-b border-b-border [&.is-template]:bg-none [&.is-project]:bg-none [&.is-project]:bg-(--muted) [&.tint-0]:bg-[color-mix(in_srgb,var(--primary)_26%,var(--card))] [&.tint-2]:bg-(--muted) [&.tint-4]:bg-[color-mix(in_srgb,var(--primary)_10%,var(--card))] [&.tint-5]:bg-[color-mix(in_srgb,var(--primary)_32%,var(--muted))] [&.is-learn]:bg-none [&.is-learn]:text-(--primary) is-template large tint-${activeTemplate.id.charCodeAt(1) % 6}`,
               "[.ms-lib-thumb&]:border [.ms-lib-thumb&]:border-border [.ms-lib-thumb&]:rounded-(--radius)",
             ]
               .filter(Boolean)
@@ -83,7 +83,7 @@ export default function TemplatesPage({
             <img
               src={getTemplateThumbnail(activeTemplate.id)}
               alt=""
-              className="ms-template-thumbnail"
+              className="ms-template-thumbnail absolute inset-0 block w-full h-full object-cover rounded-(--radius)"
             />
           </span>
           <div
@@ -109,7 +109,7 @@ export default function TemplatesPage({
           titleId="ms-lib-templates-page-title"
           title="Mission templates"
           description={
-            <p className="ms-lib-sub mt-0">
+            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
               Learn SkyTrack with Mission templates
             </p>
           }
@@ -119,7 +119,7 @@ export default function TemplatesPage({
               data-testid="ms-lib-search"
             >
               <FieldRoot name="template-search">
-                <FieldLabel className="ms-sr">Search templates</FieldLabel>
+                <FieldLabel className="ms-sr absolute w-px h-px overflow-hidden [clip:rect(0_0_0_0)] whitespace-nowrap">Search templates</FieldLabel>
                 <FieldControl
                   value={query}
                   onValueChange={(value) =>
@@ -135,7 +135,7 @@ export default function TemplatesPage({
       }
     >
       {debouncedQuery.trim() ? (
-        <p className="ms-lib-sub">
+        <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
           {templates.length} result{templates.length === 1 ? "" : "s"} for
           &ldquo;{debouncedQuery.trim()}&rdquo;
         </p>

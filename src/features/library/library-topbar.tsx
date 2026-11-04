@@ -47,13 +47,13 @@ export default function LibraryTopbar ({
   canUseCloudSIM,
   onEnvironmentChange,
   onAnnounce,
-  onNavigateHome
+  onNavigate,
 }: {
   runEnvironment: 'local' | 'cloud'
   canUseCloudSIM: boolean
   onEnvironmentChange: (value: 'local' | 'cloud') => void
   onAnnounce: (message: string) => void
-  onNavigateHome: () => void
+  onNavigate: (section: 'home' | 'download') => void
 }) {
   return (
     <>
@@ -74,7 +74,7 @@ export default function LibraryTopbar ({
           aria-label='Go to Home'
           title='Go to Home'
           data-testid='ms-lib-logo-home'
-          onClick={onNavigateHome}
+          onClick={() => onNavigate('home')}
         >
           <span
             className='inline-flex items-center gap-2'
@@ -165,40 +165,34 @@ export default function LibraryTopbar ({
                     </TooltipPortal>
                   </Tooltip>
                   <Tooltip>
-                    {canUseCloudSIM
-                      ? (
-                        <TooltipTrigger
-                          render={
-                            <TabsTab
-                              value='cloud'
-                              size='sm'
-                              aria-label='Cloud'
-                            >
-                              <CloudIcon aria-hidden='true' size={16} />
-                            </TabsTab>
-                          }
-                        />
-                      )
-                      : (
-                        <TooltipTrigger
-                          render={
-                            <span
-                              className='inline-flex h-full'
-                              tabIndex={0}
-                              aria-label='Cloud SIM access required'
-                            />
-                          }
-                        >
-                          <TabsTab
-                            value='cloud'
-                            size='sm'
-                            aria-label='Cloud'
-                            disabled
-                          >
+                    {canUseCloudSIM ? (
+                      <TooltipTrigger
+                        render={
+                          <TabsTab value='cloud' size='sm' aria-label='Cloud'>
                             <CloudIcon aria-hidden='true' size={16} />
                           </TabsTab>
-                        </TooltipTrigger>
-                      )}
+                        }
+                      />
+                    ) : (
+                      <TooltipTrigger
+                        render={
+                          <span
+                            className='inline-flex h-full'
+                            tabIndex={0}
+                            aria-label='Cloud SIM access required'
+                          />
+                        }
+                      >
+                        <TabsTab
+                          value='cloud'
+                          size='sm'
+                          aria-label='Cloud'
+                          disabled
+                        >
+                          <CloudIcon aria-hidden='true' size={16} />
+                        </TabsTab>
+                      </TooltipTrigger>
+                    )}
                     <TooltipPortal>
                       <TooltipPositioner side='bottom' sideOffset={8}>
                         <TooltipPopup>
@@ -224,6 +218,16 @@ export default function LibraryTopbar ({
             name={DEV_SCENARIO_SLOTS.libraryTopbarActions}
             onAnnounce={onAnnounce}
           />
+
+          <Button
+            size='sm'
+            variant='outline'
+            data-testid='ms-lib-download-app'
+            title='Download'
+            onClick={() => onNavigate('download')}
+          >
+            Download
+          </Button>
 
           <Tooltip>
             <TooltipTrigger render={<span className='inline-flex' />}>

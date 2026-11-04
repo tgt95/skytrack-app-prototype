@@ -35,10 +35,10 @@ export function DronePlatformSection({
   return (
     <>
       <section
-        className="ms-drone-form-section"
+        className="ms-drone-form-section flex flex-col gap-3"
         aria-labelledby="ms-drone-platform-title"
       >
-        <div className="ms-drone-section-heading">
+        <div className="ms-drone-section-heading flex flex-col gap-0.75">
           <h2
             id="ms-drone-platform-title"
             className="heading m-0 text-sm font-semibold"
@@ -49,8 +49,8 @@ export function DronePlatformSection({
             Leave details blank when they have not been confirmed.
           </p>
         </div>
-        <div className="ms-drone-form-grid">
-          <FieldRoot className="ms-field">
+        <div className="ms-drone-form-grid grid grid-cols-2 gap-3 [@media_(max-width:_45rem)]:grid-cols-[minmax(0,1fr)]">
+          <FieldRoot className="ms-field flex flex-col gap-1">
             <FieldLabel>Drone name</FieldLabel>
             <FieldControl
               value={profile.name}
@@ -72,7 +72,7 @@ export function DronePlatformSection({
             options={FIRMWARE_FAMILIES}
             onChange={(firmwareFamily) => onPatch({ firmwareFamily })}
           />
-          <FieldRoot className="ms-field">
+          <FieldRoot className="ms-field flex flex-col gap-1">
             <FieldLabel>Flight controller</FieldLabel>
             <FieldControl
               value={profile.flightControllerModel}
@@ -82,7 +82,7 @@ export function DronePlatformSection({
               placeholder="Not specified"
             />
           </FieldRoot>
-          <FieldRoot className="ms-field">
+          <FieldRoot className="ms-field flex flex-col gap-1">
             <FieldLabel>Firmware version</FieldLabel>
             <FieldControl
               value={profile.firmwareVersion}
@@ -92,7 +92,7 @@ export function DronePlatformSection({
               placeholder="Not specified"
             />
           </FieldRoot>
-          <FieldRoot className="ms-field ms-drone-form-wide">
+          <FieldRoot className="ms-field flex flex-col gap-1 ms-drone-form-wide col-span-full [@media_(max-width:_45rem)]:col-auto">
             <FieldLabel>Airframe</FieldLabel>
             <FieldControl
               value={profile.airframe}
@@ -102,7 +102,7 @@ export function DronePlatformSection({
               placeholder="Not specified"
             />
           </FieldRoot>
-          <FieldRoot className="ms-field ms-drone-form-wide">
+          <FieldRoot className="ms-field flex flex-col gap-1 ms-drone-form-wide col-span-full [@media_(max-width:_45rem)]:col-auto">
             <FieldLabel>Reference build note</FieldLabel>
             <FieldControl
               value={profile.referenceBuildNote}
@@ -116,10 +116,10 @@ export function DronePlatformSection({
       </section>
 
       <section
-        className="ms-drone-form-section"
+        className="ms-drone-form-section flex flex-col gap-3"
         aria-labelledby="ms-drone-fit-title"
       >
-        <div className="ms-drone-section-heading">
+        <div className="ms-drone-section-heading flex flex-col gap-0.75">
           <h2
             id="ms-drone-fit-title"
             className="heading m-0 text-sm font-semibold"
@@ -131,7 +131,7 @@ export function DronePlatformSection({
             component compatibility.
           </p>
         </div>
-        <div className="ms-drone-form-grid">
+        <div className="ms-drone-form-grid grid grid-cols-2 gap-3 [@media_(max-width:_45rem)]:grid-cols-[minmax(0,1fr)]">
           <NumberField
             label={`Frame size (${smallLengthUnit(unitSystem)})`}
             value={

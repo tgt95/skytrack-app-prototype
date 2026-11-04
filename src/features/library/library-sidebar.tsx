@@ -64,14 +64,14 @@ export default function LibrarySidebar({
           data-testid={`ms-lib-nav-${item.id}`}
           disabled
           title={disabledHint}
-          className="ms-lib-navitem"
+          className="ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center"
         >
           <Icon
             aria-hidden="true"
             weight="regular"
             className="size-5 shrink-0"
           />
-          <span className="ms-lib-nav-label">{item.label}</span>
+          <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">{item.label}</span>
         </button>
       );
     return (
@@ -80,7 +80,7 @@ export default function LibrarySidebar({
         type="button"
         data-testid={`ms-lib-nav-${item.id}`}
         aria-current={active ? "page" : undefined}
-        className={`ms-lib-navitem${active ? " is-active" : ""}`}
+        className={`ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center${active ? " is-active" : ""}`}
         onClick={() => onNavigateSection(item.id)}
       >
         <Icon
@@ -88,7 +88,7 @@ export default function LibrarySidebar({
           weight={active ? "fill" : "regular"}
           className="size-5 shrink-0"
         />
-        <span className="ms-lib-nav-label">{item.label}</span>
+        <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">{item.label}</span>
       </button>
     );
   };
@@ -98,18 +98,18 @@ export default function LibrarySidebar({
       className="min-h-0 grow-0 shrink-0 basis-67.5 min-w-0 flex flex-col gap-2 py-3 px-1.5 border-r border-r-(--sidebar-border) bg-(--sidebar) text-(--sidebar-foreground) overflow-y-auto overscroll-contain [@media_(max-width:_61.25rem)]:basis-16 [@media_(max-width:_61.25rem)]:items-stretch [@media_(max-width:_61.25rem)]:py-3 [@media_(max-width:_61.25rem)]:px-1.5"
       aria-label="Workspace navigation"
     >
-      <div className="ms-lib-navgroup" role="group" aria-label="Main">
+      <div className="ms-lib-navgroup flex flex-col gap-0.5" role="group" aria-label="Main">
         {NAV_MAIN.map((item) => navBtn(item, false, ""))}
       </div>
-      <div className="ms-lib-sidebar-divider" />
+      <div className="ms-lib-sidebar-divider h-px my-1 mx-0 bg-(--sidebar-border) flex-[0_0_auto] [@media_(max-width:_61.25rem)]:hidden" />
       <div
-        className="ms-lib-navgroup"
+        className="ms-lib-navgroup flex flex-col gap-0.5"
         role="group"
         aria-label="Learning resources"
       >
         <a
           aria-current={section === "learn" ? "page" : undefined}
-          className={`ms-lib-navitem${section === "learn" ? " is-active" : ""} [text-decoration:none]`}
+          className={`ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center${section === "learn" ? " is-active" : ""} [text-decoration:none]`}
           data-testid="ms-lib-nav-learn"
           href={LEARN_URL}
           target="_blank"
@@ -123,7 +123,7 @@ export default function LibrarySidebar({
             weight={section === "learn" ? "fill" : "regular"}
             className="w-5 h-5 shrink-0"
           />
-          <span className="ms-lib-nav-label">Learning</span>
+          <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">Learning</span>
           <ArrowSquareOutIcon
             aria-hidden="true"
             className=" w-5 h-5 ml-auto text-(--muted-foreground) flex-[0_0_auto] [@media_(max-width:_61.25rem)]:hidden"
@@ -134,7 +134,7 @@ export default function LibrarySidebar({
           type="button"
           data-testid="ms-lib-nav-templates"
           aria-current={section === "templates" ? "page" : undefined}
-          className={`ms-lib-navitem${section === "templates" ? " is-active" : ""}`}
+          className={`ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center${section === "templates" ? " is-active" : ""}`}
           onClick={() => onNavigateSection("templates")}
         >
           <SquaresFourIcon
@@ -142,10 +142,10 @@ export default function LibrarySidebar({
             weight={section === "templates" ? "fill" : "regular"}
             className="w-5 h-5 shrink-0"
           />
-          <span className="ms-lib-nav-label">Mission templates</span>
+          <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">Mission templates</span>
         </button>
       </div>
-      <div className="ms-lib-sidebar-divider" />
+      <div className="ms-lib-sidebar-divider h-px my-1 mx-0 bg-(--sidebar-border) flex-[0_0_auto] [@media_(max-width:_61.25rem)]:hidden" />
       <p
         className="mt-1 mx-2 text-xs sub-heading [@media_(max-width:_61.25rem)]:hidden"
         data-testid="ms-lib-navhead"
@@ -157,7 +157,7 @@ export default function LibrarySidebar({
           type="button"
           aria-current={section === "starred" ? "page" : undefined}
           className={[
-            `ms-lib-navitem${section === "starred" ? " is-active" : ""}`,
+            `ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center${section === "starred" ? " is-active" : ""}`,
             "cursor-pointer relative cursor-default",
           ]
             .filter(Boolean)
@@ -170,7 +170,7 @@ export default function LibrarySidebar({
             size={20}
             weight={section === "starred" ? "fill" : "regular"}
           />
-          <span className="ms-lib-nav-label">No projects/missions</span>
+          <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">No projects/missions</span>
         </button>
       ) : (
         navBtn(
@@ -179,14 +179,14 @@ export default function LibrarySidebar({
           "",
         )
       )}
-      <div className="ms-lib-sidebar-divider" />
+      <div className="ms-lib-sidebar-divider h-px my-1 mx-0 bg-(--sidebar-border) flex-[0_0_auto] [@media_(max-width:_61.25rem)]:hidden" />
       <LibraryWorkspaceSwitcher
         activeWorkspace={activeWorkspace}
         onSwitchWorkspace={onSwitchWorkspace}
         onAnnounce={onAnnounce}
       />
       <div
-        className="ms-lib-navgroup"
+        className="ms-lib-navgroup flex flex-col gap-0.5"
         role="group"
         aria-label={`${activeWorkspace.name} resources`}
       >
@@ -239,7 +239,7 @@ export default function LibrarySidebar({
           type="button"
           data-testid="ms-lib-nav-logs"
           aria-current={section === "logs" ? "page" : undefined}
-          className={`ms-lib-navitem${section === "logs" ? " is-active" : ""}`}
+          className={`ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center${section === "logs" ? " is-active" : ""}`}
           onClick={() => onNavigateSection("logs")}
         >
           <NotepadIcon
@@ -247,13 +247,13 @@ export default function LibrarySidebar({
             weight={section === "logs" ? "fill" : "regular"}
             className="w-5 h-5 shrink-0"
           />
-          <span className="ms-lib-nav-label">Logs</span>
+          <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">Logs</span>
         </button>
         <button
           type="button"
           data-testid="ms-lib-nav-notifications"
           aria-current={section === "notifications" ? "page" : undefined}
-          className={`ms-lib-navitem${section === "notifications" ? " is-active" : ""}`}
+          className={`ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center${section === "notifications" ? " is-active" : ""}`}
           onClick={() => onNavigateSection("notifications")}
         >
           <BellIcon
@@ -261,7 +261,7 @@ export default function LibrarySidebar({
             weight={section === "notifications" ? "fill" : "regular"}
             className="w-5 h-5 shrink-0"
           />
-          <span className="ms-lib-nav-label">Notifications</span>
+          <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">Notifications</span>
         </button>
         <LibraryAccountFooter
           accountProfile={accountProfile}

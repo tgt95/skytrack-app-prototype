@@ -55,7 +55,7 @@ export default function MissionPreviewMap({
             y1="0"
             x2={index * 80}
             y2="280"
-            className="ms-preview-grid-line"
+            className="ms-preview-grid-line stroke-(--border) stroke-1 opacity-[0.75]"
           />
         ))}
         {Array.from({ length: 5 }, (_, index) => (
@@ -65,7 +65,7 @@ export default function MissionPreviewMap({
             y1={index * 70}
             x2="640"
             y2={index * 70}
-            className="ms-preview-grid-line"
+            className="ms-preview-grid-line stroke-(--border) stroke-1 opacity-[0.75]"
           />
         ))}
         {mission.areas.map((area) => (
@@ -151,7 +151,7 @@ export default function MissionPreviewMap({
         ) : null}
       </svg>
       <span
-        className=" absolute left-2.5 bottom-2 py-1 px-1.75 rounded-[5px] bg-[color-mix(in_srgb,var(--card)_92%,transparent)] text-(--muted-foreground) text-[0.625rem]"
+        className=" absolute left-2.5 bottom-2 py-1 px-1.75 rounded-(--radius) bg-[color-mix(in_srgb,var(--card)_92%,transparent)] text-(--muted-foreground) text-[0.625rem]"
         data-testid="ms-preview-map-caption"
       >
         Route overview · photo points highlighted

@@ -89,7 +89,7 @@ function StudioLeftRail({
         orientation={orientation}
       >
         <TabsList
-          className="ms-apptabs data-[orientation=vertical]:h-auto flex flex-col items-stretch gap-0.5 rounded-(--radius) bg-transparent w-full p-0 [@media_(max-width:_61.25rem)]:flex-row [@media_(max-width:_61.25rem)]:items-center [@media_(max-width:_61.25rem)]:overflow-x-auto"
+          className="ms-apptabs data-[orientation=vertical]:h-auto flex flex-col items-stretch gap-0.5 rounded-(--radius) bg-transparent w-full p-0 [@media_(max-width:_61.25rem)]:flex-row [@media_(max-width:_61.25rem)]:items-center [@media_(max-width:_61.25rem)]:overflow-x-auto border-0!"
           aria-label="Mission workspace"
           variant="line"
         >

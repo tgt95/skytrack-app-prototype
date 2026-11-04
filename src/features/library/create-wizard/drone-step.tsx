@@ -13,7 +13,7 @@ type DroneStepProps = {
 export function DroneStep({ drones, droneId, onDroneSelect }: DroneStepProps) {
   return (
     <TabsPanel value="3">
-      <div className="ms-lib-form">
+      <div className="ms-lib-form flex flex-col gap-3 py-1 px-0">
         <FieldRoot name="wizard-drone">
           <FieldLabel id="ms-wizard-drone-label">
             Drone list
@@ -25,20 +25,20 @@ export function DroneStep({ drones, droneId, onDroneSelect }: DroneStepProps) {
             className='w-full'
           >
             {drones.map((drone) => (
-              <label key={drone.id} className="ms-wizard-radio-row">
-                <span className="ms-wizard-thumb" aria-hidden="true">
+              <label key={drone.id} className="ms-wizard-radio-row flex items-center gap-2.5 w-full box-border py-2.5 px-3 border border-border rounded-(--radius) bg-(--card) cursor-pointer text-[0.8125rem] hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 focus-within:outline-2 focus-within:outline-(--primary) focus-within:outline-offset-1">
+                <span className="ms-wizard-thumb flex-[0_0_auto] w-10 h-10 rounded-none bg-(--muted) overflow-hidden" aria-hidden="true">
                   <MissionThumbnail />
                 </span>
-                <span className="ms-wizard-row-text">
+                <span className="ms-wizard-row-text flex-[1_1_auto] min-w-0 font-medium">
                   {drone.name}
-                  <span className="ms-wizard-tags">
-                    <span className="ms-wizard-tag">
+                  <span className="ms-wizard-tags flex gap-1.5 mt-1">
+                    <span className="ms-wizard-tag text-[0.6875rem] font-semibold py-0.25 px-2 rounded-(--radius) bg-(--muted) text-(--muted-foreground)">
                       {drone.firmwareFamily === "Unspecified"
                         ? "Firmware not specified"
                         : drone.firmwareFamily}
                     </span>
                     {drone.flightControllerModel ? (
-                      <span className="ms-wizard-tag">
+                      <span className="ms-wizard-tag text-[0.6875rem] font-semibold py-0.25 px-2 rounded-(--radius) bg-(--muted) text-(--muted-foreground)">
                         {drone.flightControllerModel}
                       </span>
                     ) : null}
@@ -51,7 +51,7 @@ export function DroneStep({ drones, droneId, onDroneSelect }: DroneStepProps) {
               </label>
             ))}
             {drones.length === 0 ? (
-              <p className="ms-drone-empty-components">
+              <p className="ms-drone-empty-components m-0 text-(--muted-foreground) text-xs leading-[1.5]">
                 Add a Drone profile to this Workspace before creating a mission.
               </p>
             ) : null}

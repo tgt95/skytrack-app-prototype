@@ -1,10 +1,13 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
+import { Tabs, TabsPanel } from "skytrack-ui/tabs";
 import type { StudioMission } from "../../domain/mission-model";
 import type { useAddressSearch } from "../../features/search/use-address-search";
 import StudioDialogs from "../../features/studio/studio-dialogs";
-import StudioInspectorContainer from "../../features/studio/studio-inspector-container";
 import StudioLeftRail from "../../features/studio/studio-left-rail";
 import StudioMapOverlays from "../../features/studio/studio-map-overlays";
+import { StudioShellInspectorHost } from "./studio-shell-inspector-host";
+import { parseMissionInsightsRoute } from "../../features/studio/mission-report-url";
 import { StudioShellSceneViewport } from "../../features/studio/studio-shell-scene-viewport";
 import StudioStatusFooter from "./footer";
 import StudioTopbar from "./header";
@@ -31,6 +34,41 @@ type DocumentState = Pick<
   ReturnType<typeof useStudioDocumentState>,
   "dirty" | "past" | "future"
 >;
+
+function ReportViewTabsShell({
+  active,
+  header,
+  children,
+}: {
+  active: boolean;
+  header: ReactNode;
+  children: ReactNode;
+}) {
+  if (!active)
+    return (
+      <>
+        {header}
+        {children}
+      </>
+    );
+
+  return (
+    <Tabs
+      value="insights"
+      className="min-h-0 flex-[1_1_auto] gap-0"
+      data-testid="ms-report-view-tabs"
+    >
+      {header}
+      <TabsPanel
+        value="insights"
+        className="flex min-h-0 flex-[1_1_auto] flex-col p-0"
+        data-testid="ms-report-view-panel"
+      >
+        {children}
+      </TabsPanel>
+    </Tabs>
+  );
+}
 
 export interface StudioShellProps {
   announce: string;
@@ -80,51 +118,28 @@ export default function StudioShell({
   onDeleteAIModel,
   account,
 }: StudioShellProps) {
+  const [reportSubpageOpen, setReportSubpageOpen] = useState(
+    () => parseMissionInsightsRoute(window.location.search) !== null,
+  );
   const { dirty } = document;
   const {
     stage,
     appTab,
     appTabsOrientation,
     selection,
-    codeView,
-    codeDraft,
-    codeLang,
-    jsonDraft,
-    jsonError,
     rightOpen,
-    simTab,
     settings,
     editOpen,
     shortcutsOpen,
-    simSettingsOpen,
     worldPickerOpen,
-    setSelection,
-    setDetailEditActive,
-    setCodeDraft,
-    setJsonDraft,
     setRightOpen,
-    setSimTab,
-    setSettings,
     setEditOpen,
     setShortcutsOpen,
     setSimSettingsOpen,
     setWorldPickerOpen,
     say,
   } = ui;
-  const {
-    tool,
-    pending,
-    pendingShape,
-    draftCursor,
-    drawingAltM,
-    draftAreaSettings,
-    draftAvoidSettings,
-    setPending,
-    setPendingShape,
-    setDraftAreaSettings,
-    setDraftAvoidSettings,
-    cancelPending,
-  } = drawing;
+  const { tool, pending, pendingShape, setPendingShape } = drawing;
   const draftActions = drawing.draftActions;
   const { libraryEntry, missionWorldOptions, availableDrones } = routing;
   const worldGlb = useStudioWorldGlb({
@@ -135,39 +150,9 @@ export default function StudioShell({
     onSelectImportedWorld: commands.onSelectImportedWorld,
     announce: say,
   });
-  const { issues, derivedTransfers, gate, plan, sim, totalT, telemetry } =
-    simulation;
-  const { previewPositionRef, previewCaptureRef } = scene;
-  const {
-    updateMissionFromPanel,
-    previewMissionFromPanel,
-    commitPanelPreview,
-    cancelPanelPreview,
-    finishPending,
-    closePendingShape,
-    onMoveWaypoint,
-    onReorderWaypoint,
-    onMoveAction,
-    onSelectWorld,
-    onSelectWorldType,
-    onDeleteAction,
-    onAddWaypointToRoute,
-    onDeleteRoute,
-    onInsertActionAt,
-    onAddZone,
-    onDeleteWaypoint,
-    onDeleteZone,
-    onRenameZone,
-  } = commands;
-  const {
-    openCodeView,
-    handleCodeLangChange,
-    handleExportJson,
-    handleApplyJson,
-    saveLocal,
-    openEdit,
-    saveEdit,
-  } = actions;
+  const { gate, plan, sim, totalT, telemetry } = simulation;
+  const { onSelectWorld, onSelectWorldType } = commands;
+  const { saveLocal, openEdit, saveEdit } = actions;
   const {
     backToLibrary,
     openCrumbProject,
@@ -178,6 +163,24 @@ export default function StudioShell({
 
   const drawingActive = tool === "route" || tool === "area" || tool === "avoid";
   const simActive = stage === "simulation";
+  const hideStudioChrome = false;
+
+  const openMissionDesignFromReport = useCallback(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.delete("tab");
+    params.delete("report");
+    params.delete("runId");
+    params.delete("stage");
+    params.delete("view");
+    const search = params.toString();
+    const nextUrl = `${window.location.pathname}${search ? `?${search}` : ""}${window.location.hash}`;
+    window.history.pushState(window.history.state, "", nextUrl);
+    gotoAppTab("plan");
+  }, [gotoAppTab]);
+
+  useEffect(() => {
+    if (appTab !== "report") setReportSubpageOpen(false);
+  }, [appTab]);
 
   const dialogFocus = useDialogFocusReturn();
 
@@ -200,172 +203,122 @@ export default function StudioShell({
     [],
   );
   return (
-    <div className="ms-root ms-route-content" data-testid="ms-root">
-      <p className="ms-sr" role="status" aria-live="polite">
+    <div
+      className="ms-root flex flex-col h-[calc(100dvh-3.125rem)] min-h-140 bg-(--background) text-(--foreground) text-sm [@media_(max-width:_61.25rem)]:h-auto [@media_(max-width:_61.25rem)]:min-h-0 ms-route-content [view-transition-name:ms-route-content]"
+      data-testid="ms-root"
+      data-report-subpage={reportSubpageOpen}
+    >
+      <p
+        className="ms-sr absolute w-px h-px overflow-hidden [clip:rect(0_0_0_0)] whitespace-nowrap"
+        role="status"
+        aria-live="polite"
+      >
         {announce}
       </p>
-      <StudioTopbar
-        missionName={mission.name}
-        libraryEntry={libraryEntry}
-        dirty={dirty}
-        onBackToLibrary={backToLibrary}
-        onOpenCrumbProject={openCrumbProject}
-        onOpenEdit={() => dialogFocus.openWithFocusReturn(openEdit)}
-        onSaveLocal={saveLocal}
-      />
-      <div
-        className=" [@media_(max-width:_61.25rem)]:flex-col flex flex-[1_1_auto] min-h-0"
-        data-testid="ms-body"
+      <ReportViewTabsShell
+        active={reportSubpageOpen}
+        header={
+          !hideStudioChrome ? (
+            <StudioTopbar
+              missionName={mission.name}
+              libraryEntry={libraryEntry}
+              dirty={dirty}
+              reportSubpageOpen={reportSubpageOpen}
+              onBackToLibrary={backToLibrary}
+              onOpenCrumbProject={openCrumbProject}
+              onOpenCrumbMission={openMissionDesignFromReport}
+              onOpenEdit={() => dialogFocus.openWithFocusReturn(openEdit)}
+              onSaveLocal={saveLocal}
+            />
+          ) : null
+        }
       >
-        <StudioLeftRail
-          appTab={appTab}
-          orientation={appTabsOrientation}
-          stageIsDesign={stage === "design"}
-          tool={tool}
-          onAppTabChange={gotoAppTab}
-          onToolChange={drawing.setTool}
-          onClearPending={draftActions.clearPending}
-          onClearDraftCursor={draftActions.clearCursor}
-          onClearDraftClosure={draftActions.clearClosure}
-          onSetPolygon={draftActions.selectPolygon}
-          onAnnounce={say}
-          accountProfile={account.profile}
-          themePreference={account.themePreference}
-          onOpenAccountPanel={account.onOpenPanel}
-          onUpdateThemePreference={account.onUpdateThemePreference}
-        />
-        <StudioMapOverlays
-          appTab={appTab}
-          stage={stage}
-          gate={gate}
-          drawing={drawingActive}
-          tool={tool}
-          pendingCount={pending.length}
-          pendingShape={pendingShape}
-          simActive={simActive}
-          sim={sim}
-          totalT={totalT}
-          plan={plan}
-          onStageChange={gotoStage}
-          onPendingShapeChange={setPendingShape}
-          onOpenSimulationSettings={() => {
-            setSimSettingsOpen(true);
-            say("Simulation settings.");
-          }}
-          onAnnounce={say}
+        <div
+          className=" [@media_(max-width:_61.25rem)]:flex-col flex flex-[1_1_auto] min-h-0"
+          data-testid="ms-body"
         >
-          <StudioShellSceneViewport
+          {!hideStudioChrome && !reportSubpageOpen ? (
+            <StudioLeftRail
+              appTab={appTab}
+              orientation={appTabsOrientation}
+              stageIsDesign={stage === "design"}
+              tool={tool}
+              onAppTabChange={gotoAppTab}
+              onToolChange={drawing.setTool}
+              onClearPending={draftActions.clearPending}
+              onClearDraftCursor={draftActions.clearCursor}
+              onClearDraftClosure={draftActions.clearClosure}
+              onSetPolygon={draftActions.selectPolygon}
+              onAnnounce={say}
+              accountProfile={account.profile}
+              themePreference={account.themePreference}
+              onOpenAccountPanel={account.onOpenPanel}
+              onUpdateThemePreference={account.onUpdateThemePreference}
+            />
+          ) : null}
+          <StudioMapOverlays
+            appTab={appTab}
+            onReportSubpageChange={setReportSubpageOpen}
+            onOpenMissionDesign={openMissionDesignFromReport}
+            stage={stage}
+            gate={gate}
+            drawing={drawingActive}
+            tool={tool}
+            pendingCount={pending.length}
+            pendingShape={pendingShape}
+            simActive={simActive}
+            sim={sim}
+            totalT={totalT}
+            plan={plan}
+            onStageChange={gotoStage}
+            onPendingShapeChange={setPendingShape}
+            onOpenSimulationSettings={() => {
+              setSimSettingsOpen(true);
+              say("Simulation settings.");
+            }}
+            onAnnounce={say}
+          >
+            <StudioShellSceneViewport
+              mission={mission}
+              ui={ui}
+              drawing={drawing}
+              routing={routing}
+              simulation={simulation}
+              scene={scene}
+              addressSearch={addressSearch}
+              commands={commands}
+              worldModel={worldGlb.sceneWorld}
+              sceneDrawingAltitudeM={sceneDrawingAltitudeM}
+              dialogFocus={dialogFocus}
+            />
+          </StudioMapOverlays>
+          <StudioShellInspectorHost
             mission={mission}
+            aiModels={aiModels}
+            onImportAIModel={onImportAIModel}
+            onDeleteAIModel={onDeleteAIModel}
             ui={ui}
             drawing={drawing}
-            routing={routing}
             simulation={simulation}
             scene={scene}
-            addressSearch={addressSearch}
             commands={commands}
-            worldModel={worldGlb.sceneWorld}
-            sceneDrawingAltitudeM={sceneDrawingAltitudeM}
-            dialogFocus={dialogFocus}
+            actions={actions}
+            onSelectEvent={onSelectEvent}
           />
-        </StudioMapOverlays>
-        <StudioInspectorContainer
-          mission={mission}
-          aiModels={aiModels}
-          onImportAIModel={onImportAIModel}
-          onDeleteAIModel={onDeleteAIModel}
-          inspectorWidth={ui.inspectorWidth}
-          onInspectorWidthChange={ui.setInspectorWidth}
-          ui={{
-            appTab,
-            stage,
-            selection,
-            codeView,
-            previewView: ui.previewView,
-            codeDraft,
-            codeLang,
-            aiModelsOpen: ui.aiModelsOpen,
-            selectedAIModelId: ui.selectedAIModelId,
-            jsonDraft,
-            jsonError,
-            rightOpen,
-            simTab,
-            settings,
-            simSettingsOpen,
-            setSelection,
-            setDetailEditActive,
-            setCodeDraft,
-            setPreviewView: ui.setPreviewView,
-            setAIModelsOpen: ui.setAIModelsOpen,
-            setSelectedAIModelId: ui.setSelectedAIModelId,
-            setJsonDraft,
-            setRightOpen,
-            setSimTab,
-            setSettings,
-            setSimSettingsOpen,
-            say,
-          }}
-          drawing={{
-            tool,
-            pending,
-            pendingShape,
-            setPendingShape,
-            draftCursor,
-            drawingAltM,
-            draftAreaSettings,
-            draftAvoidSettings,
-            setPending,
-            setDraftAreaSettings,
-            setDraftAvoidSettings,
-            cancelPending,
-          }}
-          simulation={{
-            issues,
-            derivedTransfers,
-            gate,
-            plan,
-            sim,
-            totalT,
-            telemetry,
-          }}
-          scene={{ previewPositionRef, previewCaptureRef }}
-          commands={{
-            finishPending,
-            closePendingShape,
-            updateMissionFromPanel,
-            previewMissionFromPanel,
-            commitPanelPreview,
-            cancelPanelPreview,
-            onMoveWaypoint,
-            onReorderWaypoint,
-            onMoveAction,
-            onDeleteAction,
-            onAddWaypointToRoute,
-            onDeleteRoute,
-            onInsertActionAt,
-            onAddZone,
-            onDeleteWaypoint,
-            onDeleteZone,
-            onRenameZone,
-          }}
-          actions={{
-            openCodeView,
-            handleCodeLangChange,
-            handleApplyJson,
-            handleExportJson,
-          }}
-          onSelectEvent={onSelectEvent}
+        </div>
+      </ReportViewTabsShell>
+      {!hideStudioChrome && !reportSubpageOpen ? (
+        <StudioStatusFooter
+          dirty={dirty}
+          ui={{ stage, selection, settings, rightOpen }}
+          drawing={{ tool, pending }}
+          simulation={{ plan, sim, totalT, telemetry }}
+          onOpenShortcuts={() =>
+            dialogFocus.openWithFocusReturn(() => setShortcutsOpen(true))
+          }
+          onToggleInspector={() => setRightOpen((value) => !value)}
         />
-      </div>
-      <StudioStatusFooter
-        dirty={dirty}
-        ui={{ stage, selection, settings, rightOpen }}
-        drawing={{ tool, pending }}
-        simulation={{ plan, sim, totalT, telemetry }}
-        onOpenShortcuts={() =>
-          dialogFocus.openWithFocusReturn(() => setShortcutsOpen(true))
-        }
-        onToggleInspector={() => setRightOpen((value) => !value)}
-      />
+      ) : null}
       <StudioDialogs
         mission={mission}
         restoreDialogFocus={dialogFocus.restoreFocus}

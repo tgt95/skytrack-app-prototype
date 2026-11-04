@@ -1,0 +1,1746 @@
+{
+  "$schema": "https://schemas.skytrack.io/mission-report/v2.0.0/report.schema.json",
+  "schema_version": "2.0.0-draft.1",
+  "report_id": "rpt_run_10062026_152739",
+  "report_type": "mission_evidence_manifest",
+  "created_at": "2026-10-06T08:28:59.200Z",
+  "generator": {
+    "name": "skytrack-report-runtime",
+    "version": "2.0.0-draft.1",
+    "runtime_instance_id": "runtime_01"
+  },
+  "source": {
+    "kind": "desktop",
+    "label": "SkyTrack Desktop"
+  },
+  "run": {
+    "run_id": "run_10062026_152739",
+    "run_name": "Sim run - 10062026-152739",
+    "mission_id": "01KZKBP277AME904R0Z4GJB0NQ",
+    "mission_name": "User Guide",
+    "attempt": 1,
+    "environment": "simulation",
+    "status": "failed",
+    "started_at": "2026-10-06T08:27:39.000Z",
+    "ended_at": "2026-10-06T08:28:57.200Z",
+    "duration_ms": 78200,
+    "termination": {
+      "reason": "runtime_error",
+      "failure": {
+        "action_id": "action_goto_person_02",
+        "code": "ACTION_TIMEOUT",
+        "message": "Action server /skytrack/goto did not respond within 10 s"
+      }
+    },
+    "local_folder": "sample://10062026-152739"
+  },
+  "scenario": {
+    "world_id": "grandfinale",
+    "coordinate_frames": [
+      {
+        "frame_id": "world_ned",
+        "type": "local_ned",
+        "parent_frame_id": null
+      }
+    ]
+  },
+  "mission_definition": {
+    "authoring_mode": "python",
+    "definition_artifact_id": "art_mission_source",
+    "definition_file": {
+      "name": "script.py",
+      "uri": "sample://script.py",
+      "local_path": "sample://script.py",
+      "media_type": "text/x-python",
+      "size_bytes": 875,
+      "line_count": 31,
+      "preview": "../data/mission/fail/script.py"
+    },
+    "entrypoint": "script.py",
+    "sdk": {
+      "name": "skytrack_autonomy",
+      "version": "1.4.0"
+    },
+    "source_revision": {
+      "type": "sha256",
+      "value": "9f2c41d0\u2026a7e3"
+    }
+  },
+  "vehicles": [
+    {
+      "vehicle_id": "vehicle_01",
+      "name": "sim-drone-01",
+      "vehicle_type": "multirotor",
+      "autopilot": {
+        "type": "PX4",
+        "version": "1.15.0"
+      },
+      "model": {
+        "name": "x500_mono_cam"
+      },
+      "payloads": [
+        {
+          "payload_id": "front_rgb_camera",
+          "type": "rgb_camera"
+        }
+      ]
+    }
+  ],
+  "executions": [
+    {
+      "execution_id": "exec_01",
+      "vehicle_id": "vehicle_01",
+      "status": "failed",
+      "actions": [
+        {
+          "action_id": "action_takeoff_01",
+          "type": "navigation.takeoff",
+          "name": "Take off",
+          "status": "completed",
+          "started_at": "2026-10-06T08:27:39.000Z",
+          "ended_at": "2026-10-06T08:27:44.000Z",
+          "t0_s": 0.0,
+          "t1_s": 5.0,
+          "inputs": {
+            "target_altitude_m": 2.5
+          },
+          "outputs": {},
+          "error": null
+        },
+        {
+          "action_id": "action_video_01",
+          "type": "capture.video",
+          "name": "Record search video",
+          "status": "partial",
+          "started_at": "2026-10-06T08:27:45.000Z",
+          "ended_at": "2026-10-06T08:28:26.000Z",
+          "t0_s": 6.0,
+          "t1_s": 47.0,
+          "inputs": {},
+          "outputs": {
+            "video_artifact_id": "art_video_0001"
+          },
+          "error": {
+            "code": "RECORDER_STOPPED",
+            "message": "Recorder stopped writing at 47.0 s (disk write error); file is 41.0 s of 72.2 s"
+          }
+        },
+        {
+          "action_id": "action_search_01",
+          "type": "navigation.waypoints",
+          "name": "Fly search pattern (6 waypoints)",
+          "status": "partial",
+          "started_at": "2026-10-06T08:27:44.000Z",
+          "ended_at": "2026-10-06T08:28:35.000Z",
+          "t0_s": 5.0,
+          "t1_s": 56.0,
+          "inputs": {
+            "waypoints": 6
+          },
+          "outputs": {
+            "reached": 4
+          },
+          "error": {
+            "code": "INTERRUPTED",
+            "message": "Pattern interrupted to approach a detected person after waypoint 4"
+          }
+        },
+        {
+          "action_id": "action_capture_01",
+          "type": "capture.image",
+          "name": "Capture search images",
+          "status": "partial",
+          "started_at": "2026-10-06T08:27:51.000Z",
+          "ended_at": "2026-10-06T08:28:37.000Z",
+          "t0_s": 12.0,
+          "t1_s": 58.0,
+          "inputs": {},
+          "outputs": {
+            "image_count": 5,
+            "expected": 6
+          },
+          "error": {
+            "code": "WRITE_FAILED",
+            "message": "Image 5 was not written (disk write error)"
+          }
+        },
+        {
+          "action_id": "action_detect_01",
+          "type": "perception.detect",
+          "name": "Detect people",
+          "status": "partial",
+          "started_at": "2026-10-06T08:27:51.200Z",
+          "ended_at": "2026-10-06T08:28:37.600Z",
+          "t0_s": 12.2,
+          "t1_s": 58.6,
+          "inputs": {
+            "model_id": "model_person"
+          },
+          "outputs": {
+            "detection_count": 2
+          },
+          "error": {
+            "code": "MODEL_INVOCATION_FAILED",
+            "message": "CUDA out of memory (requested 512 MiB) on image 6"
+          }
+        },
+        {
+          "action_id": "action_goto_person_01",
+          "type": "navigation.goto",
+          "name": "Approach person 1",
+          "status": "completed",
+          "started_at": "2026-10-06T08:28:35.000Z",
+          "ended_at": "2026-10-06T08:28:43.000Z",
+          "t0_s": 56.0,
+          "t1_s": 64.0,
+          "inputs": {
+            "x_m": 4.6,
+            "y_m": 4.9
+          },
+          "outputs": {},
+          "error": null
+        },
+        {
+          "action_id": "action_report_person_01",
+          "type": "mission.report_location",
+          "name": "Save rescue location 1",
+          "status": "completed",
+          "started_at": "2026-10-06T08:28:43.000Z",
+          "ended_at": "2026-10-06T08:28:43.500Z",
+          "t0_s": 64.0,
+          "t1_s": 64.5,
+          "inputs": {},
+          "outputs": {
+            "artifact_id": "art_rescue_locations"
+          },
+          "error": null
+        },
+        {
+          "action_id": "action_goto_person_02",
+          "type": "navigation.goto",
+          "name": "Approach person 2",
+          "status": "failed",
+          "started_at": "2026-10-06T08:28:47.200Z",
+          "ended_at": "2026-10-06T08:28:57.200Z",
+          "t0_s": 68.2,
+          "t1_s": 78.2,
+          "inputs": {
+            "x_m": 9.5,
+            "y_m": 5.6
+          },
+          "outputs": {},
+          "error": {
+            "code": "ACTION_TIMEOUT",
+            "message": "Action server /skytrack/goto did not respond within 10 s",
+            "stack": "Traceback (most recent call last):\n  File \"main.py\", line 88, in run\n    await drone.goto(9.5, 5.6, 2.5)\n  File \"skytrack_autonomy/actions.py\", line 214, in goto\n    raise ActionTimeout(server, timeout_s)\nskytrack_autonomy.errors.ActionTimeout: /skytrack/goto did not respond within 10 s"
+          }
+        },
+        {
+          "action_id": "action_land_01",
+          "type": "navigation.land",
+          "name": "Land",
+          "status": "not_started",
+          "started_at": null,
+          "ended_at": null,
+          "t0_s": null,
+          "t1_s": null,
+          "inputs": {},
+          "outputs": {},
+          "error": null
+        }
+      ]
+    }
+  ],
+  "waypoints": [
+    {
+      "index": 1,
+      "x_m": 3,
+      "y_m": 1.5,
+      "z_m": 2.5,
+      "reached": true
+    },
+    {
+      "index": 2,
+      "x_m": 12,
+      "y_m": 1.5,
+      "z_m": 2.5,
+      "reached": true
+    },
+    {
+      "index": 3,
+      "x_m": 12,
+      "y_m": 3.5,
+      "z_m": 2.5,
+      "reached": true
+    },
+    {
+      "index": 4,
+      "x_m": 3,
+      "y_m": 3.5,
+      "z_m": 2.5,
+      "reached": true
+    },
+    {
+      "index": 5,
+      "x_m": 3,
+      "y_m": 5.5,
+      "z_m": 2.5,
+      "reached": false
+    },
+    {
+      "index": 6,
+      "x_m": 12,
+      "y_m": 5.5,
+      "z_m": 2.5,
+      "reached": false
+    }
+  ],
+  "field": {
+    "polygon_m": [
+      [
+        0,
+        0
+      ],
+      [
+        14,
+        0
+      ],
+      [
+        14,
+        7
+      ],
+      [
+        0,
+        7
+      ]
+    ],
+    "label": "Grandfinale cage",
+    "pad": {
+      "x_m": 1,
+      "y_m": 3.5,
+      "radius_m": 0.625
+    }
+  },
+  "flight_path": {
+    "frame_id": "world_ned",
+    "sample_interval_s": 1.0,
+    "source_artifact_id": "art_px4_ulg",
+    "samples": [
+      {
+        "t_s": 0.0,
+        "x_m": 1.0,
+        "y_m": 3.5,
+        "z_m": 0.0
+      },
+      {
+        "t_s": 1.0,
+        "x_m": 1.0,
+        "y_m": 3.5,
+        "z_m": 0.5
+      },
+      {
+        "t_s": 2.0,
+        "x_m": 1.0,
+        "y_m": 3.5,
+        "z_m": 1.0
+      },
+      {
+        "t_s": 3.0,
+        "x_m": 1.0,
+        "y_m": 3.5,
+        "z_m": 1.5
+      },
+      {
+        "t_s": 4.0,
+        "x_m": 1.0,
+        "y_m": 3.5,
+        "z_m": 2.0
+      },
+      {
+        "t_s": 5.0,
+        "x_m": 1.0,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 6.0,
+        "x_m": 1.29,
+        "y_m": 3.21,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 7.0,
+        "x_m": 1.57,
+        "y_m": 2.93,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 8.0,
+        "x_m": 1.86,
+        "y_m": 2.64,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 9.0,
+        "x_m": 2.14,
+        "y_m": 2.36,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 10.0,
+        "x_m": 2.43,
+        "y_m": 2.07,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 11.0,
+        "x_m": 2.71,
+        "y_m": 1.79,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 12.0,
+        "x_m": 3.0,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 13.0,
+        "x_m": 3.5,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 14.0,
+        "x_m": 4.0,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 15.0,
+        "x_m": 4.5,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 16.0,
+        "x_m": 5.0,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 17.0,
+        "x_m": 5.5,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 18.0,
+        "x_m": 6.0,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 19.0,
+        "x_m": 6.5,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 20.0,
+        "x_m": 7.0,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 21.0,
+        "x_m": 7.5,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 22.0,
+        "x_m": 8.0,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 23.0,
+        "x_m": 8.5,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 24.0,
+        "x_m": 9.0,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 25.0,
+        "x_m": 9.5,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 26.0,
+        "x_m": 10.0,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 27.0,
+        "x_m": 10.5,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 28.0,
+        "x_m": 11.0,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 29.0,
+        "x_m": 11.5,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 30.0,
+        "x_m": 12.0,
+        "y_m": 1.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 31.0,
+        "x_m": 12.0,
+        "y_m": 1.75,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 32.0,
+        "x_m": 12.0,
+        "y_m": 2.0,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 33.0,
+        "x_m": 12.0,
+        "y_m": 2.25,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 34.0,
+        "x_m": 12.0,
+        "y_m": 2.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 35.0,
+        "x_m": 12.0,
+        "y_m": 2.75,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 36.0,
+        "x_m": 12.0,
+        "y_m": 3.0,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 37.0,
+        "x_m": 12.0,
+        "y_m": 3.25,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 38.0,
+        "x_m": 12.0,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 39.0,
+        "x_m": 11.5,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 40.0,
+        "x_m": 11.0,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 41.0,
+        "x_m": 10.5,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 42.0,
+        "x_m": 10.0,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 43.0,
+        "x_m": 9.5,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 44.0,
+        "x_m": 9.0,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 45.0,
+        "x_m": 8.5,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 46.0,
+        "x_m": 8.0,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 47.0,
+        "x_m": 7.5,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 48.0,
+        "x_m": 7.0,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 49.0,
+        "x_m": 6.5,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 50.0,
+        "x_m": 6.0,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 51.0,
+        "x_m": 5.5,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 52.0,
+        "x_m": 5.0,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 53.0,
+        "x_m": 4.5,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 54.0,
+        "x_m": 4.0,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 55.0,
+        "x_m": 3.5,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 56.0,
+        "x_m": 3.0,
+        "y_m": 3.5,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 57.0,
+        "x_m": 3.2,
+        "y_m": 3.67,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 58.0,
+        "x_m": 3.4,
+        "y_m": 3.85,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 59.0,
+        "x_m": 3.6,
+        "y_m": 4.03,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 60.0,
+        "x_m": 3.8,
+        "y_m": 4.2,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 61.0,
+        "x_m": 4.0,
+        "y_m": 4.38,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 62.0,
+        "x_m": 4.2,
+        "y_m": 4.55,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 63.0,
+        "x_m": 4.4,
+        "y_m": 4.73,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 64.0,
+        "x_m": 4.6,
+        "y_m": 4.9,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 65.0,
+        "x_m": 4.6,
+        "y_m": 4.9,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 66.0,
+        "x_m": 4.6,
+        "y_m": 4.9,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 67.0,
+        "x_m": 4.6,
+        "y_m": 4.9,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 68.0,
+        "x_m": 4.6,
+        "y_m": 4.9,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 69.0,
+        "x_m": 4.68,
+        "y_m": 4.92,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 70.0,
+        "x_m": 4.78,
+        "y_m": 4.94,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 71.0,
+        "x_m": 4.88,
+        "y_m": 4.96,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 72.0,
+        "x_m": 4.98,
+        "y_m": 4.98,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 73.0,
+        "x_m": 5.08,
+        "y_m": 5.0,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 74.0,
+        "x_m": 5.18,
+        "y_m": 5.02,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 75.0,
+        "x_m": 5.28,
+        "y_m": 5.04,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 76.0,
+        "x_m": 5.38,
+        "y_m": 5.06,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 77.0,
+        "x_m": 5.48,
+        "y_m": 5.08,
+        "z_m": 2.5
+      },
+      {
+        "t_s": 78.0,
+        "x_m": 5.58,
+        "y_m": 5.1,
+        "z_m": 2.5
+      }
+    ],
+    "touchdown": null,
+    "last_position": {
+      "x_m": 5.6,
+      "y_m": 5.1,
+      "z_m": 2.5
+    },
+    "max_altitude_m": 2.5,
+    "distance_m": 28.5
+  },
+  "event_streams": [
+    {
+      "stream_id": "events_primary",
+      "format": "application/x-ndjson",
+      "uri": "sample://events.jsonl",
+      "event_count": 963,
+      "first_sequence": 1,
+      "last_sequence": 977,
+      "sequence_gaps": [
+        {
+          "from": 702,
+          "to": 715,
+          "missing": 14
+        }
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_id": "art_scenario_config",
+      "type": "scenario_configuration",
+      "role": "input",
+      "uri": "sample://scenario.json",
+      "media_type": "application/json",
+      "size_bytes": 2048,
+      "sha256": "e9ada13e\u202660ec",
+      "created_at": "2026-10-06T08:27:35.000Z",
+      "created_by": {
+        "producer_type": "platform",
+        "component": "mission-runtime"
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": null,
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/inputs/scenario.json"
+      },
+      "metadata": {},
+      "local_path": "sample://scenario.json"
+    },
+    {
+      "artifact_id": "art_mission_source",
+      "type": "mission_source",
+      "role": "input",
+      "uri": "sample://script.py",
+      "media_type": "text/x-python",
+      "size_bytes": 875,
+      "sha256": "3474ee83\u20267dfd",
+      "created_at": "2026-10-06T08:27:35.000Z",
+      "created_by": {
+        "producer_type": "platform",
+        "component": "mission-runtime"
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": null,
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/inputs/script.py"
+      },
+      "metadata": {},
+      "local_path": "sample://script.py"
+    },
+    {
+      "artifact_id": "art_mission_parameters",
+      "type": "mission_parameters",
+      "role": "input",
+      "uri": "sample://mission-parameters.json",
+      "media_type": "application/json",
+      "size_bytes": 512,
+      "sha256": "717f26da\u20261c08",
+      "created_at": "2026-10-06T08:27:35.000Z",
+      "created_by": {
+        "producer_type": "platform",
+        "component": "mission-runtime"
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": null,
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/inputs/mission-parameters.json"
+      },
+      "metadata": {},
+      "local_path": "sample://mission-parameters.json"
+    },
+    {
+      "artifact_id": "art_camera_calibration",
+      "type": "camera_calibration",
+      "role": "input",
+      "uri": "sample://front-rgb-camera.json",
+      "media_type": "application/json",
+      "size_bytes": 1024,
+      "sha256": "d8fe0f3d\u2026b0eb",
+      "created_at": "2026-10-06T08:27:35.000Z",
+      "created_by": {
+        "producer_type": "platform",
+        "component": "mission-runtime"
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": null,
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/inputs/calibration/front-rgb-camera.json"
+      },
+      "metadata": {},
+      "local_path": "sample://front-rgb-camera.json"
+    },
+    {
+      "artifact_id": "art_image_0001",
+      "type": "image",
+      "role": "observed",
+      "uri": "sample://000001.jpg",
+      "media_type": "image/jpeg",
+      "size_bytes": 211300,
+      "sha256": "61a6ee3b\u2026d404",
+      "created_at": "2026-10-06T08:27:51.000Z",
+      "created_by": {
+        "producer_type": "platform",
+        "component": "camera-recorder",
+        "instance_id": "front_rgb_camera"
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": "action_capture_01",
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/artifacts/images/front-rgb/000001.jpg"
+      },
+      "metadata": {
+        "width_px": 1280,
+        "height_px": 720,
+        "preview": "../assets/img/mi/fail/img_0001.jpg",
+        "capture_time_s": 12.0,
+        "capture_pose": {
+          "frame_id": "world_ned",
+          "x_m": 3.0,
+          "y_m": 1.5,
+          "z_m": 2.5
+        },
+        "file": {
+          "name": "000001.jpg",
+          "kind": "JPEG image",
+          "size_bytes": 211300,
+          "created": "2026-10-06T15:27:51+07:00",
+          "modified": "2026-10-06T15:27:51+07:00",
+          "content_created": "2026-10-06T15:27:51+07:00",
+          "width_px": 1280,
+          "height_px": 720,
+          "color_space": "RGB",
+          "color_profile": "sRGB IEC61966-2.1",
+          "device_make": "Gazebo",
+          "device_model": "x500 mono camera (simulated)",
+          "content_creator": "SkyTrack",
+          "latitude_deg": "[redacted for privacy]",
+          "longitude_deg": "[redacted for privacy]"
+        }
+      },
+      "local_path": "sample://000001.jpg"
+    },
+    {
+      "artifact_id": "art_image_0002",
+      "type": "image",
+      "role": "observed",
+      "uri": "sample://000002.jpg",
+      "media_type": "image/jpeg",
+      "size_bytes": 212600,
+      "sha256": "a1a8a8d7\u20263392",
+      "created_at": "2026-10-06T08:28:01.000Z",
+      "created_by": {
+        "producer_type": "platform",
+        "component": "camera-recorder",
+        "instance_id": "front_rgb_camera"
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": "action_capture_01",
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/artifacts/images/front-rgb/000002.jpg"
+      },
+      "metadata": {
+        "width_px": 1280,
+        "height_px": 720,
+        "preview": "../assets/img/mi/fail/img_0002.jpg",
+        "capture_time_s": 22.0,
+        "capture_pose": {
+          "frame_id": "world_ned",
+          "x_m": 8.0,
+          "y_m": 1.5,
+          "z_m": 2.5
+        },
+        "file": {
+          "name": "000002.jpg",
+          "kind": "JPEG image",
+          "size_bytes": 212600,
+          "created": "2026-10-06T15:28:01+07:00",
+          "modified": "2026-10-06T15:28:01+07:00",
+          "content_created": "2026-10-06T15:28:01+07:00",
+          "width_px": 1280,
+          "height_px": 720,
+          "color_space": "RGB",
+          "color_profile": "sRGB IEC61966-2.1",
+          "device_make": "Gazebo",
+          "device_model": "x500 mono camera (simulated)",
+          "content_creator": "SkyTrack",
+          "latitude_deg": "[redacted for privacy]",
+          "longitude_deg": "[redacted for privacy]"
+        }
+      },
+      "local_path": "sample://000002.jpg"
+    },
+    {
+      "artifact_id": "art_detection_0002",
+      "type": "detection_result",
+      "role": "submitted",
+      "uri": "sample://000002.json",
+      "media_type": "application/json",
+      "size_bytes": 820,
+      "sha256": "13da1e13\u202652aa",
+      "created_at": "2026-10-06T08:28:01.410Z",
+      "created_by": {
+        "producer_type": "participant_code",
+        "component": "person_detector",
+        "software": {
+          "name": "yolo-person",
+          "version": "2.1.0",
+          "sha256": "8d10aa3f\u2026e2c7"
+        }
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": "action_detect_01",
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [
+        "art_image_0002"
+      ],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/artifacts/detections/000002.json"
+      },
+      "metadata": {
+        "object_count": 1,
+        "classes": {
+          "person": 1
+        },
+        "format": "skytrack.detection.v1",
+        "geometry": {
+          "type": "bbox",
+          "coordinate_space": "image_normalized"
+        },
+        "objects": [
+          {
+            "class": "person",
+            "confidence": 0.91,
+            "bbox": [
+              0.42,
+              0.3,
+              0.56,
+              0.74
+            ]
+          }
+        ]
+      },
+      "local_path": "sample://000002.json"
+    },
+    {
+      "artifact_id": "art_image_0003",
+      "type": "image",
+      "role": "observed",
+      "uri": "sample://000003.jpg",
+      "media_type": "image/jpeg",
+      "size_bytes": 213900,
+      "sha256": "928dd3fd\u20267fe7",
+      "created_at": "2026-10-06T08:28:10.000Z",
+      "created_by": {
+        "producer_type": "platform",
+        "component": "camera-recorder",
+        "instance_id": "front_rgb_camera"
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": "action_capture_01",
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/artifacts/images/front-rgb/000003.jpg"
+      },
+      "metadata": {
+        "width_px": 1280,
+        "height_px": 720,
+        "preview": "../assets/img/mi/fail/img_0003.jpg",
+        "capture_time_s": 31.0,
+        "capture_pose": {
+          "frame_id": "world_ned",
+          "x_m": 12.0,
+          "y_m": 1.75,
+          "z_m": 2.5
+        },
+        "file": {
+          "name": "000003.jpg",
+          "kind": "JPEG image",
+          "size_bytes": 213900,
+          "created": "2026-10-06T15:28:10+07:00",
+          "modified": "2026-10-06T15:28:10+07:00",
+          "content_created": "2026-10-06T15:28:10+07:00",
+          "width_px": 1280,
+          "height_px": 720,
+          "color_space": "RGB",
+          "color_profile": "sRGB IEC61966-2.1",
+          "device_make": "Gazebo",
+          "device_model": "x500 mono camera (simulated)",
+          "content_creator": "SkyTrack",
+          "latitude_deg": "[redacted for privacy]",
+          "longitude_deg": "[redacted for privacy]"
+        }
+      },
+      "local_path": "sample://000003.jpg"
+    },
+    {
+      "artifact_id": "art_image_0004",
+      "type": "image",
+      "role": "observed",
+      "uri": "sample://000004.jpg",
+      "media_type": "image/jpeg",
+      "size_bytes": 215200,
+      "sha256": "4d60251c\u20260439",
+      "created_at": "2026-10-06T08:28:19.000Z",
+      "created_by": {
+        "producer_type": "platform",
+        "component": "camera-recorder",
+        "instance_id": "front_rgb_camera"
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": "action_capture_01",
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/artifacts/images/front-rgb/000004.jpg"
+      },
+      "metadata": {
+        "width_px": 1280,
+        "height_px": 720,
+        "preview": "../assets/img/mi/fail/img_0004.jpg",
+        "capture_time_s": 40.0,
+        "capture_pose": {
+          "frame_id": "world_ned",
+          "x_m": 11.0,
+          "y_m": 3.5,
+          "z_m": 2.5
+        },
+        "file": {
+          "name": "000004.jpg",
+          "kind": "JPEG image",
+          "size_bytes": 215200,
+          "created": "2026-10-06T15:28:19+07:00",
+          "modified": "2026-10-06T15:28:19+07:00",
+          "content_created": "2026-10-06T15:28:19+07:00",
+          "width_px": 1280,
+          "height_px": 720,
+          "color_space": "RGB",
+          "color_profile": "sRGB IEC61966-2.1",
+          "device_make": "Gazebo",
+          "device_model": "x500 mono camera (simulated)",
+          "content_creator": "SkyTrack",
+          "latitude_deg": "[redacted for privacy]",
+          "longitude_deg": "[redacted for privacy]"
+        }
+      },
+      "local_path": "sample://000004.jpg"
+    },
+    {
+      "artifact_id": "art_detection_0004",
+      "type": "detection_result",
+      "role": "submitted",
+      "uri": "sample://000004.json",
+      "media_type": "application/json",
+      "size_bytes": 820,
+      "sha256": "81b908bc\u2026be8f",
+      "created_at": "2026-10-06T08:28:19.410Z",
+      "created_by": {
+        "producer_type": "participant_code",
+        "component": "person_detector",
+        "software": {
+          "name": "yolo-person",
+          "version": "2.1.0",
+          "sha256": "8d10aa3f\u2026e2c7"
+        }
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": "action_detect_01",
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [
+        "art_image_0004"
+      ],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/artifacts/detections/000004.json"
+      },
+      "metadata": {
+        "object_count": 1,
+        "classes": {
+          "person": 1
+        },
+        "format": "skytrack.detection.v1",
+        "geometry": {
+          "type": "bbox",
+          "coordinate_space": "image_normalized"
+        },
+        "objects": [
+          {
+            "class": "person",
+            "confidence": 0.84,
+            "bbox": [
+              0.18,
+              0.4,
+              0.31,
+              0.86
+            ]
+          }
+        ]
+      },
+      "local_path": "sample://000004.json"
+    },
+    {
+      "artifact_id": "art_image_0005",
+      "type": "image",
+      "role": "observed",
+      "uri": "sample://000005.jpg",
+      "media_type": "image/jpeg",
+      "size_bytes": 0,
+      "sha256": "5a1f211d\u2026e156",
+      "created_at": "2026-10-06T08:28:28.000Z",
+      "created_by": {
+        "producer_type": "platform",
+        "component": "camera-recorder",
+        "instance_id": "front_rgb_camera"
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": "action_capture_01",
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [],
+      "availability": {
+        "state": "missing",
+        "location": null
+      },
+      "metadata": {
+        "width_px": 1280,
+        "height_px": 720,
+        "preview": null,
+        "capture_time_s": 49.0,
+        "capture_pose": {
+          "frame_id": "world_ned",
+          "x_m": 6.5,
+          "y_m": 3.5,
+          "z_m": 2.5
+        },
+        "file": {
+          "name": "000005.jpg",
+          "kind": "JPEG image",
+          "size_bytes": null,
+          "created": null,
+          "modified": null,
+          "content_created": "2026-10-06T15:28:28+07:00",
+          "width_px": 1280,
+          "height_px": 720,
+          "color_space": "RGB",
+          "color_profile": "sRGB IEC61966-2.1",
+          "device_make": "Gazebo",
+          "device_model": "x500 mono camera (simulated)",
+          "content_creator": "SkyTrack",
+          "latitude_deg": "[redacted for privacy]",
+          "longitude_deg": "[redacted for privacy]"
+        }
+      },
+      "local_path": "sample://000005.jpg"
+    },
+    {
+      "artifact_id": "art_image_0006",
+      "type": "image",
+      "role": "observed",
+      "uri": "sample://000006.jpg",
+      "media_type": "image/jpeg",
+      "size_bytes": 217800,
+      "sha256": "944dcbf1\u2026066f",
+      "created_at": "2026-10-06T08:28:37.000Z",
+      "created_by": {
+        "producer_type": "platform",
+        "component": "camera-recorder",
+        "instance_id": "front_rgb_camera"
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": "action_capture_01",
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/artifacts/images/front-rgb/000006.jpg"
+      },
+      "metadata": {
+        "width_px": 1280,
+        "height_px": 720,
+        "preview": "../assets/img/mi/fail/img_0006.jpg",
+        "capture_time_s": 58.0,
+        "capture_pose": {
+          "frame_id": "world_ned",
+          "x_m": 3.4,
+          "y_m": 3.85,
+          "z_m": 2.5
+        },
+        "file": {
+          "name": "000006.jpg",
+          "kind": "JPEG image",
+          "size_bytes": 217800,
+          "created": "2026-10-06T15:28:37+07:00",
+          "modified": "2026-10-06T15:28:37+07:00",
+          "content_created": "2026-10-06T15:28:37+07:00",
+          "width_px": 1280,
+          "height_px": 720,
+          "color_space": "RGB",
+          "color_profile": "sRGB IEC61966-2.1",
+          "device_make": "Gazebo",
+          "device_model": "x500 mono camera (simulated)",
+          "content_creator": "SkyTrack",
+          "latitude_deg": "[redacted for privacy]",
+          "longitude_deg": "[redacted for privacy]"
+        }
+      },
+      "local_path": "sample://000006.jpg"
+    },
+    {
+      "artifact_id": "art_video_0001",
+      "type": "video",
+      "role": "observed",
+      "uri": "sample://front-rgb-0001.mp4",
+      "media_type": "video/mp4",
+      "size_bytes": 19004112,
+      "sha256": "0d7b544a\u2026485a",
+      "created_at": "2026-10-06T08:28:26.000Z",
+      "created_by": {
+        "producer_type": "platform",
+        "component": "camera-recorder",
+        "instance_id": "front_rgb_camera"
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": "action_video_01",
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/artifacts/video/front-rgb-0001.mp4"
+      },
+      "metadata": {
+        "start_time_s": 6.0,
+        "duration_ms": 41000,
+        "expected_duration_ms": 72200,
+        "truncated": true,
+        "codec": "h264",
+        "width_px": 1280,
+        "height_px": 720,
+        "poster": "../assets/img/mi/fail/video_0001_poster.jpg",
+        "file": {
+          "name": "front-rgb-0001.mp4",
+          "kind": "MPEG-4 movie",
+          "size_bytes": 19004112,
+          "created": "2026-10-06T15:28:26+07:00",
+          "modified": "2026-10-06T15:28:26+07:00",
+          "content_created": "2026-10-06T15:28:26+07:00",
+          "width_px": 1280,
+          "height_px": 720,
+          "color_space": "RGB",
+          "color_profile": "sRGB IEC61966-2.1",
+          "device_make": "Gazebo",
+          "device_model": "x500 mono camera (simulated)",
+          "content_creator": "SkyTrack",
+          "duration_ms": 41000,
+          "codec": "H.264"
+        }
+      },
+      "local_path": "sample://front-rgb-0001.mp4"
+    },
+    {
+      "artifact_id": "art_px4_ulg",
+      "type": "px4_ulg",
+      "role": "observed",
+      "uri": "sample://vehicle_01.ulg",
+      "media_type": "application/vnd.px4.ulg",
+      "size_bytes": 9120440,
+      "sha256": "216b3da4\u20264498",
+      "created_at": "2026-10-06T08:28:57.200Z",
+      "created_by": {
+        "producer_type": "vehicle_runtime",
+        "component": "PX4"
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": null,
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/telemetry/vehicle_01.ulg"
+      },
+      "metadata": {},
+      "local_path": "sample://vehicle_01.ulg"
+    },
+    {
+      "artifact_id": "art_rescue_locations",
+      "type": "rescue_locations",
+      "role": "submitted",
+      "uri": "sample://rescue_locations.txt",
+      "media_type": "text/plain",
+      "size_bytes": 24,
+      "sha256": "4d66a36e\u20267338",
+      "created_at": "2026-10-06T08:28:43.500Z",
+      "created_by": {
+        "producer_type": "participant_code",
+        "component": "mission_main"
+      },
+      "context": {
+        "execution_id": "exec_01",
+        "action_id": "action_report_person_01",
+        "vehicle_id": "vehicle_01",
+        "event_id": null
+      },
+      "derived_from": [
+        "art_detection_0002"
+      ],
+      "availability": {
+        "state": "local",
+        "location": "~/SkyTrack/runs/10062026-152739/outputs/rescue_locations.txt"
+      },
+      "metadata": {
+        "rows": 1,
+        "expected_rows": 3
+      },
+      "local_path": "sample://rescue_locations.txt"
+    }
+  ],
+  "ai_models": [
+    {
+      "model_id": "model_person",
+      "name": "yolo-person",
+      "version": "2.1.0",
+      "sha256": "8d10aa3f\u2026e2c7",
+      "producer_type": "participant_code",
+      "task": "detection",
+      "classes": [
+        "person"
+      ],
+      "invocations": {
+        "total": 5,
+        "with_results": 2,
+        "zero_results": 2,
+        "failed": 1
+      },
+      "inputs_processed": 5,
+      "detections": 2,
+      "mean_duration_ms": 459,
+      "p95_duration_ms": 655
+    },
+    {
+      "model_id": "model_depth",
+      "name": "depth-estimator",
+      "version": "0.9.0",
+      "sha256": "0aa9f3c2\u202611b8",
+      "producer_type": "participant_code",
+      "task": "depth",
+      "classes": [],
+      "invocations": {
+        "total": 0,
+        "with_results": 0,
+        "zero_results": 0,
+        "failed": 0
+      },
+      "inputs_processed": 0,
+      "detections": 0,
+      "status": "configured_not_invoked"
+    }
+  ],
+  "invocations": [
+    {
+      "invocation_id": "inv_0001",
+      "model_id": "model_person",
+      "input_artifact_id": "art_image_0001",
+      "output_artifact_id": null,
+      "started_s": 12.2,
+      "duration_ms": 380,
+      "result": "zero_results",
+      "result_count": 0,
+      "error": null
+    },
+    {
+      "invocation_id": "inv_0002",
+      "model_id": "model_person",
+      "input_artifact_id": "art_image_0002",
+      "output_artifact_id": "art_detection_0002",
+      "started_s": 22.2,
+      "duration_ms": 400,
+      "result": "with_results",
+      "result_count": 1,
+      "error": null
+    },
+    {
+      "invocation_id": "inv_0003",
+      "model_id": "model_person",
+      "input_artifact_id": "art_image_0003",
+      "output_artifact_id": null,
+      "started_s": 31.2,
+      "duration_ms": 420,
+      "result": "zero_results",
+      "result_count": 0,
+      "error": null
+    },
+    {
+      "invocation_id": "inv_0004",
+      "model_id": "model_person",
+      "input_artifact_id": "art_image_0004",
+      "output_artifact_id": "art_detection_0004",
+      "started_s": 40.2,
+      "duration_ms": 440,
+      "result": "with_results",
+      "result_count": 1,
+      "error": null
+    },
+    {
+      "invocation_id": "inv_0005",
+      "model_id": "model_person",
+      "input_artifact_id": "art_image_0006",
+      "output_artifact_id": null,
+      "started_s": 58.2,
+      "duration_ms": 655,
+      "result": "failed",
+      "result_count": 0,
+      "error": {
+        "code": "CUDA_OOM",
+        "message": "CUDA out of memory (requested 512 MiB)"
+      }
+    }
+  ],
+  "detections_geo": [
+    {
+      "class": "person",
+      "x_m": 4.6,
+      "y_m": 4.9,
+      "source_artifact_id": "art_image_0002",
+      "saved_as_rescue_location": true
+    },
+    {
+      "class": "person",
+      "x_m": 9.5,
+      "y_m": 5.6,
+      "source_artifact_id": "art_image_0004",
+      "saved_as_rescue_location": false
+    }
+  ],
+  "expected_outputs": [
+    {
+      "output_id": "output_rescue",
+      "name": "Rescue locations",
+      "required": true,
+      "expected_count": 3
+    },
+    {
+      "output_id": "output_images",
+      "name": "Search image set",
+      "required": true,
+      "expected_count": 6
+    }
+  ],
+  "outputs": [
+    {
+      "output_id": "output_rescue",
+      "name": "Rescue locations",
+      "type": "rescue_locations",
+      "status": "partial",
+      "summary": "1 of 3 locations saved",
+      "artifact_ids": [
+        "art_rescue_locations"
+      ],
+      "produced_by_action_ids": [
+        "action_report_person_01"
+      ]
+    },
+    {
+      "output_id": "output_images",
+      "name": "Search image set",
+      "type": "image_set",
+      "status": "partial",
+      "summary": "5 of 6 images",
+      "artifact_ids": [
+        "art_image_0001",
+        "art_image_0002",
+        "art_image_0003",
+        "art_image_0004",
+        "art_image_0006"
+      ],
+      "produced_by_action_ids": [
+        "action_capture_01"
+      ]
+    }
+  ],
+  "diagnostics": {
+    "completeness": "incomplete",
+    "availability": "partially_available",
+    "dropped_event_count": 14,
+    "incomplete_artifact_ids": [
+      "art_video_0001",
+      "art_image_0005"
+    ],
+    "items": [
+      {
+        "severity": "error",
+        "code": "ACTION_TIMEOUT",
+        "message": "Action server /skytrack/goto did not respond within 10 s",
+        "time_s": 78.2,
+        "action_id": "action_goto_person_02",
+        "component": "mission-runtime"
+      },
+      {
+        "severity": "error",
+        "code": "MODEL_INVOCATION_FAILED",
+        "message": "yolo-person 2.1.0: CUDA out of memory (requested 512 MiB) on image 6",
+        "time_s": 58.2,
+        "action_id": "action_detect_01",
+        "component": "person_detector"
+      },
+      {
+        "severity": "warning",
+        "code": "ARTIFACT_NOT_WRITTEN",
+        "message": "Image 5 was not written (disk write error)",
+        "time_s": 49.0,
+        "action_id": "action_capture_01",
+        "component": "camera-recorder"
+      },
+      {
+        "severity": "warning",
+        "code": "VIDEO_TRUNCATED",
+        "message": "Video stopped at 41.0 s of 72.2 s",
+        "time_s": 47.0,
+        "action_id": "action_video_01",
+        "component": "camera-recorder"
+      },
+      {
+        "severity": "warning",
+        "code": "EVENTS_DROPPED",
+        "message": "14 events dropped (sequence 702\u2013715)",
+        "time_s": 61.0,
+        "action_id": null,
+        "component": "event-bridge"
+      }
+    ]
+  },
+  "integrity": {
+    "manifest_sha256": "7c0b\u202619fe",
+    "checksums_uri": "checksums.json",
+    "signature": {
+      "algorithm": "Ed25519",
+      "key_id": "skytrack-runtime-key-01",
+      "value": "MEQCIF\u2026"
+    },
+    "verification": {
+      "checked_at": "2026-10-06T08:29:03.200Z",
+      "signature": "verified",
+      "artifacts": {
+        "verified": 13,
+        "mismatch": 1,
+        "unavailable": 1,
+        "declared": 0
+      },
+      "details": [
+        {
+          "artifact_id": "art_video_0001",
+          "result": "mismatch",
+          "reason": "File is shorter than the size recorded at write time"
+        },
+        {
+          "artifact_id": "art_image_0005",
+          "result": "unavailable",
+          "reason": "File not found"
+        }
+      ]
+    }
+  }
+}

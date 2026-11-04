@@ -220,7 +220,7 @@ function DesignPanel(props: DesignPanelProps) {
 
   return (
     <div
-      className={`ms-inspector${codeView ? " ms-inspector-code" : ""}`}
+      className={`ms-inspector flex flex-col gap-3${codeView ? " ms-inspector-code h-full min-h-0 box-border" : ""}`}
       data-testid="ms-design-panel"
     >
       <div className="ms-inspector-main flex min-h-0 flex-1 flex-col">

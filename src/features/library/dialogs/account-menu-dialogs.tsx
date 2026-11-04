@@ -194,7 +194,7 @@ export function AccountMenuDialogs({
                 data-testid="ms-lib-account-form"
               >
                 <div
-                  className=" inline-flex items-center justify-center w-13 h-13 flex-[0_0_auto] rounded-[50%] bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1.3125rem] font-[650]"
+                  className=" inline-flex items-center justify-center w-13 h-13 flex-[0_0_auto] rounded-full bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1.3125rem] font-[650]"
                   aria-hidden="true"
                   data-testid="ms-lib-account-edit-avatar"
                 >
@@ -240,7 +240,7 @@ export function AccountMenuDialogs({
                   data-testid="ms-lib-account-status-row"
                 >
                   <span>Account status</span>
-                  <Badge count="Active" status="outline" size="sm" />
+                  <Badge className="rounded-(--radius)" count="Active" status="outline" size="sm" />
                 </div>
                 <AccountDetail label="Email address" value={profile.email} />
               </div>
@@ -292,7 +292,7 @@ export function AccountMenuDialogs({
                   data-testid="ms-lib-account-email-status"
                 >
                   <span>Email notifications</span>
-                  <Badge count="Off" status="secondary" size="sm" />
+                  <Badge className="rounded-(--radius)" count="Off" status="secondary" size="sm" />
                 </div>
               </div>
             ) : null}
@@ -307,7 +307,7 @@ export function AccountMenuDialogs({
                   data-testid="ms-lib-account-current"
                 >
                   <span
-                    className=" inline-flex items-center justify-center w-13 h-13 flex-[0_0_auto] rounded-[50%] bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1.3125rem] font-[650] w-10.5 h-10.5 text-[1.0625rem]"
+                    className=" inline-flex items-center justify-center w-13 h-13 flex-[0_0_auto] rounded-full bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1.3125rem] font-[650] w-10.5 h-10.5 text-[1.0625rem]"
                     aria-hidden="true"
                     data-testid="ms-lib-account-current-avatar"
                   >
@@ -351,7 +351,7 @@ export function AccountMenuDialogs({
                 data-testid="ms-lib-account-logout-content"
               >
                 <div
-                  className="ms-lib-account-callout  flex gap-2.5 border-[color-mix(in_oklab,var(--warning),var(--border)_55%)]"
+                  className="ms-lib-account-callout mt-3.5 py-3 px-3.5 border border-border rounded-(--radius) bg-(--muted) text-(--foreground) text-[0.8125rem]  flex gap-2.5 border-[color-mix(in_oklab,var(--warning),var(--border)_55%)]"
                   data-testid="ms-lib-account-callout"
                 >
                   <WarningCircleIcon
@@ -371,7 +371,7 @@ export function AccountMenuDialogs({
               </div>
             ) : null}
 
-            <DialogFooter>
+            <DialogFooter className="flex-row flex-wrap items-center justify-end">
               {panel === "profile" ? (
                 <>
                   <DialogClose className="w-auto flex-[0_0_auto]">

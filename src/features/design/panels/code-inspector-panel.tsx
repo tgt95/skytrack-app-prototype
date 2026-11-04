@@ -152,11 +152,11 @@ export default function CodeInspectorPanel ({
               rows={18}
             />
             {jsonError ? (
-              <p className='ms-issue is-error' role='alert' id='ms-json-error'>
+              <p className='ms-issue m-0 text-xs leading-[1.5] border border-border rounded-(--radius) py-1.5 px-2 bg-(--card) [&.is-error]:border-(--destructive) [&.is-error]:text-(--destructive) [&.is-warning]:border-(--border) [&.is-warning]:text-(--muted-foreground) [&.is-ok]:border-(--primary) is-error' role='alert' id='ms-json-error'>
                 {jsonError}
               </p>
             ) : null}
-            <div className='ms-btnrow'>
+            <div className='ms-btnrow flex justify-end flex-row gap-1.5'>
               <Button
                 size='sm'
                 variant='outline'
@@ -174,7 +174,7 @@ export default function CodeInspectorPanel ({
                 Apply JSON
               </Button>
             </div>
-            <p className='ms-python-limit' id='ms-json-hint'>
+            <p className='ms-python-limit m-0 py-1.75 px-2.5 border-t border-t-border text-(--muted-foreground) text-[0.6875rem] leading-[1.4]' id='ms-json-hint'>
               Mission JSON round-trips the visual mission, including generated
               Area/Avoid provenance. Applying valid JSON updates the visual
               route and can be undone. Invalid JSON leaves the mission
@@ -184,7 +184,7 @@ export default function CodeInspectorPanel ({
         ) : (
           <>
             <PythonEditor value={codeDraft} onChange={onCodeDraftChange} />
-            {/* <p className="ms-python-limit" id="ms-code-limit">
+            {/* <p className="ms-python-limit m-0 py-1.75 px-2.5 border-t border-t-border text-(--muted-foreground) text-[0.6875rem] leading-[1.4]" id="ms-code-limit">
               Local draft only. Python does not execute or update the visual
               route. Mission save does not include this draft.
             </p> */}

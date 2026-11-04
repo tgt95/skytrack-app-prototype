@@ -179,7 +179,7 @@ export function EditMissionDialog({
               </SelectPortal>
             </Select>
           </FieldRoot>
-          <DialogFooter>
+          <DialogFooter className="flex-row flex-wrap items-center justify-end">
             <DialogClose className="w-auto flex-[0_0_auto]">Cancel</DialogClose>
             <Button onClick={onSave} className="w-auto flex-[0_0_auto]">
               Save

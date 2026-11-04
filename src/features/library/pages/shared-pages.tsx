@@ -21,12 +21,12 @@ export function SharedAccountsPage({
           titleId="ms-lib-shared-title"
           title="Shared accounts"
           description={
-            <p className="ms-lib-sub mt-0">
+            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
               {missionName} · {projectName}
             </p>
           }
           context={
-            <button type="button" className="ms-lib-back" onClick={onBack}>
+            <button type="button" className="ms-lib-back inline-flex items-center gap-1.5 mb-0 py-1 px-0 [border:0] bg-transparent text-(--muted-foreground) text-[0.8125rem] cursor-pointer hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1" onClick={onBack}>
               <ArrowLeftIcon aria-hidden="true" /> Back
             </button>
           }
@@ -78,17 +78,17 @@ export function SharedProjectPage({
           titleId="ms-lib-shared-project-title"
           title={project.name}
           description={
-            <p className="ms-lib-sub mt-0">
+            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
               Owned by {project.owner} · {project.workspace} ·{" "}
               {project.sharedAgo}
             </p>
           }
           context={
-            <button type="button" className="ms-lib-back" onClick={onBack}>
+            <button type="button" className="ms-lib-back inline-flex items-center gap-1.5 mb-0 py-1 px-0 [border:0] bg-transparent text-(--muted-foreground) text-[0.8125rem] cursor-pointer hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1" onClick={onBack}>
               <ArrowLeftIcon aria-hidden="true" /> Shared with me
             </button>
           }
-          actions={<Badge count="View only" />}
+          actions={<Badge className="rounded-(--radius)" count="View only" />}
         />
       }
     >
@@ -121,7 +121,7 @@ export function SharedWithMePage({
           titleId="ms-lib-sharedme-title"
           title="Shared with me"
           description={
-            <p className="ms-lib-sub mt-0">
+            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
               Projects shared by people in other Workspaces.
             </p>
           }

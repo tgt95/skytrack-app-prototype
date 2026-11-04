@@ -185,7 +185,7 @@ export function LibraryResourceDeleteDialogs({
               </DialogDescription>
             </DialogHeader>
             {deleteDroneReferences.length > 0 ? (
-              <div className="ms-drone-reference-warning" role="alert">
+              <div className="ms-drone-reference-warning mt-0 mx-5 mb-4.5 p-3 border border-border rounded-(--radius) bg-(--muted) text-(--foreground) text-xs leading-[1.5]" role="alert">
                 <p className="mt-0 mx-0 mb-2">
                   This Drone is selected by {deleteDroneReferences.length}{" "}
                   mission{deleteDroneReferences.length === 1 ? "" : "s"}. Change
@@ -203,7 +203,7 @@ export function LibraryResourceDeleteDialogs({
                 </ul>
               </div>
             ) : null}
-            <DialogFooter>
+            <DialogFooter className="flex-row flex-wrap items-center justify-end">
               <DialogClose className="w-auto flex-[0_0_auto]">
                 Cancel
               </DialogClose>
@@ -242,7 +242,7 @@ export function LibraryResourceDeleteDialogs({
               </DialogDescription>
             </DialogHeader>
             {deleteWorldReferences.length > 0 ? (
-              <div className="ms-drone-reference-warning" role="alert">
+              <div className="ms-drone-reference-warning mt-0 mx-5 mb-4.5 p-3 border border-border rounded-(--radius) bg-(--muted) text-(--foreground) text-xs leading-[1.5]" role="alert">
                 <p className="mt-0 mx-0 mb-2">
                   This World is selected by {deleteWorldReferences.length}{" "}
                   mission{deleteWorldReferences.length === 1 ? "" : "s"}.
@@ -261,12 +261,12 @@ export function LibraryResourceDeleteDialogs({
                 </ul>
               </div>
             ) : (
-              <p className="ms-resource-note">
+              <p className="ms-resource-note m-0 text-(--muted-foreground) text-xs leading-[1.5] col-span-full py-2.5 px-3 border border-border rounded-(--radius) bg-(--muted)">
                 This removes the World record. Any source and reconstruction
                 references stored here will also be removed.
               </p>
             )}
-            <DialogFooter>
+            <DialogFooter className="flex-row flex-wrap items-center justify-end">
               <DialogClose className="w-auto flex-[0_0_auto]">
                 Cancel
               </DialogClose>
@@ -302,11 +302,11 @@ export function LibraryResourceDeleteDialogs({
                   : null}
               </DialogDescription>
             </DialogHeader>
-            <p className="ms-resource-note">
+            <p className="ms-resource-note m-0 text-(--muted-foreground) text-xs leading-[1.5] col-span-full py-2.5 px-3 border border-border rounded-(--radius) bg-(--muted)">
               This removes the model details from this browser. The ZIP file was
               not stored here.
             </p>
-            <DialogFooter>
+            <DialogFooter className="flex-row flex-wrap items-center justify-end">
               <DialogClose className="w-auto flex-[0_0_auto]">
                 Cancel
               </DialogClose>

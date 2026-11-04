@@ -1,9 +1,9 @@
 /** Round a number to the requested decimal places. Defaults to a whole number. */
 export function roundTo(value: number, decimalPlaces = 0): number {
   const scale = 10 ** decimalPlaces;
-  const rounded =
+  const roundedValue =
     Math.round((Math.abs(value) + Number.EPSILON) * scale) / scale;
-  return Math.sign(value) * rounded;
+  return Math.sign(value) * roundedValue;
 }
 
 /** Format a metric area using square meters for small areas and hectares for mapped sites. */

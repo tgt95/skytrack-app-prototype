@@ -24,7 +24,7 @@ function SatelliteTile({ src }: { src: string }) {
         className="absolute inset-0 size-full object-cover"
         onError={() => setFailed(true)}
       />
-      <span className="absolute bottom-1 right-1 rounded-sm bg-black/65 px-1 py-0.5 text-[0.5625rem] leading-none text-white">
+      <span className="absolute bottom-1 right-1 rounded-(--radius) bg-black/65 px-1 py-0.5 text-[0.5625rem] leading-none text-white">
         {SATELLITE_TILE_ATTRIBUTION}
       </span>
     </>

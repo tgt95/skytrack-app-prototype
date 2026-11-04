@@ -157,7 +157,7 @@ export function DrawingAltitudeRuler({
         >
           <div
             className={
-              ' absolute bottom-(--ms-alt-badge-bottom) left-0 right-0.5 pointer-events-auto transform-[translateY(50%)] flex items-baseline gap-0.75 py-0.75 px-1.5 bg-(--background) border border-border rounded-[calc(var(--radius)-0.125rem)] [&::after]:[content:""] [&::after]:absolute [&::after]:-right-1.25 [&::after]:top-[50%] [&::after]:transform-[translateY(-50%)] [&::after]:[border-top:0.3125rem_solid_transparent] [&::after]:[border-bottom:0.3125rem_solid_transparent] [&::after]:border-l-[5px] [&::after]:border-l-border focus-within:outline-2 focus-within:outline-(--primary) focus-within:outline-offset-1'
+              ' absolute bottom-(--ms-alt-badge-bottom) left-0 right-0.5 pointer-events-auto transform-[translateY(50%)] flex items-baseline gap-0.75 py-0.75 px-1.5 bg-(--background) border border-border rounded-(--radius) [&::after]:[content:""] [&::after]:absolute [&::after]:-right-1.25 [&::after]:top-[50%] [&::after]:transform-[translateY(-50%)] [&::after]:[border-top:0.3125rem_solid_transparent] [&::after]:[border-bottom:0.3125rem_solid_transparent] [&::after]:border-l-[5px] [&::after]:border-l-border focus-within:outline-2 focus-within:outline-(--primary) focus-within:outline-offset-1'
             }
             style={{ "--ms-alt-badge-bottom": badgeBottom } as CSSProperties}
             data-testid="ms-alt-badge"
@@ -218,7 +218,7 @@ export function DrawingAltitudeRuler({
             data-testid="ms-alt-active-line"
           />
           <div
-            className=" absolute bottom-(--ms-alt-percent) left-[50%] w-4.5 h-4.5 transform-[translate(-50%,50%)] rounded-[50%] bg-(--background) border-[2px] border-(--primary) cursor-grab z-2 active:cursor-grabbing focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-2"
+            className=" absolute bottom-(--ms-alt-percent) left-[50%] w-4.5 h-4.5 transform-[translate(-50%,50%)] rounded-full bg-(--background) border-[2px] border-(--primary) cursor-grab z-2 active:cursor-grabbing focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-2"
             data-testid="ms-alt-ruler-knob"
             role="slider"
             tabIndex={0}

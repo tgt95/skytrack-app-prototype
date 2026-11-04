@@ -208,7 +208,7 @@ function MissionWorldTypeBadge({ worldType }: { worldType: "2D" }) {
       count={worldType}
       status="outline"
       data-testid="ms-lib-card-world-type"
-      className="inline-flex absolute top-1 left-1"
+      className="inline-flex absolute top-1 left-1 rounded-(--radius)"
     />
   );
 }
@@ -254,12 +254,12 @@ function MissionCardCore({
       <MissionWorldTypeBadge worldType="2D" />
     ) : null;
   const cardBody = (
-    <div className="ms-lib-card-body flex-1 justify-between">
+    <div className="ms-lib-card-body flex flex-col gap-1 p-3 flex-1 justify-between">
       <div className="flex flex-col gap-2">
         <div className="flex items-start justify-between gap-2">
           <span className="text-sm font-medium">{title}</span>
           {variant === "shared" || mission.viewOnly ? (
-            <Badge count="View only" />
+            <Badge className="rounded-(--radius)" count="View only" />
           ) : null}
         </div>
         {variant !== "shared" ? <MissionCardSummary mission={mission} /> : null}
@@ -272,10 +272,10 @@ function MissionCardCore({
     return (
       <article
         key={mission.id}
-        className="ms-lib-card is-readonly"
+        className="ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-(--card) text-(--foreground) text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default is-readonly"
         aria-label={mission.name}
       >
-        <span className="ms-lib-thumb is-mission" aria-hidden="true">
+        <span className="ms-lib-thumb relative flex items-center justify-center aspect-4/3 overflow-hidden text-(--muted-foreground) bg-(--background) bg-[repeating-linear-gradient(to_right,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem),repeating-linear-gradient(to_bottom,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem)] border-b border-b-border [&.is-template]:bg-none [&.is-project]:bg-none [&.is-project]:bg-(--muted) [&.tint-0]:bg-[color-mix(in_srgb,var(--primary)_26%,var(--card))] [&.tint-2]:bg-(--muted) [&.tint-4]:bg-[color-mix(in_srgb,var(--primary)_10%,var(--card))] [&.tint-5]:bg-[color-mix(in_srgb,var(--primary)_32%,var(--muted))] [&.is-learn]:bg-none [&.is-learn]:text-(--primary) is-mission" aria-hidden="true">
           {thumbnail}
           {worldBadge}
         </span>
@@ -296,7 +296,7 @@ function MissionCardCore({
     >
       <button
         type="button"
-        className="ms-lib-thumb is-mission p-0 [border:0] border-b border-b-border appearance-none cursor-pointer"
+        className="ms-lib-thumb relative flex items-center justify-center aspect-4/3 overflow-hidden text-(--muted-foreground) bg-(--background) bg-[repeating-linear-gradient(to_right,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem),repeating-linear-gradient(to_bottom,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem)] border-b border-b-border [&.is-template]:bg-none [&.is-project]:bg-none [&.is-project]:bg-(--muted) [&.tint-0]:bg-[color-mix(in_srgb,var(--primary)_26%,var(--card))] [&.tint-2]:bg-(--muted) [&.tint-4]:bg-[color-mix(in_srgb,var(--primary)_10%,var(--card))] [&.tint-5]:bg-[color-mix(in_srgb,var(--primary)_32%,var(--muted))] [&.is-learn]:bg-none [&.is-learn]:text-(--primary) is-mission p-0 [border:0] border-b border-b-border appearance-none cursor-pointer"
         data-testid={testId ? `${testId}-open` : undefined}
         aria-label={`Open ${mission.name}`}
         onClick={onOpen}

@@ -1,6 +1,7 @@
 /* Pure/local helpers for Cesium overlays and coordinate conversion. Viewer lifecycle stays in mission-scene.tsx. */
 
 import type { Viewer } from 'cesium'
+import type { SceneSelection, StudioMission } from '../../domain/mission-model'
 
 type CesiumNS = typeof import('cesium')
 
@@ -63,6 +64,17 @@ export function safeColor(Cesium: CesiumNS, raw: string, varName: SceneToken, al
     /* fall through to hex fallback */
   }
   return Cesium.Color.fromCssColorString(SCENE_FALLBACKS[varName]).withAlpha(alpha)
+}
+
+export function getSelectedPhotoId(
+  mission: Pick<StudioMission, 'waypoints'>,
+  selection: SceneSelection | null
+): string | null {
+  if (selection?.kind !== 'waypoint') return null
+  const waypoint = mission.waypoints.find((candidate) => candidate.id === selection.id)
+  return waypoint?.actions.some((action) => action.kind === 'photo')
+    ? selection.id
+    : null
 }
 
 export function waypointId(raw: unknown): string | null {

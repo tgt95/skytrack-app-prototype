@@ -32,11 +32,11 @@ export function DroneHardwareSection({
 }) {
   return (
     <section
-      className="ms-drone-form-section"
+      className="ms-drone-form-section flex flex-col gap-3"
       aria-labelledby="ms-drone-hardware-title"
     >
       <div
-        className="ms-drone-section-heading  flex-row items-center justify-between gap-3.5 [@media_(max-width:_45rem)]:items-start"
+        className="ms-drone-section-heading flex flex-col gap-0.75 items-center justify-between [@media_(max-width:_45rem)]:items-start"
         data-testid="ms-drone-components-heading"
       >
         <div>
@@ -56,7 +56,7 @@ export function DroneHardwareSection({
         </Button>
       </div>
       {components.length === 0 ? (
-        <p className="ms-drone-empty-components">
+        <p className="ms-drone-empty-components m-0 text-(--muted-foreground) text-xs leading-[1.5]">
           No hardware components added.
         </p>
       ) : (
