@@ -195,7 +195,7 @@ export default function LibraryMainContent({
           }}
         />
       ) : section === "download" ? (
-        <DownloadPage onGoHome={() => onNavigate("home", null)} />
+        <DownloadPage />
       ) : section === "recent" ? (
         <RecentPage missions={homeMissions} renderMission={renderRecent} />
       ) : section === "projects" ? (

@@ -1,4 +1,4 @@
-import { AppleLogo, DownloadSimpleIcon } from '@phosphor-icons/react'
+import { CpuIcon, DownloadSimpleIcon } from '@phosphor-icons/react'
 import { useState } from 'react'
 import {
   Accordion,
@@ -40,8 +40,7 @@ const PLATFORMS = [
     name: 'SkyTrack Field',
     cardTitle: 'Mobile',
     illustration: mobileArt,
-    summary:
-      'Mobile ground-station application for field use; device support is not yet documented.'
+    summary: 'Android ground-station application for field use.'
   },
   {
     id: 'os',
@@ -53,26 +52,107 @@ const PLATFORMS = [
   }
 ] as const
 
-const DESKTOP_HOSTS = ['macOS', 'Debian / Ubuntu', 'Windows'] as const
+const DESKTOP_HOSTS = ['macOS', 'Ubuntu', 'Windows'] as const
+
+const DESKTOP_SYSTEM_REQUIREMENTS: Record<
+  (typeof DESKTOP_HOSTS)[number],
+  { label: string, value: string }[]
+> = {
+  macOS: [
+    { label: 'Operating System', value: 'macOS 11 (Big Sur) or newer' },
+    { label: 'CPU', value: 'Intel Core i5 / Apple Silicon (M1/M2)' },
+    { label: 'GPU', value: 'Metal-supported GPU (integrated or discrete)' },
+    { label: 'RAM', value: '16 GB' },
+    { label: 'Hard Disk', value: '25 GB free' }
+  ],
+  Ubuntu: [
+    { label: 'Operating System', value: 'Ubuntu 20.04 (Focal) or 22.04 (Jammy)' },
+    { label: 'CPU', value: 'Intel Core i5 or equivalent' },
+    { label: 'GPU', value: 'NVIDIA GTX 1080 or better' },
+    { label: 'RAM', value: '16 GB' },
+    { label: 'Hard Disk', value: '25 GB free' }
+  ],
+  Windows: [
+    { label: 'Operating System', value: 'Windows 10 or 11' },
+    { label: 'CPU', value: 'Intel Core i5 (quad-core)' },
+    { label: 'GPU', value: 'NVIDIA GTX 1080 (OGRE2 rendering supported)' },
+    { label: 'RAM', value: '16 GB' },
+    { label: 'Hard Disk', value: '25 GB free' }
+  ]
+}
+
+const ANDROID_SYSTEM_REQUIREMENTS = [
+  {
+    component: 'Operating system',
+    minimum: 'Android 11',
+    recommended: 'Android 13 or later'
+  },
+  {
+    component: 'Processor',
+    minimum: '64-bit ARM',
+    recommended: 'Mid-range or higher 64-bit ARM processor'
+  },
+  { component: 'RAM', minimum: '4 GB', recommended: '8 GB or more' },
+  {
+    component: 'Graphics',
+    minimum: 'OpenGL ES 3.0',
+    recommended: 'OpenGL ES 3.1 or later'
+  },
+  {
+    component: 'Available storage',
+    minimum: '1 GB',
+    recommended: '2 GB or more'
+  },
+  {
+    component: 'Connectivity',
+    minimum: 'Wi-Fi',
+    recommended: 'Dual-band Wi-Fi; 4G/5G for cellular routing'
+  },
+  {
+    component: 'USB Host / OTG',
+    minimum: 'Required when using a USB Wi-Fi adapter',
+    recommended: 'USB-C OTG with a stable power supply'
+  },
+  {
+    component: 'Video decoding',
+    minimum: "Hardware decoding for the camera's codec",
+    recommended: 'Hardware H.264/H.265 decoding supporting 1080p at 60 fps'
+  }
+] as const
 
 const HOST_OPTIONS = [
   {
     label: 'macOS',
     detail: 'Host option listed in the guide',
-    icon: null,
     logo: macOsMark
   },
   {
-    label: 'Debian / Ubuntu',
+    label: 'Ubuntu',
     detail: 'Host option listed in the guide',
-    icon: null,
     logo: ubuntuMark
   },
   {
     label: 'Windows',
     detail: 'Host option listed in the guide',
-    icon: null,
     logo: windowsMark
+  }
+] as const
+
+const SKYTRACK_OS_TARGETS = [
+  {
+    id: 'jetson',
+    label: 'NVIDIA Jetson',
+    detail: 'Nano / Xavier / Orin NX'
+  },
+  {
+    id: 'raspberry-pi',
+    label: 'Raspberry Pi / Compute Module',
+    detail: 'Common architecture hardware'
+  },
+  {
+    id: 'linux-sbc',
+    label: 'Linux SBC',
+    detail: 'Common architecture hardware'
   }
 ] as const
 
@@ -87,12 +167,19 @@ function PlatformDetails ({
   onHostOsChange: (host: typeof DESKTOP_HOSTS[number]) => void
   platformName: string
 }) {
+  const [skyTrackOsTarget, setSkyTrackOsTarget] = useState<string>(
+    SKYTRACK_OS_TARGETS[0].id
+  )
+  const selectedSkyTrackOsTarget = SKYTRACK_OS_TARGETS.find(
+    target => target.id === skyTrackOsTarget
+  )!
+
   const compatibility =
     platformId === 'desktop'
-      ? `${hostOs} is listed as a host option in the Getting Started guide. The guide also lists an internet connection, permission to install Docker Desktop, and a SkyTrack account using a supported provider. Minimum versions and hardware requirements are not specified.`
+      ? `The ${hostOs} host and hardware requirements are listed above. The Getting Started guide also lists an internet connection, permission to install Docker Desktop, and a SkyTrack account using a supported provider.`
       : platformId === 'field'
-      ? 'The reviewed sources do not include an Android compatibility matrix. Minimum Android versions, supported devices, and distribution channel are not specified.'
-      : 'The architecture context names Jetson Nano / Xavier / Orin NX, Raspberry Pi / Compute Module, and Linux SBCs as common hardware. These examples do not certify board compatibility or an OS image. The optional HITL profile is a separate, specific bench scenario.'
+      ? 'The table shows the proposed minimum and recommended Android device requirements.'
+      : `${selectedSkyTrackOsTarget.label} is listed as common architecture hardware. This example does not certify target compatibility or an OS image. The optional HITL profile is a separate, specific bench scenario.`
 
   const setupSteps =
     platformId === 'field'
@@ -107,16 +194,7 @@ function PlatformDetails ({
           'Verify the onboard runtime and controller integration using the approved setup guide.'
         ]
 
-  const systemRequirements = [
-    {
-      label: 'Operating System',
-      value: `${hostOs} (minimum version not specified)`
-    },
-    { label: 'CPU', value: 'Not specified in the reviewed guide' },
-    { label: 'GPU', value: 'Not specified in the reviewed guide' },
-    { label: 'RAM', value: 'Not specified in the reviewed guide' },
-    { label: 'Hard Disk', value: 'Not specified in the reviewed guide' }
-  ]
+  const systemRequirements = DESKTOP_SYSTEM_REQUIREMENTS[hostOs]
 
   return (
     <section
@@ -129,49 +207,79 @@ function PlatformDetails ({
         defaultValue={
           platformId === 'desktop'
             ? ['select-os', 'requirements', 'setup']
+            : platformId === 'os'
+            ? ['select-target', 'requirements', 'setup']
             : ['requirements', 'setup']
         }
         className='w-full'
       >
-        {platformId === 'desktop' && (
-          <AccordionItem value='select-os'>
+        {(platformId === 'desktop' || platformId === 'os') && (
+          <AccordionItem
+            value={platformId === 'desktop' ? 'select-os' : 'select-target'}
+          >
             <AccordionTrigger className='text-lg font-semibold'>
-              Select OS
+              {platformId === 'desktop' ? 'Select OS' : 'Select target'}
             </AccordionTrigger>
             <AccordionContent>
               <div
                 role='group'
-                aria-label='Select a Desktop host operating system'
-                className='flex md:flex-row gap-3 pb-4'
+                aria-label={
+                  platformId === 'desktop'
+                    ? 'Select a Desktop host operating system'
+                    : 'Select a SkyTrack OS target hardware family'
+                }
+                className='grid grid-cols-1 gap-3 pb-4 md:grid-cols-3'
               >
-                {HOST_OPTIONS.map(({ label, detail, icon: HostIcon, logo }) => (
+              {platformId === 'desktop' &&
+                HOST_OPTIONS.map(({ label, detail, logo }) => (
                   <Button
                     key={label}
                     type='button'
                     variant='outline'
                     aria-pressed={hostOs === label}
                     onClick={() => onHostOsChange(label)}
-                    className={`h-auto py-3 justify-start gap-3 rounded-(--radius) border-border ${
+                    className={`h-auto w-full justify-start gap-3 rounded-(--radius) border-border py-3 ${
                       hostOs === label ? 'border-primary text-primary' : ''
                     }`}
                   >
-                    {HostIcon ? (
-                      <HostIcon
-                        aria-hidden='true'
-                        className='size-8 shrink-0'
-                        weight='fill'
-                      />
-                    ) : (
-                      <span
-                        aria-hidden='true'
-                        className='size-8 shrink-0 [&>svg]:block'
-                        dangerouslySetInnerHTML={{ __html: logo ?? '' }}
-                      />
-                    )}
+                    <span
+                      aria-hidden='true'
+                      className='size-8 shrink-0 [&>svg]:block'
+                      dangerouslySetInnerHTML={{ __html: logo }}
+                    />
                     <span className='flex min-w-0 flex-col items-start gap-1 text-left'>
                       <span className='text-base font-semibold'>{label}</span>
                       <span className='text-sm font-normal text-muted-foreground'>
                         {detail}
+                      </span>
+                    </span>
+                  </Button>
+                ))}
+              {platformId === 'os' &&
+                SKYTRACK_OS_TARGETS.map(target => (
+                  <Button
+                    key={target.id}
+                    type='button'
+                    variant='outline'
+                    aria-pressed={skyTrackOsTarget === target.id}
+                    onClick={() => setSkyTrackOsTarget(target.id)}
+                    className={`h-auto w-full justify-start gap-3 rounded-(--radius) border-border py-3 ${
+                      skyTrackOsTarget === target.id
+                        ? 'border-primary text-primary'
+                        : ''
+                    }`}
+                  >
+                    <CpuIcon
+                      aria-hidden='true'
+                      className='size-8 shrink-0'
+                      weight='regular'
+                    />
+                    <span className='flex min-w-0 flex-col items-start gap-1 text-left'>
+                      <span className='text-base font-semibold'>
+                        {target.label}
+                      </span>
+                      <span className='text-sm font-normal text-muted-foreground'>
+                        {target.detail}
                       </span>
                     </span>
                   </Button>
@@ -183,11 +291,20 @@ function PlatformDetails ({
         <AccordionItem value='requirements'>
           <AccordionTrigger className='text-lg font-semibold'>
             {platformId === 'desktop'
-              ? 'Minimum system requirements'
+              ? 'Proposed system requirements'
+              : platformId === 'field'
+              ? 'Proposed Android system requirements'
               : 'Compatibility'}
           </AccordionTrigger>
           <AccordionContent>
             <div className='flex flex-col gap-4 pb-4'>
+              {(platformId === 'desktop' || platformId === 'field') && (
+                <p className='m-0 text-sm text-muted-foreground'>
+                  These values are unverified planning proposals, not confirmed
+                  minimum requirements or certified compatibility. Android
+                  support and distribution are not confirmed.
+                </p>
+              )}
               {platformId === 'desktop' && (
                 <dl className='grid grid-cols-1 gap-2'>
                   {systemRequirements.map(({ label, value }) => (
@@ -205,11 +322,69 @@ function PlatformDetails ({
                   ))}
                 </dl>
               )}
+              {platformId === 'field' && (
+                <div className='overflow-x-auto pb-4'>
+                  <table className='w-full min-w-[720px] border-collapse text-left'>
+                    <caption className='sr-only'>
+                      Android device requirements: proposed minimum and recommended
+                      specifications
+                    </caption>
+                    <thead>
+                      <tr className='border-b border-border'>
+                        <th
+                          scope='col'
+                          className='px-3 py-3 text-base font-semibold text-foreground'
+                        >
+                          Component
+                        </th>
+                        <th
+                          scope='col'
+                          className='px-3 py-3 text-base font-semibold text-foreground'
+                        >
+                          Proposed minimum
+                        </th>
+                        <th
+                          scope='col'
+                          className='px-3 py-3 text-base font-semibold text-foreground'
+                        >
+                          Proposed recommended
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ANDROID_SYSTEM_REQUIREMENTS.map(
+                        ({ component, minimum, recommended }) => (
+                          <tr key={component} className='border-b border-border'>
+                            <th
+                              scope='row'
+                              className='px-3 py-3 text-left text-base font-medium text-foreground'
+                            >
+                              {component}
+                            </th>
+                            <td className='px-3 py-3 align-top text-base text-foreground'>
+                              {minimum}
+                            </td>
+                            <td className='px-3 py-3 align-top text-base text-foreground'>
+                              {recommended}
+                            </td>
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
               <p className='text-base text-muted-foreground'>{compatibility}</p>
-              {platformId === 'desktop' && (
+              {platformId !== 'os' && (
                 <Button type='button' disabled className='self-start'>
                   <DownloadSimpleIcon aria-hidden='true' />
-                  Download
+                  {platformId === 'field' ? 'Download Android app' : 'Download'}
+                </Button>
+              )}
+              {platformId === 'os' && (
+                <Button type='button' disabled className='self-start'>
+                  <DownloadSimpleIcon aria-hidden='true' />
+                  Download SkyTrack OS
                 </Button>
               )}
             </div>
@@ -330,7 +505,7 @@ function PlatformDetails ({
   )
 }
 
-export default function DownloadPage ({ onGoHome }: { onGoHome: () => void }) {
+export default function DownloadPage () {
   const [activePlatform, setActivePlatform] = useState<string>('desktop')
   const [hostOs, setHostOs] = useState<typeof DESKTOP_HOSTS[number]>('macOS')
   const active = PLATFORMS.find(platform => platform.id === activePlatform)!
