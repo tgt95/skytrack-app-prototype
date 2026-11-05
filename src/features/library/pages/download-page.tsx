@@ -414,7 +414,7 @@ export default function DownloadPage ({ onGoHome }: { onGoHome: () => void }) {
                           </h3>
                           <p
                             id={summaryId}
-                            className='m-0 text-sm text-muted-foreground'
+                            className='text-sm text-muted-foreground font-normal'
                           >
                             {platform.summary}
                           </p>
