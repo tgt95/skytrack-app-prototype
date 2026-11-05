@@ -1,4 +1,10 @@
-import { CpuIcon, DownloadSimpleIcon } from '@phosphor-icons/react'
+import {
+  CheckIcon,
+  CodeIcon,
+  CopySimpleIcon,
+  DownloadSimpleIcon,
+  GooglePlayLogoIcon
+} from '@phosphor-icons/react'
 import { useState } from 'react'
 import {
   Accordion,
@@ -7,22 +13,30 @@ import {
   AccordionTrigger
 } from 'skytrack-ui/accordion'
 import { Badge } from 'skytrack-ui/badge'
-import { Button } from 'skytrack-ui/button'
+import { Button, buttonVariants } from 'skytrack-ui/button'
 import { PageHeader } from 'skytrack-ui/page-header'
 import desktopArt from '../../../assets/download/desktop.svg?raw'
 import mobileArt from '../../../assets/download/mobile.svg?raw'
 import skytrackOsArt from '../../../assets/download/skytrack-os.svg?raw'
 import androidLogo from '../../../assets/download/android.svg?raw'
+import linuxLogo from '../../../assets/download/Linux_Logo_in_Linux_Libertine_Font-outline.svg?raw'
+import nvidiaLogo from '../../../assets/download/nvidia_logo-outline.svg?raw'
+import raspberryPiLogo from '../../../assets/download/raspberry_pi-outline.svg?raw'
 import ubuntuLogo from '../../../assets/download/ubuntu.svg?raw'
 import windowsLogo from '../../../assets/download/windows.svg?raw'
 import macOsLogo from '../../../assets/download/mac-os.svg?raw'
+import { runEnvironmentToastManager } from '../library-topbar'
 
 const inlineLogo = (svg: string) =>
   svg
     .replace('<svg ', '<svg class="size-full" ')
     .replaceAll('fill="#161616"', 'fill="currentColor"')
+    .replaceAll('fill="black"', 'fill="currentColor"')
 
 const androidMark = inlineLogo(androidLogo)
+const linuxMark = inlineLogo(linuxLogo)
+const nvidiaMark = inlineLogo(nvidiaLogo)
+const raspberryPiMark = inlineLogo(raspberryPiLogo)
 const ubuntuMark = inlineLogo(ubuntuLogo)
 const windowsMark = inlineLogo(windowsLogo)
 const macOsMark = inlineLogo(macOsLogo)
@@ -32,15 +46,14 @@ const PLATFORMS = [
     name: 'SkyTrack Desktop',
     cardTitle: 'Desktop',
     illustration: desktopArt,
-    summary:
-      'Plan missions and review them in the documented local simulation workflow.'
+    summary: 'Plan missions and review them in local simulation.'
   },
   {
     id: 'field',
     name: 'SkyTrack Field',
     cardTitle: 'Mobile',
     illustration: mobileArt,
-    summary: 'Android ground-station application for field use.'
+    summary: 'Use the Android ground station in the field.'
   },
   {
     id: 'os',
@@ -48,15 +61,24 @@ const PLATFORMS = [
     cardTitle: 'SkyTrack OS',
     illustration: skytrackOsArt,
     summary:
-      'Onboard autonomy runtime for the companion computer, separate from the flight controller.'
+      'Run onboard autonomy on a companion computer, separate from the flight controller.'
   }
 ] as const
 
 const DESKTOP_HOSTS = ['macOS', 'Ubuntu', 'Windows'] as const
 
+const DOCKER_DESKTOP_INSTALL_GUIDES: Record<
+  typeof DESKTOP_HOSTS[number],
+  string
+> = {
+  macOS: 'https://docs.docker.com/desktop/setup/install/mac-install/',
+  Ubuntu: 'https://docs.docker.com/desktop/setup/install/linux/ubuntu/',
+  Windows: 'https://docs.docker.com/desktop/setup/install/windows-install/'
+}
+
 const DESKTOP_SYSTEM_REQUIREMENTS: Record<
-  (typeof DESKTOP_HOSTS)[number],
-  { label: string, value: string }[]
+  typeof DESKTOP_HOSTS[number],
+  { label: string; value: string }[]
 > = {
   macOS: [
     { label: 'Operating System', value: 'macOS 11 (Big Sur) or newer' },
@@ -66,7 +88,10 @@ const DESKTOP_SYSTEM_REQUIREMENTS: Record<
     { label: 'Hard Disk', value: '25 GB free' }
   ],
   Ubuntu: [
-    { label: 'Operating System', value: 'Ubuntu 20.04 (Focal) or 22.04 (Jammy)' },
+    {
+      label: 'Operating System',
+      value: 'Ubuntu 20.04 (Focal) or 22.04 (Jammy)'
+    },
     { label: 'CPU', value: 'Intel Core i5 or equivalent' },
     { label: 'GPU', value: 'NVIDIA GTX 1080 or better' },
     { label: 'RAM', value: '16 GB' },
@@ -123,17 +148,23 @@ const ANDROID_SYSTEM_REQUIREMENTS = [
 const HOST_OPTIONS = [
   {
     label: 'macOS',
-    detail: 'Host option listed in the guide',
+    version: 'v1.2',
+    detail: 'macOS 11+',
+    downloadLabel: 'Download (248 MB | .dmg)',
     logo: macOsMark
   },
   {
     label: 'Ubuntu',
-    detail: 'Host option listed in the guide',
+    version: 'v1.2',
+    detail: 'Ubuntu 20.04 / 22.04',
+    downloadLabel: 'Download (216 MB | .deb)',
     logo: ubuntuMark
   },
   {
     label: 'Windows',
-    detail: 'Host option listed in the guide',
+    version: 'v1.2',
+    detail: 'Windows 10 / 11',
+    downloadLabel: 'Download (284 MB | .exe)',
     logo: windowsMark
   }
 ] as const
@@ -142,19 +173,217 @@ const SKYTRACK_OS_TARGETS = [
   {
     id: 'jetson',
     label: 'NVIDIA Jetson',
-    detail: 'Nano / Xavier / Orin NX'
+    badgeLabel: 'v1.2',
+    disabled: false,
+    detail: 'Orin Nano / Orin NX',
+    logo: nvidiaMark,
+    downloadImages: [
+      {
+        label: 'Jetson Orin',
+        downloadLabel: 'Download Jetson Orin (1.8 GB | .tar.gz)',
+        filename:
+          'skytrack-mc-image-dev-jetson-orin-nano-devkit-nvme.rootfs.tegraflash.tar.gz'
+      },
+      {
+        label: 'Jetson NX',
+        downloadLabel: 'Download Jetson NX (1.8 GB | .tar.gz)',
+        filename:
+          'skytrack-mc-image-dev-p3768-0000-p3767-0000.rootfs-20260908085629.tegraflash.tar.gz'
+      }
+    ]
   },
   {
     id: 'raspberry-pi',
-    label: 'Raspberry Pi / Compute Module',
-    detail: 'Common architecture hardware'
+    label: 'Raspberry Pi 5',
+    badgeLabel: 'v1.2',
+    disabled: false,
+    detail: 'Pi 5',
+    logo: raspberryPiMark,
+    downloadImages: [
+      {
+        label: 'Raspberry Pi 5',
+        downloadLabel: 'Download (1.2 GB | .ext4)',
+        filename: 'core-image-full-cmdline-raspberrypi5.rootfs.ext4'
+      }
+    ]
   },
   {
     id: 'linux-sbc',
     label: 'Linux SBC',
-    detail: 'Common architecture hardware'
+    badgeLabel: 'Coming soon',
+    disabled: true,
+    detail: 'Common architecture hardware',
+    logo: linuxMark,
+    downloadImages: []
   }
 ] as const
+
+function CopyableCodeBlock ({
+  code,
+  description
+}: {
+  code: string
+  description: string
+}) {
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>(
+    'idle'
+  )
+
+  const copyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(code)
+      setCopyState('copied')
+      window.setTimeout(() => setCopyState('idle'), 1800)
+    } catch {
+      setCopyState('failed')
+    }
+  }
+
+  return (
+    <div className='overflow-hidden rounded-(--radius) border border-border bg-muted'>
+      <div className='flex items-center justify-between border-b border-border px-3 py-1'>
+        <span className='flex items-center gap-2 text-sm text-muted-foreground'>
+          <CodeIcon aria-hidden='true' className='size-4' />
+          Plain Text
+        </span>
+        <span className='flex items-center gap-1'>
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon-sm'
+            aria-label={
+              copyState === 'copied'
+                ? `Copied ${description}`
+                : copyState === 'failed'
+                ? `Could not copy ${description}`
+                : `Copy ${description}`
+            }
+            onClick={copyCode}
+          >
+            {copyState === 'copied' ? (
+              <CheckIcon aria-hidden='true' />
+            ) : (
+              <CopySimpleIcon aria-hidden='true' />
+            )}
+          </Button>
+          {copyState !== 'idle' && (
+            <span className='text-xs text-muted-foreground'>
+              {copyState === 'copied' ? 'Copied' : 'Copy failed'}
+            </span>
+          )}
+        </span>
+        <span className='sr-only' aria-live='polite'>
+          {copyState === 'copied'
+            ? `${description} copied to clipboard.`
+            : copyState === 'failed'
+            ? `Could not copy ${description}.`
+            : ''}
+        </span>
+      </div>
+      <pre className='m-0 overflow-x-auto px-4 py-3 text-sm leading-6 text-foreground'>
+        <code>{code}</code>
+      </pre>
+    </div>
+  )
+}
+
+function JetsonFlashGuideline () {
+  return (
+    <div className='flex flex-col gap-4 text-base'>
+      <div className='flex flex-col gap-1'>
+        <h4 className='m-0 text-base font-semibold text-foreground'>
+          Flash a Yocto Image to Jetson Orin Nano NVMe
+        </h4>
+        <p className='m-0 text-muted-foreground'>
+          Run the commands on an Ubuntu laptop.
+        </p>
+      </div>
+
+      <section className='flex flex-col gap-3'>
+        <div className='m-0 text-base font-semibold text-foreground'>
+          1. Extract the image
+        </div>
+        <CopyableCodeBlock
+          description='image extraction commands'
+          code={
+            'mkdir -p ~/jetson-flash\ncd ~/jetson-flash\n\ntar -xzpf \\\n  /path/to/build/tmp/deploy/images/jetson-orin-nano-devkit-nvme/core-image-full-cmdline-jetson-orin-nano-devkit-nvme.tegraflash.tar.gz'
+          }
+        />
+      </section>
+
+      <section className='flex flex-col gap-3'>
+        <div className='m-0 text-base font-semibold text-foreground'>
+          2. Connect the Jetson
+        </div>
+        <ol className='m-0 flex list-[lower-roman] flex-col gap-1 pl-6 text-muted-foreground'>
+          <li>Install the NVMe SSD in the Jetson.</li>
+          <li>
+            Connect the Jetson’s USB-C port to the laptop using a USB data
+            cable.
+          </li>
+          <li>
+            Put the Jetson into{' '}
+            <strong className='text-foreground'>Force Recovery Mode</strong>.
+          </li>
+        </ol>
+      </section>
+
+      <section className='flex flex-col gap-3'>
+        <div className='m-0 text-base font-semibold text-foreground'>
+          3. Verify USB detection
+        </div>
+        <CopyableCodeBlock
+          description='USB detection command'
+          code='lsusb | grep -i nvidia'
+        />
+        <p className='m-0 text-muted-foreground'>Expected output — example:</p>
+        <CopyableCodeBlock
+          description='example USB detection output'
+          code='Bus 001 Device 005: ID 0955:7523 NVIDIA Corp. APX'
+        />
+        <p className='m-0 text-muted-foreground'>
+          <code className='rounded-(--radius) border border-border p-1 font-mono text-sm text-foreground'>
+            NVIDIA Corp. APX
+          </code>{' '}
+          indicates recovery mode. Bus, device numbers, and USB ID may vary.
+        </p>
+      </section>
+
+      <section className='flex flex-col gap-3'>
+        <div className='m-0 text-base font-semibold text-foreground'>
+          4. Flash the image
+        </div>
+        <p className='m-0 text-muted-foreground'>
+          From the extracted directory containing{' '}
+          <code className='rounded-(--radius) border border-border p-1 font-mono text-sm text-foreground'>
+            doflash.sh
+          </code>
+          :
+        </p>
+        <CopyableCodeBlock
+          description='image flash command'
+          code='sudo ./initrd-flash'
+        />
+      </section>
+
+      <section className='flex flex-col gap-3'>
+        <div className='m-0 text-base font-semibold text-foreground'>
+          5. Boot the Jetson
+        </div>
+        <ol className='m-0 flex list-[lower-roman] flex-col gap-1 pl-6 text-muted-foreground'>
+          <li>Wait for flashing to complete successfully.</li>
+          <li>Remove the Recovery jumper, if installed.</li>
+          <li>Restart the Jetson.</li>
+        </ol>
+      </section>
+
+      <p className='m-0 text-muted-foreground'>
+        <strong className='text-foreground'>Warning:</strong> Flashing
+        overwrites data on the target storage.
+      </p>
+    </div>
+  )
+}
 
 function PlatformDetails ({
   platformId,
@@ -176,9 +405,11 @@ function PlatformDetails ({
 
   const compatibility =
     platformId === 'desktop'
-      ? `The ${hostOs} host and hardware requirements are listed above. The Getting Started guide also lists an internet connection, permission to install Docker Desktop, and a SkyTrack account using a supported provider.`
-      : platformId === 'field'
-      ? 'The table shows the proposed minimum and recommended Android device requirements.'
+      ? null
+      : // ? `The ${hostOs} host and hardware requirements are listed above. The Getting Started guide also lists an internet connection, permission to install Docker Desktop, and a SkyTrack account using a supported provider.`
+      platformId === 'field'
+      ? // ? "The table shows the proposed minimum and recommended Android device requirements."
+        null
       : `${selectedSkyTrackOsTarget.label} is listed as common architecture hardware. This example does not certify target compatibility or an OS image. The optional HITL profile is a separate, specific bench scenario.`
 
   const setupSteps =
@@ -195,6 +426,10 @@ function PlatformDetails ({
         ]
 
   const systemRequirements = DESKTOP_SYSTEM_REQUIREMENTS[hostOs]
+  const downloadLabel =
+    platformId === 'desktop'
+      ? HOST_OPTIONS.find(option => option.label === hostOs)!.downloadLabel
+      : ''
 
   return (
     <section
@@ -209,29 +444,40 @@ function PlatformDetails ({
             ? ['select-os', 'requirements', 'setup']
             : platformId === 'os'
             ? ['select-target', 'requirements', 'setup']
-            : ['requirements', 'setup']
+            : ['select-platform', 'requirements', 'setup']
         }
         className='w-full'
       >
-        {(platformId === 'desktop' || platformId === 'os') && (
-          <AccordionItem
-            value={platformId === 'desktop' ? 'select-os' : 'select-target'}
-          >
-            <AccordionTrigger className='text-lg font-semibold'>
-              {platformId === 'desktop' ? 'Select OS' : 'Select target'}
-            </AccordionTrigger>
-            <AccordionContent>
-              <div
-                role='group'
-                aria-label={
-                  platformId === 'desktop'
-                    ? 'Select a Desktop host operating system'
-                    : 'Select a SkyTrack OS target hardware family'
-                }
-                className='grid grid-cols-1 gap-3 pb-4 md:grid-cols-3'
-              >
+        <AccordionItem
+          value={
+            platformId === 'desktop'
+              ? 'select-os'
+              : platformId === 'field'
+              ? 'select-platform'
+              : 'select-target'
+          }
+        >
+          <AccordionTrigger className='text-lg font-semibold'>
+            {platformId === 'desktop'
+              ? 'Select OS'
+              : platformId === 'field'
+              ? 'Select platform'
+              : 'Select hardware'}
+          </AccordionTrigger>
+          <AccordionContent>
+            <div
+              role='group'
+              aria-label={
+                platformId === 'desktop'
+                  ? 'Select a Desktop host operating system'
+                  : platformId === 'field'
+                  ? 'Select a Mobile platform'
+                  : 'Select hardware'
+              }
+              className='grid grid-cols-1 gap-3 pb-4 md:grid-cols-3'
+            >
               {platformId === 'desktop' &&
-                HOST_OPTIONS.map(({ label, detail, logo }) => (
+                HOST_OPTIONS.map(({ label, version, detail, logo }) => (
                   <Button
                     key={label}
                     type='button'
@@ -247,20 +493,51 @@ function PlatformDetails ({
                       className='size-8 shrink-0 [&>svg]:block'
                       dangerouslySetInnerHTML={{ __html: logo }}
                     />
-                    <span className='flex min-w-0 flex-col items-start gap-1 text-left'>
-                      <span className='text-base font-semibold'>{label}</span>
+                    <span className='flex min-w-0 flex-col items-start gap-0.5 text-left'>
+                      <span className='flex items-center gap-2 text-base font-semibold'>
+                        {label}
+                        <Badge variant='outline' className='normal-case'>
+                          {version}
+                        </Badge>
+                      </span>
                       <span className='text-sm font-normal text-muted-foreground'>
                         {detail}
                       </span>
                     </span>
                   </Button>
                 ))}
+              {platformId === 'field' && (
+                <Button
+                  type='button'
+                  variant='outline'
+                  aria-pressed='true'
+                  className='h-auto w-full justify-start gap-3 rounded-(--radius) border-primary py-3 text-primary'
+                >
+                  <span
+                    aria-hidden='true'
+                    className='size-8 shrink-0 [&>svg]:block'
+                    dangerouslySetInnerHTML={{ __html: androidMark }}
+                  />
+                  <span className='flex min-w-0 flex-col items-start gap-0.5 text-left'>
+                    <span className='flex items-center gap-2 text-base font-semibold'>
+                      Android
+                      <Badge variant='outline' className='normal-case'>
+                        v1.2
+                      </Badge>
+                    </span>
+                    <span className='text-sm font-normal text-muted-foreground'>
+                      Android 11+
+                    </span>
+                  </span>
+                </Button>
+              )}
               {platformId === 'os' &&
                 SKYTRACK_OS_TARGETS.map(target => (
                   <Button
                     key={target.id}
                     type='button'
                     variant='outline'
+                    disabled={target.disabled}
                     aria-pressed={skyTrackOsTarget === target.id}
                     onClick={() => setSkyTrackOsTarget(target.id)}
                     className={`h-auto w-full justify-start gap-3 rounded-(--radius) border-border py-3 ${
@@ -269,14 +546,17 @@ function PlatformDetails ({
                         : ''
                     }`}
                   >
-                    <CpuIcon
+                    <span
                       aria-hidden='true'
-                      className='size-8 shrink-0'
-                      weight='regular'
+                      className='size-8 shrink-0 [&>svg]:block'
+                      dangerouslySetInnerHTML={{ __html: target.logo }}
                     />
-                    <span className='flex min-w-0 flex-col items-start gap-1 text-left'>
-                      <span className='text-base font-semibold'>
+                    <span className='flex min-w-0 flex-col items-start gap-0.5 text-left'>
+                      <span className='flex items-center gap-2 text-base font-semibold'>
                         {target.label}
+                        <Badge variant='outline' className='normal-case'>
+                          {target.badgeLabel}
+                        </Badge>
                       </span>
                       <span className='text-sm font-normal text-muted-foreground'>
                         {target.detail}
@@ -284,10 +564,59 @@ function PlatformDetails ({
                     </span>
                   </Button>
                 ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        )}
+              {platformId === 'field' ? (
+                <a
+                  href='https://play.google.com/store/apps/details?id=com.getskytrack.app&pcampaignid=web_share'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  aria-label='Get SkyTrack Field on Google Play'
+                  className={`${buttonVariants()} justify-self-start md:col-span-3`}
+                >
+                  <GooglePlayLogoIcon
+                    aria-hidden='true'
+                    className='size-5'
+                    weight='fill'
+                  />
+                  Get it on Google Play
+                </a>
+              ) : platformId === 'os' ? (
+                <div
+                  className={`w-full flex flex-row gap-3`}
+                >
+                  {selectedSkyTrackOsTarget.downloadImages.map(image => (
+                    <Button
+                      key={image.filename}
+                      aria-label={`${image.label}: ${image.downloadLabel}; ${image.filename}; demo package has no installer attached`}
+                      onClick={() =>
+                        runEnvironmentToastManager.add({
+                          title:
+                            'Demo package only — no installer file attached'
+                        })
+                      }
+                    >
+                      <DownloadSimpleIcon aria-hidden='true' />
+                      {image.downloadLabel}
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <Button
+                  type='button'
+                  aria-label={`${hostOs} ${downloadLabel}; demo package has no installer attached`}
+                  onClick={() =>
+                    runEnvironmentToastManager.add({
+                      title: 'Demo package only — no installer file attached'
+                    })
+                  }
+                  className='h-auto py-2 justify-self-start md:col-span-3'
+                >
+                  <DownloadSimpleIcon aria-hidden='true' />
+                  {downloadLabel}
+                </Button>
+              )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
         <AccordionItem value='requirements'>
           <AccordionTrigger className='text-lg font-semibold'>
             {platformId === 'desktop'
@@ -299,34 +628,69 @@ function PlatformDetails ({
           <AccordionContent>
             <div className='flex flex-col gap-4 pb-4'>
               {platformId === 'desktop' && (
-                <dl className='grid grid-cols-1 gap-2'>
-                  {systemRequirements.map(({ label, value }) => (
-                    <div
-                      key={label}
-                      className='grid grid-cols-1 gap-1 sm:grid-cols-4 sm:gap-3'
-                    >
-                      <dt className='text-base text-muted-foreground sm:col-span-1'>
-                        {label}
-                      </dt>
-                      <dd className='text-base text-foreground sm:col-span-3'>
-                        {value}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              )}
-              {platformId === 'field' && (
-                <div className='overflow-x-auto pb-4'>
-                  <table className='w-full min-w-[720px] border-collapse text-left'>
+                <div className='overflow-x-auto'>
+                  <table className='w-full min-w-[40rem] table-fixed border-collapse text-left'>
                     <caption className='sr-only'>
-                      Android device requirements: proposed minimum and recommended
-                      specifications
+                      Desktop system requirements for {hostOs}
                     </caption>
+                    <colgroup>
+                      <col className='w-[30%]' />
+                      <col className='w-[70%]' />
+                    </colgroup>
                     <thead>
                       <tr className='border-b border-border'>
                         <th
                           scope='col'
-                          className='px-3 py-3 text-base font-semibold text-foreground pl-0'
+                          className='px-3 py-3 pl-0 text-base font-semibold text-foreground'
+                        >
+                          Component
+                        </th>
+                        <th
+                          scope='col'
+                          className='px-3 py-3 text-base font-semibold text-foreground'
+                        >
+                          Requirement
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {systemRequirements.map(({ label, value }) => (
+                        <tr
+                          key={label}
+                          className='border-b border-border last:border-b-0'
+                        >
+                          <th
+                            scope='row'
+                            className='px-3 py-3 pl-0 text-left text-base font-medium text-foreground'
+                          >
+                            {label}
+                          </th>
+                          <td className='px-3 py-3 align-top text-base text-foreground'>
+                            {value}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              {platformId === 'field' && (
+                <div className='overflow-x-auto'>
+                  <table className='w-full min-w-[56rem] table-fixed border-collapse text-left'>
+                    <caption className='sr-only'>
+                      Android device requirements: proposed minimum and
+                      recommended specifications
+                    </caption>
+                    <colgroup>
+                      <col className='w-[20%]' />
+                      <col className='w-[35%]' />
+                      <col className='w-[45%]' />
+                    </colgroup>
+                    <thead>
+                      <tr className='border-b border-border'>
+                        <th
+                          scope='col'
+                          className='px-3 py-3 pl-0 text-base font-semibold text-foreground'
                         >
                           Component
                         </th>
@@ -347,10 +711,13 @@ function PlatformDetails ({
                     <tbody>
                       {ANDROID_SYSTEM_REQUIREMENTS.map(
                         ({ component, minimum, recommended }) => (
-                          <tr key={component} className='border-b border-border last:border-b-0'>
+                          <tr
+                            key={component}
+                            className='border-b border-border last:border-b-0'
+                          >
                             <th
                               scope='row'
-                              className='px-3 py-3 text-left text-base font-medium text-foreground pl-0'
+                              className='px-3 py-3 pl-0 text-left text-base font-medium text-foreground'
                             >
                               {component}
                             </th>
@@ -367,18 +734,10 @@ function PlatformDetails ({
                   </table>
                 </div>
               )}
-              <p className='text-base text-muted-foreground'>{compatibility}</p>
-              {platformId !== 'os' && (
-                <Button type='button' disabled className='self-start'>
-                  <DownloadSimpleIcon aria-hidden='true' />
-                  {platformId === 'field' ? 'Download Android app' : 'Download'}
-                </Button>
-              )}
-              {platformId === 'os' && (
-                <Button type='button' disabled className='self-start'>
-                  <DownloadSimpleIcon aria-hidden='true' />
-                  Download SkyTrack OS
-                </Button>
+              {compatibility && (
+                <p className='text-base text-muted-foreground'>
+                  {compatibility}
+                </p>
               )}
             </div>
           </AccordionContent>
@@ -426,10 +785,16 @@ function PlatformDetails ({
                           Docker is running and the mission’s local simulation
                           runtime is available.
                         </p>
-                        <Button type='button' disabled className='self-start'>
+                        <a
+                          href={DOCKER_DESKTOP_INSTALL_GUIDES[hostOs]}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          aria-label={`Open Docker Desktop installation instructions for ${hostOs}`}
+                          className={`${buttonVariants()} self-start`}
+                        >
                           <DownloadSimpleIcon aria-hidden='true' />
                           Download Docker Desktop
-                        </Button>
+                        </a>
                       </div>
                     </article>
                     <span className='self-center text-center text-muted-foreground'>
@@ -478,16 +843,22 @@ function PlatformDetails ({
                 </>
               ) : (
                 <>
-                  <ol className='m-0 flex list-decimal flex-col gap-2 pl-5 text-muted-foreground'>
-                    {setupSteps.map(step => (
-                      <li key={step} className='text-base text-foreground'>
-                        {step}
-                      </li>
-                    ))}
-                  </ol>
-                  <Button type='button' disabled className='self-start'>
-                    Open setup guide
-                  </Button>
+                  {platformId === 'os' ? (
+                    <JetsonFlashGuideline />
+                  ) : (
+                    <>
+                      <ol className='m-0 flex list-decimal flex-col gap-2 pl-5 text-muted-foreground'>
+                        {setupSteps.map(step => (
+                          <li key={step} className='text-base text-foreground'>
+                            {step}
+                          </li>
+                        ))}
+                      </ol>
+                      <Button type='button' disabled className='self-start'>
+                        Open setup guide
+                      </Button>
+                    </>
+                  )}
                 </>
               )}
             </div>
@@ -585,10 +956,10 @@ export default function DownloadPage () {
                             aria-hidden='true'
                             className='pointer-events-none absolute inset-0 z-2 h-1 bg-primary'
                           />
-                          <span
-                            aria-hidden='true'
-                            className='pointer-events-none absolute right-6 left-6 bottom-0 z-2 h-px bg-border'
-                          />
+                          {/* <span
+                            aria-hidden="true"
+                            className="pointer-events-none absolute right-6 left-6 bottom-0 z-2 h-px bg-border"
+                          /> */}
                         </>
                       )}
                     </Button>
