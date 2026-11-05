@@ -356,9 +356,9 @@ function JetsonFlashGuideline () {
         <p className='m-0 text-muted-foreground'>
           From the extracted directory containing{' '}
           <code className='rounded-(--radius) border border-border p-1 font-mono text-sm text-foreground'>
-            doflash.sh
+            initrd-flash
           </code>
-          :
+          , run the provided command:
         </p>
         <CopyableCodeBlock
           description='image flash command'
@@ -444,7 +444,7 @@ function PlatformDetails ({
             ? ['select-os', 'requirements', 'setup']
             : platformId === 'os'
             ? ['select-target', 'requirements', 'setup']
-            : ['select-platform', 'requirements', 'setup']
+            : ['android-platform', 'requirements', 'setup']
         }
         className='w-full'
       >
@@ -453,7 +453,7 @@ function PlatformDetails ({
             platformId === 'desktop'
               ? 'select-os'
               : platformId === 'field'
-              ? 'select-platform'
+              ? 'android-platform'
               : 'select-target'
           }
         >
@@ -461,7 +461,7 @@ function PlatformDetails ({
             {platformId === 'desktop'
               ? 'Select OS'
               : platformId === 'field'
-              ? 'Select platform'
+              ? 'Android platform'
               : 'Select hardware'}
           </AccordionTrigger>
           <AccordionContent>
@@ -471,7 +471,7 @@ function PlatformDetails ({
                 platformId === 'desktop'
                   ? 'Select a Desktop host operating system'
                   : platformId === 'field'
-                  ? 'Select a Mobile platform'
+                  ? 'Android platform'
                   : 'Select hardware'
               }
               className='grid grid-cols-1 gap-3 pb-4 md:grid-cols-3'
@@ -499,6 +499,7 @@ function PlatformDetails ({
                         <Badge variant='outline' className='normal-case'>
                           {version}
                         </Badge>
+                        <Badge variant='outline'>Demo</Badge>
                       </span>
                       <span className='text-sm font-normal text-muted-foreground'>
                         {detail}
@@ -507,11 +508,10 @@ function PlatformDetails ({
                   </Button>
                 ))}
               {platformId === 'field' && (
-                <Button
-                  type='button'
-                  variant='outline'
-                  aria-pressed='true'
-                  className='h-auto w-full justify-start gap-3 rounded-(--radius) border-primary py-3 text-primary'
+                <div
+                  role='group'
+                  aria-label='Android, the only available Mobile platform'
+                  className='flex h-auto w-full items-center gap-3 rounded-(--radius) border border-primary bg-card px-3 py-3 text-primary'
                 >
                   <span
                     aria-hidden='true'
@@ -529,7 +529,7 @@ function PlatformDetails ({
                       Android 11+
                     </span>
                   </span>
-                </Button>
+                </div>
               )}
               {platformId === 'os' &&
                 SKYTRACK_OS_TARGETS.map(target => (
@@ -557,6 +557,9 @@ function PlatformDetails ({
                         <Badge variant='outline' className='normal-case'>
                           {target.badgeLabel}
                         </Badge>
+                        {!target.disabled && (
+                          <Badge variant='outline'>Demo</Badge>
+                        )}
                       </span>
                       <span className='text-sm font-normal text-muted-foreground'>
                         {target.detail}
@@ -580,39 +583,55 @@ function PlatformDetails ({
                   Get it on Google Play
                 </a>
               ) : platformId === 'os' ? (
-                <div
-                  className={`w-full flex flex-row gap-3`}
-                >
-                  {selectedSkyTrackOsTarget.downloadImages.map(image => (
-                    <Button
-                      key={image.filename}
-                      aria-label={`${image.label}: ${image.downloadLabel}; ${image.filename}; demo package has no installer attached`}
-                      onClick={() =>
-                        runEnvironmentToastManager.add({
-                          title:
-                            'Demo package only — no installer file attached'
-                        })
-                      }
-                    >
-                      <DownloadSimpleIcon aria-hidden='true' />
-                      {image.downloadLabel}
-                    </Button>
-                  ))}
+                <div className='flex w-full flex-col gap-2'>
+                  <div className='flex flex-row flex-wrap gap-3'>
+                    {selectedSkyTrackOsTarget.downloadImages.map(image => (
+                      <Button
+                        key={image.filename}
+                        aria-label={`${image.label}: ${image.downloadLabel}; ${image.filename}; demo package has no installer attached`}
+                        onClick={() =>
+                          runEnvironmentToastManager.add({
+                            title:
+                              'Demo package only — no installer file attached'
+                          })
+                        }
+                      >
+                        <DownloadSimpleIcon aria-hidden='true' />
+                        {image.downloadLabel}
+                      </Button>
+                    ))}
+                  </div>
+                  <div
+                    role='note'
+                    className='flex items-center gap-2 text-sm text-muted-foreground'
+                  >
+                    <Badge variant='outline'>Demo</Badge>
+                    <span>No installer files are attached.</span>
+                  </div>
                 </div>
               ) : (
-                <Button
-                  type='button'
-                  aria-label={`${hostOs} ${downloadLabel}; demo package has no installer attached`}
-                  onClick={() =>
-                    runEnvironmentToastManager.add({
-                      title: 'Demo package only — no installer file attached'
-                    })
-                  }
-                  className='h-auto py-2 justify-self-start md:col-span-3'
-                >
-                  <DownloadSimpleIcon aria-hidden='true' />
-                  {downloadLabel}
-                </Button>
+                <div className='flex flex-col gap-2 justify-self-start md:col-span-3'>
+                  <Button
+                    type='button'
+                    aria-label={`${hostOs} ${downloadLabel}; demo package has no installer attached`}
+                    onClick={() =>
+                      runEnvironmentToastManager.add({
+                        title: 'Demo package only — no installer file attached'
+                      })
+                    }
+                    className='h-auto py-2'
+                  >
+                    <DownloadSimpleIcon aria-hidden='true' />
+                    {downloadLabel}
+                  </Button>
+                  <div
+                    role='note'
+                    className='flex items-center gap-2 text-sm text-muted-foreground'
+                  >
+                    <Badge variant='outline'>Demo</Badge>
+                    <span>No installer file is attached.</span>
+                  </div>
+                </div>
               )}
             </div>
           </AccordionContent>
