@@ -226,7 +226,7 @@ export default function LibraryTopbar ({
             title='Download'
             onClick={() => onNavigate('download')}
           >
-            Download
+            Download app
           </Button>
 
           <Tooltip>

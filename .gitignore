@@ -11,6 +11,7 @@ dist-ssr/
 agents/prompts/
 agents/receipts/
 agents/reviews/
+/agents/task-work/
 agents/document-moves.json
 agents/features.json
 agents/refactor-proposal.md

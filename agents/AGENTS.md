@@ -10,7 +10,9 @@ Read this file before changing this standalone project. Also read
 - The independent app shell, package, and Cesium setup live at the project root and under `../src/`.
 - The Prototype Hub copy lives outside this repository. Keep all standalone changes here; do not add a second parent-workspace source tree.
 - Treat this project as a prototype. Do not claim production parity or full feature coverage without current evidence.
-- Workspace-only prompts, receipts, reviews, and task state are not part of this public repository.
+- Root workspace `_tasks/T-…` is the sole source of truth for task contract and status; never create a second task contract/status record here.
+- Keep task-specific checks, audit reports, logs, screenshots, and source snapshots under `agents/task-work/T-###/`. This local evidence is ignored by this project repository and is linked from the root task record.
+- Keep reusable project documentation, references, and agent guidance outside `task-work/`; task evidence is not a reusable product asset by default.
 
 ## Work and checks
 
@@ -22,7 +24,7 @@ Read this file before changing this standalone project. Also read
 - Use one supported action list for the More menu and right-click `skytrack-ui` ContextMenu. Order primary actions first, common actions next, and destructive actions last, with dividers between groups. Do not add inert actions or controls.
 - Keep library menu items text-only; do not add leading icons.
 - During active development, do not run `npm run build` by default. Run focused typecheck, lint, and runtime/system checks for affected behavior. Run `npm run build` only when the Owner asks or the task explicitly enters release/package validation. See `qc-test-cases.md` for the full planned regression suite; a planned case is not a claim that it passed.
-- Keep agent documentation in this `agents/` tree. Update architecture references when source boundaries change.
+- Keep durable agent documentation in this `agents/` tree. Update architecture references when source boundaries change.
 - This app has separate storage under its own browser origin and does not sync with Prototype Hub.
 
 ## Release notes

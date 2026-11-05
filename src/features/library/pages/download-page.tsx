@@ -415,7 +415,7 @@ function PlatformDetails ({
   const setupSteps =
     platformId === 'field'
       ? [
-          'Install SkyTrack Field from the app channel confirmed by the product team.',
+          'Install SkyTrack mobile app from CH play store.',
           'Sign in and select the mission prepared in SkyTrack Desktop.',
           'Follow the approved connection and mission-transfer guide before field use.'
         ]
@@ -461,7 +461,7 @@ function PlatformDetails ({
             {platformId === 'desktop'
               ? 'Select OS'
               : platformId === 'field'
-              ? 'Android platform'
+              ? 'Select platform'
               : 'Select hardware'}
           </AccordionTrigger>
           <AccordionContent>
@@ -471,7 +471,7 @@ function PlatformDetails ({
                 platformId === 'desktop'
                   ? 'Select a Desktop host operating system'
                   : platformId === 'field'
-                  ? 'Android platform'
+                  ? 'Select platform'
                   : 'Select hardware'
               }
               className='grid grid-cols-1 gap-3 pb-4 md:grid-cols-3'
@@ -499,7 +499,6 @@ function PlatformDetails ({
                         <Badge variant='outline' className='normal-case'>
                           {version}
                         </Badge>
-                        <Badge variant='outline'>Demo</Badge>
                       </span>
                       <span className='text-sm font-normal text-muted-foreground'>
                         {detail}
@@ -557,9 +556,6 @@ function PlatformDetails ({
                         <Badge variant='outline' className='normal-case'>
                           {target.badgeLabel}
                         </Badge>
-                        {!target.disabled && (
-                          <Badge variant='outline'>Demo</Badge>
-                        )}
                       </span>
                       <span className='text-sm font-normal text-muted-foreground'>
                         {target.detail}
@@ -584,7 +580,7 @@ function PlatformDetails ({
                 </a>
               ) : platformId === 'os' ? (
                 <div className='flex w-full flex-col gap-2'>
-                  <div className='flex flex-row flex-wrap gap-3'>
+                  <div className='flex flex-row gap-3'>
                     {selectedSkyTrackOsTarget.downloadImages.map(image => (
                       <Button
                         key={image.filename}
@@ -600,13 +596,6 @@ function PlatformDetails ({
                         {image.downloadLabel}
                       </Button>
                     ))}
-                  </div>
-                  <div
-                    role='note'
-                    className='flex items-center gap-2 text-sm text-muted-foreground'
-                  >
-                    <Badge variant='outline'>Demo</Badge>
-                    <span>No installer files are attached.</span>
                   </div>
                 </div>
               ) : (
@@ -624,13 +613,6 @@ function PlatformDetails ({
                     <DownloadSimpleIcon aria-hidden='true' />
                     {downloadLabel}
                   </Button>
-                  <div
-                    role='note'
-                    className='flex items-center gap-2 text-sm text-muted-foreground'
-                  >
-                    <Badge variant='outline'>Demo</Badge>
-                    <span>No installer file is attached.</span>
-                  </div>
                 </div>
               )}
             </div>
@@ -831,14 +813,13 @@ function PlatformDetails ({
                         confirmation. Setup instructions will be added after the
                         service path is confirmed.
                       </p>
-                      <Button
+                      {/* <Button
                         type='button'
-                        disabled
                         variant='outline'
                         className='mt-auto self-start'
                       >
                         Select Cloud
-                      </Button>
+                      </Button> */}
                     </article>
                   </div>
                   <ol className='m-0 flex list-none flex-col gap-3 p-0 text-muted-foreground'>
@@ -847,7 +828,7 @@ function PlatformDetails ({
                         2
                       </Badge>
                       <span className='text-lg font-medium text-foreground'>
-                        Additional setup steps pending Owner content.
+                        {'<'}Mock content{'>'}
                       </span>
                     </li>
                     <li className='flex items-center gap-3'>
@@ -855,7 +836,7 @@ function PlatformDetails ({
                         3
                       </Badge>
                       <span className='text-lg font-medium text-foreground'>
-                        Additional setup steps pending Owner content.
+                        {'<'}Mock content{'>'}
                       </span>
                     </li>
                   </ol>
@@ -873,9 +854,9 @@ function PlatformDetails ({
                           </li>
                         ))}
                       </ol>
-                      <Button type='button' disabled className='self-start'>
+                      {/* <Button type='button' disabled className='self-start'>
                         Open setup guide
-                      </Button>
+                      </Button> */}
                     </>
                   )}
                 </>
