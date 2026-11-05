@@ -291,20 +291,13 @@ function PlatformDetails ({
         <AccordionItem value='requirements'>
           <AccordionTrigger className='text-lg font-semibold'>
             {platformId === 'desktop'
-              ? 'Proposed system requirements'
+              ? 'System requirements'
               : platformId === 'field'
-              ? 'Proposed Android system requirements'
+              ? 'Android system requirements'
               : 'Compatibility'}
           </AccordionTrigger>
           <AccordionContent>
             <div className='flex flex-col gap-4 pb-4'>
-              {(platformId === 'desktop' || platformId === 'field') && (
-                <p className='m-0 text-sm text-muted-foreground'>
-                  These values are unverified planning proposals, not confirmed
-                  minimum requirements or certified compatibility. Android
-                  support and distribution are not confirmed.
-                </p>
-              )}
               {platformId === 'desktop' && (
                 <dl className='grid grid-cols-1 gap-2'>
                   {systemRequirements.map(({ label, value }) => (
@@ -333,7 +326,7 @@ function PlatformDetails ({
                       <tr className='border-b border-border'>
                         <th
                           scope='col'
-                          className='px-3 py-3 text-base font-semibold text-foreground'
+                          className='px-3 py-3 text-base font-semibold text-foreground pl-0'
                         >
                           Component
                         </th>
@@ -347,17 +340,17 @@ function PlatformDetails ({
                           scope='col'
                           className='px-3 py-3 text-base font-semibold text-foreground'
                         >
-                          Proposed recommended
+                          Recommended
                         </th>
                       </tr>
                     </thead>
                     <tbody>
                       {ANDROID_SYSTEM_REQUIREMENTS.map(
                         ({ component, minimum, recommended }) => (
-                          <tr key={component} className='border-b border-border'>
+                          <tr key={component} className='border-b border-border last:border-b-0'>
                             <th
                               scope='row'
-                              className='px-3 py-3 text-left text-base font-medium text-foreground'
+                              className='px-3 py-3 text-left text-base font-medium text-foreground pl-0'
                             >
                               {component}
                             </th>
@@ -576,15 +569,6 @@ export default function DownloadPage () {
                             id={titleId}
                             className='h4 m-0 flex items-center gap-2 leading-7 lg:text-xl'
                           >
-                            {platform.id === 'field' && (
-                              <span
-                                aria-hidden='true'
-                                className='size-5 shrink-0 [&>svg]:block'
-                                dangerouslySetInnerHTML={{
-                                  __html: androidMark
-                                }}
-                              />
-                            )}
                             {platform.cardTitle}
                           </h3>
                           <p
