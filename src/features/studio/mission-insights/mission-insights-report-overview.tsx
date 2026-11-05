@@ -71,7 +71,7 @@ export function CategoryChart({
 
   return (
     <section className="flex min-w-0 flex-col gap-3" aria-label={title}>
-      <h3 className="m-0 text-lg font-medium text-(--foreground)">{title}</h3>
+      <h3 className="m-0 text-lg font-medium text-foreground">{title}</h3>
       {data.length ? (
         <ChartContainer
           className="h-60 min-w-0 w-full"

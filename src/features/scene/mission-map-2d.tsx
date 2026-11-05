@@ -229,7 +229,7 @@ export function MissionMap2D({
         <div
           role="status"
           aria-live="polite"
-          className="absolute bottom-3 left-3 z-500 max-w-[280px] rounded-(--radius) px-[9px] py-[6px] bg-(--card) text-(--foreground) shadow-[0_1px_5px_#0003] [font:12px/1.4_system-ui]"
+          className="absolute bottom-3 left-3 z-500 max-w-[280px] rounded-(--radius) px-[9px] py-[6px] bg-(--card) text-foreground shadow-[0_1px_5px_#0003] [font:12px/1.4_system-ui]"
         >
           {tileState === "offline"
             ? "Basemap unavailable. Check the network connection."

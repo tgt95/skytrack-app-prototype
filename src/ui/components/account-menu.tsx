@@ -95,7 +95,7 @@ export function AccountMenu({
             aria-label={`${profile.name} account settings`}
           >
             <div
-              className="flex min-w-0 items-center gap-2 mb-2 rounded-(--radius) text-(--foreground)"
+              className="flex min-w-0 items-center gap-2 mb-2 rounded-(--radius) text-foreground"
               data-testid={`${testPrefix}-summary`}
             >
               <Avatar aria-hidden="true" data-testid={`${testPrefix}-avatar`}>

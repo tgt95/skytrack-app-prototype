@@ -136,7 +136,7 @@ export function AIModelsTab({
               >
                 <CollapsibleTrigger className="flex w-full min-w-0 flex-wrap items-center justify-between gap-3 p-4 text-left">
                   <span className="min-w-0">
-                    <span className="block text-lg font-medium text-(--foreground)">
+                    <span className="block text-lg font-medium text-foreground">
                       {model.name}{" "}
                       <span className="text-(--muted-foreground)">
                         {textValue(model.version, "")}
@@ -187,7 +187,7 @@ export function AIModelsTab({
                       ]}
                     />
                     <Separator />
-                    <h4 className="m-0 text-base font-medium text-(--foreground)">
+                    <h4 className="m-0 text-base font-medium text-foreground">
                       Invocations
                     </h4>
                     <DataTable

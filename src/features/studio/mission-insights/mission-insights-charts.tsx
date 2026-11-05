@@ -42,7 +42,7 @@ function TrendChart({
 
   return (
     <section className="flex min-w-0 flex-col gap-3" aria-label={title}>
-      <h4 className="m-0 text-base font-medium text-(--foreground)">{title}</h4>
+      <h4 className="m-0 text-base font-medium text-foreground">{title}</h4>
       <ChartContainer
         className="h-52 min-w-0 w-full"
         config={config}
@@ -139,7 +139,7 @@ export function MissionInsightsTelemetryCharts({
     >
       <h3
         id="ms-replay-telemetry-title"
-        className="m-0 text-lg font-medium text-(--foreground)"
+        className="m-0 text-lg font-medium text-foreground"
       >
         Telemetry
       </h3>

@@ -35,7 +35,7 @@ export default function StudioLibraryRoute({
   onLogout,
 }: StudioLibraryRouteProps) {
   return (
-    <div className="ms-root flex flex-col h-[calc(100dvh-3.125rem)] min-h-140 bg-(--background) text-(--foreground) text-sm [@media_(max-width:_61.25rem)]:h-auto [@media_(max-width:_61.25rem)]:min-h-0" data-testid="ms-root">
+    <div className="ms-root flex flex-col h-[calc(100dvh-3.125rem)] min-h-140 bg-(--background) text-foreground text-sm [@media_(max-width:_61.25rem)]:h-auto [@media_(max-width:_61.25rem)]:min-h-0" data-testid="ms-root">
       <StudioLibrary
         announce={announce}
         section={section}

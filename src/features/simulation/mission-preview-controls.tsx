@@ -108,7 +108,7 @@ export default function MissionPreviewControls({
           </Slider>
         </div>
         <div
-          className=" flex-[0_0_auto] min-h-8.5 border border-border rounded-(--radius) bg-(--background) text-(--foreground)"
+          className=" flex-[0_0_auto] min-h-8.5 border border-border rounded-(--radius) bg-(--background) text-foreground"
           data-testid="ms-preview-speed"
         >
           <Select<string>

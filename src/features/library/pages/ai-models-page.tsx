@@ -136,7 +136,7 @@ export function AIModelsPage({
                 ) : (
                   <article
                     key={model.id}
-                    className="ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-(--card) text-(--foreground) text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default ms-lib-resource-card min-h-39"
+                    className="ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-(--card) text-foreground text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default ms-lib-resource-card min-h-39"
                     data-testid={`ms-lib-ai-model-${model.id}`}
                   >
                     {modelContent}

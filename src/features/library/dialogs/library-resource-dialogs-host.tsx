@@ -185,7 +185,7 @@ export function LibraryResourceDeleteDialogs({
               </DialogDescription>
             </DialogHeader>
             {deleteDroneReferences.length > 0 ? (
-              <div className="ms-drone-reference-warning mt-0 mx-5 mb-4.5 p-3 border border-border rounded-(--radius) bg-(--muted) text-(--foreground) text-xs leading-[1.5]" role="alert">
+              <div className="ms-drone-reference-warning mt-0 mx-5 mb-4.5 p-3 border border-border rounded-(--radius) bg-(--muted) text-foreground text-xs leading-[1.5]" role="alert">
                 <p className="mt-0 mx-0 mb-2">
                   This Drone is selected by {deleteDroneReferences.length}{" "}
                   mission{deleteDroneReferences.length === 1 ? "" : "s"}. Change
@@ -242,7 +242,7 @@ export function LibraryResourceDeleteDialogs({
               </DialogDescription>
             </DialogHeader>
             {deleteWorldReferences.length > 0 ? (
-              <div className="ms-drone-reference-warning mt-0 mx-5 mb-4.5 p-3 border border-border rounded-(--radius) bg-(--muted) text-(--foreground) text-xs leading-[1.5]" role="alert">
+              <div className="ms-drone-reference-warning mt-0 mx-5 mb-4.5 p-3 border border-border rounded-(--radius) bg-(--muted) text-foreground text-xs leading-[1.5]" role="alert">
                 <p className="mt-0 mx-0 mb-2">
                   This World is selected by {deleteWorldReferences.length}{" "}
                   mission{deleteWorldReferences.length === 1 ? "" : "s"}.

@@ -53,7 +53,7 @@ export default function AvoidInspectorCard({
     >
       <div className="ms-route-head flex flex-col gap-1 flex-row! items-center min-w-0 p-3 max-sm:flex-wrap">
         <div className="ms-route-title-group flex items-center gap-1.5 flex-[0_0_auto] min-w-0 whitespace-nowrap">
-          <AvoidZoneIcon aria-hidden="true" className="ms-route-icon w-4 h-4 text-(--foreground) shrink-0" />
+          <AvoidZoneIcon aria-hidden="true" className="ms-route-icon w-4 h-4 text-foreground shrink-0" />
           <span className="ms-route-name text-sm font-semibold flex-[0_0_auto] min-w-0 whitespace-nowrap">
             {zone.label}
           </span>

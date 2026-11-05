@@ -101,7 +101,7 @@ export function ReleaseNotesPopover() {
         <PopoverPortal>
           <PopoverPositioner side="right" align="end" sideOffset={4}>
             <PopoverPopup
-              className="w-[min(23rem,calc(100vw-2rem))] max-h-[min(80vh,38rem)] overflow-y-auto rounded-(--radius) border border-(--border) bg-(--card) p-2 text-(--foreground) shadow-lg"
+              className="w-[min(23rem,calc(100vw-2rem))] max-h-[min(80vh,38rem)] overflow-y-auto rounded-(--radius) border border-(--border) bg-(--card) p-2 text-foreground shadow-lg"
               aria-label="What's new"
               data-testid="ms-lib-release-notes-popover"
             >

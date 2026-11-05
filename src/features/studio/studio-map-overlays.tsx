@@ -24,7 +24,7 @@ export type Stage = "design" | "simulation";
 
 const stageToggleClassName = [
   "group relative inline-flex items-center gap-2 h-auto py-2.5 px-3.5 rounded-none bg-transparent text-(--muted-foreground) text-[0.8125rem] font-semibold whitespace-nowrap",
-  "hover:bg-transparent hover:text-(--foreground) disabled:opacity-[0.55] aria-disabled:opacity-[0.55] aria-disabled:cursor-not-allowed",
+  "hover:bg-transparent hover:text-foreground disabled:opacity-[0.55] aria-disabled:opacity-[0.55] aria-disabled:cursor-not-allowed",
   "data-[active]:bg-transparent data-[active]:text-primary data-[active]:hover:text-primary aria-pressed:bg-transparent aria-pressed:text-primary",
   '[&[data-pressed="true"]::after]:[content:""] [&[data-pressed="true"]::after]:absolute [&[data-pressed="true"]::after]:left-2.5 [&[data-pressed="true"]::after]:right-2.5 [&[data-pressed="true"]::after]:-bottom-0.25 [&[data-pressed="true"]::after]:h-0.5 [&[data-pressed="true"]::after]:rounded-(--radius) [&[data-pressed="true"]::after]:bg-(--primary)',
   '[&[aria-pressed="true"]::after]:[content:""] [&[aria-pressed="true"]::after]:absolute [&[aria-pressed="true"]::after]:left-2.5 [&[aria-pressed="true"]::after]:right-2.5 [&[aria-pressed="true"]::after]:-bottom-0.25 [&[aria-pressed="true"]::after]:h-0.5 [&[aria-pressed="true"]::after]:rounded-(--radius) [&[aria-pressed="true"]::after]:bg-(--primary)',

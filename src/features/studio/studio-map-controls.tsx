@@ -166,7 +166,7 @@ export function StudioMapControls ({
             <PopoverPortal>
               <PopoverPositioner side='left' align='end' sideOffset={8}>
                 <PopoverPopup
-                  className='flex flex-col gap-4 w-64 max-h-[min(80vh,35rem)] overflow-y-auto p-4 border-(--border) border rounded-(--radius) bg-(--card) text-(--foreground)'
+                  className='flex flex-col gap-4 w-64 max-h-[min(80vh,35rem)] overflow-y-auto p-4 border-(--border) border rounded-(--radius) bg-(--card) text-foreground'
                   data-testid='ms-map-gear-popup'
                 >
                   <PopoverArrow />
@@ -237,7 +237,7 @@ export function StudioMapControls ({
                             data-testid='ms-footprint-opacity-head'
                           >
                             <span>Footprint opacity</span>
-                            <strong className='text-(--foreground) font-medium'>
+                            <strong className='text-foreground font-medium'>
                               {footprintOpacity}%
                             </strong>
                           </div>
@@ -314,7 +314,7 @@ export function StudioMapControls ({
               <PopoverPortal>
                 <PopoverPositioner side='left' align='end' sideOffset={8}>
                   <PopoverPopup
-                    className='flex flex-col gap-4 w-90 max-h-[min(80vh,35rem)] overflow-y-auto p-4 border border-(--border) rounded-(--radius) bg-(--card) text-(--foreground)'
+                    className='flex flex-col gap-4 w-90 max-h-[min(80vh,35rem)] overflow-y-auto p-4 border border-(--border) rounded-(--radius) bg-(--card) text-foreground'
                     data-testid='ms-basemap-popup'
                   >
                     <PopoverArrow />

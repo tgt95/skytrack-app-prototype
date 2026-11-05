@@ -76,7 +76,7 @@ export function RouteSequenceCardHeader({
       <div className="flex items-center gap-1.5 flex-[0_0_auto] min-w-0 whitespace-nowrap">
         <PathIcon
           aria-hidden="true"
-          className="w-4 h-4 text-(--foreground) shrink-0"
+          className="w-4 h-4 text-foreground shrink-0"
         />
         <span className="text-sm font-semibold flex-[0_0_auto] min-w-0 whitespace-nowrap">
           {route.label}

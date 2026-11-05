@@ -49,9 +49,9 @@ export function ZoneDraftPanel({
       <div className="ms-route-head flex flex-col gap-1">
         <div className="ms-route-title-group flex items-center gap-1.5 flex-[0_0_auto] min-w-0 whitespace-nowrap">
           {kind === "area" ? (
-            <AreaIcon aria-hidden="true" className="ms-route-icon w-4 h-4 text-(--foreground) shrink-0" />
+            <AreaIcon aria-hidden="true" className="ms-route-icon w-4 h-4 text-foreground shrink-0" />
           ) : (
-            <AvoidZoneIcon aria-hidden="true" className="ms-route-icon w-4 h-4 text-(--foreground) shrink-0" />
+            <AvoidZoneIcon aria-hidden="true" className="ms-route-icon w-4 h-4 text-foreground shrink-0" />
           )}
           <span className="ms-route-name text-sm font-semibold">
             {kind === "area" ? "Area draft" : "Avoid zone draft"}
@@ -62,7 +62,7 @@ export function ZoneDraftPanel({
         {kind === "area" ? (
           <>
             <div className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-(--foreground)">
+              <span className="text-xs font-medium text-foreground">
                 Footprint shape
               </span>
               <ToggleGroup

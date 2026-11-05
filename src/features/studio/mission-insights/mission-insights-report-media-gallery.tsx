@@ -102,7 +102,7 @@ export function MediaGallerySection({
                   className="flex min-w-0 flex-col gap-3"
                   aria-label={actionName}
                 >
-                  <h3 className="m-0 text-lg font-medium text-(--foreground)">
+                  <h3 className="m-0 text-lg font-medium text-foreground">
                     {actionName}
                   </h3>
                   <div className="grid min-w-0 grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">

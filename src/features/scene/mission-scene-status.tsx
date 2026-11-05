@@ -21,7 +21,7 @@ export function MissionSceneStatus({
   if (status === "loading" && !without3d) {
     return (
       <div
-        className="ms-scene-overlay absolute inset-0 flex flex-col items-center justify-center gap-1.5 text-center bg-(--background) text-(--foreground) p-6"
+        className="ms-scene-overlay absolute inset-0 flex flex-col items-center justify-center gap-1.5 text-center bg-(--background) text-foreground p-6"
         role="status"
         aria-label="3D scene loading"
       >
@@ -34,7 +34,7 @@ export function MissionSceneStatus({
   if (status === "error" && !without3d) {
     return (
       <div
-        className="ms-scene-overlay absolute inset-0 flex flex-col items-center justify-center gap-1.5 text-center bg-(--background) text-(--foreground) p-6"
+        className="ms-scene-overlay absolute inset-0 flex flex-col items-center justify-center gap-1.5 text-center bg-(--background) text-foreground p-6"
         role="alert"
         data-testid="ms-scene-error"
       >

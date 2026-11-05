@@ -151,7 +151,7 @@ export function AIWorkflowStopRow ({
         type='button'
         size='icon-xs'
         variant='ghost'
-        className={`flex-[0_0_auto] self-center inline-flex h-8.5 w-5.5 items-center justify-center rounded-(--radius) border border-transparent bg-transparent text-sm text-(--muted-foreground) cursor-grab touch-none hover:bg-(--accent) hover:text-(--foreground) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 active:cursor-grabbing${
+        className={`flex-[0_0_auto] self-center inline-flex h-8.5 w-5.5 items-center justify-center rounded-(--radius) border border-transparent bg-transparent text-sm text-(--muted-foreground) cursor-grab touch-none hover:bg-(--accent) hover:text-foreground focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 active:cursor-grabbing${
           dragging ? ' text-(--primary) cursor-grabbing' : ''
         }`}
         draggable
@@ -372,7 +372,7 @@ export function AIWorkflowCard ({
             type='button'
             variant='ghost'
             size='icon-xs'
-            className={`flex-[0_0_auto] self-center inline-flex h-8.5 w-5.5 items-center justify-center rounded-(--radius) border border-transparent bg-transparent text-sm text-(--muted-foreground) opacity-100 cursor-grab touch-none hover:bg-(--accent) hover:text-(--foreground) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 active:cursor-grabbing${
+            className={`flex-[0_0_auto] self-center inline-flex h-8.5 w-5.5 items-center justify-center rounded-(--radius) border border-transparent bg-transparent text-sm text-(--muted-foreground) opacity-100 cursor-grab touch-none hover:bg-(--accent) hover:text-foreground focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 active:cursor-grabbing${
               draggingStart ? ' text-(--primary) cursor-grabbing' : ''
             }`}
             draggable

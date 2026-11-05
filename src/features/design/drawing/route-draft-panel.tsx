@@ -67,13 +67,13 @@ export default function RouteDraftPanel({
                 data-testid="ms-route-draft-row"
               >
                 <span
-                  className=" grid place-items-center w-6 h-6 rounded-full bg-(--muted) text-(--foreground) text-xs font-semibold"
+                  className=" grid place-items-center w-6 h-6 rounded-full bg-(--muted) text-foreground text-xs font-semibold"
                   data-testid="ms-route-draft-seq"
                 >
                   {sequence}
                 </span>
                 <span
-                  className="grid grid-cols-3 gap-2 min-w-0 text-(--foreground) text-[0.6875rem] [font-variant-numeric:tabular-nums]"
+                  className="grid grid-cols-3 gap-2 min-w-0 text-foreground text-[0.6875rem] [font-variant-numeric:tabular-nums]"
                   role="group"
                   aria-label={`Pending waypoint ${sequence} coordinates`}
                 >

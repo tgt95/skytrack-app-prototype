@@ -288,7 +288,7 @@ export function AccountMenuDialogs({
                   }
                 />
                 <div
-                  className=" flex items-center justify-between gap-3 min-h-11 border-b border-b-border text-(--muted-foreground) text-[0.8125rem] [border-bottom:0] text-(--foreground)"
+                  className=" flex items-center justify-between gap-3 min-h-11 border-b border-b-border text-(--muted-foreground) text-[0.8125rem] [border-bottom:0] text-foreground"
                   data-testid="ms-lib-account-email-status"
                 >
                   <span>Email notifications</span>
@@ -351,7 +351,7 @@ export function AccountMenuDialogs({
                 data-testid="ms-lib-account-logout-content"
               >
                 <div
-                  className="ms-lib-account-callout mt-3.5 py-3 px-3.5 border border-border rounded-(--radius) bg-(--muted) text-(--foreground) text-[0.8125rem]  flex gap-2.5 border-[color-mix(in_oklab,var(--warning),var(--border)_55%)]"
+                  className="ms-lib-account-callout mt-3.5 py-3 px-3.5 border border-border rounded-(--radius) bg-(--muted) text-foreground text-[0.8125rem]  flex gap-2.5 border-[color-mix(in_oklab,var(--warning),var(--border)_55%)]"
                   data-testid="ms-lib-account-callout"
                 >
                   <WarningCircleIcon
@@ -428,7 +428,7 @@ function AccountDetail({ label, value }: { label: string; value: string }) {
       data-testid="ms-lib-account-detail"
     >
       <span>{label}</span>
-      <strong className="text-(--foreground) text-[0.8125rem] font-medium text-right">
+      <strong className="text-foreground text-[0.8125rem] font-medium text-right">
         {value}
       </strong>
     </div>

@@ -253,7 +253,7 @@ export function MissionInsightsFlightReplay({
       data-testid="ms-insights-flight-replay"
     >
       <div className="flex min-w-0 flex-col gap-1">
-        <h3 className="m-0 text-lg font-medium text-(--foreground)">
+        <h3 className="m-0 text-lg font-medium text-foreground">
           Flight replay 3D — {replayTimeline.run}
         </h3>
         <p className="m-0 break-words text-(--muted-foreground)">
@@ -339,7 +339,7 @@ export function MissionInsightsFlightReplay({
         >
           <h3
             id="ms-replay-state-title"
-            className="m-0 text-lg font-medium text-(--foreground)"
+            className="m-0 text-lg font-medium text-foreground"
           >
             Replay state
           </h3>

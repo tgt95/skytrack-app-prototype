@@ -30,7 +30,7 @@ export function MediaPreview({
               aria-label={`${selected.name} preview`}
             >
               <header className="flex min-w-0 flex-wrap items-center justify-between gap-3">
-                <h3 className="m-0 text-lg font-medium text-(--foreground)">
+                <h3 className="m-0 text-lg font-medium text-foreground">
                   {selected.name}
                 </h3>
                 {selected.detectionCount > 0 && selected.kind === "image" ? (
@@ -123,7 +123,7 @@ export function MediaPreview({
                       alt={`${selected.name} sample video poster`}
                       className="size-full object-cover"
                     />
-                    <div className="absolute inset-x-0 bottom-0 bg-(--background)/90 p-3 text-(--foreground)">
+                    <div className="absolute inset-x-0 bottom-0 bg-(--background)/90 p-3 text-foreground">
                       Poster only · video playback is not included in this demo.
                     </div>
                   </div>

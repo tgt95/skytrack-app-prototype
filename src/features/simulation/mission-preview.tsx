@@ -119,7 +119,7 @@ export default function MissionPreview({
 
   return (
     <section
-      className="ms-preview flex flex-col gap-4 w-full min-w-0 box-border max-w-240 m-[0_auto] text-(--foreground) *:min-w-0 *:box-border"
+      className="ms-preview flex flex-col gap-4 w-full min-w-0 box-border max-w-240 m-[0_auto] text-foreground *:min-w-0 *:box-border"
       aria-label="Mission route preview"
       data-testid="ms-preview"
     >

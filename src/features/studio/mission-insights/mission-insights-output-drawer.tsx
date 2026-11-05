@@ -110,7 +110,7 @@ export function MissionInsightsOutputDrawer({
                         {index > 0 ? <Separator /> : null}
                         <h3
                           id={`ms-output-${output.id}-${index}`}
-                          className="m-0 text-lg font-medium text-(--foreground)"
+                          className="m-0 text-lg font-medium text-foreground"
                         >
                           {section.title}
                         </h3>

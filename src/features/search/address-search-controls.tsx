@@ -170,7 +170,7 @@ export default function AddressSearchControls({
                     }
                   }
                 }}
-                className="ms-address-search-input w-full min-w-0 h-8 border-(--border) bg-(--background) text-(--foreground)"
+                className="ms-address-search-input w-full min-w-0 h-8 border-(--border) bg-(--background) text-foreground"
               />
             </div>
           ) : null}
@@ -244,7 +244,7 @@ export default function AddressSearchControls({
                 href={credit.href}
                 target="_blank"
                 rel="noreferrer"
-                className="text-inherit no-underline hover:text-(--foreground) hover:underline"
+                className="text-inherit no-underline hover:text-foreground hover:underline"
               >
                 {credit.label}
               </a>
@@ -266,7 +266,7 @@ export default function AddressSearchControls({
           {addressCredits.map((credit, index) => (
             <a
               key={`${credit.href}-${index}`}
-              className=" max-w-[min(19.375rem,100%)] py-0.75 px-1.75 border border-border rounded-(--radius) bg-(--card) text-(--muted-foreground) text-[0.6875rem] leading-[1.35] text-right [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] in-[.ms-address-search-pop]:max-w-full [text-decoration:none] [&:hover]:text-(--foreground) [&:hover]:[text-decoration:underline]"
+              className=" max-w-[min(19.375rem,100%)] py-0.75 px-1.75 border border-border rounded-(--radius) bg-(--card) text-(--muted-foreground) text-[0.6875rem] leading-[1.35] text-right [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] in-[.ms-address-search-pop]:max-w-full [text-decoration:none] [&:hover]:text-foreground [&:hover]:[text-decoration:underline]"
               href={credit.href}
               target="_blank"
               rel="noreferrer"

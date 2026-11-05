@@ -204,7 +204,7 @@ export default function StudioShell({
   );
   return (
     <div
-      className="ms-root flex flex-col h-[calc(100dvh-3.125rem)] min-h-140 bg-(--background) text-(--foreground) text-sm [@media_(max-width:_61.25rem)]:h-auto [@media_(max-width:_61.25rem)]:min-h-0 ms-route-content [view-transition-name:ms-route-content]"
+      className="ms-root flex flex-col h-[calc(100dvh-3.125rem)] min-h-140 bg-(--background) text-foreground text-sm [@media_(max-width:_61.25rem)]:h-auto [@media_(max-width:_61.25rem)]:min-h-0 ms-route-content [view-transition-name:ms-route-content]"
       data-testid="ms-root"
       data-report-subpage={reportSubpageOpen}
     >

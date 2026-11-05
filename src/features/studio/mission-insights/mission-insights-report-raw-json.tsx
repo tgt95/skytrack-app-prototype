@@ -243,7 +243,7 @@ export function RawJsonTab({ sample }: { sample: MissionInsightSample }) {
                   >
                     <CollapsibleTrigger
                       id={`ms-json-line-${firstLine + 1}`}
-                      className={`flex min-w-max items-start border-0 bg-transparent px-3 py-1 text-left text-(--foreground) ${
+                      className={`flex min-w-max items-start border-0 bg-transparent px-3 py-1 text-left text-foreground ${
                         matches[matchIndex] === firstLine
                           ? "bg-(--accent)/30"
                           : ""
@@ -274,7 +274,7 @@ export function RawJsonTab({ sample }: { sample: MissionInsightSample }) {
                               id={`ms-json-line-${lineNumber}`}
                               className={`flex min-w-max px-0 ${
                                 selectedMatch
-                                  ? "bg-(--accent)/30 text-(--foreground)"
+                                  ? "bg-(--accent)/30 text-foreground"
                                   : ""
                               }`}
                             >

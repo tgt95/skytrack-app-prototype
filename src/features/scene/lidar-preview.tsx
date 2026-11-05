@@ -145,7 +145,7 @@ export default function LidarPreview({
         data-testid="ms-lidar-header"
       >
         <span
-          className=" text-[0.6875rem] font-semibold text-(--foreground)"
+          className=" text-[0.6875rem] font-semibold text-foreground"
           data-testid="ms-lidar-tag"
         >
           LiDAR

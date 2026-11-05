@@ -92,7 +92,7 @@ export default function DevScenarioDrawer() {
               data-testid={`dev-scenario-${scenario.id}`}
             >
               <div className="flex min-w-0 flex-col gap-1">
-                <span className="text-(--foreground) font-medium">
+                <span className="text-foreground font-medium">
                   {scenario.name}
                 </span>
                 <span className="text-(--muted-foreground) text-[0.8125rem] leading-[1.4]">

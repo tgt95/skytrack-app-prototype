@@ -225,7 +225,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
                   <li key={`${ev.t}-${i}`}>
                     <button
                       type="button"
-                      className=" w-full flex gap-2 items-baseline text-left text-sm bg-(--background) text-(--foreground) border border-border rounded-(--radius) py-1.5 px-2 cursor-pointer [&:hover]:bg-(--accent) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
+                      className=" w-full flex gap-2 items-baseline text-left text-sm bg-(--background) text-foreground border border-border rounded-(--radius) py-1.5 px-2 cursor-pointer [&:hover]:bg-(--accent) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
                       onClick={() => onSelectEvent(ev)}
                       aria-label={`Focus ${formatMeasurementText(
                         ev.label,

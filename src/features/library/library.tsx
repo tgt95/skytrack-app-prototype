@@ -365,7 +365,7 @@ export default function StudioLibrary({
 
   return (
     <div
-      className="h-full min-h-0 flex-[1_1_auto] flex flex-col overflow-hidden bg-(--background) text-(--foreground)"
+      className="h-full min-h-0 flex-[1_1_auto] flex flex-col overflow-hidden bg-(--background) text-foreground"
       data-testid="ms-lib"
     >
       <LibraryAnnounceRegion announce={announce} />

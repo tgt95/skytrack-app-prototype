@@ -88,7 +88,7 @@ export function LibraryCardFrame({
   onToggleStar?: () => void;
   onOpen?: () => void;
 }) {
-  const cardClassName = ["ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-(--card) text-(--foreground) text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default", className].filter(Boolean).join(" ");
+  const cardClassName = ["ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-(--card) text-foreground text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default", className].filter(Boolean).join(" ");
   const handleCardClick = (event: MouseEvent<HTMLElement>) => {
     if (!onOpen) return;
     const target = event.target as Element;

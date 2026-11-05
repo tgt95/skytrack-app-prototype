@@ -105,7 +105,7 @@ export default function StudioSceneViewport({
       >
         {mission.worldType !== "2D" && mission.origin?.attribution ? (
           <a
-            className=" absolute left-28 bottom-2.5 z-6 max-w-[min(19.375rem,calc(100%-8.25rem))] overflow-hidden py-0.75 px-1.75 border border-border rounded-(--radius) bg-(--card) text-(--muted-foreground) text-[0.6875rem] leading-[1.35] text-ellipsis [text-decoration:none] whitespace-nowrap [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] [&:hover]:text-(--foreground) [&:hover]:[text-decoration:underline]"
+            className=" absolute left-28 bottom-2.5 z-6 max-w-[min(19.375rem,calc(100%-8.25rem))] overflow-hidden py-0.75 px-1.75 border border-border rounded-(--radius) bg-(--card) text-(--muted-foreground) text-[0.6875rem] leading-[1.35] text-ellipsis [text-decoration:none] whitespace-nowrap [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] [&:hover]:text-foreground [&:hover]:[text-decoration:underline]"
             href={mission.origin.attribution.href}
             target="_blank"
             rel="noreferrer"

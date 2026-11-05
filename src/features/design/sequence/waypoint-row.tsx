@@ -191,7 +191,7 @@ export function WaypointRow(props: {
           type="button"
           variant="ghost"
           size="icon-xs"
-          className={`flex-[0_0_auto] self-center inline-flex items-center justify-center w-5.5 h-8.5 text-sm border border-transparent rounded-(--radius) bg-transparent text-(--muted-foreground) cursor-grab touch-none hover:bg-(--accent) hover:text-(--foreground) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1${grabbed ? " text-(--primary) cursor-grabbing" : ""}`}
+          className={`flex-[0_0_auto] self-center inline-flex items-center justify-center w-5.5 h-8.5 text-sm border border-transparent rounded-(--radius) bg-transparent text-(--muted-foreground) cursor-grab touch-none hover:bg-(--accent) hover:text-foreground focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1${grabbed ? " text-(--primary) cursor-grabbing" : ""}`}
           disabled={generated}
           draggable={!generated}
           aria-label={

@@ -32,7 +32,7 @@ export default function SliderField({
       data-testid="ms-slider-field"
     >
       <div
-        className=" text-xs font-medium text-(--foreground)"
+        className=" text-xs font-medium text-foreground"
         data-testid="ms-slider-label"
       >
         {label}

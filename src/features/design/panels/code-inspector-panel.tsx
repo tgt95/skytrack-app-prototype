@@ -142,7 +142,7 @@ export default function CodeInspectorPanel ({
           <>
             <textarea
               id='ms-json-editor'
-              className='w-full box-border font-[ui-monospace,SFMono-Regular,Menlo,monospace] text-base text-(--foreground) bg-(--card) border border-border rounded-(--radius) p-2 resize-y outline-none'
+              className='w-full box-border font-[ui-monospace,SFMono-Regular,Menlo,monospace] text-base text-foreground bg-(--card) border border-border rounded-(--radius) p-2 resize-y outline-none'
               aria-label='Mission JSON draft'
               aria-describedby='ms-json-hint'
               aria-invalid={jsonError ? true : undefined}

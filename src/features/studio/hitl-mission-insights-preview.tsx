@@ -209,7 +209,7 @@ export function HitlMissionInsightsPreview() {
               ))}
             </dl>
             <div className="flex min-w-0 flex-col gap-3 border-t border-border pt-4">
-              <h3 className="m-0 text-lg font-medium text-(--foreground)">
+              <h3 className="m-0 text-lg font-medium text-foreground">
                 MQTT command & action trace
               </h3>
               <div className="flex min-w-0 flex-col gap-3">

@@ -138,7 +138,7 @@ export function MissionInsightsOutputs({
             <header className="flex min-w-0 flex-wrap items-center justify-between gap-3">
               <h3
                 id={`ms-output-card-${output.id}`}
-                className="m-0 text-lg font-medium text-(--foreground)"
+                className="m-0 text-lg font-medium text-foreground"
               >
                 {output.name}
               </h3>

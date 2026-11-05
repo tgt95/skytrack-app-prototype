@@ -146,12 +146,12 @@ function ReconSlider({
         }}
       >
         <div
-          className=" flex items-baseline justify-between gap-2 text-(--foreground)"
+          className=" flex items-baseline justify-between gap-2 text-foreground"
           data-testid="ms-recon-slider-head"
         >
           <SliderLabel data-testid="ms-recon-slider-label">{label}</SliderLabel>
           <span
-            className=" py-0.25 px-2 rounded-(--radius) bg-(--muted) text-(--foreground) text-[0.6875rem] font-semibold [font-variant-numeric:tabular-nums] whitespace-nowrap"
+            className=" py-0.25 px-2 rounded-(--radius) bg-(--muted) text-foreground text-[0.6875rem] font-semibold [font-variant-numeric:tabular-nums] whitespace-nowrap"
             data-testid="ms-recon-slider-badge"
           >
             {display}

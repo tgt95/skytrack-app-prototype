@@ -27,7 +27,7 @@ export function MediaMetadataPanel({
               >
                 <h3
                   id="ms-media-information-title"
-                  className="m-0 text-lg font-medium text-(--foreground)"
+                  className="m-0 text-lg font-medium text-foreground"
                 >
                   Information
                 </h3>
@@ -108,7 +108,7 @@ export function MediaMetadataPanel({
               >
                 <h3
                   id="ms-media-producer-title"
-                  className="m-0 text-lg font-medium text-(--foreground)"
+                  className="m-0 text-lg font-medium text-foreground"
                 >
                   {selected.syntheticPreview
                     ? "Preview provenance"
@@ -164,7 +164,7 @@ export function MediaMetadataPanel({
               >
                 <h3
                   id="ms-media-artifact-title"
-                  className="m-0 text-lg font-medium text-(--foreground)"
+                  className="m-0 text-lg font-medium text-foreground"
                 >
                   Artifact details
                 </h3>

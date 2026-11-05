@@ -306,7 +306,7 @@ export function TimelineTab({
                   className="flex min-w-0 flex-col gap-3"
                   aria-label="Report sequence gaps"
                 >
-                  <h3 className="m-0 text-lg font-medium text-(--foreground)">
+                  <h3 className="m-0 text-lg font-medium text-foreground">
                     Report sequence gaps
                   </h3>
                   <DataTable

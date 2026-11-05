@@ -23,7 +23,7 @@ export function MissionInsightsPlannerEvents({
       <header className="flex flex-wrap items-baseline justify-between gap-3">
         <h3
           id="ms-planner-events-title"
-          className="m-0 text-lg font-medium text-(--foreground)"
+          className="m-0 text-lg font-medium text-foreground"
         >
           Planner events
         </h3>

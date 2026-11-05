@@ -55,7 +55,7 @@ export default function MissionStudioApp() {
         </DevScenarioProvider>
       ) : (
         <section
-          className="grid min-h-dvh place-items-center p-6 bg-(--muted) text-(--foreground) [@media_(max-width:_30rem)]:p-4"
+          className="grid min-h-dvh place-items-center p-6 bg-(--muted) text-foreground [@media_(max-width:_30rem)]:p-4"
           aria-labelledby="ms-demo-title"
           data-testid="ms-public-demo-screen"
         >
@@ -72,7 +72,7 @@ export default function MissionStudioApp() {
                 reducedMotion={prefersReducedMotion}
               />
               <div
-                className="flex justify-center text-(--foreground) [&_svg]:block [&_svg]:w-auto [&_svg]:h-7"
+                className="flex justify-center text-foreground [&_svg]:block [&_svg]:w-auto [&_svg]:h-7"
                 role="img"
                 aria-label="SkyTrack"
                 dangerouslySetInnerHTML={{ __html: logo }}

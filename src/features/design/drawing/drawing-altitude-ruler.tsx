@@ -163,7 +163,7 @@ export function DrawingAltitudeRuler({
             data-testid="ms-alt-badge"
           >
             <input
-              className=" flex-[1_1_auto] min-w-0 bg-transparent [border:0] p-0 text-(--foreground) text-xs font-bold text-right [font-variant-numeric:tabular-nums] focus:[outline:none]"
+              className=" flex-[1_1_auto] min-w-0 bg-transparent [border:0] p-0 text-foreground text-xs font-bold text-right [font-variant-numeric:tabular-nums] focus:[outline:none]"
               data-testid="ms-alt-ruler-input"
               value={shown}
               inputMode="decimal"

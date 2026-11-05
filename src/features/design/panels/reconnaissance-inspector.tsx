@@ -126,7 +126,7 @@ export function ReconCaptureSummary({
     >
       <div className="flex flex-col gap-1 min-w-0">
         <span className="text-(--muted-foreground) text-xs">GSD estimate*</span>
-        <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
+        <strong className="overflow-hidden text-foreground text-xs font-semibold text-ellipsis whitespace-nowrap">
           {formatResolution(gsd, unitSystem)}
         </strong>
       </div>
@@ -134,7 +134,7 @@ export function ReconCaptureSummary({
         <span className="text-(--muted-foreground) text-xs">
           {altitudeAgl ? "Altitude AGL" : "Altitude"}
         </span>
-        <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
+        <strong className="overflow-hidden text-foreground text-xs font-semibold text-ellipsis whitespace-nowrap">
           {distanceToDisplay(settings.altitudeM, unitSystem)}{" "}
           {distanceUnit(unitSystem)}
         </strong>
@@ -143,13 +143,13 @@ export function ReconCaptureSummary({
         <span className="text-(--muted-foreground) text-xs">
           Front / Side overlap
         </span>
-        <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
+        <strong className="overflow-hidden text-foreground text-xs font-semibold text-ellipsis whitespace-nowrap">
           {settings.frontOverlapPct}% / {settings.sideOverlapPct}%
         </strong>
       </div>
       <div className="flex flex-col gap-1 min-w-0">
         <span className="text-(--muted-foreground) text-xs">Gimbal pitch</span>
-        <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
+        <strong className="overflow-hidden text-foreground text-xs font-semibold text-ellipsis whitespace-nowrap">
           {pitchSummary}
         </strong>
       </div>
@@ -157,7 +157,7 @@ export function ReconCaptureSummary({
         <span className="text-(--muted-foreground) text-xs">
           Segment estimate
         </span>
-        <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
+        <strong className="overflow-hidden text-foreground text-xs font-semibold text-ellipsis whitespace-nowrap">
           {Math.ceil(minutes)} min
         </strong>
       </div>
@@ -165,7 +165,7 @@ export function ReconCaptureSummary({
         <span className="text-(--muted-foreground) text-xs">
           Battery segment*
         </span>
-        <strong className="overflow-hidden text-(--foreground) text-xs font-semibold text-ellipsis whitespace-nowrap">
+        <strong className="overflow-hidden text-foreground text-xs font-semibold text-ellipsis whitespace-nowrap">
           Spend {batteryPct}%
         </strong>
       </div>
