@@ -24,7 +24,6 @@ import {
   findMissionRecord,
   loadProjects,
   seedTemplates,
-  STAKEHOLDER_DEMO_MISSION_ID,
 } from "../library/database/store";
 import {
   loadDroneProfiles,
@@ -57,12 +56,10 @@ const PAGE_TITLES: Record<LibrarySection, string> = {
 };
 
 function initialStudioRoute(): MissionStudioRoute {
-  const basePath = import.meta.env.BASE_URL.replace(/\/+$/, "");
-  const pathname = window.location.pathname;
-  if (pathname === basePath || pathname === `${basePath}/`) {
-    return { kind: "mission", missionId: STAKEHOLDER_DEMO_MISSION_ID };
-  }
-  return parseMissionStudioRoute(pathname, import.meta.env.BASE_URL);
+  return parseMissionStudioRoute(
+    window.location.pathname,
+    import.meta.env.BASE_URL,
+  );
 }
 
 interface UseStudioRoutingArgs {
