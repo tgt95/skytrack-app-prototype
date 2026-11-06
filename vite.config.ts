@@ -154,7 +154,9 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@zip.js/zip.js/lib/zip-no-worker.js': '@zip.js/zip.js'
+      '@zip.js/zip.js/lib/zip-no-worker.js': '@zip.js/zip.js',
+      '@content': resolve(process.cwd(), 'content'),
+      '@': resolve(process.cwd(), 'src')
     }
   },
   // Mission Studio loads Cesium lazily. Include it up front so Vite does not

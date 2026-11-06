@@ -1,7 +1,7 @@
 /* mission-preview-model.ts — deterministic preview timing and geometry. */
 
-import { getMissionHome, getMissionStart, type StudioMission, type Waypoint } from '../../domain/mission-model'
-import { computeDerivedTransfers } from '../../domain/transfer-planner'
+import { getMissionHome, getMissionStart, type StudioMission, type Waypoint } from '@/domain/mission-model'
+import { computeDerivedTransfers } from '@/domain/transfer-planner'
 import { buildSimPlan, samplePlan } from './simulation-model'
 
 type PreviewEvent = {

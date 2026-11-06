@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "skytrack-ui/select";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import {
   DRONE_COMPONENT_GROUPS,
   DRONE_COMPONENT_INSTALL_STATES,
@@ -24,7 +24,7 @@ import {
   type DroneDataSourceType,
   type DroneHardwareComponent,
   type DroneHardwareSpecification,
-} from "../database/drone-store";
+} from "@/features/library/database/drone-store";
 import { SelectField, TextField } from "./drone-profile-fields";
 import { DroneSpecificationList } from "./drone-specification-list";
 

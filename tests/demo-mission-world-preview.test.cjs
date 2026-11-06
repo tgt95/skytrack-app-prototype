@@ -2,8 +2,8 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const projects = require("../src/features/library/database/projects.json");
-const leevilleMission = require("../src/features/library/database/missions/leeville-pike-flight.json");
+const projects = require("../src/features/library/database/seeds/projects.json");
+const leevilleMission = require("../src/features/library/database/seeds/missions/leeville-pike-flight.json");
 const { missionFromSnapshot } = require("../src/domain/mission-model.ts");
 const {
   resolveMissionWorldAssetId,

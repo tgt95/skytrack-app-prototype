@@ -12,7 +12,7 @@ import { Tabs, TabsList, TabsPanel, TabsTab } from "skytrack-ui/tabs";
 import {
   getMockReconGsdCmPerPx,
   type ReconFlightSettings,
-} from "../../../domain/mission-model";
+} from "@/domain/mission-model";
 import {
   distanceFromDisplay,
   distanceToDisplay,
@@ -22,7 +22,7 @@ import {
   speedToDisplay,
   speedUnit,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
+} from "@/shared/measurement-units";
 
 interface ReconnaissanceSettingsFormProps {
   value: ReconFlightSettings;

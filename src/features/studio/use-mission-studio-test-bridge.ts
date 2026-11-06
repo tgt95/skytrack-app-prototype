@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import type { SceneSelection, StudioMission } from '../../domain/mission-model'
-import type { SimApi } from '../simulation/simulation'
+import type { SceneSelection, StudioMission } from '@/domain/mission-model'
+import type { SimApi } from '@/features/simulation/simulation'
 import type { AppTab } from './studio-left-rail'
 import type { Stage } from './studio-map-overlays'
 

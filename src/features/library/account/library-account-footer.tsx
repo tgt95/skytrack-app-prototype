@@ -1,7 +1,7 @@
 import { ReleaseNotesPopover } from "./release-notes-popover.tsx";
-import { AccountMenu, type AccountMenuPanel } from "../../../ui/components/account-menu";
+import { AccountMenu, type AccountMenuPanel } from "@/ui/components/account-menu";
 import type { AccountProfile } from "./account-menu-state.ts";
-import type { ThemePreference } from "../../../shared/theme-preference";
+import type { ThemePreference } from "@/shared/theme-preference";
 
 export function LibraryAccountFooter({
   accountProfile,

@@ -36,7 +36,7 @@ import type {
   ResourceStatus,
   WorkspaceWorldRecord,
   WorldSourceType,
-} from "../database/workspace-resources-store";
+} from "@/features/library/database/workspace-resources-store";
 
 const RESOURCE_STATUSES: ResourceStatus[] = [
   "Sample",

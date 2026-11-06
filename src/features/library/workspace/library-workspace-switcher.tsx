@@ -11,7 +11,7 @@ import {
   MenuRadioItemIndicator,
   MenuTrigger,
 } from "skytrack-ui/menu";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import { WORKSPACES } from "./workspace-data.ts";
 import type { WorkspaceDefinition } from "./workspace-data.ts";
 

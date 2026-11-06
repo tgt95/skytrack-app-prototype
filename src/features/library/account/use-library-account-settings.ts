@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { readMissionDesignPreferences, saveMissionDesignPreferences, type MissionDesignPreferences } from '../../../shared/mission-design-preferences'
-import { applyThemePreference, readThemePreference, saveThemePreference, THEME_PREFERENCE_CHANGE_EVENT, type ThemePreference } from '../../../shared/theme-preference'
-import type { AccountMenuPanel } from '../../../ui/components/account-menu'
+import { readMissionDesignPreferences, saveMissionDesignPreferences, type MissionDesignPreferences } from '@/shared/mission-design-preferences'
+import { applyThemePreference, readThemePreference, saveThemePreference, THEME_PREFERENCE_CHANGE_EVENT, type ThemePreference } from '@/shared/theme-preference'
+import type { AccountMenuPanel } from '@/ui/components/account-menu'
 import {
   readAccountProfile,
   readNotificationPreferences,

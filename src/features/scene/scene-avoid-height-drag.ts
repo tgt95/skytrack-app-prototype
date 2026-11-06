@@ -6,7 +6,7 @@
    owned avoid polygon/handle properties in place. */
 
 import type { Cartesian2, Viewer } from 'cesium'
-import { missionOrigin, type StudioMission } from '../../domain/mission-model'
+import { missionOrigin, type StudioMission } from '@/domain/mission-model'
 import { avoidHandleId, enuToLngLat } from './mission-scene-helpers'
 import type { SceneDragPressRecord, ScenePickCallbacks } from './scene-edit-gestures'
 import type { DrillPickCandidate } from './scene-point-drag'

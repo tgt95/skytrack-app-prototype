@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from "skytrack-ui/alert";
 import { FieldRoot } from "skytrack-ui/field";
 import { Select, SelectLabel, SelectTrigger, SelectValue, SelectIcon, SelectPortal, SelectPositioner, SelectPopup, SelectList, SelectItem, SelectItemIndicator, SelectItemText } from "skytrack-ui/select";
 import { type MissionInsightSample } from "./mission-insights-data";
-import { type MissionInsightsReportTab } from "../mission-report-url";
+import { type MissionInsightsReportTab } from "@/features/studio/mission-report-url";
 import { useMemo, useState } from "react";
 import { actionRows, eventRows, actionColumns, eventColumns, sequenceGapColumns } from "./mission-insights-report-timeline-data";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "skytrack-ui/tabs";

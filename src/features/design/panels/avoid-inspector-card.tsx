@@ -12,17 +12,17 @@ import {
 } from "skytrack-ui/menu";
 import { Toggle } from "skytrack-ui/toggle";
 import { ToggleGroup } from "skytrack-ui/toggle-group";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
-import { AvoidZoneIcon } from "../../../ui/components/icons";
-import type { AvoidZone } from "../../../domain/mission-model";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
+import { AvoidZoneIcon } from "@/ui/components/icons";
+import type { AvoidZone } from "@/domain/mission-model";
 import {
   distanceFromDisplay,
   distanceToDisplay,
   distanceUnit,
   formatDistance,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
-import SliderField from "../controls/slider-field";
+} from "@/shared/measurement-units";
+import SliderField from "@/features/design/controls/slider-field";
 
 export interface AvoidInspectorCardProps {
   zone: AvoidZone;

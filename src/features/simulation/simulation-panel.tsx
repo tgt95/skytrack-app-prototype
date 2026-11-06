@@ -18,8 +18,8 @@ import { SimulationSettingsForm } from "./simulation-settings-form";
 import {
   formatMeasurementText,
   useMeasurementSystem,
-} from "../../shared/measurement-units";
-import type { StudioMission } from "../../domain/mission-model";
+} from "@/shared/measurement-units";
+import type { StudioMission } from "@/domain/mission-model";
 import {
   type SimEventItem,
   type SimLogLine,

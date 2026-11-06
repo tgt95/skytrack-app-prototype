@@ -1,9 +1,9 @@
 import { useState } from "react";
-import type { WorkspaceDroneProfile } from "../database/drone-store";
+import type { WorkspaceDroneProfile } from "@/features/library/database/drone-store";
 import type {
   WorkspaceAIModelRecord,
   WorkspaceWorldRecord,
-} from "../database/workspace-resources-store";
+} from "@/features/library/database/workspace-resources-store";
 
 export type LibraryResourceEditor<T> = {
   mode: "create" | "edit";

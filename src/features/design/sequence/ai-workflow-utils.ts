@@ -1,8 +1,8 @@
-import { uid } from "../../../domain/mission-model";
+import { uid } from "@/domain/mission-model";
 import type {
   MissionAIWorkflow,
   StudioMission,
-} from "../../../domain/mission-model";
+} from "@/domain/mission-model";
 
 type Waypoint = StudioMission["waypoints"][number];
 

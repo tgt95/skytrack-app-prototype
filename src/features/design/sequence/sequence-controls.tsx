@@ -12,5 +12,5 @@ export {
   SequenceActionBadge,
   SequenceActionRow,
 } from "./sequence-action-controls";
-export { CompactAxisField } from "../controls/compact-axis-field";
+export { CompactAxisField } from "@/features/design/controls/compact-axis-field";
 export { WaypointRow } from "./waypoint-row";

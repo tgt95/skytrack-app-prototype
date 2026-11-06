@@ -1,9 +1,9 @@
 import { useCallback } from "react";
-import type { StudioMission } from "../../domain/mission-model";
+import type { StudioMission } from "@/domain/mission-model";
 import type { MissionWorldOption } from "./studio-dialogs";
-import type { WorkspaceWorldRecord } from "../library/database/workspace-resources-store";
+import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
 import { useWorldGlbAsset } from "./use-world-glb-asset";
-import { useWorldGlbImport } from "../library/use-world-glb-import";
+import { useWorldGlbImport } from "@/features/library/use-world-glb-import";
 
 export function useStudioWorldGlb({
   mission,

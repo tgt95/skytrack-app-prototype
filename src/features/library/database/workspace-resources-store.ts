@@ -1,5 +1,5 @@
-import { DEFAULT_WORKSPACE_ID, WORKSPACES } from "../workspace/workspace-data.ts";
-import { STORAGE_KEYS, STORAGE_VERSIONS } from "../../../shared/storage-keys";
+import { DEFAULT_WORKSPACE_ID, WORKSPACES } from "@/features/library/workspace/workspace-data.ts";
+import { STORAGE_KEYS, STORAGE_VERSIONS } from "@/shared/storage-keys";
 import { BUNDLED_WORLD_ASSETS } from "./bundled-world-assets";
 
 export type ResourceStatus = "Sample" | "Draft" | "Registered" | "Archived";

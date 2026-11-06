@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
-import type { MissionInsightsReportTab } from "../mission-report-url";
+import type { MissionInsightsReportTab } from "@/features/studio/mission-report-url";
 import type { InsightOutput } from "./mission-insights-output-data";
 import type { MissionInsightSample } from "./mission-insights-data";
 import type { InsightMedia } from "./mission-insights-report-data";

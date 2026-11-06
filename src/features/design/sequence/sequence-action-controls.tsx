@@ -30,8 +30,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "skytrack-ui/tooltip";
-import type { CameraActionKind } from "../../../domain/mission-model";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
+import type { CameraActionKind } from "@/domain/mission-model";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import {
   hasSequenceDrag,
   readSequenceDragItem,
@@ -293,11 +293,11 @@ export function SequenceActionRow(props: {
             }}
           >
             <NumberFieldInput
-              className="text-right"
+              className="h-5.5 text-right"
               aria-label={`Gimbal pitch at waypoint ${wpSeq}`}
             />
           </NumberField>
-          <span>°</span>
+          {/* <span>°</span> */}
         </label>
       ) : null}
       <SkyTooltip>

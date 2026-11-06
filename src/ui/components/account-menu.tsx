@@ -23,7 +23,7 @@ import {
   MenuSubmenuTrigger,
   MenuTrigger,
 } from "skytrack-ui/menu";
-import type { ThemePreference } from "../../shared/theme-preference";
+import type { ThemePreference } from "@/shared/theme-preference";
 
 export type AccountMenuPanel =
   | "profile"

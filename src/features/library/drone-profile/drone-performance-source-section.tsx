@@ -2,7 +2,7 @@ import {
   DRONE_DATA_SOURCE_TYPES,
   type DroneDataSourceType,
   type WorkspaceDroneProfile,
-} from "../database/drone-store";
+} from "@/features/library/database/drone-store";
 import { NumberField, SelectField, TextField } from "./drone-profile-fields";
 import {
   massFromDisplay,
@@ -12,7 +12,7 @@ import {
   speedToDisplay,
   speedUnit,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
+} from "@/shared/measurement-units";
 
 export function DronePerformanceSourceSection({
   profile,

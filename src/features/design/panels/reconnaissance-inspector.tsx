@@ -4,15 +4,15 @@ import {
   type ReconFlightSettings,
   type Waypoint,
   getMockReconGsdCmPerPx,
-} from "../../../domain/mission-model";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
+} from "@/domain/mission-model";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import {
   distanceToDisplay,
   distanceUnit,
   formatMeasurementText,
   formatResolution,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
+} from "@/shared/measurement-units";
 import { ReconnaissanceSettingsForm } from "./reconnaissance-settings-form";
 
 type ReconTarget = { kind: "route" | "area"; id: string };

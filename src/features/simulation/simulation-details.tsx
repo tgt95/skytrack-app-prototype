@@ -10,7 +10,7 @@ import {
   ProgressIndicator,
   ProgressTrack
 } from 'skytrack-ui/progress'
-import type { StudioMission } from '../../domain/mission-model'
+import type { StudioMission } from '@/domain/mission-model'
 import type {
   SimPlan,
   SimSettings,
@@ -24,7 +24,7 @@ import {
   speedToDisplay,
   speedUnit,
   useMeasurementSystem
-} from '../../shared/measurement-units'
+} from '@/shared/measurement-units'
 
 function Stat ({
   label,

@@ -13,10 +13,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "skytrack-ui/tooltip";
-import { AreaIcon } from "../../ui/components/icons";
-import type { SceneTool } from "../../domain/mission-model";
+import { AreaIcon } from "@/ui/components/icons";
+import type { SceneTool } from "@/domain/mission-model";
 import SimulationReportTable from "./report-table";
-import type { SimApi, SimPlan } from "../simulation/simulation";
+import type { SimApi, SimPlan } from "@/features/simulation/simulation";
 import type { AppTab } from "./studio-left-rail";
 import type { PendingMissionShape } from "./use-drawing-session";
 

@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import type { SceneSelection } from "../../domain/mission-model";
-import type { MissionBasemapStyle } from "../scene/basemaps";
-import type { SceneReadiness } from "../scene/mission-scene";
-import { PYTHON_SAMPLE } from "../design/panels/python-editor";
-import type { SimSettings } from "../simulation/simulation";
-import { DEFAULT_SIM_SETTINGS } from "../simulation/simulation";
+import type { SceneSelection } from "@/domain/mission-model";
+import type { MissionBasemapStyle } from "@/features/scene/basemaps";
+import type { SceneReadiness } from "@/features/scene/mission-scene";
+import { PYTHON_SAMPLE } from "@/features/design/panels/python-editor";
+import type { SimSettings } from "@/features/simulation/simulation";
+import { DEFAULT_SIM_SETTINGS } from "@/features/simulation/simulation";
 import type { AppTab } from "./studio-left-rail";
 import type { Stage } from "./studio-map-overlays";
 import { parseMissionViewSearch } from "./mission-view-url";

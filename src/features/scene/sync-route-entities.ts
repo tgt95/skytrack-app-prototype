@@ -1,9 +1,9 @@
-import { computeDerivedTransfers } from "../../domain/transfer-planner";
+import { computeDerivedTransfers } from "@/domain/transfer-planner";
 import {
   getMissionRouteWaypoints,
   getMissionRoutes,
   getMissionStart,
-} from "../../domain/mission-model";
+} from "@/domain/mission-model";
 import {
   droneMarkerImage,
   enuToLngLat,
@@ -15,8 +15,8 @@ import {
   WAYPOINT_LABEL_DETAIL_DISTANCE_M,
 } from "./mission-scene-helpers";
 import type { RouteEntityContext } from "./committed-entity-context";
-import { readMissionDesignPreferences } from "../../shared/mission-design-preferences";
-import { formatDistance } from "../../shared/measurement-units";
+import { readMissionDesignPreferences } from "@/shared/mission-design-preferences";
+import { formatDistance } from "@/shared/measurement-units";
 
 /** Add Route lines, derived transfers, waypoints, labels, insert markers, and vehicle. */
 export function addRouteEntities({

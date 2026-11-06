@@ -10,18 +10,18 @@ import {
   DialogPortal,
   DialogTitle,
 } from "skytrack-ui/dialog";
-import DroneProfileDialog from "../drone-profile-dialog";
+import DroneProfileDialog from "@/features/library/drone-profile-dialog";
 import { WorldProfileDialog } from "./workspace-resource-dialogs.tsx";
 import { ImportAIModelDialog } from "./import-ai-model-dialog.tsx";
 import {
   useWorldGlbImport,
   type ImportedWorldDetails,
-} from "../use-world-glb-import";
-import type { WorkspaceDroneProfile } from "../database/drone-store";
+} from "@/features/library/use-world-glb-import";
+import type { WorkspaceDroneProfile } from "@/features/library/database/drone-store";
 import type {
   WorkspaceAIModelRecord,
   WorkspaceWorldRecord,
-} from "../database/workspace-resources-store";
+} from "@/features/library/database/workspace-resources-store";
 
 type ProfileEditor<T> = { mode: "create" | "edit"; profile: T } | null;
 type MissionReference = { project: string; mission: string };

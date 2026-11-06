@@ -5,10 +5,10 @@ import {
   saveProjects,
   type LibMission,
   type LibProject,
-} from "../database/store";
+} from "@/features/library/database/store";
 import { DEFAULT_WORKSPACE_ID } from "./workspace-data.ts";
-import type { WizardResult } from "../create-wizard";
-import type { LibraryEntry, LibrarySection } from "../library-types";
+import type { WizardResult } from "@/features/library/create-wizard";
+import type { LibraryEntry, LibrarySection } from "@/features/library/library-types";
 
 interface UseLibraryProjectsOptions {
   activeWorkspaceId: string;

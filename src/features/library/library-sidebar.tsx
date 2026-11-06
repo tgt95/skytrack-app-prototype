@@ -16,7 +16,7 @@ import {
 import { LibraryAccountFooter } from "./account/library-account-footer.tsx";
 import { LibraryWorkspaceSwitcher } from "./workspace/library-workspace-switcher.tsx";
 import type { AccountProfile } from "./account/account-menu-state.ts";
-import type { AccountMenuPanel } from "../../ui/components/account-menu";
+import type { AccountMenuPanel } from "@/ui/components/account-menu";
 import type { WorkspaceDefinition } from "./workspace/workspace-data.ts";
 import type { LibrarySection } from "./library-types";
 

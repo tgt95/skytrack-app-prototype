@@ -1,6 +1,6 @@
-import { DEV_SCENARIO_IDS } from "../../../../shared/dev-scenario-state";
-import { DEV_SCENARIO_SLOTS } from "../../scenario-slots";
-import type { DevScenarioDefinition } from "../../types";
+import { DEV_SCENARIO_IDS } from "@/shared/dev-scenario-state";
+import { DEV_SCENARIO_SLOTS } from "@/features/dev-tools/scenario-slots";
+import type { DevScenarioDefinition } from "@/features/dev-tools/types";
 import RestartToUpdateAction from "./action";
 
 const restartToUpdateScenario = {

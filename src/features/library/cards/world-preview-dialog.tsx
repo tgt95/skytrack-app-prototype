@@ -9,7 +9,7 @@ import {
   DialogPortal,
   DialogTitle,
 } from "skytrack-ui/dialog";
-import type { WorkspaceWorldRecord } from "../database/workspace-resources-store";
+import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
 import { WorldModelViewer } from "./world-model-viewer";
 
 function formatWorldSize(size: number | undefined): string {

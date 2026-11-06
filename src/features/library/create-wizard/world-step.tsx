@@ -27,7 +27,7 @@ import {
   FieldLabel,
   FieldRoot,
 } from "skytrack-ui/field";
-import type { WorkspaceWorldRecord } from "../database/workspace-resources-store";
+import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
 
 type WorldType = "2D" | "3D";
 

@@ -119,7 +119,7 @@ export function WorldModelViewer({
       try {
         const [worldAssetAccess, THREE, { GLTFLoader }, { OrbitControls }] =
           await Promise.all([
-            import("../database/world-glb-asset-access"),
+            import("@/features/library/database/world-glb-asset-access"),
             import("three"),
             import("three/addons/loaders/GLTFLoader.js"),
             import("three/addons/controls/OrbitControls.js"),

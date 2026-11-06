@@ -1,7 +1,7 @@
 import type { Model, Viewer } from "cesium";
 import type { MutableRefObject } from "react";
-import type { MapTileOrigin } from "../../shared/map-tiles";
-import { missionOrigin, type StudioMission } from "../../domain/mission-model";
+import type { MapTileOrigin } from "@/shared/map-tiles";
+import { missionOrigin, type StudioMission } from "@/domain/mission-model";
 import { enuToLngLat } from "./mission-scene-helpers";
 
 type CesiumNS = typeof import("cesium");

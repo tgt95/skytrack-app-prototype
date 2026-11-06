@@ -1,7 +1,7 @@
 /* Pure/local helpers for Cesium overlays and coordinate conversion. Viewer lifecycle stays in mission-scene.tsx. */
 
 import type { Viewer } from 'cesium'
-import type { SceneSelection, StudioMission } from '../../domain/mission-model'
+import type { SceneSelection, StudioMission } from '@/domain/mission-model'
 
 type CesiumNS = typeof import('cesium')
 
@@ -17,7 +17,7 @@ export const MAX_AREA_DISTANCE_LABELS_PER_AREA = 16
    origin-aware: every scene placement and pick resolves through the mission's
    own anchor (`missionOrigin`), never a fixed global site. The domain helper
    keeps the default origin for legacy callers. */
-export { enuToLngLat, lngLatToEnu } from '../../domain/mission-model'
+export { enuToLngLat, lngLatToEnu } from '@/domain/mission-model'
 
 /* Scene color tokens — single source of truth for 3D canvas colors.
    Every color resolves from a skytrack-ui CSS var at runtime via themeColor().

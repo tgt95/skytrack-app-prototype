@@ -5,7 +5,7 @@ import {
   suggestGeocoder,
   type GeocodeResult
 } from './geocoder'
-import { missionOrigin, withMissionOrigin, type StudioMission } from '../../domain/mission-model'
+import { missionOrigin, withMissionOrigin, type StudioMission } from '@/domain/mission-model'
 
 type MissionCommit = (next: StudioMission, label?: string) => void
 

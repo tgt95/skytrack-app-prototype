@@ -16,7 +16,7 @@ import {
   distanceUnit,
   formatDistance,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
+} from "@/shared/measurement-units";
 
 export function DrawingAltitudeRuler({
   value,

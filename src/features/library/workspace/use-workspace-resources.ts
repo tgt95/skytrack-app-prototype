@@ -1,18 +1,18 @@
 import { useMemo, useRef, useState } from "react";
-import type { LibProject } from "../database/store";
+import type { LibProject } from "@/features/library/database/store";
 import {
   loadDroneProfiles,
   saveDroneProfiles,
   type WorkspaceDroneProfile,
-} from "../database/drone-store";
-import { deleteWorldGlbAsset } from "../database/world-glb-assets";
+} from "@/features/library/database/drone-store";
+import { deleteWorldGlbAsset } from "@/features/library/database/world-glb-assets";
 import {
   loadWorkspaceResources,
   saveWorkspaceResources,
   type WorkspaceAIModelRecord,
   type WorkspaceResourceState,
   type WorkspaceWorldRecord,
-} from "../database/workspace-resources-store";
+} from "@/features/library/database/workspace-resources-store";
 import { DEFAULT_WORKSPACE_ID } from "./workspace-data.ts";
 
 type MissionReference = { project: string; mission: string };

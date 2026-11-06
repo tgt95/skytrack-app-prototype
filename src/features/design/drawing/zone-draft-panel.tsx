@@ -1,14 +1,14 @@
 import { Button } from "skytrack-ui/button";
 import { Toggle } from "skytrack-ui/toggle";
 import { ToggleGroup } from "skytrack-ui/toggle-group";
-import { AreaIcon, AvoidZoneIcon } from "../../../ui/components/icons";
+import { AreaIcon, AvoidZoneIcon } from "@/ui/components/icons";
 import {
   distanceFromDisplay,
   distanceToDisplay,
   distanceUnit,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
-import SliderField from "../controls/slider-field";
+} from "@/shared/measurement-units";
+import SliderField from "@/features/design/controls/slider-field";
 
 export interface ZoneDraftPanelProps {
   className?: string;

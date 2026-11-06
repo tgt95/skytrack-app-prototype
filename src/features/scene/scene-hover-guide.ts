@@ -7,12 +7,12 @@
    live state through the ref objects its caller passes in. */
 
 import type { Cartesian3, Viewer } from "cesium";
-import { readMissionDesignPreferences } from "../../shared/mission-design-preferences";
+import { readMissionDesignPreferences } from "@/shared/mission-design-preferences";
 import {
   distanceToDisplay,
   distanceUnit,
-} from "../../shared/measurement-units";
-import { missionOrigin, type StudioMission } from "../../domain/mission-model";
+} from "@/shared/measurement-units";
+import { missionOrigin, type StudioMission } from "@/domain/mission-model";
 import {
   enuToLngLat,
   safeColor,

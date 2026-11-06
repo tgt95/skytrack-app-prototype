@@ -1,14 +1,14 @@
 import { QuestionIcon, SidebarIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
-import type { useDrawingSession } from "../../features/studio/use-drawing-session";
-import type { useStudioSimulationModel } from "../../features/studio/use-studio-simulation-model";
-import type { useStudioUiState } from "../../features/studio/use-studio-ui-state";
+import type { useDrawingSession } from "@/features/studio/use-drawing-session";
+import type { useStudioSimulationModel } from "@/features/studio/use-studio-simulation-model";
+import type { useStudioUiState } from "@/features/studio/use-studio-ui-state";
 import {
   formatDistance,
   speedToDisplay,
   speedUnit,
   useMeasurementSystem,
-} from "../../shared/measurement-units";
+} from "@/shared/measurement-units";
 
 type FooterUiState = Pick<
   ReturnType<typeof useStudioUiState>,

@@ -46,6 +46,10 @@ function extractModuleSpecifiers(filePath, sourceText) {
 }
 
 function resolveRelativeModule(filePath, specifier) {
+  if (specifier.startsWith('@/')) {
+    return path.posix.normalize(path.posix.join('src', specifier.slice(2)))
+      .replace(/\.(?:ts|tsx|js|jsx|json)$/, '')
+  }
   if (!specifier.startsWith('.')) return null
   return path.posix.normalize(path.posix.join(path.posix.dirname(filePath), specifier))
     .replace(/\.(?:ts|tsx|js|jsx|json)$/, '')

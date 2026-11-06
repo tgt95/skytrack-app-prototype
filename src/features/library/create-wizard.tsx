@@ -17,7 +17,7 @@ import {
   DialogTitle,
 } from "skytrack-ui/dialog";
 import { Tabs, TabsList, TabsTab } from "skytrack-ui/tabs";
-import { WORLDS } from "../../domain/mission-model";
+import { WORLDS } from "@/domain/mission-model";
 import type { WorkspaceDroneProfile } from "./database/drone-store";
 import type { WorkspaceWorldRecord } from "./database/workspace-resources-store";
 import { DroneStep } from "./create-wizard/drone-step";

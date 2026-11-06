@@ -17,7 +17,7 @@ import {
   MenuPositioner,
   MenuTrigger,
 } from "skytrack-ui/menu";
-import { SkyTooltip } from "../../ui/components/sky-tooltip";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import { LibraryPageHeader, LibraryPageLayout } from "./cards/library-presentation.tsx";
 import type { LibMission, LibProject } from "./database/store";
 

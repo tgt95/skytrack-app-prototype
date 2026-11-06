@@ -13,28 +13,28 @@ import {
   type SceneSelection,
   type SceneTool,
   type StudioMission,
-} from "../../domain/mission-model";
+} from "@/domain/mission-model";
 import { createBlankMissionWithDefaults } from "./mission-defaults";
 import type { StudioMissionDocumentAction } from "./mission-document";
 import type { Stage } from "./studio-map-overlays";
 import type { PendingMissionPoint } from "./use-drawing-session";
 import { useStudioWorldOptions } from "./use-studio-world-options";
-import type { LibraryEntry, LibrarySection } from "../library/library";
+import type { LibraryEntry, LibrarySection } from "@/features/library/library";
 import {
   findMissionRecord,
   loadProjects,
   seedTemplates,
-} from "../library/database/store";
+} from "@/features/library/database/store";
 import {
   loadDroneProfiles,
   type WorkspaceDroneProfile,
-} from "../library/database/drone-store";
-import { getSharedProject } from "../library/workspace/workspace-data.ts";
+} from "@/features/library/database/drone-store";
+import { getSharedProject } from "@/features/library/workspace/workspace-data.ts";
 import {
   missionStudioRoutePath,
   parseMissionStudioRoute,
   type MissionStudioRoute,
-} from "../library/router";
+} from "@/features/library/router";
 import { parseMissionViewSearch } from "./mission-view-url";
 import type { AppTab } from "./studio-left-rail";
 

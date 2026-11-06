@@ -1,6 +1,6 @@
 import { type JsonRecord, asRecords, textValue, asRecord, reportForSample, numberValue, modelForId } from "./mission-insights-report-data";
 import { type MissionInsightSample } from "./mission-insights-data";
-import { type MissionInsightsReportTab } from "../mission-report-url";
+import { type MissionInsightsReportTab } from "@/features/studio/mission-report-url";
 import { statusLabel, KeyValueList } from "./mission-insights-report-shared.tsx";
 import { type DataTableColumnDef, DataTable } from "skytrack-ui/data-table";
 import { DetailSection } from "./mission-insights-page-sections";

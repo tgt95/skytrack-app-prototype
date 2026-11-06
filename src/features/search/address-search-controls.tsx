@@ -1,7 +1,7 @@
 import { MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
 import { Input } from "skytrack-ui/input";
 import { Toolbar, ToolbarButton, ToolbarGroup } from "skytrack-ui/toolbar";
-import MapControlTooltip from "../../ui/components/map-control-tooltip";
+import MapControlTooltip from "@/ui/components/map-control-tooltip";
 import type { AddressSearchController } from "./use-address-search";
 
 export default function AddressSearchControls({

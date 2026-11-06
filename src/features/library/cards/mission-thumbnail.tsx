@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import missionThumbnailSvg from "../../../assets/img-empty-thumbnail-4_3.svg?raw";
+import missionThumbnailSvg from "@/assets/img-empty-thumbnail-4_3.svg?raw";
 
 const thumbnailSvg = missionThumbnailSvg.replace(
   "<svg ",
@@ -24,7 +24,7 @@ export default function MissionThumbnail({
 
     let cancelled = false;
     let objectUrl: string | null = null;
-    void import("../database/world-glb-asset-access")
+    void import("@/features/library/database/world-glb-asset-access")
       .then(({ loadWorldGlbThumbnail }) => loadWorldGlbThumbnail(worldAssetId))
       .then((thumbnail) => {
         if (cancelled || !thumbnail) return;

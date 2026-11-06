@@ -8,7 +8,7 @@ import {
   type AvoidZone,
   type MissionArea,
   type ReconFlightSettings
-} from '../../domain/mission-model'
+} from '@/domain/mission-model'
 import type { DesignPanelProps } from './design-panel'
 
 type ReconTarget = { kind: 'route' | 'area'; id: string }

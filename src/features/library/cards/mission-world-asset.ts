@@ -1,5 +1,5 @@
-import type { LibMission } from "../database/store";
-import type { WorkspaceWorldRecord } from "../database/workspace-resources-store";
+import type { LibMission } from "@/features/library/database/store";
+import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
 
 /** Resolve a Mission's selected GLB when its worldId is a record or asset ID. */
 export function resolveMissionWorldAssetId(

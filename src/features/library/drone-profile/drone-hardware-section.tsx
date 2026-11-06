@@ -3,7 +3,7 @@ import { Button } from "skytrack-ui/button";
 import type {
   DroneHardwareComponent,
   DroneHardwareSpecification,
-} from "../database/drone-store";
+} from "@/features/library/database/drone-store";
 import { DroneComponentRow } from "./drone-component-row";
 
 export function DroneHardwareSection({

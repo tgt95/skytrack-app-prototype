@@ -1,7 +1,7 @@
 import { useEffect, useRef, type MutableRefObject } from "react";
 import type { Viewer } from "cesium";
-import type { StudioMission } from "../../domain/mission-model";
-import { missionOrigin } from "../../domain/mission-model";
+import type { StudioMission } from "@/domain/mission-model";
+import { missionOrigin } from "@/domain/mission-model";
 import { fitMission } from "./scene-camera-gestures";
 import type { MissionWorldModelSource } from "./mission-scene-types";
 import { useWorldModelScene } from "./use-world-model-scene";

@@ -8,7 +8,7 @@ import {
   type SceneSelection,
   type SceneTool,
   type StudioMission,
-} from "../../domain/mission-model";
+} from "@/domain/mission-model";
 
 type EnuPoint = { x: number; y: number };
 export type { EnuPoint };

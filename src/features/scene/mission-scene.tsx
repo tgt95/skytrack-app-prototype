@@ -18,7 +18,7 @@ import {
   missionOrigin,
   type SceneTool,
   type StudioMission,
-} from "../../domain/mission-model";
+} from "@/domain/mission-model";
 import { MissionCompassCube } from "./mission-compass-cube";
 import type { MissionCubeSnap } from "./mission-compass-model";
 import { removeSceneEntitiesInLayer } from "./scene-entity-ownership";
@@ -35,7 +35,7 @@ import { MissionScaleIndicator } from "./mission-scale-indicator";
 import {
   MISSION_DESIGN_PREFERENCES_CHANGE_EVENT,
   readMissionDesignPreferences,
-} from "../../shared/mission-design-preferences";
+} from "@/shared/mission-design-preferences";
 
 type CesiumNS = typeof import("cesium");
 

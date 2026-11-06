@@ -8,7 +8,7 @@
    order, drill depth and hover thresholds. */
 
 import type { Cartesian2, Cartesian3, Viewer } from 'cesium'
-import { missionOrigin, type SceneTool, type StudioMission } from '../../domain/mission-model'
+import { missionOrigin, type SceneTool, type StudioMission } from '@/domain/mission-model'
 import {
   avoidHandleId, enuToLngLat, isWaypointGroundGuideEntity, lngLatToEnu, pendingInsertIndex, pendingPointIndex, photoWaypointId, routeInsertIndex, waypointId, zoneId
 } from './mission-scene-helpers'

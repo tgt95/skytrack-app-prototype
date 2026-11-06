@@ -24,7 +24,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "skytrack-ui/menu";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 
 export type LibraryCardAction = {
   id: string;

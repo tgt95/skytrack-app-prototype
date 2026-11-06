@@ -13,8 +13,8 @@ import {
   normalizeMissionRoutes,
   type EnuVec,
   type StudioMission,
-} from "../../domain/mission-model";
-import { computeDerivedTransfers } from "../../domain/transfer-planner";
+} from "@/domain/mission-model";
+import { computeDerivedTransfers } from "@/domain/transfer-planner";
 import type { SimEventItem, SimLeg, SimPlan } from "./simulation-types";
 
 const DWELL_S: Record<string, number> = {

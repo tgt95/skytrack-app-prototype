@@ -18,7 +18,7 @@ import {
   emptyMission,
   snapshotOf,
   type StudioMission
-} from '../../domain/mission-model'
+} from '@/domain/mission-model'
 
 /** Undo/redo stack depth cap. Oldest entries drop beyond it. */
 const HISTORY_CAP = 50

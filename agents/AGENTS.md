@@ -29,5 +29,5 @@ Read this file before changing this standalone project. Also read
 
 ## Release notes
 
-- When the Owner asks to commit, push, or deploy Mission Studio to GitHub Pages, first add a concise reader-facing dated Markdown release note in [`docs/changelogs/`](../docs/changelogs/). Include the user-visible changes in that release, focusing on new features, UX/UI, behavior, and source improvements; omit internal task and implementation chatter.
-- Follow [`docs/changelogs/README.md`](../docs/changelogs/README.md) for the file format. Include the release note with the code changes so the Library What's New menu publishes the same update as the site.
+- When the Owner asks to commit, push, or deploy Mission Studio to GitHub Pages, first add a concise reader-facing dated Markdown release note in [`content/changelogs/`](../content/changelogs/). Include the user-visible changes in that release, focusing on new features, UX/UI, behavior, and source improvements; omit internal task and implementation chatter.
+- Follow [`content/changelogs/README.md`](../content/changelogs/README.md) for the file format. Include the release note with the code changes so the Library What's New menu publishes the same update as the site.

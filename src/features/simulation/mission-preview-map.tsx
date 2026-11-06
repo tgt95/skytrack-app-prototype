@@ -1,4 +1,4 @@
-import { getMissionHome, type StudioMission } from "../../domain/mission-model";
+import { getMissionHome, type StudioMission } from "@/domain/mission-model";
 import type { PreviewBuild } from "./mission-preview-model";
 
 interface MissionPreviewMapProps {

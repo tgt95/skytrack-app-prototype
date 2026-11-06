@@ -22,9 +22,9 @@ import {
   BreadcrumbSeparator,
 } from "skytrack-ui/breadcrumb";
 import { TabsList, TabsTab } from "skytrack-ui/tabs";
-import type { LibraryEntry } from "../../features/library/library";
-import { SkyTooltip } from "../components/sky-tooltip";
-import skytrackLogo from "../../assets/skytrack-logo.svg";
+import type { LibraryEntry } from "@/features/library/library";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
+import skytrackLogo from "@/assets/skytrack-logo.svg";
 
 interface StudioTopbarProps {
   missionName: string;

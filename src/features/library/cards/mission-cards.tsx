@@ -9,18 +9,18 @@ import {
   LibraryCardFrame,
   type LibraryCardAction,
 } from "./library-presentation.tsx";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import MissionThumbnail from "./mission-thumbnail.tsx";
 import MissionMapThumbnail from "./mission-map-thumbnail.tsx";
-import type { LibMission } from "../database/store";
-import type { SharedMissionFixture } from "../workspace/workspace-data.ts";
-import type { MapTileOrigin } from "../../../shared/map-tiles";
-import { roundTo } from "../../../shared/number-utils";
+import type { LibMission } from "@/features/library/database/store";
+import type { SharedMissionFixture } from "@/features/library/workspace/workspace-data.ts";
+import type { MapTileOrigin } from "@/shared/map-tiles";
+import { roundTo } from "@/shared/number-utils";
 import {
   formatArea,
   formatDistance,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
+} from "@/shared/measurement-units";
 import {
   actionCount,
   missionFromSnapshot,
@@ -28,7 +28,7 @@ import {
   polygonAreaM2,
   routeLengthM,
   type StudioMission,
-} from "../../../domain/mission-model";
+} from "@/domain/mission-model";
 import { LibraryAvatar } from "./library-avatar.tsx";
 
 interface MissionCardRecord {

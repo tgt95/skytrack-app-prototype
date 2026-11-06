@@ -27,21 +27,21 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "skytrack-ui/tooltip";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import {
   distanceFromDisplay,
   distanceToDisplay,
   distanceUnit,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
-import { InspectorField } from "../controls/inspector-field";
+} from "@/shared/measurement-units";
+import { InspectorField } from "@/features/design/controls/inspector-field";
 import {
   SAFETY_OPTIONS,
   safetyModeOf,
   type SafetyMode,
   type StudioMission,
   type ValidationIssue,
-} from "../../../domain/mission-model";
+} from "@/domain/mission-model";
 
 export interface MissionSettingsCardProps {
   mission: StudioMission;

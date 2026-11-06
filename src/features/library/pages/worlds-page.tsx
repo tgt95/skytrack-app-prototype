@@ -2,15 +2,15 @@ import { PlusIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Badge } from "skytrack-ui/badge";
 import { Button } from "skytrack-ui/button";
-import { WorldPreviewDialog } from "../cards/world-preview-dialog";
-import { WorldThumbnail } from "../cards/world-thumbnail";
-import type { WorkspaceWorldRecord } from "../database/workspace-resources-store";
+import { WorldPreviewDialog } from "@/features/library/cards/world-preview-dialog";
+import { WorldThumbnail } from "@/features/library/cards/world-thumbnail";
+import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
 import {
   LibraryCardFrame,
   LibraryEmptyState,
   LibraryPageHeader,
   LibraryPageLayout,
-} from "../cards/library-presentation.tsx";
+} from "@/features/library/cards/library-presentation.tsx";
 
 function worldSourceSummary(world: WorkspaceWorldRecord): string {
   if (world.sourceType === "mission") {

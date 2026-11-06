@@ -5,8 +5,8 @@ import {
   type LibraryCardAction,
 } from "./library-presentation.tsx";
 import { getTemplateThumbnail } from "./template-thumbnails.ts";
-import type { LibProject, LibTemplate } from "../database/store";
-import { SHARED_PROJECTS } from "../workspace/workspace-data.ts";
+import type { LibProject, LibTemplate } from "@/features/library/database/store";
+import { SHARED_PROJECTS } from "@/features/library/workspace/workspace-data.ts";
 import { LibraryAvatar } from "./library-avatar.tsx";
 
 export {

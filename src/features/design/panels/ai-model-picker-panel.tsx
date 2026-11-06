@@ -35,7 +35,7 @@ import {
   AIModelCardContent,
   getAIModelPath,
   type AIModelCardModel,
-} from "../../../ui/components/ai-model-card";
+} from "@/ui/components/ai-model-card";
 
 type SourceFilter = "all" | "skytrack" | "members" | "me";
 

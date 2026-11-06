@@ -12,14 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "skytrack-ui/select";
-import type { DerivedTransfer } from "../../../domain/transfer-planner";
-import type { StudioMission } from "../../../domain/mission-model";
+import type { DerivedTransfer } from "@/domain/transfer-planner";
+import type { StudioMission } from "@/domain/mission-model";
 import { SEQUENCE_LIST_ITEM_CLASS } from "./sequence-drag";
 import {
   formatDistance,
   formatMeasurementText,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
+} from "@/shared/measurement-units";
 
 export function TransferRow({
   transfer,

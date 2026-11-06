@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import type { MutableRefObject } from "react";
 import type { Viewer } from "cesium";
-import type { StudioMission } from "../../domain/mission-model";
-import type { MapTileOrigin } from "../../shared/map-tiles";
+import type { StudioMission } from "@/domain/mission-model";
+import type { MapTileOrigin } from "@/shared/map-tiles";
 import type { MissionWorldModelSource } from "./mission-scene-types";
 import { loadWorldGlbModel, type WorldGlbSceneState } from "./load-world-glb-model";
 

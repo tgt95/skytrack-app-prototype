@@ -7,17 +7,17 @@ import {
   type SceneSelection,
   type SceneTool,
   type StudioMission,
-} from "../../domain/mission-model";
-import { recomputeGeneratedMission } from "../../domain/mission-generation";
-import { seedMission } from "../../domain/mission-data";
+} from "@/domain/mission-model";
+import { recomputeGeneratedMission } from "@/domain/mission-generation";
+import { seedMission } from "@/domain/mission-data";
 import { createBlankMissionWithDefaults } from "./mission-defaults";
-import { saveMissionSnapshot } from "../library/database/store";
-import type { LibraryEntry } from "../library/library";
+import { saveMissionSnapshot } from "@/features/library/database/store";
+import type { LibraryEntry } from "@/features/library/library";
 import type { MissionWorldOption } from "./studio-dialogs";
 import type { StudioMissionDocumentAction } from "./mission-document";
 import type { PendingMissionPoint } from "./use-drawing-session";
 import type { Stage } from "./studio-map-overlays";
-import type { SimApi } from "../simulation/simulation";
+import type { SimApi } from "@/features/simulation/simulation";
 
 interface UseStudioActionsArgs {
   mission: StudioMission;

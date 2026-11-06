@@ -6,7 +6,7 @@
    clamps/rounding below are copied from the original handler verbatim. */
 
 import type { Cartesian2, Cartesian3, Viewer } from 'cesium'
-import { missionOrigin, type SceneTool, type StudioMission } from '../../domain/mission-model'
+import { missionOrigin, type SceneTool, type StudioMission } from '@/domain/mission-model'
 import { enuToLngLat, isWaypointGroundGuideEntity, photoWaypointId, waypointId } from './mission-scene-helpers'
 import type { SceneDragPressRecord, ScenePickCallbacks } from './scene-edit-gestures'
 import type { SurfacePick } from './scene-surface-pick'

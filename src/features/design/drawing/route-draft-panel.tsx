@@ -1,8 +1,8 @@
 import type { Dispatch, SetStateAction } from "react";
 import { Button } from "skytrack-ui/button";
-import type { StudioMission } from "../../../domain/mission-model";
-import { DraftAxisInput } from "../controls/design-controls";
-import type { PendingMissionPoint } from "../../studio/use-drawing-session";
+import type { StudioMission } from "@/domain/mission-model";
+import { DraftAxisInput } from "@/features/design/controls/design-controls";
+import type { PendingMissionPoint } from "@/features/studio/use-drawing-session";
 
 interface RouteDraftPanelProps {
   mission: StudioMission;

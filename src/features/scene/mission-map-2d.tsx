@@ -20,7 +20,7 @@ import {
   type SceneSelection,
   type SceneTool,
   type StudioMission,
-} from "../../domain/mission-model";
+} from "@/domain/mission-model";
 
 export interface MissionMap2DProps {
   mission: StudioMission;

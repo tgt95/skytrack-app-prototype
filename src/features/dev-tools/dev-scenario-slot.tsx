@@ -1,4 +1,4 @@
-import { useDevScenarioControls } from '../../shared/dev-scenario-state'
+import { useDevScenarioControls } from '@/shared/dev-scenario-state'
 import { DEV_SCENARIOS } from './scenario-registry'
 import type { DevScenarioSlotId } from './types'
 

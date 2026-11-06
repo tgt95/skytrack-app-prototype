@@ -2,7 +2,7 @@ import { FieldControl, FieldLabel, FieldRoot } from "skytrack-ui/field";
 import type {
   DroneFirmwareFamily,
   WorkspaceDroneProfile,
-} from "../database/drone-store";
+} from "@/features/library/database/drone-store";
 import { NumberField, SelectField, TextField } from "./drone-profile-fields";
 import {
   gramsFromDisplay,
@@ -14,7 +14,7 @@ import {
   smallLengthUnit,
   useMeasurementSystem,
   weightUnit,
-} from "../../../shared/measurement-units";
+} from "@/shared/measurement-units";
 
 const FIRMWARE_FAMILIES: DroneFirmwareFamily[] = [
   "PX4",

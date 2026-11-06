@@ -20,8 +20,8 @@ import {
   MenuSubmenuTrigger,
   MenuTrigger,
 } from "skytrack-ui/menu";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
-import { AreaIcon } from "../../../ui/components/icons";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
+import { AreaIcon } from "@/ui/components/icons";
 import {
   getAreaScanSpacingM,
   dist3,
@@ -29,11 +29,11 @@ import {
   type MissionArea,
   type ReconFlightSettings,
   type StudioMission,
-} from "../../../domain/mission-model";
-import type { DerivedTransfer } from "../../../domain/transfer-planner";
-import { ReconCaptureSummary } from "../panels/reconnaissance-inspector";
-import { InspectorField } from "../controls/inspector-field";
-import SliderField from "../controls/slider-field";
+} from "@/domain/mission-model";
+import type { DerivedTransfer } from "@/domain/transfer-planner";
+import { ReconCaptureSummary } from "@/features/design/panels/reconnaissance-inspector";
+import { InspectorField } from "@/features/design/controls/inspector-field";
+import SliderField from "@/features/design/controls/slider-field";
 import { EndMissionControl } from "./sequence-transfer";
 import { RouteWaypointList } from "./route-waypoint-list";
 import { ACTION_OPTIONS } from "./sequence-action-controls";
@@ -41,8 +41,8 @@ import { createAIWorkflowAt } from "./ai-workflow-utils";
 import type {
   CameraActionKind,
   SceneSelection,
-} from "../../../domain/mission-model";
-import type { AIModelCardModel } from "../../../ui/components/ai-model-card";
+} from "@/domain/mission-model";
+import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 import type { SequenceDropPosition } from "./sequence-drag";
 import {
   distanceFromDisplay,
@@ -50,7 +50,7 @@ import {
   distanceUnit,
   formatArea,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
+} from "@/shared/measurement-units";
 
 type Waypoint = StudioMission["waypoints"][number];
 

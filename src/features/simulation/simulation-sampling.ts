@@ -1,6 +1,6 @@
 /* simulation-sampling.ts — deterministic plan sampling and telemetry. */
 
-import type { EnuVec } from "../../domain/mission-model";
+import type { EnuVec } from "@/domain/mission-model";
 import type { SimPlan, SimStatus, Telemetry } from "./simulation-types";
 
 export function samplePlan(

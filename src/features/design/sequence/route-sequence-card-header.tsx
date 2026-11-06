@@ -19,17 +19,17 @@ import {
   MenuSubmenuTrigger,
   MenuTrigger,
 } from "skytrack-ui/menu";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import { ACTION_OPTIONS } from "./sequence-action-controls";
 import type {
   CameraActionKind,
   MissionRouteMeta,
   StudioMission,
-} from "../../../domain/mission-model";
+} from "@/domain/mission-model";
 import {
   formatDistance,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
+} from "@/shared/measurement-units";
 
 type Waypoint = StudioMission["waypoints"][number];
 

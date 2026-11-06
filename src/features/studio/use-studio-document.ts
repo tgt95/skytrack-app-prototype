@@ -14,14 +14,14 @@ import {
   snapshotOf,
   type SceneSelection,
   type StudioMission,
-} from "../../domain/mission-model";
+} from "@/domain/mission-model";
 import {
   emptyStudioMissionDocument,
   isMissionDocumentDirty,
   studioMissionReducer,
   type StudioMissionDocumentAction,
 } from "./mission-document";
-import type { SimApi } from "../simulation/simulation";
+import type { SimApi } from "@/features/simulation/simulation";
 
 export function useStudioDocumentState() {
   const [doc, dispatchDocument] = useReducer(

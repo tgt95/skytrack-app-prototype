@@ -1,6 +1,6 @@
 /* Leaf controls for mission design and map interaction. Keep state transitions in the route shell. */
 
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import { useState } from "react";
 import { Toggle } from "skytrack-ui/toggle";
 import { ToolbarButton } from "skytrack-ui/toolbar";

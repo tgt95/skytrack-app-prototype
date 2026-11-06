@@ -1,13 +1,13 @@
-import type { useAddressSearch } from "../search/use-address-search";
-import type { StudioMission } from "../../domain/mission-model";
-import type { MissionWorldModelSource } from "../scene/mission-scene-types";
+import type { useAddressSearch } from "@/features/search/use-address-search";
+import type { StudioMission } from "@/domain/mission-model";
+import type { MissionWorldModelSource } from "@/features/scene/mission-scene-types";
 import type { useMissionCommands } from "./use-mission-commands";
 import type { useStudioRouting } from "./use-studio-routing";
 import type { useStudioSceneSession } from "./use-studio-scene-session";
 import type { useStudioSimulationModel } from "./use-studio-simulation-model";
 import type { useStudioUiState } from "./use-studio-ui-state";
 import type { useDrawingSession } from "./use-drawing-session";
-import { clampSnapRuler } from "../design/drawing/drawing-altitude-utils";
+import { clampSnapRuler } from "@/features/design/drawing/drawing-altitude-utils";
 import { useDialogFocusReturn } from "./use-dialog-focus-return";
 import StudioSceneViewport from "./studio-scene-viewport";
 

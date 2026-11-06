@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
-import type { StudioMission } from "../../domain/mission-model";
+import type { StudioMission } from "@/domain/mission-model";
 import type { MissionWorldOption } from "./studio-dialogs";
-import type { MissionStudioRoute } from "../library/router";
+import type { MissionStudioRoute } from "@/features/library/router";
 import {
   loadWorkspaceResources,
   saveWorkspaceResources,
@@ -9,7 +9,7 @@ import {
   worldsForWorkspace,
   type WorkspaceResourceState,
   type WorkspaceWorldRecord,
-} from "../library/database/workspace-resources-store";
+} from "@/features/library/database/workspace-resources-store";
 
 export function useStudioWorldOptions({
   mission,

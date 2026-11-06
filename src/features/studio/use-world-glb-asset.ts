@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { loadWorldGlbAsset, type WorldGlbAsset } from "../library/database/world-glb-assets";
+import { loadWorldGlbAsset, type WorldGlbAsset } from "@/features/library/database/world-glb-assets";
 
 interface LoadedWorldAsset {
   id: string | undefined;

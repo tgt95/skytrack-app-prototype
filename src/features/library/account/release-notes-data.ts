@@ -102,7 +102,7 @@ function parseFrontmatterAndContent(raw: string): {
 
 function loadReleaseNotes(): ReleaseNote[] {
   const markdownFiles = import.meta.glob<string>(
-    "../../../../docs/changelogs/*.md",
+    "@content/changelogs/*.md",
     {
       query: "?raw",
       import: "default",

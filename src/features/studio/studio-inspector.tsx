@@ -4,10 +4,10 @@ import {
   type KeyboardEvent,
   type PointerEvent,
 } from "react";
-import DesignPanel, { ZoneDraftPanel } from "../design/design-panel";
-import RouteDraftPanel from "../design/drawing/route-draft-panel";
-import { AIModelPickerPanel } from "../design/panels/ai-model-picker-panel";
-import SimulationPanel from "../simulation/simulation-panel";
+import DesignPanel, { ZoneDraftPanel } from "@/features/design/design-panel";
+import RouteDraftPanel from "@/features/design/drawing/route-draft-panel";
+import { AIModelPickerPanel } from "@/features/design/panels/ai-model-picker-panel";
+import SimulationPanel from "@/features/simulation/simulation-panel";
 
 type DraftPanelProps = ComponentProps<typeof RouteDraftPanel>;
 type ZonePanelProps = ComponentProps<typeof ZoneDraftPanel>;

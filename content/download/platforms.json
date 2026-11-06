@@ -1,0 +1,165 @@
+{
+  "platforms": [
+    {
+      "id": "desktop",
+      "name": "SkyTrack Desktop",
+      "cardTitle": "Desktop",
+      "illustration": "desktop",
+      "summary": "Plan missions and review them in local simulation."
+    },
+    {
+      "id": "field",
+      "name": "SkyTrack Field",
+      "cardTitle": "Mobile",
+      "illustration": "mobile",
+      "summary": "Use the Android ground station in the field."
+    },
+    {
+      "id": "os",
+      "name": "SkyTrack OS",
+      "cardTitle": "SkyTrack OS",
+      "illustration": "skytrack-os",
+      "summary": "Run onboard autonomy on a companion computer, separate from the flight controller."
+    }
+  ],
+  "desktop": {
+    "hosts": [
+      {
+        "label": "macOS",
+        "version": "v1.2",
+        "detail": "macOS 11+",
+        "downloadLabel": "Download (248 MB | .dmg)",
+        "logo": "macOS"
+      },
+      {
+        "label": "Ubuntu",
+        "version": "v1.2",
+        "detail": "Ubuntu 20.04 / 22.04",
+        "downloadLabel": "Download (216 MB | .deb)",
+        "logo": "ubuntu"
+      },
+      {
+        "label": "Windows",
+        "version": "v1.2",
+        "detail": "Windows 10 / 11",
+        "downloadLabel": "Download (284 MB | .exe)",
+        "logo": "windows"
+      }
+    ],
+    "dockerInstallGuides": {
+      "macOS": "https://docs.docker.com/desktop/setup/install/mac-install/",
+      "Ubuntu": "https://docs.docker.com/desktop/setup/install/linux/ubuntu/",
+      "Windows": "https://docs.docker.com/desktop/setup/install/windows-install/"
+    },
+    "systemRequirements": {
+      "macOS": [
+        { "label": "Operating System", "value": "macOS 11 (Big Sur) or newer" },
+        { "label": "CPU", "value": "Intel Core i5 / Apple Silicon (M1/M2)" },
+        { "label": "GPU", "value": "Metal-supported GPU (integrated or discrete)" },
+        { "label": "RAM", "value": "16 GB" },
+        { "label": "Hard Disk", "value": "25 GB free" }
+      ],
+      "Ubuntu": [
+        { "label": "Operating System", "value": "Ubuntu 20.04 (Focal) or 22.04 (Jammy)" },
+        { "label": "CPU", "value": "Intel Core i5 or equivalent" },
+        { "label": "GPU", "value": "NVIDIA GTX 1080 or better" },
+        { "label": "RAM", "value": "16 GB" },
+        { "label": "Hard Disk", "value": "25 GB free" }
+      ],
+      "Windows": [
+        { "label": "Operating System", "value": "Windows 10 or 11" },
+        { "label": "CPU", "value": "Intel Core i5 (quad-core)" },
+        { "label": "GPU", "value": "NVIDIA GTX 1080 (OGRE2 rendering supported)" },
+        { "label": "RAM", "value": "16 GB" },
+        { "label": "Hard Disk", "value": "25 GB free" }
+      ]
+    },
+    "setup": {
+      "heading": "Configure the compute environment for drone simulation",
+      "localTitle": "Install Docker Desktop",
+      "localBadge": "Local",
+      "localSteps": [
+        "Docker Desktop must be running before local simulation.",
+        "Enable socket access if required by the host setup.",
+        "Open a mission to prepare its local simulation runtime."
+      ],
+      "readyTitle": "You’re ready when",
+      "readyDescription": "Docker is running and the mission’s local simulation runtime is available.",
+      "dockerDownloadLabel": "Download Docker Desktop",
+      "cloudTitle": "Use SkyTrack Cloud",
+      "cloudBadge": "Cloud",
+      "cloudDescription": "Cloud simulation is a draft option that needs Owner confirmation. Setup instructions will be added after the service path is confirmed.",
+      "pendingSteps": ["<Mock content>", "<Mock content>"]
+    }
+  },
+  "android": {
+    "version": "v1.2",
+    "detail": "Android 11+",
+    "storeUrl": "https://play.google.com/store/apps/details?id=com.getskytrack.app&pcampaignid=web_share",
+    "storeButtonLabel": "Get it on Google Play",
+    "requirements": [
+      { "component": "Operating system", "minimum": "Android 11", "recommended": "Android 13 or later" },
+      { "component": "Processor", "minimum": "64-bit ARM", "recommended": "Mid-range or higher 64-bit ARM processor" },
+      { "component": "RAM", "minimum": "4 GB", "recommended": "8 GB or more" },
+      { "component": "Graphics", "minimum": "OpenGL ES 3.0", "recommended": "OpenGL ES 3.1 or later" },
+      { "component": "Available storage", "minimum": "1 GB", "recommended": "2 GB or more" },
+      { "component": "Connectivity", "minimum": "Wi-Fi", "recommended": "Dual-band Wi-Fi; 4G/5G for cellular routing" },
+      { "component": "USB Host / OTG", "minimum": "Required when using a USB Wi-Fi adapter", "recommended": "USB-C OTG with a stable power supply" },
+      { "component": "Video decoding", "minimum": "Hardware decoding for the camera's codec", "recommended": "Hardware H.264/H.265 decoding supporting 1080p at 60 fps" }
+    ],
+    "setupSteps": [
+      "Install SkyTrack mobile app from CH play store.",
+      "Sign in and select the mission prepared in SkyTrack Desktop.",
+      "Follow the approved connection and mission-transfer guide before field use."
+    ]
+  },
+  "skyTrackOs": {
+    "targets": [
+      {
+        "id": "jetson",
+        "label": "NVIDIA Jetson",
+        "badgeLabel": "v1.2",
+        "disabled": false,
+        "detail": "Orin Nano / Orin NX",
+        "logo": "nvidia",
+        "downloads": [
+          {
+            "label": "Jetson Orin",
+            "downloadLabel": "Download Jetson Orin (1.8 GB | .tar.gz)",
+            "filename": "skytrack-mc-image-dev-jetson-orin-nano-devkit-nvme.rootfs.tegraflash.tar.gz"
+          },
+          {
+            "label": "Jetson NX",
+            "downloadLabel": "Download Jetson NX (1.8 GB | .tar.gz)",
+            "filename": "skytrack-mc-image-dev-p3768-0000-p3767-0000.rootfs-20260908085629.tegraflash.tar.gz"
+          }
+        ]
+      },
+      {
+        "id": "raspberry-pi",
+        "label": "Raspberry Pi 5",
+        "badgeLabel": "v1.2",
+        "disabled": false,
+        "detail": "Pi 5",
+        "logo": "raspberryPi",
+        "downloads": [
+          {
+            "label": "Raspberry Pi 5",
+            "downloadLabel": "Download (1.2 GB | .ext4)",
+            "filename": "core-image-full-cmdline-raspberrypi5.rootfs.ext4"
+          }
+        ]
+      },
+      {
+        "id": "linux-sbc",
+        "label": "Linux SBC",
+        "badgeLabel": "Coming soon",
+        "disabled": true,
+        "detail": "Common architecture hardware",
+        "logo": "linux",
+        "downloads": []
+      }
+    ],
+    "compatibilityTemplate": "{target} is listed as common architecture hardware. This example does not certify target compatibility or an OS image. The optional HITL profile is a separate, specific bench scenario."
+  }
+}

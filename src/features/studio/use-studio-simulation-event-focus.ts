@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import type { SceneSelection, Waypoint } from "../../domain/mission-model";
+import type { SceneSelection, Waypoint } from "@/domain/mission-model";
 
 export interface StudioSimulationFocusSceneHandle {
   focusPoint: (point: { x: number; y: number; z: number }) => void;

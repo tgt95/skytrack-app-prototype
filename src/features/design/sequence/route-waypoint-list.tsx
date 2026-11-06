@@ -9,10 +9,10 @@ import type {
   ReconFlightSettings,
   SceneSelection,
   StudioMission,
-} from "../../../domain/mission-model";
-import type { AIModelCardModel } from "../../../ui/components/ai-model-card";
+} from "@/domain/mission-model";
+import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 import { AIWorkflowCard, AIWorkflowStopRow } from "./ai-workflow-card";
-import type { DerivedTransfer } from "../../../domain/transfer-planner";
+import type { DerivedTransfer } from "@/domain/transfer-planner";
 import {
   ActionInsertAffordance,
   SequenceActionRow,

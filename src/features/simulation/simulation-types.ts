@@ -1,6 +1,6 @@
 /* simulation-types.ts — deterministic simulation contracts and settings. */
 
-import type { EnuVec } from "../../domain/mission-model";
+import type { EnuVec } from "@/domain/mission-model";
 
 export type SimStatus =
   "idle" | "running" | "paused" | "completed" | "aborted" | "failed";

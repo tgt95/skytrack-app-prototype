@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Viewer } from "cesium";
-import type { UnitSystem } from "../../shared/measurement-units";
-import { formatDistance } from "../../shared/measurement-units";
+import type { UnitSystem } from "@/shared/measurement-units";
+import { formatDistance } from "@/shared/measurement-units";
 
 type CesiumNS = typeof import("cesium");
 

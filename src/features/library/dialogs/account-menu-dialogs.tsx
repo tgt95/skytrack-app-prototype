@@ -30,16 +30,16 @@ import {
 } from "skytrack-ui/drawer";
 import { FieldControl, FieldLabel, FieldRoot } from "skytrack-ui/field";
 import { Switch, SwitchThumb } from "skytrack-ui/switch";
-import type { AccountMenuPanel } from "../../../ui/components/account-menu";
+import type { AccountMenuPanel } from "@/ui/components/account-menu";
 import type {
   AccountProfile,
   NotificationPreferences,
-} from "../account/account-menu-state.ts";
+} from "@/features/library/account/account-menu-state.ts";
 import {
   DEFAULT_MISSION_DESIGN_PREFERENCES,
   type MissionDesignPreferences,
-} from "../../../shared/mission-design-preferences";
-import { MissionDesignPreferencesContent } from "../account/mission-design-preferences-content";
+} from "@/shared/mission-design-preferences";
+import { MissionDesignPreferencesContent } from "@/features/library/account/mission-design-preferences-content";
 
 export function AccountMenuDialogs({
   panel,

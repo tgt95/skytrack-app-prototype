@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from "react";
-import { WORLDS, type StudioMission } from "../../domain/mission-model";
-import type { WorkspaceWorldRecord } from "../library/database/workspace-resources-store";
-import type { WorkspaceDroneProfile } from "../library/database/drone-store";
+import { WORLDS, type StudioMission } from "@/domain/mission-model";
+import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
+import type { WorkspaceDroneProfile } from "@/features/library/database/drone-store";
 import { EditMissionDialog } from "./edit-mission-dialog";
 import { MissionWorldPickerDialog } from "./mission-world-picker-dialog";
 import { ShortcutsDialog } from "./shortcuts-dialog";

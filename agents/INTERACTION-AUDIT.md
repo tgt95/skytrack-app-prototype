@@ -1,0 +1,15 @@
+# Interaction audit
+
+| Control / state | Expected result | Code evidence | Observed result | Browser evidence |
+|---|---|---|---|---|
+| Report list | Show eight illustrative rows across Simulation, Real, and HITL with Succeeded/Failed examples. | `src/features/studio/report-table.tsx:32-113,553-560` | PASS — Orca snapshot showed eight rows and the expected columns. | `agents/hitl-mission-insights-report-list.png` |
+| Report list PageHeader | Show Mission Reports as the page title and keep the sample-data introduction in the header content slot. | `src/features/studio/report-table.tsx:614-622` | PASS — Orca snapshot showed the PageHeader heading followed by its introduction and the report table. | `agents/hitl-mission-insights-url-list.png` |
+| Search | Filter sample list by entered text. | DataTable `searchPlaceholder` at `src/features/studio/report-table.tsx:558` | PASS — Orca snapshot showed textbox `HITL` and two matching rows. | `agents/hitl-mission-insights-list-filter.png` |
+| HITL Mission Insights action and URL | Open the static detail and add `report=mission-insights&runId=<row-id>` while retaining `tab=report`. | `src/features/studio/report-table.tsx:218-235`; `src/features/studio/mission-report-url.ts` | PASS — Orca URL became `?tab=report&report=mission-insights&runId=10092026-123000`. | `agents/hitl-mission-insights-url-detail.png` |
+| Detail refresh | Restore the detail from its query URL after reload. | `src/features/studio/mission-report-url.ts`; `src/ui/layout/page-layout.tsx:84-86` | PASS — Orca reload restored Mission Insights with the shell hidden. | `agents/hitl-mission-insights-url-detail.png` |
+| Subpage shell | Hide top navigation, left sidebar, and status bar while detail is open. | `src/ui/layout/page-layout.tsx:185-189,216-248,373-384` | PASS — Orca snapshot showed no shell topbar, complementary left rail, or section footer; one `main` remained. | `agents/hitl-mission-insights-url-detail.png` |
+| Browser back / forward | Back returns to list; forward restores the URL-backed detail. | `src/features/studio/report-table.tsx:527-568`; `src/features/studio/mission-report-url.ts` | PASS — Orca back returned to the list; forward reopened the detail with its URL and shell state. | `agents/hitl-mission-insights-url-detail.png` |
+| Mission Reports breadcrumb | Return to list with shell and current search preserved. | `src/features/studio/report-table.tsx:326-340,527-568`; `src/ui/layout/page-layout.tsx:185-189` | PASS — Orca returned to the list; shell reappeared and Search retained `HITL` with two rows. | `agents/hitl-mission-insights-url-list.png` |
+| Reopen detail after return | Keep detail reachable and leave preview open. | `src/features/studio/report-table.tsx:218-235` | PASS — Orca reopened the first HITL row; final tab remains on Mission Insights. | `agents/hitl-mission-insights-preview.png` |
+
+The detail is static. Export and non-HITL report actions remain disabled. Browser checks confirm layout and navigation; they do not validate live run data or report calculations.

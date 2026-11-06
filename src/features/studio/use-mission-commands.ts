@@ -12,12 +12,12 @@ import {
   type SceneSelection,
   type SceneTool,
   type StudioMission,
-} from "../../domain/mission-model";
+} from "@/domain/mission-model";
 import {
   recomputeGeneratedMission,
   refreshAvoidDetours,
-} from "../../domain/mission-generation";
-import type { WorkspaceWorldRecord } from "../library/database/workspace-resources-store";
+} from "@/domain/mission-generation";
+import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
 import type { MissionWorldOption } from "./studio-dialogs";
 import type {
   DraftAreaSettings,

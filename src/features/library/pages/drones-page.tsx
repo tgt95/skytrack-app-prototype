@@ -1,11 +1,11 @@
 import { DroneIcon, PlusIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
-import type { WorkspaceDroneProfile } from "../database/drone-store";
+import type { WorkspaceDroneProfile } from "@/features/library/database/drone-store";
 import {
   LibraryCardFrame,
   LibraryPageHeader,
   LibraryPageLayout,
-} from "../cards/library-presentation.tsx";
+} from "@/features/library/cards/library-presentation.tsx";
 
 export function DronesPage({
   workspaceName,

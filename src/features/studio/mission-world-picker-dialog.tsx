@@ -25,7 +25,7 @@ import {
   SelectValue
 } from 'skytrack-ui/select'
 import { Tabs, TabsList, TabsPanel, TabsTab } from 'skytrack-ui/tabs'
-import type { StudioMission } from '../../domain/mission-model'
+import type { StudioMission } from '@/domain/mission-model'
 
 interface MissionWorldPickerDialogProps {
   restoreDialogFocus: () => HTMLElement | null

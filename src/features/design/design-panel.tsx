@@ -9,16 +9,16 @@ import {
   type SceneSelection,
   type StudioMission,
   type ValidationIssue,
-} from "../../domain/mission-model";
-import type { DerivedTransfer } from "../../domain/transfer-planner";
-import MissionPreview from "../simulation/mission-preview";
+} from "@/domain/mission-model";
+import type { DerivedTransfer } from "@/domain/transfer-planner";
+import MissionPreview from "@/features/simulation/mission-preview";
 import { ReconSettingsPage } from "./panels/reconnaissance-inspector";
 import { DesignSequenceBlocks } from "./sequence/design-sequence-blocks";
 import MissionSettingsCard, {
   MissionChecksCard,
 } from "./panels/mission-settings-card";
 import CodeInspectorPanel from "./panels/code-inspector-panel";
-import type { AIModelCardModel } from "../../ui/components/ai-model-card";
+import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 import AvoidInspectorCard from "./panels/avoid-inspector-card";
 import type { SequenceDropPosition } from "./sequence/sequence-drag";
 import useDesignPanelState from "./use-design-panel-state";

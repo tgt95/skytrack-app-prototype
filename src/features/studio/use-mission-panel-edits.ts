@@ -1,7 +1,7 @@
 import { useCallback, type Dispatch, type MutableRefObject, type SetStateAction } from 'react'
-import type { SceneSelection, StudioMission } from '../../domain/mission-model'
-import { regenerateAreaWaypoints, refreshAvoidDetours } from '../../domain/mission-generation'
-import { snapshotOf } from '../../domain/mission-model'
+import type { SceneSelection, StudioMission } from '@/domain/mission-model'
+import { regenerateAreaWaypoints, refreshAvoidDetours } from '@/domain/mission-generation'
+import { snapshotOf } from '@/domain/mission-model'
 import type { StudioMissionDocumentAction } from './mission-document'
 
 interface UseMissionPanelEditsArgs {

@@ -1,15 +1,15 @@
 import { PlusIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "skytrack-ui/tabs";
-import type { WorkspaceAIModelRecord } from "../database/workspace-resources-store";
-import { AIModelCardContent } from "../../../ui/components/ai-model-card";
+import type { WorkspaceAIModelRecord } from "@/features/library/database/workspace-resources-store";
+import { AIModelCardContent } from "@/ui/components/ai-model-card";
 import {
   LibraryCardFrame,
   LibraryEmptyState,
   LibraryPageHeader,
   LibraryPageLayout,
-} from "../cards/library-presentation.tsx";
-import type { AIModelCategory } from "../library-types";
+} from "@/features/library/cards/library-presentation.tsx";
+import type { AIModelCategory } from "@/features/library/library-types";
 
 export function AIModelsPage({
   workspaceName,

@@ -1,4 +1,4 @@
-import { getMissionEnd, getMissionStart } from "../../domain/mission-model";
+import { getMissionEnd, getMissionStart } from "@/domain/mission-model";
 import { enuToLngLat } from "./mission-scene-helpers";
 import type { CommittedEntityContext } from "./committed-entity-context";
 

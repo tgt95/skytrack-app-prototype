@@ -3,7 +3,7 @@ import { Separator } from "skytrack-ui/separator";
 import type { InsightMedia, JsonRecord } from "./mission-insights-report-data";
 import { asRecord, numberValue, safeArtifactLocation, textValue } from "./mission-insights-report-data";
 import { capturePoseSummary } from "./mission-insights-report-flight-path";
-import type { MissionInsightsReportTab } from "../mission-report-url";
+import type { MissionInsightsReportTab } from "@/features/studio/mission-report-url";
 import { KeyValueList } from "./mission-insights-report-shared";
 
 export function MediaMetadataPanel({

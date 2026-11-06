@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { MissionInsightsReportTab } from "../mission-report-url";
+import type { MissionInsightsReportTab } from "@/features/studio/mission-report-url";
 import { DetailSection } from "./mission-insights-page-sections";
 import { asRecord, asRecords, reportArtifacts, reportForSample, sampleActions, sampleGalleryMedia, textValue, type InsightMedia } from "./mission-insights-report-data";
 import type { MissionInsightSample } from "./mission-insights-data";

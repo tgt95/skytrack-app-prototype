@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
-import type { EnuPoint, SceneTool } from '../../domain/mission-model'
-import { isValidRing } from '../../domain/mission-model'
-import { readMissionDesignPreferences } from '../../shared/mission-design-preferences'
+import type { EnuPoint, SceneTool } from '@/domain/mission-model'
+import { isValidRing } from '@/domain/mission-model'
+import { readMissionDesignPreferences } from '@/shared/mission-design-preferences'
 
 export type PendingMissionPoint = EnuPoint & { z?: number }
 export type PendingMissionShape = 'polygon' | 'cylinder'

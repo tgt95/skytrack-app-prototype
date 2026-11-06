@@ -1,11 +1,11 @@
 import type { ComponentProps, RefObject } from "react";
-import MissionScene, { type MissionSceneHandle } from "../scene/mission-scene";
-import LidarPreview from "../scene/lidar-preview";
-import { DrawingAltitudeRuler } from "../design/drawing/drawing-altitude-ruler";
-import type { MissionBasemapStyle } from "../scene/basemaps";
-import type { StudioMission } from "../../domain/mission-model";
-import type { SimPlan } from "../simulation/simulation";
-import type { useAddressSearch } from "../search/use-address-search";
+import MissionScene, { type MissionSceneHandle } from "@/features/scene/mission-scene";
+import LidarPreview from "@/features/scene/lidar-preview";
+import { DrawingAltitudeRuler } from "@/features/design/drawing/drawing-altitude-ruler";
+import type { MissionBasemapStyle } from "@/features/scene/basemaps";
+import type { StudioMission } from "@/domain/mission-model";
+import type { SimPlan } from "@/features/simulation/simulation";
+import type { useAddressSearch } from "@/features/search/use-address-search";
 import { MissionContextCards, type DroneChoice } from "./mission-context-cards";
 import { StudioMapControls } from "./studio-map-controls";
 

@@ -1,7 +1,7 @@
 import { TrashIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
-import type { DroneHardwareSpecification } from "../database/drone-store";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
+import type { DroneHardwareSpecification } from "@/features/library/database/drone-store";
 import { TextField } from "./drone-profile-fields";
 
 export function DroneSpecificationList({

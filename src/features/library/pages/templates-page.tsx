@@ -6,9 +6,9 @@ import {
   LibraryEmptyState,
   LibraryPageHeader,
   LibraryPageLayout,
-} from "../cards/library-presentation.tsx";
-import { getTemplateThumbnail } from "../cards/template-thumbnails.ts";
-import type { LibTemplate } from "../database/store";
+} from "@/features/library/cards/library-presentation.tsx";
+import { getTemplateThumbnail } from "@/features/library/cards/template-thumbnails.ts";
+import type { LibTemplate } from "@/features/library/database/store";
 
 export default function TemplatesPage({
   activeTemplate,

@@ -4,39 +4,39 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { useAddressSearch } from "../features/search/use-address-search";
-import { PYTHON_SAMPLE } from "../features/design/panels/python-editor";
+import { useAddressSearch } from "@/features/search/use-address-search";
+import { PYTHON_SAMPLE } from "@/features/design/panels/python-editor";
 import {
   DEFAULT_RECON_FLIGHT_SETTINGS,
   type StudioMission,
-} from "../domain/mission-model";
+} from "@/domain/mission-model";
 import {
   useMissionHistoryActions,
   useStudioDocumentState,
-} from "../features/studio/use-studio-document";
-import { useMissionKeyboard } from "../features/studio/use-mission-keyboard";
-import { useDrawingSession } from "../features/studio/use-drawing-session";
-import { useMissionCommands } from "../features/studio/use-mission-commands";
-import { useStudioRouting } from "../features/studio/use-studio-routing";
-import { useStudioActions } from "../features/studio/use-studio-actions";
-import { useStudioSimulationModel } from "../features/studio/use-studio-simulation-model";
-import { useStudioSceneSession } from "../features/studio/use-studio-scene-session";
-import { useStudioUiState } from "../features/studio/use-studio-ui-state";
-import { useStudioStageActions } from "../features/studio/use-studio-stage-actions";
-import { useMissionStudioTestBridge } from "../features/studio/use-mission-studio-test-bridge";
-import StudioLibraryRoute from "../features/studio/studio-library-route";
-import StudioShell from "../ui/layout/page-layout";
-import DevScenarioTool from "../features/dev-tools/dev-scenario-tool";
-import { ImportAIModelDialog } from "../features/library/dialogs/import-ai-model-dialog.tsx";
-import { AccountMenuDialogs } from "../features/library/dialogs/account-menu-dialogs.tsx";
-import { useLibraryAccountSettings } from "../features/library/account/use-library-account-settings.ts";
-import { useWorkspaceResources } from "../features/library/workspace/use-workspace-resources.ts";
+} from "@/features/studio/use-studio-document";
+import { useMissionKeyboard } from "@/features/studio/use-mission-keyboard";
+import { useDrawingSession } from "@/features/studio/use-drawing-session";
+import { useMissionCommands } from "@/features/studio/use-mission-commands";
+import { useStudioRouting } from "@/features/studio/use-studio-routing";
+import { useStudioActions } from "@/features/studio/use-studio-actions";
+import { useStudioSimulationModel } from "@/features/studio/use-studio-simulation-model";
+import { useStudioSceneSession } from "@/features/studio/use-studio-scene-session";
+import { useStudioUiState } from "@/features/studio/use-studio-ui-state";
+import { useStudioStageActions } from "@/features/studio/use-studio-stage-actions";
+import { useMissionStudioTestBridge } from "@/features/studio/use-mission-studio-test-bridge";
+import StudioLibraryRoute from "@/features/studio/studio-library-route";
+import StudioShell from "@/ui/layout/page-layout";
+import DevScenarioTool from "@/features/dev-tools/dev-scenario-tool";
+import { ImportAIModelDialog } from "@/features/library/dialogs/import-ai-model-dialog.tsx";
+import { AccountMenuDialogs } from "@/features/library/dialogs/account-menu-dialogs.tsx";
+import { useLibraryAccountSettings } from "@/features/library/account/use-library-account-settings.ts";
+import { useWorkspaceResources } from "@/features/library/workspace/use-workspace-resources.ts";
 import {
   getWorkspace,
   readActiveWorkspaceId,
-} from "../features/library/workspace/workspace-data.ts";
-import { useMissionViewUrlSync } from "../features/studio/use-mission-view-url-sync";
-import { useStudioSimulationEventFocus } from "../features/studio/use-studio-simulation-event-focus";
+} from "@/features/library/workspace/workspace-data.ts";
+import { useMissionViewUrlSync } from "@/features/studio/use-mission-view-url-sync";
+import { useStudioSimulationEventFocus } from "@/features/studio/use-studio-simulation-event-focus";
 
 export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
   const [importAIModelOpen, setImportAIModelOpen] = useState(false);

@@ -16,19 +16,19 @@ import {
   type SceneSelection,
   type SceneTool,
   type StudioMission,
-} from "../../domain/mission-model";
-import { getMissionRoutes } from "../../domain/mission-model";
-import { readMissionDesignPreferences } from "../../shared/mission-design-preferences";
+} from "@/domain/mission-model";
+import { getMissionRoutes } from "@/domain/mission-model";
+import { readMissionDesignPreferences } from "@/shared/mission-design-preferences";
 import {
   distanceToDisplay,
   distanceUnit,
   formatDistance,
   formatMeasurementText,
-} from "../../shared/measurement-units";
+} from "@/shared/measurement-units";
 import {
   recomputeGeneratedMission,
   refreshAvoidDetours,
-} from "../../domain/mission-generation";
+} from "@/domain/mission-generation";
 import type {
   DraftAreaSettings,
   DraftAvoidSettings,

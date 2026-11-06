@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   SATELLITE_TILE_ATTRIBUTION,
   satelliteTileUrl,
-} from "../../../shared/map-tiles";
+} from "@/shared/map-tiles";
 import MissionThumbnail from "./mission-thumbnail.tsx";
 
 interface MissionMapThumbnailProps {

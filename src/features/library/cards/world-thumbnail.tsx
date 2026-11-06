@@ -23,7 +23,7 @@ export function WorldThumbnail({
 
     let cancelled = false;
     let objectUrl: string | null = null;
-    void import("../database/world-glb-asset-access")
+    void import("@/features/library/database/world-glb-asset-access")
       .then(({ loadWorldGlbThumbnail }) => loadWorldGlbThumbnail(assetId))
       .then((thumbnail) => {
         if (cancelled || !thumbnail) return;

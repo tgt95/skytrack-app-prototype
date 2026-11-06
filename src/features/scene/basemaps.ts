@@ -3,7 +3,7 @@
 import {
   SATELLITE_TILE_ATTRIBUTION,
   SATELLITE_TILE_TEMPLATE,
-} from "../../shared/map-tiles";
+} from "@/shared/map-tiles";
 
 export type MissionBasemapStyle =
   "satellite" | "basic" | "light" | "dark" | "daybreak" | "overcast";

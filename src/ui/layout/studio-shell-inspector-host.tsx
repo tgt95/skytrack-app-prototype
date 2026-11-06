@@ -1,13 +1,13 @@
-import StudioInspectorContainer from "../../features/studio/studio-inspector-container";
-import type { useStudioActions } from "../../features/studio/use-studio-actions";
-import type { useDrawingSession } from "../../features/studio/use-drawing-session";
-import type { useMissionCommands } from "../../features/studio/use-mission-commands";
-import type { useStudioSceneSession } from "../../features/studio/use-studio-scene-session";
-import type { useStudioSimulationModel } from "../../features/studio/use-studio-simulation-model";
-import type { useStudioUiState } from "../../features/studio/use-studio-ui-state";
-import type { SimEventItem } from "../../features/simulation/simulation";
-import type { StudioMission } from "../../domain/mission-model";
-import type { AIModelCardModel } from "../components/ai-model-card";
+import StudioInspectorContainer from "@/features/studio/studio-inspector-container";
+import type { useStudioActions } from "@/features/studio/use-studio-actions";
+import type { useDrawingSession } from "@/features/studio/use-drawing-session";
+import type { useMissionCommands } from "@/features/studio/use-mission-commands";
+import type { useStudioSceneSession } from "@/features/studio/use-studio-scene-session";
+import type { useStudioSimulationModel } from "@/features/studio/use-studio-simulation-model";
+import type { useStudioUiState } from "@/features/studio/use-studio-ui-state";
+import type { SimEventItem } from "@/features/simulation/simulation";
+import type { StudioMission } from "@/domain/mission-model";
+import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 
 export function StudioShellInspectorHost({
   mission,

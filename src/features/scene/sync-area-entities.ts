@@ -2,19 +2,19 @@ import {
   generateAreaScan,
   generateAreaTraversal,
   getAreaFlightAltitudeM,
-} from "../../domain/mission-model";
+} from "@/domain/mission-model";
 import {
   enuToLngLat,
   MAX_AREA_DISTANCE_LABELS_PER_AREA,
   ROUTE_DISTANCE_LABEL_DETAIL_DISTANCE_M,
 } from "./mission-scene-helpers";
 import type { AreaEntityContext } from "./committed-entity-context";
-import { readMissionDesignPreferences } from "../../shared/mission-design-preferences";
+import { readMissionDesignPreferences } from "@/shared/mission-design-preferences";
 import {
   distanceToDisplay,
   distanceUnit,
   formatDistance,
-} from "../../shared/measurement-units";
+} from "@/shared/measurement-units";
 
 /** Add Area/Avoid boundaries, scan lanes, and selected Avoid height handles. */
 export function addAreaAndAvoidEntities({

@@ -19,7 +19,7 @@ npm run build
 
 ## GitHub Pages
 
-Live prototype: <https://tgt95.github.io/skytrack-app-prototype/>. Pushes to `main` build and deploy the site through [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml). The Pages build uses the repository path as its Vite base and emits a `404.html` fallback so direct mission and library URLs load correctly. When preparing an Owner-requested commit, push, or deploy for a release, add a concise dated reader-facing note to [`docs/changelogs/`](./docs/changelogs/) before publishing; the Library What's New menu reads those files. See the [changelog guide](./docs/changelogs/README.md).
+Live prototype: <https://tgt95.github.io/skytrack-app-prototype/>. Pushes to `main` build and deploy the site through [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml). The Pages build uses the repository path as its Vite base and emits a `404.html` fallback so direct mission and library URLs load correctly. When preparing an Owner-requested commit, push, or deploy for a release, add a concise dated reader-facing note to [`content/changelogs/`](./content/changelogs/) before publishing; the Library What's New menu reads those files. See the [changelog guide](./content/changelogs/README.md).
 
 ## Project map
 

@@ -4,7 +4,7 @@
 
 import { Button } from "skytrack-ui/button";
 import { CheckboxRoot as Checkbox } from "skytrack-ui/checkbox";
-import { BASEMAPS, type MissionBasemapStyle } from "../scene/basemaps";
+import { BASEMAPS, type MissionBasemapStyle } from "@/features/scene/basemaps";
 
 export function BasemapPickerGrid({
   value,

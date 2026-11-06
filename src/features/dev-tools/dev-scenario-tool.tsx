@@ -9,7 +9,7 @@ import {
   DrawerViewport
 } from 'skytrack-ui/drawer'
 import DevScenarioDrawer from './dev-scenario-drawer'
-import skyTrackUiLogo from '../../assets/skytrack-logo-outline.svg?raw'
+import skyTrackUiLogo from '@/assets/skytrack-logo-outline.svg?raw'
 
 export default function DevScenarioTool () {
   const [open, setOpen] = useState(false)

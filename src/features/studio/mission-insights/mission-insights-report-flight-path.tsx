@@ -2,7 +2,7 @@ import { type JsonRecord, asRecord, textValue, numberValue, reportForSample, asR
 import { type MissionInsightSample } from "./mission-insights-data";
 import { DetailSection } from "./mission-insights-page-sections";
 import { Badge } from "skytrack-ui/badge";
-import { type MissionInsightsReportTab } from "../mission-report-url";
+import { type MissionInsightsReportTab } from "@/features/studio/mission-report-url";
 import { MissionInsightsFlightReplay } from "./mission-insights-flight-replay";
 import { MissionInsightsTelemetryCharts } from "./mission-insights-charts";
 import { replayTimeline } from "./replay-sample";

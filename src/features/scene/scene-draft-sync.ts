@@ -14,7 +14,7 @@ import type { Viewer } from 'cesium'
 import {
   circleFootprint, generateAreaScan, generateAreaTraversal, isValidRing, missionOrigin,
   type AvoidZone, type MissionArea, type SceneTool, type StudioMission
-} from '../../domain/mission-model'
+} from '@/domain/mission-model'
 import { checkMarkerImage, enuToLngLat, plusMarkerImage, safeColor, themeColor, type SceneToken } from './mission-scene-helpers'
 
 type CesiumNS = typeof import('cesium')

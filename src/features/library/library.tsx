@@ -86,7 +86,7 @@ import { useLibraryCardRenderers } from "./cards/library-card-renderers.tsx";
 import {
   DEV_SCENARIO_IDS,
   useDevScenarioEnabled,
-} from "../../shared/dev-scenario-state";
+} from "@/shared/dev-scenario-state";
 import {
   templateSearchAnnouncement,
   useTemplateSearch,

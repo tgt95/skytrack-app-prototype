@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "skytrack-ui/select";
 import { Switch, SwitchThumb } from "skytrack-ui/switch";
-import type { MissionDesignPreferences } from "../../../shared/mission-design-preferences";
+import type { MissionDesignPreferences } from "@/shared/mission-design-preferences";
 import {
   distanceFromDisplay,
   distanceToDisplay,
@@ -22,7 +22,7 @@ import {
   speedToDisplay,
   speedUnit,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
+} from "@/shared/measurement-units";
 
 export function MissionDesignPreferencesContent({
   preferences,

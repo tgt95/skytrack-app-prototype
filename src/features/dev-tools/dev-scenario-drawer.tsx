@@ -8,7 +8,7 @@ import {
 } from "skytrack-ui/drawer";
 import { Input } from "skytrack-ui/input";
 import { Switch, SwitchThumb } from "skytrack-ui/switch";
-import { useDevScenarioControls } from "../../shared/dev-scenario-state";
+import { useDevScenarioControls } from "@/shared/dev-scenario-state";
 import { DEV_SCENARIOS } from "./scenario-registry";
 
 function scenarioMatchesSearch(

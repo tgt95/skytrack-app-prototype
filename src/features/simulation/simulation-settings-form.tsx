@@ -20,8 +20,8 @@ import {
   speedToDisplay,
   speedUnit,
   useMeasurementSystem,
-} from "../../shared/measurement-units";
-import { InspectorField } from "../design/controls/inspector-field";
+} from "@/shared/measurement-units";
+import { InspectorField } from "@/features/design/controls/inspector-field";
 
 export interface SimulationSettingsFormProps {
   settings: SimSettings;

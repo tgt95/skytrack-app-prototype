@@ -32,7 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "skytrack-ui/select";
-import type { LibProject } from "../database/store";
+import type { LibProject } from "@/features/library/database/store";
 
 export function MissionDialog({
   dlg,

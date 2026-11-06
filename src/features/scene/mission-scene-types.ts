@@ -1,6 +1,6 @@
-import type { AvoidZone, MissionArea, SceneSelection, SceneTool, StudioMission } from '../../domain/mission-model'
+import type { AvoidZone, MissionArea, SceneSelection, SceneTool, StudioMission } from '@/domain/mission-model'
 import type { MissionBasemapStyle } from './basemaps'
-import type { SimPlan } from '../simulation/simulation'
+import type { SimPlan } from '@/features/simulation/simulation'
 
 export interface MissionSceneHandle {
   downloadMapImage: () => boolean

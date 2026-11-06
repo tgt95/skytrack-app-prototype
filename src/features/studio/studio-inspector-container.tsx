@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { isValidRing, type StudioMission } from "../../domain/mission-model";
-import type { SimEventItem } from "../simulation/simulation";
+import { isValidRing, type StudioMission } from "@/domain/mission-model";
+import type { SimEventItem } from "@/features/simulation/simulation";
 import type { useMissionCommands } from "./use-mission-commands";
 import type { useDrawingSession } from "./use-drawing-session";
 import type { useStudioActions } from "./use-studio-actions";
@@ -8,7 +8,7 @@ import type { useStudioSceneSession } from "./use-studio-scene-session";
 import type { useStudioSimulationModel } from "./use-studio-simulation-model";
 import type { useStudioUiState } from "./use-studio-ui-state";
 import StudioInspector from "./studio-inspector";
-import type { AIModelCardModel } from "../../ui/components/ai-model-card";
+import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 
 type InspectorUiState = Pick<
   ReturnType<typeof useStudioUiState>,

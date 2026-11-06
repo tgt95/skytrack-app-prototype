@@ -18,7 +18,7 @@
    as explicit refs owned by MissionScene. */
 
 import type { Viewer } from 'cesium'
-import { missionOrigin, type StudioMission } from '../../domain/mission-model'
+import { missionOrigin, type StudioMission } from '@/domain/mission-model'
 import { enuToLngLat } from './mission-scene-helpers'
 import type { MissionCubeSnap } from './mission-compass-model'
 import type { EditGestureHooks, SceneDragPressRecord } from './scene-edit-gestures'

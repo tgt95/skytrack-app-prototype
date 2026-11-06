@@ -8,7 +8,7 @@
    order, drill depth and click-again travel threshold. */
 
 import type { Cartesian2, Viewer } from 'cesium'
-import { isValidRing, missionOrigin, type SceneSelection, type SceneTool, type StudioMission } from '../../domain/mission-model'
+import { isValidRing, missionOrigin, type SceneSelection, type SceneTool, type StudioMission } from '@/domain/mission-model'
 import {
   avoidHandleId, isWaypointGroundGuideEntity, lngLatToEnu, pendingInsertIndex, pendingPointIndex, photoWaypointId, routeInsertIndex, waypointId, zoneId
 } from './mission-scene-helpers'

@@ -1,5 +1,5 @@
 import type { Viewer } from 'cesium'
-import { getMissionRouteWaypoints, getMissionRoutes, missionOrigin, projectMockReconFootprintToGround, type StudioMission } from '../../domain/mission-model'
+import { getMissionRouteWaypoints, getMissionRoutes, missionOrigin, projectMockReconFootprintToGround, type StudioMission } from '@/domain/mission-model'
 import { MOCK_FOOTPRINT_RENDER_LIFT_M, enuToLngLat } from './mission-scene-helpers'
 import { removeSceneEntitiesInLayer } from './scene-entity-ownership'
 

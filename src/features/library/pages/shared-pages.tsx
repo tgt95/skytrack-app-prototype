@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 import { ArrowLeftIcon } from "@phosphor-icons/react";
 import { Badge } from "skytrack-ui/badge";
-import { LibraryPageHeader, LibraryPageLayout } from "../cards/library-presentation.tsx";
-import type { SharedMission, SharedProject } from "../library-cards";
+import { LibraryPageHeader, LibraryPageLayout } from "@/features/library/cards/library-presentation.tsx";
+import type { SharedMission, SharedProject } from "@/features/library/library-cards";
 
 export function SharedAccountsPage({
   missionName,

@@ -1,11 +1,11 @@
 import { ArrowCounterClockwiseIcon, GearIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
 import { Switch, SwitchThumb } from "skytrack-ui/switch";
-import { CompactAxisField } from "../controls/compact-axis-field";
+import { CompactAxisField } from "@/features/design/controls/compact-axis-field";
 import type { SequenceDropPosition } from "./sequence-drag";
-import type { AIModelCardModel } from "../../../ui/components/ai-model-card";
-import { ReconCaptureSummary } from "../panels/reconnaissance-inspector";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
+import type { AIModelCardModel } from "@/ui/components/ai-model-card";
+import { ReconCaptureSummary } from "@/features/design/panels/reconnaissance-inspector";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import {
   getMissionRoutes,
   dist3,
@@ -14,18 +14,18 @@ import {
   type StudioMission,
   type MissionRouteMeta,
   type CameraActionKind,
-} from "../../../domain/mission-model";
-import type { DerivedTransfer } from "../../../domain/transfer-planner";
+} from "@/domain/mission-model";
+import type { DerivedTransfer } from "@/domain/transfer-planner";
 import { EndMissionControl } from "./sequence-transfer";
 import { RouteWaypointList } from "./route-waypoint-list";
-import { InspectorField } from "../controls/inspector-field";
+import { InspectorField } from "@/features/design/controls/inspector-field";
 import { RouteSequenceCardHeader } from "./route-sequence-card-header";
 import {
   speedFromDisplay,
   speedToDisplay,
   speedUnit,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
+} from "@/shared/measurement-units";
 
 type Waypoint = StudioMission["waypoints"][number];
 

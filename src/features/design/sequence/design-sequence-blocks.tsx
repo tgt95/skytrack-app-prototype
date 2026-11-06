@@ -13,10 +13,10 @@ import type {
   ReconFlightSettings,
   SceneSelection,
   StudioMission,
-} from "../../../domain/mission-model";
-import type { DerivedTransfer } from "../../../domain/transfer-planner";
+} from "@/domain/mission-model";
+import type { DerivedTransfer } from "@/domain/transfer-planner";
 import type { SequenceDropPosition } from "./sequence-drag";
-import type { AIModelCardModel } from "../../../ui/components/ai-model-card";
+import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 
 type Waypoint = StudioMission["waypoints"][number];
 

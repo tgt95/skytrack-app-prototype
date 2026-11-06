@@ -1,6 +1,6 @@
 import type { Viewer } from 'cesium'
-import { getMissionStart, missionOrigin, type StudioMission } from '../../domain/mission-model'
-import { samplePlan, type SimPlan } from '../simulation/simulation'
+import { getMissionStart, missionOrigin, type StudioMission } from '@/domain/mission-model'
+import { samplePlan, type SimPlan } from '@/features/simulation/simulation'
 import { enuToLngLat } from './mission-scene-helpers'
 import type { MissionSceneHandle } from './mission-scene-types'
 import { fitMission } from './scene-camera-gestures'

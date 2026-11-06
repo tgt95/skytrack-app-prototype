@@ -17,11 +17,11 @@ import {
   ProjectDialog,
   ShareDialog,
 } from "./library-dialogs.tsx";
-import CreateMissionWizard, { type WizardResult } from "../create-wizard";
-import { useWorldGlbImport } from "../use-world-glb-import";
-import type { LibProject } from "../database/store";
-import type { WorkspaceDroneProfile } from "../database/drone-store";
-import type { WorkspaceWorldRecord } from "../database/workspace-resources-store";
+import CreateMissionWizard, { type WizardResult } from "@/features/library/create-wizard";
+import { useWorldGlbImport } from "@/features/library/use-world-glb-import";
+import type { LibProject } from "@/features/library/database/store";
+import type { WorkspaceDroneProfile } from "@/features/library/database/drone-store";
+import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
 
 type MissionDlg = {
   mode: "rename";

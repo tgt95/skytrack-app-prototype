@@ -1,22 +1,22 @@
 import { useMemo } from "react";
-import { validateMission } from "../../domain/mission-model";
+import { validateMission } from "@/domain/mission-model";
 import {
   computeDerivedTransfers,
   validateTransfers,
-} from "../../domain/transfer-planner";
-import type { SceneReadiness } from "../scene/mission-scene";
-import type { StudioMission } from "../../domain/mission-model";
+} from "@/domain/transfer-planner";
+import type { SceneReadiness } from "@/features/scene/mission-scene";
+import type { StudioMission } from "@/domain/mission-model";
 import {
   applyMockFailure,
   buildSimPlan,
   telemetryAt,
   useSimulation,
   type SimSettings,
-} from "../simulation/simulation";
+} from "@/features/simulation/simulation";
 import {
   formatMeasurementText,
   useMeasurementSystem,
-} from "../../shared/measurement-units";
+} from "@/shared/measurement-units";
 
 export function sceneGateReason(readiness: SceneReadiness): string | null {
   if (readiness === "loading") return "3D scene loading. Wait until ready.";

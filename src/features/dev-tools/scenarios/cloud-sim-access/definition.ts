@@ -1,5 +1,5 @@
-import { DEV_SCENARIO_IDS } from "../../../../shared/dev-scenario-state";
-import type { DevScenarioDefinition } from "../../types";
+import { DEV_SCENARIO_IDS } from "@/shared/dev-scenario-state";
+import type { DevScenarioDefinition } from "@/features/dev-tools/types";
 
 const cloudSimAccessScenario = {
   id: DEV_SCENARIO_IDS.cloudSimAccessNotGranted,

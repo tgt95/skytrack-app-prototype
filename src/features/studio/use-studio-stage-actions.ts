@@ -4,8 +4,8 @@ import {
   type MutableRefObject,
   type SetStateAction,
 } from "react";
-import type { SceneTool } from "../../domain/mission-model";
-import type { SceneReadiness } from "../scene/mission-scene";
+import type { SceneTool } from "@/domain/mission-model";
+import type { SceneReadiness } from "@/features/scene/mission-scene";
 import type { Stage } from "./studio-map-overlays";
 import type { AppTab } from "./studio-left-rail";
 import type { PendingMissionPoint } from "./use-drawing-session";

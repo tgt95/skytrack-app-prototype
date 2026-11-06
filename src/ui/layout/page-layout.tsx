@@ -1,34 +1,34 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Tabs, TabsPanel } from "skytrack-ui/tabs";
-import type { StudioMission } from "../../domain/mission-model";
-import type { useAddressSearch } from "../../features/search/use-address-search";
-import StudioDialogs from "../../features/studio/studio-dialogs";
-import StudioLeftRail from "../../features/studio/studio-left-rail";
-import StudioMapOverlays from "../../features/studio/studio-map-overlays";
+import type { StudioMission } from "@/domain/mission-model";
+import type { useAddressSearch } from "@/features/search/use-address-search";
+import StudioDialogs from "@/features/studio/studio-dialogs";
+import StudioLeftRail from "@/features/studio/studio-left-rail";
+import StudioMapOverlays from "@/features/studio/studio-map-overlays";
 import { StudioShellInspectorHost } from "./studio-shell-inspector-host";
-import { parseMissionInsightsRoute } from "../../features/studio/mission-report-url";
-import { StudioShellSceneViewport } from "../../features/studio/studio-shell-scene-viewport";
+import { parseMissionInsightsRoute } from "@/features/studio/mission-report-url";
+import { StudioShellSceneViewport } from "@/features/studio/studio-shell-scene-viewport";
 import StudioStatusFooter from "./footer";
 import StudioTopbar from "./header";
-import { useDialogFocusReturn } from "../../features/studio/use-dialog-focus-return";
-import type { useStudioDocumentState } from "../../features/studio/use-studio-document";
-import type { useStudioUiState } from "../../features/studio/use-studio-ui-state";
-import type { useDrawingSession } from "../../features/studio/use-drawing-session";
-import type { useStudioRouting } from "../../features/studio/use-studio-routing";
-import type { useStudioSimulationModel } from "../../features/studio/use-studio-simulation-model";
-import type { useStudioSceneSession } from "../../features/studio/use-studio-scene-session";
-import type { useMissionCommands } from "../../features/studio/use-mission-commands";
-import { useStudioWorldGlb } from "../../features/studio/use-studio-world-glb";
-import type { useStudioActions } from "../../features/studio/use-studio-actions";
-import type { useStudioStageActions } from "../../features/studio/use-studio-stage-actions";
-import type { SimEventItem } from "../../features/simulation/simulation";
-import type { AIModelCardModel } from "../components/ai-model-card";
+import { useDialogFocusReturn } from "@/features/studio/use-dialog-focus-return";
+import type { useStudioDocumentState } from "@/features/studio/use-studio-document";
+import type { useStudioUiState } from "@/features/studio/use-studio-ui-state";
+import type { useDrawingSession } from "@/features/studio/use-drawing-session";
+import type { useStudioRouting } from "@/features/studio/use-studio-routing";
+import type { useStudioSimulationModel } from "@/features/studio/use-studio-simulation-model";
+import type { useStudioSceneSession } from "@/features/studio/use-studio-scene-session";
+import type { useMissionCommands } from "@/features/studio/use-mission-commands";
+import { useStudioWorldGlb } from "@/features/studio/use-studio-world-glb";
+import type { useStudioActions } from "@/features/studio/use-studio-actions";
+import type { useStudioStageActions } from "@/features/studio/use-studio-stage-actions";
+import type { SimEventItem } from "@/features/simulation/simulation";
+import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 import type {
   AccountMenuPanel,
   AccountMenuProfile,
-} from "../components/account-menu";
-import type { ThemePreference } from "../../shared/theme-preference";
+} from "@/ui/components/account-menu";
+import type { ThemePreference } from "@/shared/theme-preference";
 
 type DocumentState = Pick<
   ReturnType<typeof useStudioDocumentState>,

@@ -3,7 +3,7 @@ import { Alert, AlertDescription } from "skytrack-ui/alert";
 import { Button } from "skytrack-ui/button";
 import { FieldLabel, FieldRoot } from "skytrack-ui/field";
 import { Switch, SwitchThumb } from "skytrack-ui/switch";
-import type { MissionInsightsReportTab } from "../mission-report-url";
+import type { MissionInsightsReportTab } from "@/features/studio/mission-report-url";
 import type { InsightMedia, JsonRecord } from "./mission-insights-report-data";
 import { asRecord, numberValue, textValue } from "./mission-insights-report-data";
 import { coordinatePairs } from "./mission-insights-report-flight-path";

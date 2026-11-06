@@ -1,7 +1,7 @@
 import StudioLibrary, {
   type LibraryEntry,
   type LibrarySection,
-} from "../library/library";
+} from "@/features/library/library";
 
 export interface StudioLibraryRouteProps {
   announce: string;

@@ -30,13 +30,13 @@ import {
   missionReportHref,
   parseMissionInsightsReportTab,
   type MissionInsightsReportTab,
-} from "../mission-report-url";
+} from "@/features/studio/mission-report-url";
 import { sampleForRun, type MissionReportRun } from "./mission-insights-data";
 import { MissionInsightsSampleNotice } from "./mission-insights-page-sections";
 import type { InsightOutput } from "./mission-insights-output-data";
 import { MissionInsightsOutputDrawer } from "./mission-insights-output-drawer";
 import { replayTimeline } from "./replay-sample";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import { MissionInsightsReportTabs } from "./mission-insights-report-tabs";
 import { MissionInsightsPageToolbar } from "./mission-insights-page-toolbar";
 

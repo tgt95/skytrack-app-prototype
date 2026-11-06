@@ -10,7 +10,7 @@ import type { Cartesian2, Cartesian3, Viewer } from 'cesium'
 import {
   getAreaFlightAltitudeM, missionOrigin,
   type SceneTool, type StudioMission
-} from '../../domain/mission-model'
+} from '@/domain/mission-model'
 import { enuToLngLat, lngLatToEnu } from './mission-scene-helpers'
 
 type CesiumNS = typeof import('cesium')

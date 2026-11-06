@@ -1,6 +1,6 @@
 /* modules/library/database/store.ts — local JSON-backed repository for the Mission Library.
    No backend in this prototype. How it works:
-   - Seeds live in `modules/library/database/*.json` — edit them directly to change the
+   - Seeds live in `src/features/library/database/seeds/*.json` — edit them directly to change the
      demo data. They are bundled at build time.
    - Every mutation is auto-persisted to `localStorage` (JSON, same shape),
      so edits/starred/created items survive reloads.
@@ -9,11 +9,11 @@
    - Clear the `skytrack-library-db-v1` localStorage key (or wipe site data)
      to fall back to seeds. */
 
-import projectsSeed from "./projects.json";
-import leevilleMissionSeed from "./missions/leeville-pike-flight.json";
-import templatesSeed from "./templates.json";
-import { getWorkspace } from "../workspace/workspace-data.ts";
-import { STORAGE_KEYS, STORAGE_VERSIONS } from "../../../shared/storage-keys";
+import projectsSeed from "./seeds/projects.json";
+import leevilleMissionSeed from "./seeds/missions/leeville-pike-flight.json";
+import templatesSeed from "./seeds/templates.json";
+import { getWorkspace } from "@/features/library/workspace/workspace-data.ts";
+import { STORAGE_KEYS, STORAGE_VERSIONS } from "@/shared/storage-keys";
 
 export interface LibMission {
   id: string;

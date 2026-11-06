@@ -10,15 +10,15 @@ import type {
   SceneSelection,
   StudioMission,
   Waypoint,
-} from "../../../domain/mission-model";
-import { SkyTooltip } from "../../../ui/components/sky-tooltip";
-import { CompactAxisField } from "../controls/compact-axis-field";
+} from "@/domain/mission-model";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
+import { CompactAxisField } from "@/features/design/controls/compact-axis-field";
 import {
   distanceFromDisplay,
   distanceToDisplay,
   distanceUnit,
   useMeasurementSystem,
-} from "../../../shared/measurement-units";
+} from "@/shared/measurement-units";
 import {
   hasSequenceDrag,
   readSequenceDragItem,

@@ -14,7 +14,7 @@
    idempotent. Viewer creation/destruction stays with MissionScene. */
 
 import type { Cartesian2, Viewer } from 'cesium'
-import { getMissionRoutes, type SceneSelection, type SceneTool, type StudioMission } from '../../domain/mission-model'
+import { getMissionRoutes, type SceneSelection, type SceneTool, type StudioMission } from '@/domain/mission-model'
 import {
   avoidHandleId, isWaypointGroundGuideEntity, pendingPointIndex, photoWaypointId, waypointId
 } from './mission-scene-helpers'
@@ -28,7 +28,7 @@ import {
   type WaypointDownState, type WaypointDragState, type ZDragState
 } from './scene-point-drag'
 import { createSurfacePick } from './scene-surface-pick'
-import { translateMissionGroup, type MissionGroupRef } from '../../domain/mission-model'
+import { translateMissionGroup, type MissionGroupRef } from '@/domain/mission-model'
 
 type CesiumNS = typeof import('cesium')
 

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Badge } from "skytrack-ui/badge";
 import MissionPreviewControls from "./mission-preview-controls";
 import MissionPreviewMap from "./mission-preview-map";
-import type { StudioMission } from "../../domain/mission-model";
+import type { StudioMission } from "@/domain/mission-model";
 import {
   buildPreview,
   previewPhotoCaptureAt,

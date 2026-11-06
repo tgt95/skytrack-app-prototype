@@ -1,11 +1,11 @@
 /* lidar-preview.tsx — deterministic mock LiDAR corner preview.
    Points derive from the same sim clock; nothing is sensed. */
 
-import { SkyTooltip } from "../../ui/components/sky-tooltip";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import { useEffect, useRef, useState } from "react";
 import { ArrowsInSimpleIcon, ArrowsOutSimpleIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
-import { samplePlan, type SimPlan } from "../simulation/simulation";
+import { samplePlan, type SimPlan } from "@/features/simulation/simulation";
 
 // The parent unmounts this preview when V hides it. Keep size until the page reloads.
 let rememberedExpanded = false;

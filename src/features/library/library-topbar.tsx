@@ -22,9 +22,9 @@ import {
   useToastManager
 } from 'skytrack-ui/toast'
 import { Separator } from 'skytrack-ui/separator'
-import skytrackLogoFull from '../../assets/skytrack-logo-full.svg?raw'
-import DevScenarioSlot from '../dev-tools/dev-scenario-slot'
-import { DEV_SCENARIO_SLOTS } from '../dev-tools/scenario-slots'
+import skytrackLogoFull from '@/assets/skytrack-logo-full.svg?raw'
+import DevScenarioSlot from '@/features/dev-tools/dev-scenario-slot'
+import { DEV_SCENARIO_SLOTS } from '@/features/dev-tools/scenario-slots'
 
 export const runEnvironmentToastManager = createToastManager()
 

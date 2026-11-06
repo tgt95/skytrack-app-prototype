@@ -12,13 +12,13 @@ import {
   type EnuPoint,
   type SceneSelection,
   type StudioMission,
-} from "../../domain/mission-model";
-import { refreshAvoidDetours } from "../../domain/mission-generation";
-import { readMissionDesignPreferences } from "../../shared/mission-design-preferences";
+} from "@/domain/mission-model";
+import { refreshAvoidDetours } from "@/domain/mission-generation";
+import { readMissionDesignPreferences } from "@/shared/mission-design-preferences";
 import {
   distanceToDisplay,
   distanceUnit,
-} from "../../shared/measurement-units";
+} from "@/shared/measurement-units";
 
 interface UseMissionWaypointCommandsArgs {
   mission: StudioMission;

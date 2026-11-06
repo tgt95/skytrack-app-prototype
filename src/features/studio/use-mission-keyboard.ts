@@ -11,14 +11,14 @@ import {
   type SceneSelection,
   type SceneTool,
   type StudioMission,
-} from "../../domain/mission-model";
-import type { MissionSceneHandle } from "../scene/mission-scene";
+} from "@/domain/mission-model";
+import type { MissionSceneHandle } from "@/features/scene/mission-scene";
 
 type Stage = "design" | "simulation";
 type AppTab = "plan" | "fly" | "report";
 type PendingPoint = EnuPoint & { z?: number };
 type SimulationController = ReturnType<
-  typeof import("../simulation/simulation").useSimulation
+  typeof import("@/features/simulation/simulation").useSimulation
 >;
 
 export type EscapeCaptureAction = "continue" | "cancel-drawing" | "cancel-edit";

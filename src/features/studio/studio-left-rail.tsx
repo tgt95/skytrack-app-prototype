@@ -10,15 +10,15 @@ import {
 import { Tabs, TabsList, TabsTab } from "skytrack-ui/tabs";
 import { Toolbar, ToolbarGroup } from "skytrack-ui/toolbar";
 import { Separator } from "skytrack-ui/separator";
-import { AreaIcon, AvoidZoneIcon } from "../../ui/components/icons";
+import { AreaIcon, AvoidZoneIcon } from "@/ui/components/icons";
 import {
   AccountMenu,
   type AccountMenuPanel,
   type AccountMenuProfile,
-} from "../../ui/components/account-menu";
-import type { ThemePreference } from "../../shared/theme-preference";
-import { ToolButton } from "../design/controls/design-controls";
-import type { SceneTool } from "../../domain/mission-model";
+} from "@/ui/components/account-menu";
+import type { ThemePreference } from "@/shared/theme-preference";
+import { ToolButton } from "@/features/design/controls/design-controls";
+import type { SceneTool } from "@/domain/mission-model";
 
 export type AppTab = "plan" | "fly" | "report";
 

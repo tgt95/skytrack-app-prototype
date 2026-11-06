@@ -16,8 +16,8 @@ import {
   SelectPositioner,
   SelectTrigger,
 } from "skytrack-ui/select";
-import type { StudioMission } from "../../domain/mission-model";
-import { SkyTooltip } from "../../ui/components/sky-tooltip";
+import type { StudioMission } from "@/domain/mission-model";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 
 export interface DroneChoice {
   value: string;

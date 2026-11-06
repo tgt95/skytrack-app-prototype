@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
-import type { LibMission, LibProject, LibTemplate } from "../database/store";
-import type { WorkspaceWorldRecord } from "../database/workspace-resources-store";
+import type { LibMission, LibProject, LibTemplate } from "@/features/library/database/store";
+import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
 import {
   MissionCard,
   RecentMissionCard,

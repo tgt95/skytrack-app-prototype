@@ -3,7 +3,7 @@ import {
   missionOrigin,
   type SceneSelection,
   type StudioMission,
-} from "../../domain/mission-model";
+} from "@/domain/mission-model";
 import {
   safeColor,
   themeColor,

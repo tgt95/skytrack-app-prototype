@@ -11,7 +11,7 @@ import { useState, type DragEvent } from 'react'
 import { Badge } from 'skytrack-ui/badge'
 import { Button } from 'skytrack-ui/button'
 import { FieldLabel, FieldRoot } from 'skytrack-ui/field'
-import { SkyTooltip } from '../../../ui/components/sky-tooltip'
+import { SkyTooltip } from '@/ui/components/sky-tooltip'
 import {
   Select,
   SelectIcon,
@@ -35,9 +35,9 @@ import type {
   AIWorkflowDroneAction,
   MissionAIWorkflow,
   StudioMission
-} from '../../../domain/mission-model'
-import { uid } from '../../../domain/mission-model'
-import type { AIModelCardModel } from '../../../ui/components/ai-model-card'
+} from '@/domain/mission-model'
+import { uid } from '@/domain/mission-model'
+import type { AIModelCardModel } from '@/ui/components/ai-model-card'
 import {
   hasSequenceDrag,
   readSequenceDragItem,

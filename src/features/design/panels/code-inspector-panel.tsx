@@ -22,7 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from 'skytrack-ui/tooltip'
-import { SkyTooltip } from '../../../ui/components/sky-tooltip'
+import { SkyTooltip } from '@/ui/components/sky-tooltip'
 import { PythonEditor } from './python-editor'
 
 export interface CodeInspectorPanelProps {

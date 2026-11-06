@@ -1,4 +1,4 @@
-import { STORAGE_KEYS } from '../../../shared/storage-keys'
+import { STORAGE_KEYS } from '@/shared/storage-keys'
 
 export type AccountProfile = {
   name: string

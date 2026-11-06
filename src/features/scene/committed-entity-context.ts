@@ -3,7 +3,7 @@ import type {
   GeoOrigin,
   SceneSelection,
   StudioMission,
-} from "../../domain/mission-model";
+} from "@/domain/mission-model";
 import type { SceneToken } from "./mission-scene-helpers";
 
 export type CesiumNamespace = typeof import("cesium");

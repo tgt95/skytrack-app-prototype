@@ -29,6 +29,7 @@ they do not imply production readiness or full feature coverage.
   and helpers in `src/shared/`. Features may use domain, shared, and UI contracts;
   shared code and UI components must not depend on feature internals or own
   feature persistence.
+- Use `@/` imports for cross-directory modules inside `src/` (`@/*` maps to `src/*`); keep `./...` for same-directory modules and preserve relative paths for resources outside `src/`.
 - Keep dependency direction explicit: `src/pages/mission-studio-page.tsx` composes feature modules through `src/ui/layout/`;
   feature modules may depend on `src/domain/`, `src/shared/`, and `src/ui/components/`; `src/shared/` and `src/ui/components/`
   must not depend on feature modules; and `src/domain/` must remain independent

@@ -3,7 +3,7 @@ import {
   LibraryCardFrame,
   LibraryPageHeader,
   LibraryPageLayout,
-} from "../cards/library-presentation.tsx";
+} from "@/features/library/cards/library-presentation.tsx";
 
 const LEARN_URL = "https://getskytrack.com/help/category/get-builders-insights";
 const LEARN_FEATURED = {

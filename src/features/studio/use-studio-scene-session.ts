@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, type Dispatch, type SetStateAction } from 'react'
-import { missionOrigin, type StudioMission } from '../../domain/mission-model'
-import type { MissionSceneHandle, SceneReadiness } from '../scene/mission-scene'
-import type { SimApi } from '../simulation/simulation'
+import { missionOrigin, type StudioMission } from '@/domain/mission-model'
+import type { MissionSceneHandle, SceneReadiness } from '@/features/scene/mission-scene'
+import type { SimApi } from '@/features/simulation/simulation'
 import type { Stage } from './studio-map-overlays'
 
 interface UseStudioSceneSessionArgs {

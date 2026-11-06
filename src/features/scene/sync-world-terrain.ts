@@ -1,6 +1,6 @@
 import type { Viewer } from 'cesium'
-import type { StudioMission } from '../../domain/mission-model'
-import { missionOrigin } from '../../domain/mission-model'
+import type { StudioMission } from '@/domain/mission-model'
+import { missionOrigin } from '@/domain/mission-model'
 import { enuToLngLat, safeColor, themeColor, type SceneToken } from './mission-scene-helpers'
 import { WORLD_TERRAIN_FIXTURES } from './world-terrain-fixtures'
 

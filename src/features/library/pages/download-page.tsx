@@ -6,6 +6,7 @@ import {
   GooglePlayLogoIcon
 } from '@phosphor-icons/react'
 import { useState } from 'react'
+import ReactMarkdown, { type Components } from 'react-markdown'
 import {
   Accordion,
   AccordionContent,
@@ -15,17 +16,18 @@ import {
 import { Badge } from 'skytrack-ui/badge'
 import { Button, buttonVariants } from 'skytrack-ui/button'
 import { PageHeader } from 'skytrack-ui/page-header'
-import desktopArt from '../../../assets/download/desktop.svg?raw'
-import mobileArt from '../../../assets/download/mobile.svg?raw'
-import skytrackOsArt from '../../../assets/download/skytrack-os.svg?raw'
-import androidLogo from '../../../assets/download/android.svg?raw'
-import linuxLogo from '../../../assets/download/Linux_Logo_in_Linux_Libertine_Font-outline.svg?raw'
-import nvidiaLogo from '../../../assets/download/nvidia_logo-outline.svg?raw'
-import raspberryPiLogo from '../../../assets/download/raspberry_pi-outline.svg?raw'
-import ubuntuLogo from '../../../assets/download/ubuntu.svg?raw'
-import windowsLogo from '../../../assets/download/windows.svg?raw'
-import macOsLogo from '../../../assets/download/mac-os.svg?raw'
-import { runEnvironmentToastManager } from '../library-topbar'
+import downloadContent from '@content/download/platforms.json'
+import desktopArt from '@/assets/download/desktop.svg?raw'
+import mobileArt from '@/assets/download/mobile.svg?raw'
+import skytrackOsArt from '@/assets/download/skytrack-os.svg?raw'
+import androidLogo from '@/assets/download/android.svg?raw'
+import linuxLogo from '@/assets/download/Linux_Logo_in_Linux_Libertine_Font-outline.svg?raw'
+import nvidiaLogo from '@/assets/download/nvidia_logo-outline.svg?raw'
+import raspberryPiLogo from '@/assets/download/raspberry_pi-outline.svg?raw'
+import ubuntuLogo from '@/assets/download/ubuntu.svg?raw'
+import windowsLogo from '@/assets/download/windows.svg?raw'
+import macOsLogo from '@/assets/download/mac-os.svg?raw'
+import { runEnvironmentToastManager } from '@/features/library/library-topbar'
 
 const inlineLogo = (svg: string) =>
   svg
@@ -40,183 +42,54 @@ const raspberryPiMark = inlineLogo(raspberryPiLogo)
 const ubuntuMark = inlineLogo(ubuntuLogo)
 const windowsMark = inlineLogo(windowsLogo)
 const macOsMark = inlineLogo(macOsLogo)
-const PLATFORMS = [
-  {
-    id: 'desktop',
-    name: 'SkyTrack Desktop',
-    cardTitle: 'Desktop',
-    illustration: desktopArt,
-    summary: 'Plan missions and review them in local simulation.'
-  },
-  {
-    id: 'field',
-    name: 'SkyTrack Field',
-    cardTitle: 'Mobile',
-    illustration: mobileArt,
-    summary: 'Use the Android ground station in the field.'
-  },
-  {
-    id: 'os',
-    name: 'SkyTrack OS',
-    cardTitle: 'SkyTrack OS',
-    illustration: skytrackOsArt,
-    summary:
-      'Run onboard autonomy on a companion computer, separate from the flight controller.'
-  }
-] as const
+const ILLUSTRATIONS = {
+  desktop: desktopArt,
+  mobile: mobileArt,
+  'skytrack-os': skytrackOsArt
+} as const
 
-const DESKTOP_HOSTS = ['macOS', 'Ubuntu', 'Windows'] as const
+const PLATFORM_LOGOS = {
+  android: androidMark,
+  linux: linuxMark,
+  nvidia: nvidiaMark,
+  raspberryPi: raspberryPiMark,
+  ubuntu: ubuntuMark,
+  windows: windowsMark,
+  macOS: macOsMark
+} as const
 
-const DOCKER_DESKTOP_INSTALL_GUIDES: Record<
-  typeof DESKTOP_HOSTS[number],
-  string
-> = {
-  macOS: 'https://docs.docker.com/desktop/setup/install/mac-install/',
-  Ubuntu: 'https://docs.docker.com/desktop/setup/install/linux/ubuntu/',
-  Windows: 'https://docs.docker.com/desktop/setup/install/windows-install/'
-}
+const PLATFORMS = downloadContent.platforms.map(platform => ({
+  ...platform,
+  illustration: ILLUSTRATIONS[platform.illustration as keyof typeof ILLUSTRATIONS]
+}))
 
-const DESKTOP_SYSTEM_REQUIREMENTS: Record<
-  typeof DESKTOP_HOSTS[number],
+const HOST_OPTIONS = downloadContent.desktop.hosts.map(host => ({
+  ...host,
+  logo: PLATFORM_LOGOS[host.logo as keyof typeof PLATFORM_LOGOS]
+}))
+
+type DesktopHost = (typeof HOST_OPTIONS)[number]['label']
+
+const DESKTOP_HOSTS = HOST_OPTIONS.map(host => host.label) as DesktopHost[]
+const DOCKER_DESKTOP_INSTALL_GUIDES = downloadContent.desktop.dockerInstallGuides as Record<DesktopHost, string>
+const DESKTOP_SYSTEM_REQUIREMENTS = downloadContent.desktop.systemRequirements as Record<
+  DesktopHost,
   { label: string; value: string }[]
-> = {
-  macOS: [
-    { label: 'Operating System', value: 'macOS 11 (Big Sur) or newer' },
-    { label: 'CPU', value: 'Intel Core i5 / Apple Silicon (M1/M2)' },
-    { label: 'GPU', value: 'Metal-supported GPU (integrated or discrete)' },
-    { label: 'RAM', value: '16 GB' },
-    { label: 'Hard Disk', value: '25 GB free' }
-  ],
-  Ubuntu: [
-    {
-      label: 'Operating System',
-      value: 'Ubuntu 20.04 (Focal) or 22.04 (Jammy)'
-    },
-    { label: 'CPU', value: 'Intel Core i5 or equivalent' },
-    { label: 'GPU', value: 'NVIDIA GTX 1080 or better' },
-    { label: 'RAM', value: '16 GB' },
-    { label: 'Hard Disk', value: '25 GB free' }
-  ],
-  Windows: [
-    { label: 'Operating System', value: 'Windows 10 or 11' },
-    { label: 'CPU', value: 'Intel Core i5 (quad-core)' },
-    { label: 'GPU', value: 'NVIDIA GTX 1080 (OGRE2 rendering supported)' },
-    { label: 'RAM', value: '16 GB' },
-    { label: 'Hard Disk', value: '25 GB free' }
-  ]
-}
-
-const ANDROID_SYSTEM_REQUIREMENTS = [
-  {
-    component: 'Operating system',
-    minimum: 'Android 11',
-    recommended: 'Android 13 or later'
-  },
-  {
-    component: 'Processor',
-    minimum: '64-bit ARM',
-    recommended: 'Mid-range or higher 64-bit ARM processor'
-  },
-  { component: 'RAM', minimum: '4 GB', recommended: '8 GB or more' },
-  {
-    component: 'Graphics',
-    minimum: 'OpenGL ES 3.0',
-    recommended: 'OpenGL ES 3.1 or later'
-  },
-  {
-    component: 'Available storage',
-    minimum: '1 GB',
-    recommended: '2 GB or more'
-  },
-  {
-    component: 'Connectivity',
-    minimum: 'Wi-Fi',
-    recommended: 'Dual-band Wi-Fi; 4G/5G for cellular routing'
-  },
-  {
-    component: 'USB Host / OTG',
-    minimum: 'Required when using a USB Wi-Fi adapter',
-    recommended: 'USB-C OTG with a stable power supply'
-  },
-  {
-    component: 'Video decoding',
-    minimum: "Hardware decoding for the camera's codec",
-    recommended: 'Hardware H.264/H.265 decoding supporting 1080p at 60 fps'
-  }
-] as const
-
-const HOST_OPTIONS = [
-  {
-    label: 'macOS',
-    version: 'v1.2',
-    detail: 'macOS 11+',
-    downloadLabel: 'Download (248 MB | .dmg)',
-    logo: macOsMark
-  },
-  {
-    label: 'Ubuntu',
-    version: 'v1.2',
-    detail: 'Ubuntu 20.04 / 22.04',
-    downloadLabel: 'Download (216 MB | .deb)',
-    logo: ubuntuMark
-  },
-  {
-    label: 'Windows',
-    version: 'v1.2',
-    detail: 'Windows 10 / 11',
-    downloadLabel: 'Download (284 MB | .exe)',
-    logo: windowsMark
-  }
-] as const
-
-const SKYTRACK_OS_TARGETS = [
-  {
-    id: 'jetson',
-    label: 'NVIDIA Jetson',
-    badgeLabel: 'v1.2',
-    disabled: false,
-    detail: 'Orin Nano / Orin NX',
-    logo: nvidiaMark,
-    downloadImages: [
-      {
-        label: 'Jetson Orin',
-        downloadLabel: 'Download Jetson Orin (1.8 GB | .tar.gz)',
-        filename:
-          'skytrack-mc-image-dev-jetson-orin-nano-devkit-nvme.rootfs.tegraflash.tar.gz'
-      },
-      {
-        label: 'Jetson NX',
-        downloadLabel: 'Download Jetson NX (1.8 GB | .tar.gz)',
-        filename:
-          'skytrack-mc-image-dev-p3768-0000-p3767-0000.rootfs-20260908085629.tegraflash.tar.gz'
-      }
-    ]
-  },
-  {
-    id: 'raspberry-pi',
-    label: 'Raspberry Pi 5',
-    badgeLabel: 'v1.2',
-    disabled: false,
-    detail: 'Pi 5',
-    logo: raspberryPiMark,
-    downloadImages: [
-      {
-        label: 'Raspberry Pi 5',
-        downloadLabel: 'Download (1.2 GB | .ext4)',
-        filename: 'core-image-full-cmdline-raspberrypi5.rootfs.ext4'
-      }
-    ]
-  },
-  {
-    id: 'linux-sbc',
-    label: 'Linux SBC',
-    badgeLabel: 'Coming soon',
-    disabled: true,
-    detail: 'Common architecture hardware',
-    logo: linuxMark,
-    downloadImages: []
-  }
-] as const
+>
+const ANDROID_SYSTEM_REQUIREMENTS = downloadContent.android.requirements
+const ANDROID_SETUP_STEPS = downloadContent.android.setupSteps
+const DESKTOP_SETUP = downloadContent.desktop.setup
+const SKYTRACK_OS_TARGETS = downloadContent.skyTrackOs.targets.map(target => ({
+  ...target,
+  logo: PLATFORM_LOGOS[target.logo as keyof typeof PLATFORM_LOGOS],
+  downloadImages: target.downloads
+}))
+const SKYTRACK_OS_COMPATIBILITY = downloadContent.skyTrackOs.compatibilityTemplate
+const JETSON_FLASH_GUIDES = import.meta.glob<string>(
+  '@content/download/setup/jetson-orin-nano.md',
+  { query: '?raw', import: 'default', eager: true }
+)
+const JETSON_FLASH_GUIDE = Object.values(JETSON_FLASH_GUIDES)[0] ?? ''
 
 function CopyableCodeBlock ({
   code,
@@ -287,100 +160,42 @@ function CopyableCodeBlock ({
   )
 }
 
+const setupMarkdownComponents: Components = {
+  h1: ({ children }) => (
+    <h4 className='m-0 text-base font-semibold text-foreground'>{children}</h4>
+  ),
+  h2: ({ children }) => (
+    <div className='m-0 text-base font-semibold text-foreground'>{children}</div>
+  ),
+  p: ({ children }) => (
+    <p className='m-0 text-muted-foreground'>{children}</p>
+  ),
+  ol: ({ children }) => (
+    <ol className='m-0 flex list-[lower-roman] flex-col gap-1 pl-6 text-muted-foreground'>
+      {children}
+    </ol>
+  ),
+  li: ({ children }) => <li className='text-base'>{children}</li>,
+  code: ({ children, className }) =>
+    className ? (
+      <CopyableCodeBlock
+        description='setup guide code block'
+        code={String(children).replace(/\n$/, '')}
+      />
+    ) : (
+      <code className='rounded-(--radius) border border-border p-1 font-mono text-sm text-foreground'>
+        {children}
+      </code>
+    ),
+  pre: ({ children }) => <>{children}</>
+}
+
 function JetsonFlashGuideline () {
   return (
     <div className='flex flex-col gap-4 text-base'>
-      <div className='flex flex-col gap-1'>
-        <h4 className='m-0 text-base font-semibold text-foreground'>
-          Flash a Yocto Image to Jetson Orin Nano NVMe
-        </h4>
-        <p className='m-0 text-muted-foreground'>
-          Run the commands on an Ubuntu laptop.
-        </p>
-      </div>
-
-      <section className='flex flex-col gap-3'>
-        <div className='m-0 text-base font-semibold text-foreground'>
-          1. Extract the image
-        </div>
-        <CopyableCodeBlock
-          description='image extraction commands'
-          code={
-            'mkdir -p ~/jetson-flash\ncd ~/jetson-flash\n\ntar -xzpf \\\n  /path/to/build/tmp/deploy/images/jetson-orin-nano-devkit-nvme/core-image-full-cmdline-jetson-orin-nano-devkit-nvme.tegraflash.tar.gz'
-          }
-        />
-      </section>
-
-      <section className='flex flex-col gap-3'>
-        <div className='m-0 text-base font-semibold text-foreground'>
-          2. Connect the Jetson
-        </div>
-        <ol className='m-0 flex list-[lower-roman] flex-col gap-1 pl-6 text-muted-foreground'>
-          <li>Install the NVMe SSD in the Jetson.</li>
-          <li>
-            Connect the Jetson’s USB-C port to the laptop using a USB data
-            cable.
-          </li>
-          <li>
-            Put the Jetson into{' '}
-            <strong className='text-foreground'>Force Recovery Mode</strong>.
-          </li>
-        </ol>
-      </section>
-
-      <section className='flex flex-col gap-3'>
-        <div className='m-0 text-base font-semibold text-foreground'>
-          3. Verify USB detection
-        </div>
-        <CopyableCodeBlock
-          description='USB detection command'
-          code='lsusb | grep -i nvidia'
-        />
-        <p className='m-0 text-muted-foreground'>Expected output — example:</p>
-        <CopyableCodeBlock
-          description='example USB detection output'
-          code='Bus 001 Device 005: ID 0955:7523 NVIDIA Corp. APX'
-        />
-        <p className='m-0 text-muted-foreground'>
-          <code className='rounded-(--radius) border border-border p-1 font-mono text-sm text-foreground'>
-            NVIDIA Corp. APX
-          </code>{' '}
-          indicates recovery mode. Bus, device numbers, and USB ID may vary.
-        </p>
-      </section>
-
-      <section className='flex flex-col gap-3'>
-        <div className='m-0 text-base font-semibold text-foreground'>
-          4. Flash the image
-        </div>
-        <p className='m-0 text-muted-foreground'>
-          From the extracted directory containing{' '}
-          <code className='rounded-(--radius) border border-border p-1 font-mono text-sm text-foreground'>
-            initrd-flash
-          </code>
-          , run the provided command:
-        </p>
-        <CopyableCodeBlock
-          description='image flash command'
-          code='sudo ./initrd-flash'
-        />
-      </section>
-
-      <section className='flex flex-col gap-3'>
-        <div className='m-0 text-base font-semibold text-foreground'>
-          5. Boot the Jetson
-        </div>
-        <ol className='m-0 flex list-[lower-roman] flex-col gap-1 pl-6 text-muted-foreground'>
-          <li>Wait for flashing to complete successfully.</li>
-          <li>Remove the Recovery jumper, if installed.</li>
-          <li>Restart the Jetson.</li>
-        </ol>
-      </section>
-
-      <p className='m-0 text-muted-foreground'>
-        <strong className='text-foreground'>Warning:</strong> Flashing
-        overwrites data on the target storage.
-      </p>
+      <ReactMarkdown components={setupMarkdownComponents}>
+        {JETSON_FLASH_GUIDE}
+      </ReactMarkdown>
     </div>
   )
 }
@@ -410,20 +225,12 @@ function PlatformDetails ({
       platformId === 'field'
       ? // ? "The table shows the proposed minimum and recommended Android device requirements."
         null
-      : `${selectedSkyTrackOsTarget.label} is listed as common architecture hardware. This example does not certify target compatibility or an OS image. The optional HITL profile is a separate, specific bench scenario.`
+      : SKYTRACK_OS_COMPATIBILITY.replace(
+          '{target}',
+          selectedSkyTrackOsTarget.label
+        )
 
-  const setupSteps =
-    platformId === 'field'
-      ? [
-          'Install SkyTrack mobile app from CH play store.',
-          'Sign in and select the mission prepared in SkyTrack Desktop.',
-          'Follow the approved connection and mission-transfer guide before field use.'
-        ]
-      : [
-          'Choose a companion computer and flight-controller combination from the approved compatibility matrix.',
-          'Use the installation image and board-specific instructions for that combination.',
-          'Verify the onboard runtime and controller integration using the approved setup guide.'
-        ]
+  const setupSteps = ANDROID_SETUP_STEPS
 
   const systemRequirements = DESKTOP_SYSTEM_REQUIREMENTS[hostOs]
   const downloadLabel =
@@ -520,12 +327,12 @@ function PlatformDetails ({
                   <span className='flex min-w-0 flex-col items-start gap-0.5 text-left'>
                     <span className='flex items-center gap-2 text-base font-semibold'>
                       Android
-                      <Badge variant='outline' className='normal-case'>
-                        v1.2
+                        <Badge variant='outline' className='normal-case'>
+                        {downloadContent.android.version}
                       </Badge>
                     </span>
                     <span className='text-sm font-normal text-muted-foreground'>
-                      Android 11+
+                      {downloadContent.android.detail}
                     </span>
                   </span>
                 </div>
@@ -565,7 +372,7 @@ function PlatformDetails ({
                 ))}
               {platformId === 'field' ? (
                 <a
-                  href='https://play.google.com/store/apps/details?id=com.getskytrack.app&pcampaignid=web_share'
+                  href={downloadContent.android.storeUrl}
                   target='_blank'
                   rel='noopener noreferrer'
                   aria-label='Get SkyTrack Field on Google Play'
@@ -576,7 +383,7 @@ function PlatformDetails ({
                     className='size-5'
                     weight='fill'
                   />
-                  Get it on Google Play
+                  {downloadContent.android.storeButtonLabel}
                 </a>
               ) : platformId === 'os' ? (
                 <div className='flex w-full flex-col gap-2'>
@@ -754,37 +561,28 @@ function PlatformDetails ({
                   <div className='flex items-center gap-3'>
                     <Badge variant='outline' count='1' />
                     <div className='text-lg font-medium text-foreground'>
-                      Configure the compute environment for drone simulation
+                      {DESKTOP_SETUP.heading}
                     </div>
                   </div>
                   <div className='grid grid-cols-1 items-stretch gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:gap-4 text-base'>
                     <article className='flex min-w-0 flex-col gap-4 border border-border p-4'>
                       <div className='flex flex-wrap items-center justify-between gap-3'>
                         <div className='text-lg font-medium'>
-                          Install Docker Desktop
+                          {DESKTOP_SETUP.localTitle}
                         </div>
-                        <Badge variant='outline'>Local</Badge>
+                        <Badge variant='outline'>{DESKTOP_SETUP.localBadge}</Badge>
                       </div>
                       <ol className='m-0 flex list-decimal flex-col gap-2 pl-5 text-muted-foreground'>
-                        <li>
-                          Docker Desktop must be running before local
-                          simulation.
-                        </li>
-                        <li>
-                          Enable socket access if required by the host setup.
-                        </li>
-                        <li>
-                          Open a mission to prepare its local simulation
-                          runtime.
-                        </li>
+                        {DESKTOP_SETUP.localSteps.map(step => (
+                          <li key={step}>{step}</li>
+                        ))}
                       </ol>
                       <div className='mt-auto flex flex-col gap-2'>
                         <div className='text-lg font-medium text-foreground'>
-                          You’re ready when
+                          {DESKTOP_SETUP.readyTitle}
                         </div>
                         <p className='m-0 text-muted-foreground'>
-                          Docker is running and the mission’s local simulation
-                          runtime is available.
+                          {DESKTOP_SETUP.readyDescription}
                         </p>
                         <a
                           href={DOCKER_DESKTOP_INSTALL_GUIDES[hostOs]}
@@ -794,7 +592,7 @@ function PlatformDetails ({
                           className={`${buttonVariants()} self-start`}
                         >
                           <DownloadSimpleIcon aria-hidden='true' />
-                          Download Docker Desktop
+                          {DESKTOP_SETUP.dockerDownloadLabel}
                         </a>
                       </div>
                     </article>
@@ -804,14 +602,12 @@ function PlatformDetails ({
                     <article className='flex min-w-0 flex-col gap-4 border border-border p-4'>
                       <div className='flex flex-wrap items-center justify-between gap-3'>
                         <div className='text-lg font-medium'>
-                          Use SkyTrack Cloud
+                          {DESKTOP_SETUP.cloudTitle}
                         </div>
-                        <Badge variant='outline'>Cloud</Badge>
+                        <Badge variant='outline'>{DESKTOP_SETUP.cloudBadge}</Badge>
                       </div>
                       <p className='m-0 text-muted-foreground'>
-                        Cloud simulation is a draft option that needs Owner
-                        confirmation. Setup instructions will be added after the
-                        service path is confirmed.
+                        {DESKTOP_SETUP.cloudDescription}
                       </p>
                       {/* <Button
                         type='button'
@@ -828,7 +624,7 @@ function PlatformDetails ({
                         2
                       </Badge>
                       <span className='text-lg font-medium text-foreground'>
-                        {'<'}Mock content{'>'}
+                        {DESKTOP_SETUP.pendingSteps[0]}
                       </span>
                     </li>
                     <li className='flex items-center gap-3'>
@@ -836,7 +632,7 @@ function PlatformDetails ({
                         3
                       </Badge>
                       <span className='text-lg font-medium text-foreground'>
-                        {'<'}Mock content{'>'}
+                        {DESKTOP_SETUP.pendingSteps[1]}
                       </span>
                     </li>
                   </ol>
