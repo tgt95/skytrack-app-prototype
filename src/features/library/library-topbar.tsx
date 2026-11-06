@@ -1,4 +1,8 @@
-import { CloudIcon, DiscordLogoIcon } from '@phosphor-icons/react'
+import {
+  CloudIcon,
+  DiscordLogoIcon,
+  DownloadSimpleIcon
+} from '@phosphor-icons/react'
 import { Button } from 'skytrack-ui/button'
 import { Tabs, TabsList, TabsTab } from 'skytrack-ui/tabs'
 import {
@@ -226,7 +230,7 @@ export default function LibraryTopbar ({
             title='Download'
             onClick={() => onNavigate('download')}
           >
-            Download app
+            <DownloadSimpleIcon aria-hidden='true' /> Download app
           </Button>
 
           <Tooltip>

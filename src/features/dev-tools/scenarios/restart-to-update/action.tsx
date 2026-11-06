@@ -1,4 +1,4 @@
-import { DownloadIcon } from "@phosphor-icons/react";
+import { ArrowCounterClockwiseIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
 export default function RestartToUpdateAction() {
   return (
@@ -9,7 +9,7 @@ export default function RestartToUpdateAction() {
         data-testid="ms-lib-restart"
         onClick={() => window.location.reload()}
       >
-        <DownloadIcon aria-hidden="true" /> Restart to update
+        <ArrowCounterClockwiseIcon aria-hidden="true" /> Restart to update
       </Button>
     </>
   );
