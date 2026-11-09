@@ -120,11 +120,6 @@ export function SharedWithMePage({
         <LibraryPageHeader
           titleId="ms-lib-sharedme-title"
           title="Shared with me"
-          description={
-            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
-              Projects shared by people in other Workspaces.
-            </p>
-          }
         />
       }
     >

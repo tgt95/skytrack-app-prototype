@@ -44,7 +44,7 @@ export function ProjectCard({
         <FolderIcon aria-hidden="true" className="w-9 h-9" />
       </button>
       <div className="ms-lib-card-body flex flex-col gap-1 p-3">
-        <span className="text-sm font-medium">{project.name}</span>
+        <span className="text-base font-medium">{project.name}</span>
         <span className="text-sm text-muted-foreground">
           {project.missions.length} mission
           {project.missions.length === 1 ? "" : "s"}
@@ -105,8 +105,8 @@ export function TemplateCard({
         )}
       </button>
       <span className="ms-lib-card-body flex flex-col gap-1 p-3">
-        <span className="text-sm font-medium">{template.title}</span>
-        <span className="text-xs text-muted-foreground leading-[1.5]">
+        <span className="text-base font-medium">{template.title}</span>
+        <span className="text-sm text-muted-foreground leading-[1.5]">
           {template.desc}
         </span>
         {hideMeta ? null : (
@@ -150,7 +150,7 @@ export function SharedProjectCard({
       <div className="ms-lib-card-body flex flex-col gap-1 p-3 flex-1 justify-between">
         <div className="flex flex-col gap-2">
           <div className="flex items-start justify-between gap-2">
-            <span className="text-sm font-medium">{project.name}</span>
+            <span className="text-base font-medium">{project.name}</span>
             <Badge className="rounded-(--radius)" count="View only" />
           </div>
           <span className="text-sm text-muted-foreground">

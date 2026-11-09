@@ -25,6 +25,7 @@ import {
   MenuTrigger,
 } from "skytrack-ui/menu";
 import { SkyTooltip } from "@/ui/components/sky-tooltip";
+import { PageHeader } from "skytrack-ui/page-header";
 
 export type LibraryCardAction = {
   id: string;
@@ -257,55 +258,60 @@ export function LibraryPageHeader({
   variant?: "default" | "plain";
   stickyHeader?: boolean;
 }) {
-  const className = [
-    "ms-lib-page-header",
-    footerVariant === "tabs" ? "has-tabs" : "",
-    // footerVariant === "tabs" ? "[&_[data-variant='line']]:-mx-1.5" : "",
-    variant === "plain" ? "is-plain" : "",
-    "flex flex-col gap-2",
-    stickyHeader ? "sticky top-0 z-20" : "",
-    "pt-5 px-6 pb-4",
-    "bg-(--card) border-b border-b-border [.ms-lib-page-header&:where(.has-tabs)]:pb-[0] [.ms-lib-page-header&:where(.is-plain)]:[border:0] [.ms-lib-page-header&:where(.is-plain)]:bg-(--background) block flex-none w-full min-h-0",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const pageHeaderContent =
+    description != null || footer != null ? (
+      <>
+        {description != null ? (
+          <div data-testid="ms-lib-page-header-description">
+            {description}
+          </div>
+        ) : null}
+        {footer != null ? (
+          <div className="ms-lib-page-header-footer min-w-0">{footer}</div>
+        ) : null}
+      </>
+    ) : undefined;
 
   return (
-    <header className={className}>
+    <div
+      className={stickyHeader ? "sticky top-0 z-20 bg-(--card)" : ""}
+      data-testid="ms-lib-page-header-row"
+    >
       {context ? (
-        <div className=" min-w-0" data-testid="ms-lib-page-header-context">
+        <div
+          className="min-w-0 bg-(--card) px-6 pt-5"
+          data-testid="ms-lib-page-header-context"
+        >
           {context}
         </div>
       ) : null}
-      <div
-        className=" flex items-start justify-between gap-3 [@media_(max-width:_61.25rem)]:flex-wrap"
-        data-testid="ms-lib-page-header-row"
-      >
-        <div className=" min-w-0" data-testid="ms-lib-page-header-copy">
-          <h1 id={titleId} className="h3 m-0">
+      <PageHeader
+        className={[
+          "ms-lib-page-header flex flex-col gap-2 px-6 pb-4",
+          context ? "pt-0" : "pt-5",
+          footerVariant === "tabs" ? "has-tabs pb-0" : "",
+          variant === "plain" ? "is-plain border-0 bg-(--background)" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        title={
+          <span id={titleId} className="block" data-testid="ms-lib-page-header-copy">
             {title}
-          </h1>
-          {description ? (
+          </span>
+        }
+        toolbar={
+          actions ? (
             <div
-              className=" mt-1"
-              data-testid="ms-lib-page-header-description"
+              className="inline-flex items-center justify-end gap-2 shrink-0"
+              data-testid="ms-lib-page-header-actions"
             >
-              {description}
+              {actions}
             </div>
-          ) : null}
-        </div>
-        {actions ? (
-          <div
-            className=" inline-flex items-center justify-end gap-2 flex-[0_0_auto]"
-            data-testid="ms-lib-page-header-actions"
-          >
-            {actions}
-          </div>
-        ) : null}
-      </div>
-      {footer ? (
-        <div className="ms-lib-page-header-footer min-w-0">{footer}</div>
-      ) : null}
-    </header>
+          ) : undefined
+        }
+        children={pageHeaderContent}
+      >
+      </PageHeader>
+    </div>
   );
 }

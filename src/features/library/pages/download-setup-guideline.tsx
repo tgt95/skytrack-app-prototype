@@ -1,10 +1,4 @@
-import {
-  CheckIcon,
-  CodeIcon,
-  CopySimpleIcon,
-  DownloadSimpleIcon,
-} from "@phosphor-icons/react";
-import { useState } from "react";
+import { CodeIcon, DownloadSimpleIcon } from "@phosphor-icons/react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import {
   AccordionContent,
@@ -12,7 +6,15 @@ import {
   AccordionTrigger,
 } from "skytrack-ui/accordion";
 import { Badge } from "skytrack-ui/badge";
-import { Button, buttonVariants } from "skytrack-ui/button";
+import {
+  CodeBlock,
+  CodeBlockActions,
+  CodeBlockContent,
+  CodeBlockCopyButton,
+  CodeBlockHeader,
+  CodeBlockTitle,
+} from "skytrack-ui/code-block";
+import { buttonVariants } from "skytrack-ui/button";
 import {
   ANDROID_SETUP_STEPS,
   DESKTOP_SETUP,
@@ -21,72 +23,27 @@ import {
   type DesktopHost,
 } from "./download-page-data";
 
-function CopyableCodeBlock({
-  code,
-  description,
-}: {
-  code: string;
-  description: string;
-}) {
-  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">(
-    "idle",
-  );
-
-  const copyCode = async () => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopyState("copied");
-      window.setTimeout(() => setCopyState("idle"), 1800);
-    } catch {
-      setCopyState("failed");
-    }
-  };
-
+function SetupCodeBlock({ code }: { code: string }) {
   return (
-    <div className="overflow-hidden rounded-(--radius) border border-border bg-muted">
-      <div className="flex items-center justify-between border-b border-border px-3 py-1">
-        <span className="flex items-center gap-2 text-sm text-muted-foreground">
+    <CodeBlock className="bg-muted">
+      <CodeBlockHeader className="px-3 py-1">
+        <CodeBlockTitle className="flex items-center gap-2 font-normal text-muted-foreground">
           <CodeIcon aria-hidden="true" className="size-4" />
           Plain Text
-        </span>
-        <span className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label={
-              copyState === "copied"
-                ? `Copied ${description}`
-                : copyState === "failed"
-                  ? `Could not copy ${description}`
-                  : `Copy ${description}`
-            }
-            onClick={copyCode}
-          >
-            {copyState === "copied" ? (
-              <CheckIcon aria-hidden="true" />
-            ) : (
-              <CopySimpleIcon aria-hidden="true" />
-            )}
-          </Button>
-          {copyState !== "idle" && (
-            <span className="text-xs text-muted-foreground">
-              {copyState === "copied" ? "Copied" : "Copy failed"}
-            </span>
-          )}
-        </span>
-        <span className="sr-only" aria-live="polite">
-          {copyState === "copied"
-            ? `${description} copied to clipboard.`
-            : copyState === "failed"
-              ? `Could not copy ${description}.`
-              : ""}
-        </span>
-      </div>
-      <pre className="m-0 overflow-x-auto px-4 py-3 text-sm leading-6 text-foreground">
-        <code>{code}</code>
-      </pre>
-    </div>
+        </CodeBlockTitle>
+        <CodeBlockActions>
+          <CodeBlockCopyButton
+            value={code}
+            copyLabel="Copy setup guide code block"
+            copiedLabel="Copied setup guide code block"
+            copyFailedLabel="Could not copy setup guide code block"
+          />
+        </CodeBlockActions>
+      </CodeBlockHeader>
+      <CodeBlockContent className="px-4 py-3 text-sm leading-6">
+        {code}
+      </CodeBlockContent>
+    </CodeBlock>
   );
 }
 
@@ -108,10 +65,7 @@ const setupMarkdownComponents: Components = {
   li: ({ children }) => <li className="text-base">{children}</li>,
   code: ({ children, className }) =>
     className ? (
-      <CopyableCodeBlock
-        description="setup guide code block"
-        code={String(children).replace(/\n$/, "")}
-      />
+      <SetupCodeBlock code={String(children).replace(/\n$/, "")} />
     ) : (
       <code className="rounded-(--radius) border border-border p-1 font-mono text-sm text-foreground">
         {children}

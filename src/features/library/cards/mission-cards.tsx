@@ -257,7 +257,7 @@ function MissionCardCore({
     <div className="ms-lib-card-body flex flex-col gap-1 p-3 flex-1 justify-between">
       <div className="flex flex-col gap-2">
         <div className="flex items-start justify-between gap-2">
-          <span className="text-sm font-medium">{title}</span>
+          <span className="text-base font-medium">{title}</span>
           {variant === "shared" || mission.viewOnly ? (
             <Badge className="rounded-(--radius)" count="View only" />
           ) : null}

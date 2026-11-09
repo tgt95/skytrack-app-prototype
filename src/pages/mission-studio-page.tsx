@@ -25,6 +25,7 @@ import { useStudioUiState } from "@/features/studio/use-studio-ui-state";
 import { useStudioStageActions } from "@/features/studio/use-studio-stage-actions";
 import { useMissionStudioTestBridge } from "@/features/studio/use-mission-studio-test-bridge";
 import StudioLibraryRoute from "@/features/studio/studio-library-route";
+import NotFoundPage from "@/pages/not-found-page";
 import StudioShell from "@/ui/layout/page-layout";
 import DevScenarioTool from "@/features/dev-tools/dev-scenario-tool";
 import { ImportAIModelDialog } from "@/features/library/dialogs/import-ai-model-dialog.tsx";
@@ -391,6 +392,15 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
   });
 
   const devScenarioTool = import.meta.env.DEV ? <DevScenarioTool /> : null;
+
+  if (route.kind === "not-found") {
+    return (
+      <NotFoundPage
+        pathname={route.pathname}
+        onGoHome={() => navigateRoute({ kind: "library", section: "home" })}
+      />
+    );
+  }
 
   if (section === "library") {
     return (

@@ -375,6 +375,8 @@ export default function StudioLibrary({
         onEnvironmentChange={setRunEnvironment}
         onAnnounce={onAnnounce}
         onNavigate={goto}
+        projectName={activeProject?.name ?? null}
+        onNavigateProjects={() => onNavigate('projects', null)}
       />
 
       <div

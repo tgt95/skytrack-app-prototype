@@ -176,7 +176,6 @@ export default function LibraryMainContent({
       ) : activeProject ? (
         <ProjectDetailPage
           project={activeProject}
-          onNavigateProjects={() => onNavigate("projects", null)}
           onCreateMission={onCreateMission}
           onRenameProject={onRenameProject}
           onDeleteProject={onDeleteProject}

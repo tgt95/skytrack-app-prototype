@@ -4,6 +4,14 @@ import {
   DownloadSimpleIcon
 } from '@phosphor-icons/react'
 import { Button } from 'skytrack-ui/button'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from 'skytrack-ui/breadcrumb'
 import { Tabs, TabsList, TabsTab } from 'skytrack-ui/tabs'
 import {
   Tooltip,
@@ -52,13 +60,25 @@ export default function LibraryTopbar ({
   onEnvironmentChange,
   onAnnounce,
   onNavigate,
+  projectName,
+  onNavigateProjects,
 }: {
   runEnvironment: 'local' | 'cloud'
   canUseCloudSIM: boolean
   onEnvironmentChange: (value: 'local' | 'cloud') => void
   onAnnounce: (message: string) => void
   onNavigate: (section: 'home' | 'download') => void
+  projectName: string | null
+  onNavigateProjects: () => void
 }) {
+  const logoMark = (
+    <span
+      className='inline-flex items-center gap-2'
+      aria-hidden='true'
+      dangerouslySetInnerHTML={{ __html: skytrackLogoFull }}
+    />
+  )
+
   return (
     <>
       <ToastProvider toastManager={runEnvironmentToastManager}>
@@ -72,20 +92,55 @@ export default function LibraryTopbar ({
         className='sticky top-0 z-20 flex-[0_0_auto] flex items-center justify-between gap-3 min-h-12 py-2 px-3 border-b border-b-border bg-(--card) [@media_(max-width:_61.25rem)]:flex-wrap'
         data-testid='ms-lib-top'
       >
-        <button
-          type='button'
-          className='inline-flex items-center gap-2 rounded-(--radius) bg-transparent p-0 [border:0] [font:inherit] font-bold text-sm text-inherit cursor-pointer [&_svg]:block [&_svg]:h-6 focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1'
-          aria-label='Go to Home'
-          title='Go to Home'
-          data-testid='ms-lib-logo-home'
-          onClick={() => onNavigate('home')}
-        >
-          <span
-            className='inline-flex items-center gap-2'
-            aria-hidden='true'
-            dangerouslySetInnerHTML={{ __html: skytrackLogoFull }}
-          />
-        </button>
+        {projectName ? (
+          <Breadcrumb
+            className='min-w-0 flex-[1_1_auto] overflow-hidden text-sm'
+            aria-label='Breadcrumb'
+          >
+            <BreadcrumbList className='m-0 min-w-0 list-none flex-nowrap gap-2 p-0 text-inherit'>
+              <BreadcrumbItem className='shrink-0'>
+                <BreadcrumbLink
+                  render={<button type='button' />}
+                  className='inline-flex items-center gap-2 rounded-(--radius) bg-transparent p-0 [border:0] [font:inherit] text-inherit focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 [&_svg]:block [&_svg]:h-6'
+                  aria-label='Go to Home'
+                  title='Go to Home'
+                  data-testid='ms-lib-logo-home'
+                  onClick={() => onNavigate('home')}
+                >
+                  {logoMark}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className='text-(--muted-foreground)' />
+              <BreadcrumbItem className='shrink-0'>
+                <BreadcrumbLink
+                  render={<button type='button' />}
+                  className='rounded-(--radius) p-0.5 text-(--muted-foreground) hover:text-(--foreground) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1'
+                  data-testid='ms-lib-project-breadcrumb-link'
+                  onClick={onNavigateProjects}
+                >
+                  Projects
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className='text-(--muted-foreground)' />
+              <BreadcrumbItem className='min-w-0'>
+                <BreadcrumbPage className='block min-w-0 max-w-80 overflow-hidden text-ellipsis whitespace-nowrap font-semibold [@media_(max-width:_73.75rem)]:max-w-45'>
+                  {projectName}
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        ) : (
+          <button
+            type='button'
+            className='inline-flex items-center gap-2 rounded-(--radius) bg-transparent p-0 [border:0] [font:inherit] font-bold text-sm text-inherit cursor-pointer [&_svg]:block [&_svg]:h-6 focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1'
+            aria-label='Go to Home'
+            title='Go to Home'
+            data-testid='ms-lib-logo-home'
+            onClick={() => onNavigate('home')}
+          >
+            {logoMark}
+          </button>
+        )}
         <span
           className=' flex items-center gap-2'
           data-testid='ms-lib-top-actions'

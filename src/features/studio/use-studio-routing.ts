@@ -169,12 +169,6 @@ export function useStudioRouting({
   }, [updateRoute]);
 
   useEffect(() => {
-    if (route.kind !== "not-found") return;
-    say(`Page ${route.pathname} was not found. Returned to Library Home.`);
-    navigateRoute({ kind: "library", section: "home" }, true);
-  }, [navigateRoute, route, say]);
-
-  useEffect(() => {
     if (route.kind !== "mission") return;
     const canonicalPath = missionStudioRoutePath(
       route,

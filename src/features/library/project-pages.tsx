@@ -2,14 +2,6 @@ import { Fragment, type ReactNode } from "react";
 import { DotsThreeVerticalIcon, PlusIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "skytrack-ui/breadcrumb";
-import {
   Menu,
   MenuItem,
   MenuPopup,
@@ -61,14 +53,12 @@ export function ProjectsPage({
 
 export function ProjectDetailPage({
   project,
-  onNavigateProjects,
   onCreateMission,
   onRenameProject,
   onDeleteProject,
   renderMissionCard,
 }: {
   project: LibProject;
-  onNavigateProjects: () => void;
   onCreateMission: (projectId: string) => void;
   onRenameProject: (project: LibProject) => void;
   onDeleteProject: (project: LibProject) => void;
@@ -86,29 +76,6 @@ export function ProjectDetailPage({
         <LibraryPageHeader
           titleId="ms-lib-project-title"
           title={project.name}
-          context={
-            <Breadcrumb
-              className="mb-0 text-[0.8125rem] text-(--muted-foreground)"
-              aria-label="Breadcrumb"
-            >
-              <BreadcrumbList className="m-0 list-none gap-2 p-0 text-inherit">
-                <BreadcrumbItem>
-                  <BreadcrumbLink
-                    render={<button type="button" />}
-                    className="rounded-(--radius) p-0.5 text-inherit hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
-                    data-testid="ms-lib-project-breadcrumb-link"
-                    onClick={onNavigateProjects}
-                  >
-                    Projects
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{project.name}</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          }
           actions={
             <span
               className=" inline-flex items-center gap-1.5 flex-[0_0_auto]"
