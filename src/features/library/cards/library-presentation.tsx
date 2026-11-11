@@ -89,7 +89,12 @@ export function LibraryCardFrame({
   onToggleStar?: () => void;
   onOpen?: () => void;
 }) {
-  const cardClassName = ["ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-(--card) text-foreground text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default", className].filter(Boolean).join(" ");
+  const cardClassName = [
+    "ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-(--card) text-foreground text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
   const handleCardClick = (event: MouseEvent<HTMLElement>) => {
     if (!onOpen) return;
     const target = event.target as Element;
@@ -206,7 +211,9 @@ export function LibraryEmptyState({
       >
         {title}
       </p>
-      <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5] m-0 text-sm">{description}</p>
+      <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5] m-0 text-sm">
+        {description}
+      </p>
     </div>
   );
 }
@@ -258,23 +265,19 @@ export function LibraryPageHeader({
   variant?: "default" | "plain";
   stickyHeader?: boolean;
 }) {
-  const pageHeaderContent =
-    description != null || footer != null ? (
-      <>
-        {description != null ? (
-          <div data-testid="ms-lib-page-header-description">
-            {description}
-          </div>
-        ) : null}
-        {footer != null ? (
-          <div className="ms-lib-page-header-footer min-w-0">{footer}</div>
-        ) : null}
-      </>
-    ) : undefined;
+  const tabsContent =
+    footerVariant === "tabs" && footer != null ? footer : undefined;
 
   return (
     <div
-      className={stickyHeader ? "sticky top-0 z-20 bg-(--card)" : ""}
+      className={[
+        stickyHeader ? "sticky top-0 z-20 bg-(--card)" : "",
+        description != null && variant !== "plain"
+          ? "border-b border-border"
+          : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
       data-testid="ms-lib-page-header-row"
     >
       {context ? (
@@ -289,13 +292,18 @@ export function LibraryPageHeader({
         className={[
           "ms-lib-page-header flex flex-col gap-2 px-6 pb-4",
           context ? "pt-0" : "pt-5",
+          description != null ? "border-b-0 pb-0" : "",
           footerVariant === "tabs" ? "has-tabs pb-0" : "",
           variant === "plain" ? "is-plain border-0 bg-(--background)" : "",
         ]
           .filter(Boolean)
           .join(" ")}
         title={
-          <span id={titleId} className="block" data-testid="ms-lib-page-header-copy">
+          <span
+            id={titleId}
+            className="block"
+            data-testid="ms-lib-page-header-copy"
+          >
             {title}
           </span>
         }
@@ -309,9 +317,16 @@ export function LibraryPageHeader({
             </div>
           ) : undefined
         }
-        children={pageHeaderContent}
-      >
-      </PageHeader>
+        children={tabsContent}
+      />
+      {description != null ? (
+        <div className="px-6 pb-4" data-testid="ms-lib-page-header-description">
+          {description}
+        </div>
+      ) : null}
+      {footer != null && footerVariant !== "tabs" ? (
+        <div className="ms-lib-page-header-footer min-w-0">{footer}</div>
+      ) : null}
     </div>
   );
 }

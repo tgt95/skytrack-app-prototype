@@ -8,13 +8,11 @@ import {
 } from "@/features/library/cards/library-presentation.tsx";
 
 export function DronesPage({
-  workspaceName,
   drones,
   onCreate,
   onEdit,
   onDelete,
 }: {
-  workspaceName: string;
   drones: WorkspaceDroneProfile[];
   onCreate: () => void;
   onEdit: (drone: WorkspaceDroneProfile) => void;
@@ -27,11 +25,6 @@ export function DronesPage({
         <LibraryPageHeader
           titleId="ms-lib-drones-title"
           title="Drones"
-          description={
-            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground) hidden">
-              Reference builds and hardware profiles for {workspaceName}.
-            </p>
-          }
           actions={
             <Button size="default" variant="default" onClick={onCreate}>
               <PlusIcon aria-hidden="true" /> Add Drone
@@ -67,10 +60,7 @@ export function DronesPage({
             data-testid="ms-lib-drone-profile-card"
           >
             <span className="ms-lib-resource-icon flex items-center justify-center w-full aspect-4/3 border-b border-b-border bg-(--muted) text-(--muted-foreground)">
-              <DroneIcon
-                aria-hidden="true"
-                className="w-9 h-9"
-              />
+              <DroneIcon aria-hidden="true" className="w-9 h-9" />
             </span>
             <span className="ms-lib-card-body flex flex-col gap-1 p-3 flex-1">
               <span className="text-sm font-medium">{drone.name}</span>

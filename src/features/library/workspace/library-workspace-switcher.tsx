@@ -26,7 +26,7 @@ export function LibraryWorkspaceSwitcher({
 }) {
   return (
     <div
-      className=" flex items-start gap-1.5 min-w-0 pt-0 px-0.5 pb-0.5 [@media_(max-width:_61.25rem)]:justify-center [@media_(max-width:_61.25rem)]:p-0"
+      className=" flex items-start gap-1.5 min-w-0 pt-0 px-0.5 pb-0.5 mb-3 [@media_(max-width:_61.25rem)]:justify-center [@media_(max-width:_61.25rem)]:p-0"
       data-testid="ms-lib-workspace-head"
     >
       <div className="ms-lib-workspace-switcher flex-[1_1_auto] min-w-0">
@@ -37,7 +37,7 @@ export function LibraryWorkspaceSwitcher({
             render={
               <button
                 type="button"
-                className=" flex items-center justify-between gap-2 w-full min-w-0 min-h-8 py-1 px-1.5 [border:0] rounded-(--radius) bg-transparent text-(--sidebar-foreground) text-left cursor-pointer [transition:background-color_150ms_ease,color_150ms_ease] [&:hover]:bg-(--sidebar-accent) [&:hover]:text-(--sidebar-accent-foreground) data-popup-open:bg-(--sidebar-accent) data-popup-open:text-(--sidebar-accent-foreground) focus-visible:outline-2 focus-visible:outline-(--ring) focus-visible:outline-offset-2 [@media_(max-width:_61.25rem)]:justify-center [@media_(max-width:_61.25rem)]:p-0"
+                className=" flex items-center gap-2 w-full min-w-0 min-h-8 py-1 px-1.5 [border:0] rounded-(--radius) bg-transparent text-(--sidebar-foreground) text-left cursor-pointer [transition:background-color_150ms_ease,color_150ms_ease] [&:hover]:bg-(--sidebar-accent) [&:hover]:text-(--sidebar-accent-foreground) data-popup-open:bg-(--sidebar-accent) data-popup-open:text-(--sidebar-accent-foreground) focus-visible:outline-2 focus-visible:outline-(--ring) focus-visible:outline-offset-2 [@media_(max-width:_61.25rem)]:justify-center [@media_(max-width:_61.25rem)]:p-0"
                 data-testid="ms-lib-workspace-select"
               />
             }

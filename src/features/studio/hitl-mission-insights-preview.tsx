@@ -148,11 +148,10 @@ export function HitlMissionInsightsPreview() {
             </Toolbar>
           </div>
         }
-      >
-        <p className="m-0 text-(--muted-foreground)">
-          Mini A8 Pro · Oct 22, 2026 - 15:12
-        </p>
-      </PageHeader>
+      />
+      <p className="m-0 text-(--muted-foreground)">
+        Mini A8 Pro · Oct 22, 2026 - 15:12
+      </p>
 
       <div className="flex w-full min-w-0 flex-col gap-6 p-6">
         <Alert variant="info" role="note">
@@ -163,6 +162,24 @@ export function HitlMissionInsightsPreview() {
             linked to the selected run.
           </AlertDescription>
         </Alert>
+
+        <DetailSection title="Mission result">
+          <div className="flex min-w-0 flex-col gap-2">
+            <p className="m-0 font-medium">
+              Physical HIL smoke validation passed
+            </p>
+            <p className="m-0 text-(--muted-foreground)">
+              All five readiness checks and scenario assertions passed · 38.1 s
+            </p>
+          </div>
+        </DetailSection>
+
+        <DetailSection title="Needs attention">
+          <p className="m-0">
+            No fault or trace warning is shown for this PASS sample. Trace
+            collection is complete; cleanup returned PASS.
+          </p>
+        </DetailSection>
 
         <div className="grid min-w-0 grid-cols-1 gap-6 sm:grid-cols-2">
           <DetailSection
@@ -236,6 +253,22 @@ export function HitlMissionInsightsPreview() {
           </DetailSection>
 
           <DetailSection
+            title="Evidence & integrity"
+            toolbar={
+              <div className="flex flex-wrap items-center gap-2">
+                <span>Checksums verified</span>
+                <Badge
+                  className="rounded-(--radius)"
+                  count="PASS"
+                  status="success"
+                />
+              </div>
+            }
+          >
+            <KeyValueList values={evidenceDetails} mono />
+          </DetailSection>
+
+          <DetailSection
             title="Comparison with simulation"
             className="sm:col-span-2"
           >
@@ -292,22 +325,6 @@ export function HitlMissionInsightsPreview() {
 
           <DetailSection title="Versions">
             <KeyValueList values={versionDetails} />
-          </DetailSection>
-
-          <DetailSection
-            title="Evidence"
-            toolbar={
-              <div className="flex flex-wrap items-center gap-2">
-                <span>Checksums verified</span>
-                <Badge
-                  className="rounded-(--radius)"
-                  count="PASS"
-                  status="success"
-                />
-              </div>
-            }
-          >
-            <KeyValueList values={evidenceDetails} mono />
           </DetailSection>
         </div>
       </div>

@@ -55,11 +55,6 @@ export function WorldsPage({
         <LibraryPageHeader
           titleId="ms-lib-worlds-title"
           title="Worlds"
-          description={
-            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground) hidden">
-              3D reconstructions for {workspaceName}.
-            </p>
-          }
           actions={
             <Button size="default" variant="default" onClick={onCreate}>
               <PlusIcon aria-hidden="true" /> Add World

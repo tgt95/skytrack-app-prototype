@@ -80,7 +80,6 @@ interface LibraryMainContentProps {
   onDeleteProject: (project: LibProject) => void;
   onOpenSharedAccounts: (missionId: string | null) => void;
   onOpenSharedProject: (projectId: string | null) => void;
-  onOpenTemplate: (templateId: string | null) => void;
   onOpenTemplateDetail: (templateId: string) => void;
   onUseTemplate: (template: LibTemplate) => void;
   onCreateWorld: () => void;
@@ -130,7 +129,6 @@ export default function LibraryMainContent({
   onDeleteProject,
   onOpenSharedAccounts,
   onOpenSharedProject,
-  onOpenTemplate,
   onOpenTemplateDetail,
   onUseTemplate,
   onCreateWorld,
@@ -214,7 +212,6 @@ export default function LibraryMainContent({
         />
       ) : section === "drones" ? (
         <DronesPage
-          workspaceName={workspaceName}
           drones={workspaceDrones}
           onCreate={onCreateDrone}
           onEdit={onEditDrone}
@@ -245,7 +242,6 @@ export default function LibraryMainContent({
           debouncedQuery={debouncedQuery}
           renderTemplate={renderTemplate}
           onQueryChange={onQueryChange}
-          onBack={() => onOpenTemplate(null)}
           onUseTemplate={onUseTemplate}
           onOpenTemplate={onOpenTemplateDetail}
         />
@@ -287,7 +283,9 @@ export default function LibraryMainContent({
             />
           }
         >
-          <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">No {section.toLowerCase()} available.</p>
+          <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">
+            No {section.toLowerCase()} available.
+          </p>
           <Button size="sm" variant="outline" onClick={onGoHome}>
             Back to Home
           </Button>

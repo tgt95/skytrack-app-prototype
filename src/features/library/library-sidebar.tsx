@@ -13,6 +13,17 @@ import {
   SquaresFourIcon,
   StarIcon,
 } from "@phosphor-icons/react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "skytrack-ui/sidebar";
+import { Separator } from "skytrack-ui/separator";
 import { LibraryAccountFooter } from "./account/library-account-footer.tsx";
 import { LibraryWorkspaceSwitcher } from "./workspace/library-workspace-switcher.tsx";
 import type { AccountProfile } from "./account/account-menu-state.ts";
@@ -53,223 +64,178 @@ export default function LibrarySidebar({
   onOpenAccountPanel: (panel: AccountMenuPanel) => void;
   onUpdateThemePreference: (preference: "light" | "dark" | "system") => void;
 }) {
-  const navBtn = (item: NavItem, disabled: boolean, disabledHint: string) => {
+  const renderNavItem = (item: NavItem) => {
     const Icon = item.icon;
     const active = section === item.id && !isSharedAccountsDetail;
-    if (disabled)
-      return (
-        <button
-          key={item.id}
-          type="button"
-          data-testid={`ms-lib-nav-${item.id}`}
-          disabled
-          title={disabledHint}
-          className="ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center"
-        >
-          <Icon
-            aria-hidden="true"
-            weight="regular"
-            className="size-5 shrink-0"
-          />
-          <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">{item.label}</span>
-        </button>
-      );
     return (
-      <button
-        key={item.id}
-        type="button"
-        data-testid={`ms-lib-nav-${item.id}`}
-        aria-current={active ? "page" : undefined}
-        className={`ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center${active ? " is-active" : ""}`}
-        onClick={() => onNavigateSection(item.id)}
-      >
-        <Icon
-          aria-hidden="true"
-          weight={active ? "fill" : "regular"}
-          className="size-5 shrink-0"
-        />
-        <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">{item.label}</span>
-      </button>
+      <SidebarMenuItem key={item.id}>
+        <SidebarMenuButton
+          isActive={active}
+          tooltip={item.label}
+          data-testid={`ms-lib-nav-${item.id}`}
+          onClick={() => onNavigateSection(item.id)}
+        >
+          <Icon aria-hidden="true" weight={active ? "fill" : "regular"} />
+          <span>{item.label}</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    );
+  };
+
+  const renderSectionItem = (
+    id: LibrarySection,
+    label: string,
+    Icon: typeof HouseIcon,
+    testId: string,
+  ) => {
+    const active = section === id;
+    return (
+      <SidebarMenuItem key={id}>
+        <SidebarMenuButton
+          isActive={active}
+          tooltip={label}
+          data-testid={testId}
+          onClick={() => onNavigateSection(id)}
+        >
+          <Icon aria-hidden="true" weight={active ? "fill" : "regular"} />
+          <span>{label}</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
     );
   };
 
   return (
-    <nav
-      className="min-h-0 grow-0 shrink-0 basis-67.5 min-w-0 flex flex-col gap-2 py-3 px-1.5 border-r border-r-(--sidebar-border) bg-(--sidebar) text-(--sidebar-foreground) overflow-y-auto overscroll-contain [@media_(max-width:_61.25rem)]:basis-16 [@media_(max-width:_61.25rem)]:items-stretch [@media_(max-width:_61.25rem)]:py-3 [@media_(max-width:_61.25rem)]:px-1.5"
+    <Sidebar
+      collapsible="none"
       aria-label="Workspace navigation"
+      data-testid="ms-lib-sidebar"
     >
-      <div className="ms-lib-navgroup flex flex-col gap-0.5" role="group" aria-label="Main">
-        {NAV_MAIN.map((item) => navBtn(item, false, ""))}
-      </div>
-      <div className="ms-lib-sidebar-divider h-px my-1 mx-0 bg-(--sidebar-border) flex-[0_0_auto] [@media_(max-width:_61.25rem)]:hidden" />
-      <div
-        className="ms-lib-navgroup flex flex-col gap-0.5"
-        role="group"
-        aria-label="Learning resources"
-      >
-        <a
-          aria-current={section === "learn" ? "page" : undefined}
-          className={`ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center${section === "learn" ? " is-active" : ""} [text-decoration:none]`}
-          data-testid="ms-lib-nav-learn"
-          href={LEARN_URL}
-          target="_blank"
-          rel="noreferrer"
-          onClick={() =>
-            onAnnounce("Learning opens SkyTrack help in a new tab.")
-          }
-        >
-          <BookOpenIcon
-            aria-hidden="true"
-            weight={section === "learn" ? "fill" : "regular"}
-            className="w-5 h-5 shrink-0"
-          />
-          <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">Learning</span>
-          <ArrowSquareOutIcon
-            aria-hidden="true"
-            className=" w-5 h-5 ml-auto text-(--muted-foreground) flex-[0_0_auto] [@media_(max-width:_61.25rem)]:hidden"
-            data-testid="ms-lib-external"
-          />
-        </a>
-        <button
-          type="button"
-          data-testid="ms-lib-nav-templates"
-          aria-current={section === "templates" ? "page" : undefined}
-          className={`ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center${section === "templates" ? " is-active" : ""}`}
-          onClick={() => onNavigateSection("templates")}
-        >
-          <SquaresFourIcon
-            aria-hidden="true"
-            weight={section === "templates" ? "fill" : "regular"}
-            className="w-5 h-5 shrink-0"
-          />
-          <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">Mission templates</span>
-        </button>
-      </div>
-      <div className="ms-lib-sidebar-divider h-px my-1 mx-0 bg-(--sidebar-border) flex-[0_0_auto] [@media_(max-width:_61.25rem)]:hidden" />
-      <p
-        className="mt-1 mx-2 text-xs sub-heading [@media_(max-width:_61.25rem)]:hidden"
-        data-testid="ms-lib-navhead"
-      >
-        Starred
-      </p>
-      {!hasStarredMissions ? (
-        <button
-          type="button"
-          aria-current={section === "starred" ? "page" : undefined}
-          className={[
-            `ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center${section === "starred" ? " is-active" : ""}`,
-            "cursor-pointer relative cursor-default",
-          ]
-            .filter(Boolean)
-            .join(" ")}
-          onClick={() => onNavigateSection("starred")}
-          data-testid="ms-lib-nav-empty"
-        >
-          <FoldersIcon
-            aria-hidden="true"
-            size={20}
-            weight={section === "starred" ? "fill" : "regular"}
-          />
-          <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">No projects/missions</span>
-        </button>
-      ) : (
-        navBtn(
-          { id: "starred", label: "Starred missions", icon: StarIcon },
-          false,
-          "",
-        )
-      )}
-      <div className="ms-lib-sidebar-divider h-px my-1 mx-0 bg-(--sidebar-border) flex-[0_0_auto] [@media_(max-width:_61.25rem)]:hidden" />
-      <LibraryWorkspaceSwitcher
-        activeWorkspace={activeWorkspace}
-        onSwitchWorkspace={onSwitchWorkspace}
-        onAnnounce={onAnnounce}
-      />
-      <div
-        className="ms-lib-navgroup flex flex-col gap-0.5"
-        role="group"
-        aria-label={`${activeWorkspace.name} resources`}
-      >
-        {navBtn(
-          { id: "projects", label: "Projects", icon: FoldersIcon },
-          false,
-          "",
-        )}
-        {navBtn(
-          { id: "worlds", label: "Worlds", icon: GlobeHemisphereWestIcon },
-          false,
-          "",
-        )}
-        {navBtn({ id: "drones", label: "Drones", icon: DroneIcon }, false, "")}
-        {navBtn(
-          { id: "aimodels", label: "AI models", icon: PackageIcon },
-          false,
-          "",
-        )}
-      </div>
-      <div
-        className=" mt-auto flex flex-col gap-1 pt-3"
-        data-testid="ms-lib-side-foot"
-      >
-        {/* {!discordClosed ? (
-              <section className='ms-lib-community' aria-label='Join our community'>
-                <div className='ms-lib-community-head'>
-                  <h2>Join our community</h2>
-                  <button
-                    type='button'
-                    aria-label='Dismiss community card'
-                    className='ms-lib-x'
-                    onClick={closeDiscord}
-                  >
-                    <XIcon aria-hidden='true' />
-                  </button>
-                </div>
-                <p>Get setup help &amp; connect with other drone builders on Discord.</p>
-                <Button
-                  size='sm'
-                  variant='default'
-                  data-testid='ms-lib-discord'
-                  onClick={() => onAnnounce('Discord community')}
+      <SidebarContent>
+        <SidebarGroup aria-label="Main">
+          <SidebarMenu>{NAV_MAIN.map(renderNavItem)}</SidebarMenu>
+        </SidebarGroup>
+        <Separator />
+        <SidebarGroup aria-label="Learning resources">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                render={
+                  <a
+                    href={LEARN_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() =>
+                      onAnnounce("Learning opens SkyTrack help in a new tab.")
+                    }
+                  />
+                }
+                isActive={section === "learn"}
+                tooltip="Learning"
+                data-testid="ms-lib-nav-learn"
+              >
+                <BookOpenIcon
+                  aria-hidden="true"
+                  weight={section === "learn" ? "fill" : "regular"}
+                />
+                <span>Learning</span>
+                <ArrowSquareOutIcon
+                  aria-hidden="true"
+                  className="ml-auto"
+                  data-testid="ms-lib-external"
+                />
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            {renderSectionItem(
+              "templates",
+              "Mission templates",
+              SquaresFourIcon,
+              "ms-lib-nav-templates",
+            )}
+          </SidebarMenu>
+        </SidebarGroup>
+        <Separator />
+        <SidebarGroup>
+          <SidebarGroupLabel data-testid="ms-lib-navhead">
+            Starred
+          </SidebarGroupLabel>
+          <SidebarMenu>
+            {hasStarredMissions ? (
+              renderSectionItem(
+                "starred",
+                "Starred missions",
+                StarIcon,
+                "ms-lib-nav-starred",
+              )
+            ) : (
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={section === "starred"}
+                  tooltip="No projects/missions"
+                  data-testid="ms-lib-nav-empty"
+                  onClick={() => onNavigateSection("starred")}
                 >
-                  <UsersIcon aria-hidden='true' /> Join Discord
-                </Button>
-              </section>
-            ) : null} */}
-        <button
-          type="button"
-          data-testid="ms-lib-nav-logs"
-          aria-current={section === "logs" ? "page" : undefined}
-          className={`ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center${section === "logs" ? " is-active" : ""}`}
-          onClick={() => onNavigateSection("logs")}
-        >
-          <NotepadIcon
-            aria-hidden="true"
-            weight={section === "logs" ? "fill" : "regular"}
-            className="w-5 h-5 shrink-0"
+                  <FoldersIcon
+                    aria-hidden="true"
+                    weight={section === "starred" ? "fill" : "regular"}
+                  />
+                  <span>No projects/missions</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
+          </SidebarMenu>
+        </SidebarGroup>
+        <Separator />
+        <SidebarGroup>
+          <LibraryWorkspaceSwitcher
+            activeWorkspace={activeWorkspace}
+            onSwitchWorkspace={onSwitchWorkspace}
+            onAnnounce={onAnnounce}
           />
-          <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">Logs</span>
-        </button>
-        <button
-          type="button"
-          data-testid="ms-lib-nav-notifications"
-          aria-current={section === "notifications" ? "page" : undefined}
-          className={`ms-lib-navitem flex items-center flex-[0_0_auto] gap-3 w-full min-h-0 p-2 rounded-(--radius) bg-transparent text-(--muted-foreground) text-sm text-left cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground) disabled:opacity-[0.45] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-active]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [&.is-active]:text-(--sidebar-accent-foreground) [&.is-active]:font-medium [&.is-active:hover]:bg-[oklch(from_var(--sidebar-accent)_calc(l/1.03)_c_h)] [@media_(max-width:_61.25rem)]:justify-center${section === "notifications" ? " is-active" : ""}`}
-          onClick={() => onNavigateSection("notifications")}
-        >
-          <BellIcon
-            aria-hidden="true"
-            weight={section === "notifications" ? "fill" : "regular"}
-            className="w-5 h-5 shrink-0"
-          />
-          <span className="ms-lib-nav-label [@media_(max-width:_61.25rem)]:hidden">Notifications</span>
-        </button>
+          <SidebarMenu>
+            {renderSectionItem(
+              "projects",
+              "Projects",
+              FoldersIcon,
+              "ms-lib-nav-projects",
+            )}
+            {renderSectionItem(
+              "worlds",
+              "Worlds",
+              GlobeHemisphereWestIcon,
+              "ms-lib-nav-worlds",
+            )}
+            {renderSectionItem(
+              "drones",
+              "Drones",
+              DroneIcon,
+              "ms-lib-nav-drones",
+            )}
+            {renderSectionItem(
+              "aimodels",
+              "AI models",
+              PackageIcon,
+              "ms-lib-nav-aimodels",
+            )}
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter data-testid="ms-lib-side-foot">
+        <SidebarMenu>
+          {renderSectionItem("logs", "Logs", NotepadIcon, "ms-lib-nav-logs")}
+          {renderSectionItem(
+            "notifications",
+            "Notifications",
+            BellIcon,
+            "ms-lib-nav-notifications",
+          )}
+        </SidebarMenu>
         <LibraryAccountFooter
           accountProfile={accountProfile}
           themePreference={themePreference}
           onOpenAccountPanel={onOpenAccountPanel}
           onUpdateThemePreference={onUpdateThemePreference}
         />
-      </div>
-    </nav>
+      </SidebarFooter>
+    </Sidebar>
   );
 }

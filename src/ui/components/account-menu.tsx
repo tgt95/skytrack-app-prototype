@@ -83,7 +83,7 @@ export function AccountMenu({
             </span>
             <CaretDownIcon
               aria-hidden="true"
-              className="size-4 shrink-0 ml-auto [@media_(max-width:_61.25rem)]:hidden"
+              className="size-4 shrink-0 [@media_(max-width:_61.25rem)]:hidden"
             />
           </>
         )}

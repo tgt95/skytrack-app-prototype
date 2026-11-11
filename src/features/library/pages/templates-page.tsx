@@ -1,7 +1,7 @@
 import { Fragment } from "react";
-import { ArrowLeftIcon } from "@phosphor-icons/react";
+import { MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
-import { FieldControl, FieldLabel, FieldRoot } from "skytrack-ui/field";
+import { Input } from "skytrack-ui/input";
 import {
   LibraryEmptyState,
   LibraryPageHeader,
@@ -17,7 +17,6 @@ export default function TemplatesPage({
   debouncedQuery,
   renderTemplate,
   onQueryChange,
-  onBack,
   onUseTemplate,
   onOpenTemplate,
 }: {
@@ -32,7 +31,6 @@ export default function TemplatesPage({
     hideMeta?: boolean,
   ) => React.ReactNode;
   onQueryChange: (query: string) => void;
-  onBack: () => void;
   onUseTemplate: (template: LibTemplate) => void;
   onOpenTemplate: (id: string) => void;
 }) {
@@ -49,11 +47,6 @@ export default function TemplatesPage({
                 {activeTemplate.byline} · full template content arrives with
                 backend templates
               </p>
-            }
-            context={
-              <button type="button" className="ms-lib-back inline-flex items-center gap-1.5 mb-0 py-1 px-0 [border:0] bg-transparent text-(--muted-foreground) text-[0.8125rem] cursor-pointer hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1" onClick={onBack}>
-                <ArrowLeftIcon aria-hidden="true" /> Mission templates
-              </button>
             }
             actions={
               <Button
@@ -109,27 +102,35 @@ export default function TemplatesPage({
           titleId="ms-lib-templates-page-title"
           title="Mission templates"
           description={
-            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
+            <p className="mt-1 mx-0 text-sm text-muted-foreground">
               Learn SkyTrack with Mission templates
             </p>
           }
-          footer={
-            <div
-              className=" [.ms-lib-page-header-footer_>_&]:max-w-120 max-w-80 my-3 mx-0"
+          actions={
+            <Input
+              startAdornment={<MagnifyingGlassIcon aria-hidden="true" />}
+              endAdornment={
+                <>
+                  {query !== "" ? (
+                    <Button
+                      type="button"
+                      size="icon-xs"
+                      variant="ghost"
+                      aria-label="Clear filter"
+                      onClick={() => onQueryChange("")}
+                    >
+                      <XIcon aria-hidden="true" />
+                    </Button>
+                  ) : null}
+                </>
+              }
+              value={query}
+              onChange={(event) => onQueryChange(event.currentTarget.value)}
+              placeholder="Search"
+              aria-label="Search"
+              className="w-full min-w-0 max-w-120"
               data-testid="ms-lib-search"
-            >
-              <FieldRoot name="template-search">
-                <FieldLabel className="ms-sr absolute w-px h-px overflow-hidden [clip:rect(0_0_0_0)] whitespace-nowrap">Search templates</FieldLabel>
-                <FieldControl
-                  value={query}
-                  onValueChange={(value) =>
-                    onQueryChange(typeof value === "string" ? value : "")
-                  }
-                  placeholder="Search templates"
-                  aria-label="Search templates"
-                />
-              </FieldRoot>
-            </div>
+            />
           }
         />
       }

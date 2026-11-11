@@ -32,7 +32,6 @@ import {
   type MissionInsightsReportTab,
 } from "@/features/studio/mission-report-url";
 import { sampleForRun, type MissionReportRun } from "./mission-insights-data";
-import { MissionInsightsSampleNotice } from "./mission-insights-page-sections";
 import type { InsightOutput } from "./mission-insights-output-data";
 import { MissionInsightsOutputDrawer } from "./mission-insights-output-drawer";
 import { replayTimeline } from "./replay-sample";
@@ -161,7 +160,7 @@ export function MissionInsightsPage({
 
       {sample ? (
         <div className="flex w-full min-w-0 flex-col gap-6">
-          <MissionInsightsSampleNotice />
+          {/* <MissionInsightsSampleNotice /> */}
           <MissionInsightsReportTabs
             renderPageHeader={(tabNavigation) => (
               <PageHeader title="Mission Insights" toolbar={pageToolbar}>

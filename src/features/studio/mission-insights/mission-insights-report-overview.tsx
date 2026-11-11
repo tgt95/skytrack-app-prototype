@@ -1,7 +1,19 @@
 import { type MissionInsightSample } from "./mission-insights-data";
 import { type InsightOutput } from "./mission-insights-output-data";
-import { MissionInsightsOutputs, MissionInsightsTopIssues, DetailSection } from "./mission-insights-page-sections";
-import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "skytrack-ui/chart";
+import {
+  DetailSection,
+  MissionInsightsEvidenceSummary,
+  MissionInsightsSampleNotice,
+  MissionInsightsOutputs,
+  MissionInsightsRunSummary,
+  MissionInsightsTopIssues,
+} from "./mission-insights-page-sections";
+import {
+  type ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "skytrack-ui/chart";
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, Cell } from "recharts";
 
 export function OverviewTab({
@@ -19,11 +31,8 @@ export function OverviewTab({
 }) {
   return (
     <div className="flex min-w-0 flex-col gap-6">
-      <MissionInsightsOutputs
-        sample={sample}
-        onOpen={onOpenOutput}
-        onOpenSurveyImages={onOpenSurveyImages}
-      />
+      <MissionInsightsSampleNotice />
+      <MissionInsightsRunSummary sample={sample} />
       <MissionInsightsTopIssues
         sample={sample}
         onSeek={(time, label) => {
@@ -31,6 +40,12 @@ export function OverviewTab({
           onOpenFlightPath();
         }}
       />
+      <MissionInsightsOutputs
+        sample={sample}
+        onOpen={onOpenOutput}
+        onOpenSurveyImages={onOpenSurveyImages}
+      />
+      <MissionInsightsEvidenceSummary sample={sample} />
       <DetailSection title="Run distributions">
         <div className="grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-2">
           <CategoryChart

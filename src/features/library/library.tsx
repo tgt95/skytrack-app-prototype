@@ -56,6 +56,7 @@
    Success feedback uses the parent live-region announce, not Toast UI. */
 
 import { useEffect, useState } from "react";
+import { SidebarProvider } from "skytrack-ui/sidebar";
 
 import { seedTemplates, type LibTemplate } from "./database/store";
 import { newDroneProfile } from "./database/drone-store";
@@ -369,114 +370,120 @@ export default function StudioLibrary({
       data-testid="ms-lib"
     >
       <LibraryAnnounceRegion announce={announce} />
-      <LibraryTopbar
-        runEnvironment={runEnvironment}
-        canUseCloudSIM={canUseCloudSIM}
-        onEnvironmentChange={setRunEnvironment}
-        onAnnounce={onAnnounce}
-        onNavigate={goto}
-        projectName={activeProject?.name ?? null}
-        onNavigateProjects={() => onNavigate('projects', null)}
-      />
-
-      <div
-        className="min-h-0 flex-[1_1_auto] flex overflow-hidden"
-        data-testid="ms-lib-body"
-      >
-        <LibrarySidebar
-          section={section}
-          hasStarredMissions={starredMissions.length > 0}
-          isSharedAccountsDetail={sharedView !== null}
-          activeWorkspace={activeWorkspace}
-          accountProfile={accountProfile}
-          themePreference={themePreference}
-          onNavigateSection={goto}
-          onSwitchWorkspace={switchWorkspace}
+      <SidebarProvider className="min-h-0 w-full flex-[1_1_auto] flex flex-col overflow-hidden">
+        <LibraryTopbar
+          runEnvironment={runEnvironment}
+          canUseCloudSIM={canUseCloudSIM}
+          onEnvironmentChange={setRunEnvironment}
           onAnnounce={onAnnounce}
-          onOpenAccountPanel={setAccountPanel}
-          onUpdateThemePreference={updateThemePreference}
+          onNavigate={goto}
+          projectName={activeProject?.name ?? null}
+          templateName={activeTemplate?.title ?? null}
+          onNavigateProjects={() => onNavigate("projects", null)}
+          onNavigateTemplates={() => {
+            onOpenTemplate(null);
+            goto("templates");
+          }}
         />
 
-        <LibraryMainContent
-          section={section}
-          sharedView={sharedView}
-          activeSharedProject={activeSharedProject}
-          activeProject={activeProject}
-          workspaceName={activeWorkspace.name}
-          workspaceProjects={workspaceProjects}
-          workspaceWorlds={workspaceWorlds}
-          workspaceDrones={workspaceDrones}
-          skytrackAIModels={skytrackAIModels}
-          workspaceAIModels={workspaceAIModels}
-          uploadedAIModels={uploadedAIModels}
-          sharedProjects={SHARED_PROJECTS}
-          category={aiModelCategory}
-          onCategoryChange={setAIModelCategory}
-          homeMissions={homeMissions}
-          starredMissions={starredMissions}
-          templates={TEMPLATES}
-          activeTemplate={activeTemplate}
-          filteredTemplates={filteredTemplates}
-          query={query}
-          debouncedQuery={debouncedQuery}
-          onQueryChange={setQuery}
-          renderMissionCard={(pid, name, mission, key) =>
-            missionCard(pid, name, mission, key)
-          }
-          renderRecent={(entry, testId) =>
-            recentCard(entry.projectId, entry.project, entry.mission, testId)
-          }
-          renderProjectCard={projectCard}
-          renderTemplate={templateCard}
-          renderSharedProject={sharedProjectCard}
-          renderSharedMission={sharedMissionCard}
-          onNavigate={onNavigate}
-          onCreateMission={openCreateWizard}
-          onCreateProject={() => setProjectDlg({ mode: "create" })}
-          onRenameProject={(project) =>
-            setProjectDlg({
-              mode: "rename",
-              projectId: project.id,
-              initialName: project.name,
-            })
-          }
-          onDeleteProject={(project) =>
-            setDeleteProject({
-              projectId: project.id,
-              name: project.name,
-              missionCount: project.missions.length,
-            })
-          }
-          onOpenSharedAccounts={onOpenSharedAccounts}
-          onOpenSharedProject={onOpenSharedProject}
-          onOpenTemplate={onOpenTemplate}
-          onOpenTemplateDetail={openTemplateDetail}
-          onUseTemplate={useTemplate}
-          onCreateWorld={() =>
-            setWorldEditor({
-              mode: "create",
-              profile: newWorkspaceWorld(nextId("world"), activeWorkspace.id),
-            })
-          }
-          onEditWorld={(world) =>
-            setWorldEditor({ mode: "edit", profile: world })
-          }
-          onDeleteWorld={setDeleteWorldId}
-          onCreateDrone={() =>
-            setDroneEditor({
-              mode: "create",
-              profile: newDroneProfile(nextId("drone"), activeWorkspace.id),
-            })
-          }
-          onEditDrone={(drone) =>
-            setDroneEditor({ mode: "edit", profile: drone })
-          }
-          onDeleteDrone={setDeleteDroneId}
-          onImportAIModel={() => setImportModelOpen(true)}
-          onDeleteAIModel={setDeleteModelId}
-          onGoHome={() => goto("home")}
-        />
-      </div>
+        <div
+          className="min-h-0 flex-[1_1_auto] flex overflow-hidden"
+          data-testid="ms-lib-body"
+        >
+          <LibrarySidebar
+            section={section}
+            hasStarredMissions={starredMissions.length > 0}
+            isSharedAccountsDetail={sharedView !== null}
+            activeWorkspace={activeWorkspace}
+            accountProfile={accountProfile}
+            themePreference={themePreference}
+            onNavigateSection={goto}
+            onSwitchWorkspace={switchWorkspace}
+            onAnnounce={onAnnounce}
+            onOpenAccountPanel={setAccountPanel}
+            onUpdateThemePreference={updateThemePreference}
+          />
+
+          <LibraryMainContent
+            section={section}
+            sharedView={sharedView}
+            activeSharedProject={activeSharedProject}
+            activeProject={activeProject}
+            workspaceName={activeWorkspace.name}
+            workspaceProjects={workspaceProjects}
+            workspaceWorlds={workspaceWorlds}
+            workspaceDrones={workspaceDrones}
+            skytrackAIModels={skytrackAIModels}
+            workspaceAIModels={workspaceAIModels}
+            uploadedAIModels={uploadedAIModels}
+            sharedProjects={SHARED_PROJECTS}
+            category={aiModelCategory}
+            onCategoryChange={setAIModelCategory}
+            homeMissions={homeMissions}
+            starredMissions={starredMissions}
+            templates={TEMPLATES}
+            activeTemplate={activeTemplate}
+            filteredTemplates={filteredTemplates}
+            query={query}
+            debouncedQuery={debouncedQuery}
+            onQueryChange={setQuery}
+            renderMissionCard={(pid, name, mission, key) =>
+              missionCard(pid, name, mission, key)
+            }
+            renderRecent={(entry, testId) =>
+              recentCard(entry.projectId, entry.project, entry.mission, testId)
+            }
+            renderProjectCard={projectCard}
+            renderTemplate={templateCard}
+            renderSharedProject={sharedProjectCard}
+            renderSharedMission={sharedMissionCard}
+            onNavigate={onNavigate}
+            onCreateMission={openCreateWizard}
+            onCreateProject={() => setProjectDlg({ mode: "create" })}
+            onRenameProject={(project) =>
+              setProjectDlg({
+                mode: "rename",
+                projectId: project.id,
+                initialName: project.name,
+              })
+            }
+            onDeleteProject={(project) =>
+              setDeleteProject({
+                projectId: project.id,
+                name: project.name,
+                missionCount: project.missions.length,
+              })
+            }
+            onOpenSharedAccounts={onOpenSharedAccounts}
+            onOpenSharedProject={onOpenSharedProject}
+            onOpenTemplateDetail={openTemplateDetail}
+            onUseTemplate={useTemplate}
+            onCreateWorld={() =>
+              setWorldEditor({
+                mode: "create",
+                profile: newWorkspaceWorld(nextId("world"), activeWorkspace.id),
+              })
+            }
+            onEditWorld={(world) =>
+              setWorldEditor({ mode: "edit", profile: world })
+            }
+            onDeleteWorld={setDeleteWorldId}
+            onCreateDrone={() =>
+              setDroneEditor({
+                mode: "create",
+                profile: newDroneProfile(nextId("drone"), activeWorkspace.id),
+              })
+            }
+            onEditDrone={(drone) =>
+              setDroneEditor({ mode: "edit", profile: drone })
+            }
+            onDeleteDrone={setDeleteDroneId}
+            onImportAIModel={() => setImportModelOpen(true)}
+            onDeleteAIModel={setDeleteModelId}
+            onGoHome={() => goto("home")}
+          />
+        </div>
+      </SidebarProvider>
 
       <LibraryDialogsHost
         missionSetup={{

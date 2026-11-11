@@ -15,7 +15,7 @@ export function LibraryAvatar({
   const initial = initials ?? firstName?.[0]?.toLocaleUpperCase() ?? "?";
   return (
     <Avatar aria-hidden="true" className={className} data-testid={testId}>
-      <AvatarFallback className="text-[0.625rem] font-bold">
+      <AvatarFallback>
         {initial}
       </AvatarFallback>
     </Avatar>

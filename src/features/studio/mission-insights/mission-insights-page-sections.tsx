@@ -77,43 +77,53 @@ export function MissionInsightsRunSummary({
   sample: MissionInsightSample;
 }) {
   return (
-    <div className="grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-2">
-      <DetailSection
-        title="Run outcome"
-        toolbar={
-          <Badge
-            className="rounded-(--radius)"
-            count={sample.status}
-            status={sample.status === "Succeeded" ? "success" : "error"}
-          />
-        }
-      >
+    <DetailSection
+      title="Mission result"
+      toolbar={
+        <Badge
+          className="rounded-(--radius)"
+          count={sample.status}
+          status={sample.status === "Succeeded" ? "success" : "error"}
+        />
+      }
+    >
+      <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
         <div className="flex min-w-0 flex-col gap-3">
           <p className="m-0 font-medium">{sample.outcomeTitle}</p>
           <p className="m-0 text-(--muted-foreground)">{sample.outcome}</p>
-          <KeyValueList
-            rows={[
-              ["Type", sample.type],
-              ["World", sample.world],
-              ["Date", sample.date],
-              ["Duration", sample.duration],
-              ["Vehicle", sample.vehicle],
-              ["Source", sample.source],
-            ]}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Badge
+            className="rounded-(--radius)"
+            count={sample.type}
+            status="outline"
+          />
+          <Badge
+            className="rounded-(--radius)"
+            count={sample.duration}
+            status="secondary"
           />
         </div>
-      </DetailSection>
+      </div>
+    </DetailSection>
+  );
+}
 
-      <DetailSection title="Evidence">
-        <KeyValueList
-          rows={[
-            ["Completeness", sample.evidenceCompleteness],
-            ["Availability", sample.evidenceAvailability],
-            ["Signature", sample.evidenceSignature],
-          ]}
-        />
-      </DetailSection>
-    </div>
+export function MissionInsightsEvidenceSummary({
+  sample,
+}: {
+  sample: MissionInsightSample;
+}) {
+  return (
+    <DetailSection title="Evidence">
+      <KeyValueList
+        rows={[
+          ["Completeness", sample.evidenceCompleteness],
+          ["Availability", sample.evidenceAvailability],
+          ["Signature", sample.evidenceSignature],
+        ]}
+      />
+    </DetailSection>
   );
 }
 
@@ -183,7 +193,7 @@ export function MissionInsightsTopIssues({
 }) {
   return (
     <DetailSection
-      title="Top issues"
+      title="Needs attention"
       toolbar={
         <Badge
           className="rounded-(--radius)"
