@@ -233,7 +233,7 @@ export function StudioMapControls ({
                           data-testid='ms-footprint-opacity'
                         >
                           <div
-                            className=' flex items-center justify-between mb-1.5 text-(--muted-foreground) text-xs font-semibold'
+                            className=' flex items-center justify-between mb-1.5 text-muted-foreground text-xs font-semibold'
                             data-testid='ms-footprint-opacity-head'
                           >
                             <span>Footprint opacity</span>

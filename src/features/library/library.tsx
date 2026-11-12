@@ -564,7 +564,6 @@ export default function StudioLibrary({
           onSaveProfile: updateAccountProfile,
           onChangeNotifications: updateNotificationPreferences,
           onChangeMissionDesignPreferences: updateMissionDesignPreferences,
-          onAnnounce,
           onLogout,
         }}
       />

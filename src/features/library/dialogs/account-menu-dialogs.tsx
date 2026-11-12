@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   CheckIcon,
-  UsersIcon,
   WarningCircleIcon,
   XIcon,
 } from "@phosphor-icons/react";
@@ -50,7 +49,6 @@ export function AccountMenuDialogs({
   onSaveProfile,
   onChangeNotifications,
   onChangeMissionDesignPreferences,
-  onAnnounce,
   onLogout,
 }: {
   panel: AccountMenuPanel | null;
@@ -61,7 +59,6 @@ export function AccountMenuDialogs({
   onSaveProfile: (name: string) => boolean;
   onChangeNotifications: (next: NotificationPreferences) => void;
   onChangeMissionDesignPreferences: (next: MissionDesignPreferences) => void;
-  onAnnounce: (message: string) => void;
   onLogout: () => void;
 }) {
   const [name, setName] = useState(profile.name);
@@ -331,17 +328,6 @@ export function AccountMenuDialogs({
                     <CheckIcon aria-hidden="true" className="w-4.75 h-4.75" />
                   </span>
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() =>
-                    onAnnounce(
-                      "Sign-in and account linking are not connected in this prototype.",
-                    )
-                  }
-                >
-                  <UsersIcon aria-hidden="true" /> Add account
-                </Button>
               </div>
             ) : null}
 

@@ -62,7 +62,7 @@ export function MediaPreview({
                   ) : (
                     <img
                       src={selected.imageUrl}
-                      alt={`Selected sample drone image ${selected.name}`}
+                      alt={`Selected drone image ${selected.name}`}
                       className="size-full object-contain"
                     />
                   )}
@@ -74,7 +74,7 @@ export function MediaPreview({
                       viewBox="0 0 1 1"
                       preserveAspectRatio="none"
                       role="img"
-                      aria-label={`${detectionObjects.length} sample detection regions`}
+                      aria-label={`${detectionObjects.length} detection regions`}
                     >
                       {detectionObjects.map((item, index) => {
                         const polygon = coordinatePairs(item.polygon);
@@ -93,7 +93,7 @@ export function MediaPreview({
                             vectorEffect="non-scaling-stroke"
                           >
                             <title>
-                              {textValue(item.class)} sample detection ·{" "}
+                              {textValue(item.class)} detection ·{" "}
                               {numberValue(item.confidence)?.toFixed(2) ?? "—"}
                             </title>
                           </polygon>
@@ -104,13 +104,13 @@ export function MediaPreview({
                   <figcaption
                     className={
                       selected.syntheticPreview
-                        ? "m-0 p-2 text-(--muted-foreground)"
+                        ? "m-0 p-2 text-muted-foreground"
                         : "sr-only"
                     }
                   >
                     {selected.syntheticPreview
-                      ? "Generated Leeville survey preview; capture metadata and detection results are not supplied."
-                      : `Illustrative sample capture, ${
+                      ? "Leeville survey preview"
+                      : `Capture, ${
                           selected.width ?? "—"
                         } by ${selected.height ?? "—"} pixels.`}
                   </figcaption>
@@ -120,18 +120,14 @@ export function MediaPreview({
                   <div className="relative aspect-video overflow-hidden rounded-(--radius) border border-border bg-(--muted)">
                     <img
                       src={selected.imageUrl}
-                      alt={`${selected.name} sample video poster`}
+                      alt={`${selected.name} video poster`}
                       className="size-full object-cover"
                     />
-                    <div className="absolute inset-x-0 bottom-0 bg-(--background)/90 p-3 text-foreground">
-                      Poster only · video playback is not included in this demo.
-                    </div>
                   </div>
                   {asRecord(selected.artifact.metadata).truncated ? (
                     <Alert variant="warning">
                       <AlertDescription>
-                        Recording is truncated. Only the captured poster is
-                        shown in this demo preview.
+                        Recording is truncated.
                       </AlertDescription>
                     </Alert>
                   ) : null}
@@ -158,9 +154,9 @@ export function MediaPreview({
                   )}
                   <AlertDescription>
                     {selected.availability === "remote_only"
-                      ? "Stored on the Mission Computer. No preview or remote download is available in this local browser demo."
+                      ? "Stored on the Mission Computer."
                       : selected.availability === "missing"
-                        ? "No preview — the prototype marks this file as not written."
+                        ? "File not written."
                         : "No local preview is available for this media record."}
                   </AlertDescription>
                 </Alert>

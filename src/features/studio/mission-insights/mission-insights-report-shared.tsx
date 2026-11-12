@@ -79,7 +79,7 @@ export function KeyValueList({
     <dl className={`m-0 grid min-w-0 grid-cols-1 gap-x-6 gap-y-3 ${columns}`}>
       {rows.map(([label, value]) => (
         <div key={label} className="min-w-0">
-          <dt className="text-(--muted-foreground)">{label}</dt>
+          <dt className="text-muted-foreground">{label}</dt>
           <dd className="m-0 mt-1 min-w-0 break-words">{value}</dd>
         </div>
       ))}

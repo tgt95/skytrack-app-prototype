@@ -5022,7 +5022,7 @@
   "expected_outputs": [
     {
       "output_id": "output_stress_map",
-      "name": "Stressed-area map",
+      "name": "Mapped areas",
       "required": true
     },
     {
@@ -5035,7 +5035,7 @@
   "outputs": [
     {
       "output_id": "output_stress_map",
-      "name": "Stressed-area map",
+      "name": "Mapped areas",
       "type": "semantic_map",
       "status": "available",
       "summary": "27 areas from 11 images",

@@ -1,6 +1,4 @@
 import { useId, type ReactNode } from "react";
-import { InfoIcon } from "@phosphor-icons/react";
-import { Alert, AlertDescription } from "skytrack-ui/alert";
 import { Badge } from "skytrack-ui/badge";
 import { PageHeader } from "skytrack-ui/page-header";
 import { Toolbar, ToolbarButton, ToolbarGroup } from "skytrack-ui/toolbar";
@@ -94,7 +92,7 @@ function KeyValueList({
     <dl className="m-0 grid min-w-0 grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
       {values.map(([label, value]) => (
         <div key={label} className="min-w-0">
-          <dt className="text-(--muted-foreground)">{label}</dt>
+          <dt className="text-muted-foreground">{label}</dt>
           <dd className={`m-0 mt-1 break-words ${mono ? "font-mono" : ""}`}>
             {value}
           </dd>
@@ -149,35 +147,28 @@ export function HitlMissionInsightsPreview() {
           </div>
         }
       />
-      <p className="m-0 text-(--muted-foreground)">
+      <p className="m-0 text-muted-foreground">
         Mini A8 Pro · Oct 22, 2026 - 15:12
       </p>
 
       <div className="flex w-full min-w-0 flex-col gap-6 p-6">
-        <Alert variant="info" role="note">
-          <InfoIcon className="size-5 shrink-0" aria-hidden="true" />
-          <AlertDescription>
-            Static layout preview. Status labels and values are illustrative
-            only, are not an approved operational classification, and are not
-            linked to the selected run.
-          </AlertDescription>
-        </Alert>
-
         <DetailSection title="Mission result">
-          <div className="flex min-w-0 flex-col gap-2">
-            <p className="m-0 font-medium">
-              Physical HIL smoke validation passed
-            </p>
-            <p className="m-0 text-(--muted-foreground)">
-              All five readiness checks and scenario assertions passed · 38.1 s
-            </p>
+          <div className="grid min-w-0 grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-[minmax(0,1.2fr)_minmax(0,2fr)]">
+            <p className="m-0 text-lg font-medium">Physical HIL smoke validation</p>
+            <KeyValueList
+              values={[
+                ["Readiness checks", "All five passed"],
+                ["Scenario assertions", "Passed"],
+                ["Duration", "38.1 s"],
+              ]}
+            />
           </div>
         </DetailSection>
 
         <DetailSection title="Needs attention">
           <p className="m-0">
-            No fault or trace warning is shown for this PASS sample. Trace
-            collection is complete; cleanup returned PASS.
+            No fault or trace warning. Trace collection is complete; cleanup
+            returned PASS.
           </p>
         </DetailSection>
 
@@ -200,7 +191,7 @@ export function HitlMissionInsightsPreview() {
                 >
                   <div className="flex min-w-0 flex-col gap-1">
                     <span className="font-medium">{check.label}</span>
-                    <span className="text-(--muted-foreground)">
+                    <span className="text-muted-foreground">
                       {check.detail}
                     </span>
                   </div>
@@ -218,7 +209,7 @@ export function HitlMissionInsightsPreview() {
             <dl className="m-0 grid min-w-0 grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3 xl:grid-cols-5">
               {flightMetrics.map(([label, value]) => (
                 <div key={label} className="min-w-0">
-                  <dt className="text-(--muted-foreground)">{label}</dt>
+                  <dt className="text-muted-foreground">{label}</dt>
                   <dd className="m-0 mt-1 text-lg font-semibold tabular-nums">
                     {value}
                   </dd>
@@ -272,15 +263,10 @@ export function HitlMissionInsightsPreview() {
             title="Comparison with simulation"
             className="sm:col-span-2"
           >
-            <p className="m-0 text-(--muted-foreground)">
-              Illustrative comparison. Parity metrics are not produced by the
-              current HITL collector.
-            </p>
             <div className="min-w-0 overflow-x-auto">
               <table className="w-full min-w-[38rem] border-collapse text-left">
                 <caption className="sr-only">
-                  Illustrative comparison between a simulation run and a HITL
-                  run
+                  Simulation and HITL run metrics
                 </caption>
                 <thead>
                   <tr className="border-b border-border">
@@ -291,7 +277,7 @@ export function HitlMissionInsightsPreview() {
                       Sim run - 10222026-143859
                     </th>
                     <th scope="col" className="p-3 font-medium">
-                      HITL run · sample
+                      HITL run
                     </th>
                   </tr>
                 </thead>

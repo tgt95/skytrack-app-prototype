@@ -1,13 +1,28 @@
-import { type JsonRecord, asRecords, textValue, asRecord, reportForSample, numberValue, modelForId } from "./mission-insights-report-data";
+import {
+  type JsonRecord,
+  asRecords,
+  textValue,
+  asRecord,
+  reportForSample,
+  numberValue,
+  modelForId,
+  reportArtifacts,
+} from "./mission-insights-report-data";
 import { type MissionInsightSample } from "./mission-insights-data";
 import { type MissionInsightsReportTab } from "@/features/studio/mission-report-url";
-import { statusLabel, KeyValueList } from "./mission-insights-report-shared.tsx";
+import {
+  statusLabel,
+  KeyValueList,
+} from "./mission-insights-report-shared.tsx";
 import { type DataTableColumnDef, DataTable } from "skytrack-ui/data-table";
 import { DetailSection } from "./mission-insights-page-sections";
-import { Alert, AlertDescription } from "skytrack-ui/alert";
 import { CategoryChart } from "./mission-insights-report-overview.tsx";
 import { Badge } from "skytrack-ui/badge";
-import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from "skytrack-ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsiblePanel,
+} from "skytrack-ui/collapsible";
 import { Separator } from "skytrack-ui/separator";
 import { Button } from "skytrack-ui/button";
 
@@ -30,6 +45,7 @@ export function AIModelsTab({
   onNavigate: (tab: MissionInsightsReportTab) => void;
 }) {
   const report = reportForSample(sample);
+  const executionSource = asRecord(report.source);
   const models = modelRows(report);
   const invocationKeys = ["with_results", "zero_results", "failed"] as const;
   const invocationTotals = models.reduce<
@@ -45,6 +61,12 @@ export function AIModelsTab({
   );
   const detections = asRecords(report.detections_geo);
   const classCounts = new Map<string, number>();
+  models.forEach((model) => {
+    const classes = Array.isArray(model.classes) ? model.classes : [];
+    classes.forEach((name) => {
+      if (typeof name === "string") classCounts.set(name, 0);
+    });
+  });
   detections.forEach((item) => {
     const label = textValue(item.class, "Unclassified");
     classCounts.set(label, (classCounts.get(label) ?? 0) + 1);
@@ -52,28 +74,51 @@ export function AIModelsTab({
   const classRows = [...classCounts.entries()].sort((a, b) => b[1] - a[1]);
   const resultRows = [
     ["With results", invocationTotals.with_results] as const,
-    ["No detections", invocationTotals.zero_results] as const,
+    ["Zero results", invocationTotals.zero_results] as const,
     ["Failed", invocationTotals.failed] as const,
-  ].filter(([, count]) => count > 0);
+  ];
   const invocationRows = asRecords(report.invocations).map((invocation) => {
     const model = modelForId(report, textValue(invocation.model_id));
+    const inputArtifact = reportArtifacts(report).find(
+      (artifact) => artifact.artifact_id === invocation.input_artifact_id,
+    );
+    const inputFile = asRecord(asRecord(inputArtifact).metadata).file;
+    const error = asRecord(invocation.error);
+    const errorCode = textValue(error.code, "");
+    const errorMessage = textValue(error.message, "");
     return {
       id: textValue(invocation.invocation_id),
       model: textValue(model?.name),
-      input: textValue(invocation.input_artifact_id),
+      input: `${textValue(asRecord(inputFile).name, textValue(invocation.input_artifact_id))} · ${textValue(invocation.input_artifact_id)}`,
+      inputAvailability: statusLabel(
+        asRecord(asRecord(inputArtifact).availability).state,
+      ),
       output: textValue(invocation.output_artifact_id, "—"),
       time: `${numberValue(invocation.started_s)?.toFixed(1) ?? "—"} s`,
       duration: `${numberValue(invocation.duration_ms)?.toFixed(0) ?? "—"} ms`,
       result: statusLabel(invocation.result),
       count: numberValue(invocation.result_count) ?? 0,
-      error: textValue(asRecord(invocation.error).code),
+      error: [errorCode, errorMessage].filter(Boolean).join(": ") || "—",
     };
   });
   const invocationColumns: DataTableColumnDef<
     (typeof invocationRows)[number]
   >[] = [
+    { id: "Invocation", accessorKey: "id", header: "Invocation" },
     { id: "Model", accessorKey: "model", header: "Model" },
     { id: "Input", accessorKey: "input", header: "Input" },
+    {
+      id: "Availability",
+      accessorKey: "inputAvailability",
+      header: "Availability",
+    },
+    { id: "Output", accessorKey: "output", header: "Output" },
+    {
+      id: "Time",
+      accessorKey: "time",
+      header: "Time",
+      meta: { align: "right" },
+    },
     { id: "Result", accessorKey: "result", header: "Result" },
     {
       id: "Count",
@@ -93,12 +138,11 @@ export function AIModelsTab({
   return (
     <div className="flex min-w-0 flex-col gap-6">
       <DetailSection title="Model activity">
-        <Alert variant="info" role="note">
-          <AlertDescription>
-            Detection counts are prototype fixture outputs. They are not
-            ground-truth labels and do not establish model accuracy.
-          </AlertDescription>
-        </Alert>
+        {executionSource.kind === "mission_computer" ? (
+          <p className="m-0 text-muted-foreground">
+            Execution source: {textValue(executionSource.label, "Mission Computer")}
+          </p>
+        ) : null}
         <div className="grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-2">
           <CategoryChart
             title="Invocations by result"
@@ -138,11 +182,11 @@ export function AIModelsTab({
                   <span className="min-w-0">
                     <span className="block text-lg font-medium text-foreground">
                       {model.name}{" "}
-                      <span className="text-(--muted-foreground)">
+                      <span className="text-muted-foreground">
                         {textValue(model.version, "")}
                       </span>
                     </span>
-                    <span className="mt-1 block text-(--muted-foreground)">
+                    <span className="mt-1 block text-muted-foreground">
                       {invoked
                         ? `${invoked} invocations · ${
                             numberValue(model.detections) ?? 0
@@ -162,10 +206,23 @@ export function AIModelsTab({
                       rows={[
                         ["Model ID", <code key="id">{model.id}</code>],
                         ["Task", textValue(model.task)],
+                        [
+                          "Classes",
+                          textValue(
+                            Array.isArray(model.classes)
+                              ? model.classes.join(", ")
+                              : undefined,
+                            "Not supplied",
+                          ),
+                        ],
                         ["Producer", textValue(model.producer_type)],
                         [
                           "Execution location",
-                          textValue(model.runs_on, "Not specified"),
+                          model.runs_on === "mission_computer"
+                            ? "Mission Computer"
+                            : sample.type === "Simulation"
+                              ? "This computer (simulation)"
+                              : "Not supplied",
                         ],
                         [
                           "Inputs processed",
@@ -217,9 +274,8 @@ export function AIModelsTab({
                         View captures and detections in Media & Files
                       </Button>
                     ) : (
-                      <p className="m-0 text-(--muted-foreground)">
-                        No invocation output exists for this configured model in
-                        the sample.
+                      <p className="m-0 text-muted-foreground">
+                        No invocation output exists for this configured model.
                       </p>
                     )}
                   </div>

@@ -81,10 +81,6 @@ export default function MissionStudioApp() {
                 <h1 id="ms-demo-title" className="h3 mx-0 mb-0">
                   SkyTrack Mission Studio
                 </h1>
-                <p className="mx-0 mb-0 text-(--muted-foreground)">
-                  Public demo. Your missions stay in this browser. This
-                  prototype does not control a drone.
-                </p>
               </div>
               <Button
                 className="w-full"

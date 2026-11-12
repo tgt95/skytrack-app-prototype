@@ -23,7 +23,7 @@ import type { PendingMissionShape } from "./use-drawing-session";
 export type Stage = "design" | "simulation";
 
 const stageToggleClassName = [
-  "group relative inline-flex items-center gap-2 h-auto py-2.5 px-3.5 rounded-none bg-transparent text-(--muted-foreground) text-[0.8125rem] font-semibold whitespace-nowrap",
+  "group relative inline-flex items-center gap-2 h-auto py-2.5 px-3.5 rounded-none bg-transparent text-muted-foreground text-[0.8125rem] font-semibold whitespace-nowrap",
   "hover:bg-transparent hover:text-foreground disabled:opacity-[0.55] aria-disabled:opacity-[0.55] aria-disabled:cursor-not-allowed",
   "data-[active]:bg-transparent data-[active]:text-primary data-[active]:hover:text-primary aria-pressed:bg-transparent aria-pressed:text-primary",
   '[&[data-pressed="true"]::after]:[content:""] [&[data-pressed="true"]::after]:absolute [&[data-pressed="true"]::after]:left-2.5 [&[data-pressed="true"]::after]:right-2.5 [&[data-pressed="true"]::after]:-bottom-0.25 [&[data-pressed="true"]::after]:h-0.5 [&[data-pressed="true"]::after]:rounded-(--radius) [&[data-pressed="true"]::after]:bg-(--primary)',
@@ -33,7 +33,7 @@ const stageToggleClassName = [
 ].join(" ");
 
 const stageNumberClassName =
-  "ms-stage-num inline-flex items-center justify-center min-w-4.5 h-4.5 py-0 px-1.25 border border-border rounded-full bg-(--muted) text-(--muted-foreground) text-[0.6875rem] font-bold leading-none [&[data-active]]:bg-primary [&[data-active]]:text-primary-foreground [&[data-active]]:[border-color:transparent]";
+  "ms-stage-num inline-flex items-center justify-center min-w-4.5 h-4.5 py-0 px-1.25 border border-border rounded-full bg-(--muted) text-muted-foreground text-[0.6875rem] font-bold leading-none [&[data-active]]:bg-primary [&[data-active]]:text-primary-foreground [&[data-active]]:[border-color:transparent]";
 
 interface StudioMapOverlaysProps {
   appTab: AppTab;
@@ -113,7 +113,7 @@ export default function StudioMapOverlays({
               <h2 className="h4 m-0" data-testid="ms-placeholder-title">
                 {title}
               </h2>
-              <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">
+              <p className="ms-hint m-0 text-xs text-muted-foreground leading-[1.5]">
                 {description}
               </p>
             </>
@@ -240,7 +240,7 @@ export default function StudioMapOverlays({
           data-testid="ms-drawbar"
         >
           <div
-            className=" flex items-center gap-3 min-w-0 text-(--muted-foreground)"
+            className=" flex items-center gap-3 min-w-0 text-muted-foreground"
             data-testid="ms-drawbar-copy"
           >
             {tool === "avoid" ? (

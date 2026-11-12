@@ -1,327 +1,469 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChartScatterIcon, AirplaneLandingIcon } from "@phosphor-icons/react";
-import { Badge } from "skytrack-ui/badge";
-import { Button } from "skytrack-ui/button";
-import { DataTable, type DataTableColumnDef } from "skytrack-ui/data-table";
-import { PageHeader } from "skytrack-ui/page-header";
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ChartScatterIcon, AirplaneLandingIcon } from '@phosphor-icons/react'
+import { Badge } from 'skytrack-ui/badge'
+import { Button } from 'skytrack-ui/button'
+import { DataTable, type DataTableColumnDef } from 'skytrack-ui/data-table'
+import { PageHeader } from 'skytrack-ui/page-header'
 import {
   missionInsightsSearch,
   missionReportHref,
   missionReportsSearch,
-  parseMissionInsightsRoute,
-} from "./mission-report-url";
+  parseMissionInsightsRoute
+} from './mission-report-url'
 import {
   formatMissionRunLabel,
-  type MissionReportRun,
-} from "./mission-insights/mission-insights-data";
-import { MissionInsightsPage } from "./mission-insights/mission-insights-page";
-import { HitlMissionInsightsPreview } from "./hitl-mission-insights-preview";
+  type MissionReportRun
+} from './mission-insights/mission-insights-data'
+import { MissionInsightsPage } from './mission-insights/mission-insights-page'
 
-type SimulationReport = MissionReportRun;
+type SimulationReport = MissionReportRun
 
 const simulationReports: SimulationReport[] = [
   {
-    id: "10092026-130606",
-    project: "Sim-escape-4-1",
-    type: "Simulation",
-    status: "Succeeded",
-    startedAt: "2026-10-09T13:06",
-    startedAtLabel: "Oct 09, 2026 - 13:06",
-    durationSeconds: 281.8,
-    reports: ["Insights", "Post Flight"],
+    id: 'run_10072026_091502',
+    runName: 'Flight - 10072026-091502',
+    project: 'EVA floor',
+    world: 'EVA floor',
+    type: 'Real',
+    status: 'Succeeded',
+    startedAt: '2026-10-07T09:15:00+07:00',
+    startedAtLabel: 'Oct 07, 2026 - 09:15',
+    durationSeconds: 164
   },
   {
-    id: "10092026-130231",
-    project: "Sim-escape-4-1",
-    type: "Simulation",
-    status: "Succeeded",
-    startedAt: "2026-10-09T13:02",
-    startedAtLabel: "Oct 09, 2026 - 13:02",
-    durationSeconds: 171.8,
-    reports: ["Insights", "Post Flight"],
+    id: '10062026-180654',
+    runName: 'Sim run - 10062026-180654',
+    project: 'Warehouse',
+    world: 'Warehouse',
+    type: 'Simulation',
+    status: 'Unknown',
+    startedAt: '2026-10-06T18:06:00+07:00',
+    startedAtLabel: 'Oct 06, 2026 - 18:06',
+    durationSeconds: 0
   },
   {
-    id: "10092026-125714",
-    project: "Sim-escape-4-1",
-    type: "Simulation",
-    status: "Succeeded",
-    startedAt: "2026-10-09T12:57",
-    startedAtLabel: "Oct 09, 2026 - 12:57",
-    durationSeconds: 85.3,
-    reports: ["Insights", "Post Flight"],
+    id: '10062026-180422',
+    runName: 'Sim run - 10062026-180422',
+    project: 'Warehouse',
+    world: 'Warehouse',
+    type: 'Simulation',
+    status: 'Unknown',
+    startedAt: '2026-10-06T18:04:00+07:00',
+    startedAtLabel: 'Oct 06, 2026 - 18:04',
+    durationSeconds: 0
   },
   {
-    id: "10092026-125400",
-    project: "Sim-escape-4-1",
-    type: "Simulation",
-    status: "Failed",
-    startedAt: "2026-10-09T12:54",
-    startedAtLabel: "Oct 09, 2026 - 12:54",
-    durationSeconds: 46.2,
-    reports: ["Insights", "Post Flight"],
+    id: '10062026-180154',
+    runName: 'Sim run - 10062026-180154',
+    project: 'Warehouse',
+    world: 'Warehouse',
+    type: 'Simulation',
+    status: 'Failed',
+    startedAt: '2026-10-06T18:01:00+07:00',
+    startedAtLabel: 'Oct 06, 2026 - 18:01',
+    durationSeconds: 3.4
   },
   {
-    id: "10092026-125000",
-    project: "Sim-escape-4-1",
-    type: "Real",
-    status: "Succeeded",
-    startedAt: "2026-10-09T12:50",
-    startedAtLabel: "Oct 09, 2026 - 12:50",
-    durationSeconds: 193.6,
-    reports: ["Insights", "Post Flight"],
+    id: '10062026-180111',
+    runName: 'Sim run - 10062026-180111',
+    project: 'Warehouse',
+    world: 'Warehouse',
+    type: 'Simulation',
+    status: 'Unknown',
+    startedAt: '2026-10-06T18:01:00+07:00',
+    startedAtLabel: 'Oct 06, 2026 - 18:01',
+    durationSeconds: 0
   },
   {
-    id: "10092026-124500",
-    project: "Sim-escape-4-1",
-    type: "Real",
-    status: "Failed",
-    startedAt: "2026-10-09T12:45",
-    startedAtLabel: "Oct 09, 2026 - 12:45",
-    durationSeconds: 72.4,
-    reports: ["Insights", "Post Flight"],
+    id: '10062026-160201',
+    runName: 'Sim run - 10062026-160201',
+    project: 'Grandfinale',
+    world: 'Grandfinale',
+    type: 'Simulation',
+    status: 'Unknown',
+    startedAt: '2026-10-06T16:02:00+07:00',
+    startedAtLabel: 'Oct 06, 2026 - 16:02',
+    durationSeconds: 0
   },
   {
-    id: "10092026-123000",
-    project: "Sim-escape-4-1",
-    type: "HITL",
-    status: "Succeeded",
-    startedAt: "2026-10-09T12:30",
-    startedAtLabel: "Oct 09, 2026 - 12:30",
-    durationSeconds: 248.1,
-    reports: ["Insights", "Post Flight"],
+    id: '10062026-153944',
+    runName: 'Sim run - 10062026-153944',
+    project: 'Default',
+    world: 'Default',
+    type: 'Simulation',
+    status: 'Succeeded',
+    startedAt: '2026-10-06T15:39:00+07:00',
+    startedAtLabel: 'Oct 06, 2026 - 15:39',
+    durationSeconds: 126.9
   },
   {
-    id: "10092026-121500",
-    project: "Sim-escape-4-1",
-    type: "HITL",
-    status: "Failed",
-    startedAt: "2026-10-09T12:15",
-    startedAtLabel: "Oct 09, 2026 - 12:15",
-    durationSeconds: 58.9,
-    reports: ["Insights", "Post Flight"],
+    id: '10062026-153451',
+    runName: 'Sim run - 10062026-153451',
+    project: 'Default',
+    world: 'Default',
+    type: 'Simulation',
+    status: 'Succeeded',
+    startedAt: '2026-10-06T15:34:00+07:00',
+    startedAtLabel: 'Oct 06, 2026 - 15:34',
+    durationSeconds: 160.5
   },
-];
+  {
+    id: 'run_10062026_152739',
+    runName: 'Sim run - 10062026-152739',
+    project: 'Grandfinale',
+    world: 'Grandfinale',
+    type: 'Simulation',
+    status: 'Failed',
+    startedAt: '2026-10-06T15:27:00+07:00',
+    startedAtLabel: 'Oct 06, 2026 - 15:27',
+    durationSeconds: 78.2
+  },
+  {
+    id: '10062026-152151',
+    runName: 'Sim run - 10062026-152151',
+    project: 'Grandfinale',
+    world: 'Grandfinale',
+    type: 'Simulation',
+    status: 'Failed',
+    startedAt: '2026-10-06T15:21:00+07:00',
+    startedAtLabel: 'Oct 06, 2026 - 15:21',
+    durationSeconds: 158.1
+  },
+  {
+    id: '10062026-151750',
+    runName: 'Sim run - 10062026-151750',
+    project: 'Grandfinale',
+    world: 'Grandfinale',
+    type: 'Simulation',
+    status: 'Failed',
+    startedAt: '2026-10-06T15:17:00+07:00',
+    startedAtLabel: 'Oct 06, 2026 - 15:17',
+    durationSeconds: 71.3
+  },
+  {
+    id: 'run_09292026_144239',
+    runName: 'Sim run - 09292026-144239',
+    project: 'Angiang',
+    world: 'Angiang',
+    type: 'Simulation',
+    status: 'Succeeded',
+    startedAt: '2026-09-29T14:42:00+07:00',
+    startedAtLabel: 'Sep 29, 2026 - 14:42',
+    durationSeconds: 97.1
+  },
+  {
+    id: '09242026-142316',
+    runName: 'Sim run - 09242026-142316',
+    project: 'Default',
+    world: 'Default',
+    type: 'Simulation',
+    status: 'Succeeded',
+    startedAt: '2026-09-24T14:23:00+07:00',
+    startedAtLabel: 'Sep 24, 2026 - 14:23',
+    durationSeconds: 27.5
+  },
+  {
+    id: 'demo_construction_20261112',
+    runName: 'Demo · Construction progress mapping',
+    project: 'Construction site',
+    world: 'Construction site',
+    type: 'Simulation',
+    status: 'Succeeded',
+    startedAt: '2026-11-12T09:00:00+07:00',
+    startedAtLabel: 'Nov 12, 2026 - 09:00',
+    durationSeconds: 212,
+    demoCase: 'construction-progress'
+  },
+  {
+    id: 'demo_flood_20261111',
+    runName: 'Demo · Flood impact survey',
+    project: 'River basin',
+    world: 'River basin',
+    type: 'Simulation',
+    status: 'Succeeded',
+    startedAt: '2026-11-11T14:20:00+07:00',
+    startedAtLabel: 'Nov 11, 2026 - 14:20',
+    durationSeconds: 186,
+    demoCase: 'flood-impact'
+  },
+  {
+    id: 'demo_bridge_20261110',
+    runName: 'Demo · Bridge inspection mapping',
+    project: 'River crossing',
+    world: 'River crossing',
+    type: 'Simulation',
+    status: 'Succeeded',
+    startedAt: '2026-11-10T10:40:00+07:00',
+    startedAtLabel: 'Nov 10, 2026 - 10:40',
+    durationSeconds: 248,
+    demoCase: 'bridge-inspection'
+  },
+  {
+    id: 'demo_erosion_20261109',
+    runName: 'Demo · Streambank erosion survey',
+    project: 'Creek corridor',
+    world: 'Creek corridor',
+    type: 'Simulation',
+    status: 'Succeeded',
+    startedAt: '2026-11-09T08:30:00+07:00',
+    startedAtLabel: 'Nov 09, 2026 - 08:30',
+    durationSeconds: 174,
+    demoCase: 'erosion-survey'
+  },
+  {
+    id: 'demo_interrupted_20261108',
+    runName: 'Demo · Interrupted corridor survey',
+    project: 'North service corridor',
+    world: 'North service corridor',
+    type: 'Simulation',
+    status: 'Failed',
+    startedAt: '2026-11-08T16:15:00+07:00',
+    startedAtLabel: 'Nov 08, 2026 - 16:15',
+    durationSeconds: 42,
+    demoCase: 'interrupted-survey'
+  }
+]
 
-function buildColumns(
-  onOpenMissionInsights: (report: SimulationReport) => void,
+const missionReportsWithKnownStatus = simulationReports.filter(
+  report => report.status !== 'Unknown'
+)
+
+function buildColumns (
+  onOpenMissionInsights: (report: SimulationReport) => void
 ): DataTableColumnDef<SimulationReport>[] {
   return [
     {
-      id: "Run",
+      id: 'Name',
       accessorFn: formatMissionRunLabel,
-      header: "Run",
-      cell: ({ row }) => formatMissionRunLabel(row.original),
+      header: 'Name',
+      cell: ({ row }) => (
+        <div className='flex flex-col'>
+          <span>{formatMissionRunLabel(row.original)}</span>
+          {/* <span className='text-sm text-muted-foreground'>
+            {row.original.world}
+          </span> */}
+        </div>
+      )
     },
     {
-      id: "Type",
-      accessorKey: "type",
-      header: "Type",
+      id: 'Type',
+      accessorKey: 'type',
+      header: 'Type',
+      cell: ({ row }) =>
+        row.original.type === 'Real' ? 'Real flight' : row.original.type
     },
     {
-      id: "Status",
-      accessorKey: "status",
-      header: "Status",
+      id: 'Status',
+      accessorKey: 'status',
+      header: 'Status',
       cell: ({ row }) => (
         <Badge
-          className="rounded-(--radius)"
+          className='rounded-(--radius)'
           count={row.original.status}
-          status={row.original.status === "Succeeded" ? "success" : "error"}
+          status={
+            row.original.status === 'Succeeded'
+              ? 'success'
+              : row.original.status === 'Failed'
+              ? 'error'
+              : 'secondary'
+          }
         />
-      ),
+      )
     },
     {
-      id: "Started",
-      accessorKey: "startedAt",
-      header: "Started",
-      cell: ({ row }) => row.original.startedAtLabel,
+      id: 'Date',
+      accessorKey: 'startedAt',
+      header: 'Date',
+      cell: ({ row }) => row.original.startedAtLabel
     },
     {
-      id: "Duration",
-      accessorKey: "durationSeconds",
-      header: "Duration",
-      meta: { align: "right" },
-      cell: ({ row }) => `${row.original.durationSeconds.toFixed(1)} s`,
+      id: 'Duration',
+      accessorKey: 'durationSeconds',
+      header: 'Duration',
+      meta: { align: 'right' },
+      cell: ({ row }) =>
+        row.original.durationSeconds === 0
+          ? '0 s'
+          : `${row.original.durationSeconds.toFixed(1)} s`
     },
     {
-      id: "Reports",
-      accessorFn: (report) => report.reports.join(" "),
-      header: "Reports",
+      id: 'Action',
+      accessorFn: report => report.status,
+      header: 'Action',
       enableSorting: false,
       enableHiding: false,
       cell: ({ row }) => (
         <div
-          className="flex flex-row flex-wrap gap-2"
-          role="group"
-          aria-label={`Reports for ${row.original.id}`}
-          aria-describedby="ms-report-preview-help"
+          className='flex flex-row flex-wrap gap-2'
+          role='group'
+          aria-label={`Actions for ${row.original.runName}`}
         >
-          {row.original.reports.map((report) => {
-            const available = report === "Insights";
-            return (
-              <Button
-                key={report}
-                variant="outline"
-                size="sm"
-                disabled={!available}
-                onClick={
-                  available
-                    ? () => onOpenMissionInsights(row.original)
-                    : undefined
-                }
-                title={
-                  available
-                    ? undefined
-                    : "Post Flight is not available in this Mission Studio preview."
-                }
-              >
-                {report === "Insights" ? (
-                  <ChartScatterIcon />
-                ) : (
-                  <AirplaneLandingIcon />
-                )}
-                {report}
-              </Button>
-            );
-          })}
+          <Button
+            variant='outline'
+            size='sm'
+            disabled={row.original.status === 'Unknown'}
+            onClick={() => {
+              const sample = reportSampleFor(row.original)
+              if (sample) onOpenMissionInsights(sample)
+            }}
+            title={row.original.status === 'Unknown' ? 'Report not generated: the run ended before reporting started' : undefined}
+          >
+            <ChartScatterIcon />
+            Mission Insights
+          </Button>
+          <Button
+            variant='outline'
+            size='sm'
+            disabled
+          >
+            <AirplaneLandingIcon />
+            Post Flight Analysis
+          </Button>
         </div>
-      ),
-    },
-  ];
+      )
+    }
+  ]
 }
 
-export default function SimulationReportTable({
+function reportSampleFor (run: SimulationReport): SimulationReport | null {
+  if (run.demoCase) return run
+  if (run.type === 'Simulation' && run.status === 'Succeeded') {
+    return (
+      simulationReports.find(item => item.id === 'run_09292026_144239') ?? null
+    )
+  }
+  if (run.type === 'Simulation' && run.status === 'Failed') {
+    return (
+      simulationReports.find(item => item.id === 'run_10062026_152739') ?? null
+    )
+  }
+  if (run.type === 'Real' && run.status === 'Succeeded') {
+    return (
+      simulationReports.find(item => item.id === 'run_10072026_091502') ?? null
+    )
+  }
+  return null
+}
+
+export default function SimulationReportTable ({
   onSubpageChange,
-  onOpenMissionDesign,
+  onOpenMissionDesign
 }: {
-  onSubpageChange: (open: boolean) => void;
-  onOpenMissionDesign: () => void;
+  onSubpageChange: (open: boolean) => void
+  onOpenMissionDesign: () => void
 }) {
   const [insightsRunId, setInsightsRunId] = useState(
-    () => parseMissionInsightsRoute(window.location.search)?.runId ?? null,
-  );
-  const showInsights = insightsRunId !== null;
+    () => parseMissionInsightsRoute(window.location.search)?.runId ?? null
+  )
+  const showInsights = insightsRunId !== null
 
   const openMissionInsights = useCallback(
     (report: SimulationReport) => {
       const nextSearch = missionInsightsSearch(
         window.location.search,
-        report.id,
-      );
-      const nextUrl = missionReportHref(window.location, nextSearch);
-      const currentState = window.history.state;
+        report.id
+      )
+      const nextUrl = missionReportHref(window.location, nextSearch)
+      const currentState = window.history.state
       const historyState: Record<string, unknown> =
-        typeof currentState === "object" && currentState !== null
+        typeof currentState === 'object' && currentState !== null
           ? { ...currentState }
-          : {};
+          : {}
 
-      historyState.__skytrackMissionInsightsOpenedFromList = true;
-      historyState.__skytrackMissionInsightsHistoryDepth = 0;
-      window.history.pushState(historyState, "", nextUrl);
-      setInsightsRunId(report.id);
-      onSubpageChange(true);
+      historyState.__skytrackMissionInsightsOpenedFromList = true
+      historyState.__skytrackMissionInsightsHistoryDepth = 0
+      window.history.pushState(historyState, '', nextUrl)
+      setInsightsRunId(report.id)
+      onSubpageChange(true)
     },
-    [onSubpageChange],
-  );
+    [onSubpageChange]
+  )
 
   const returnToMissionReports = useCallback(() => {
-    const currentState = window.history.state;
+    const currentState = window.history.state
     const historyState: Record<string, unknown> =
-      typeof currentState === "object" && currentState !== null
+      typeof currentState === 'object' && currentState !== null
         ? { ...currentState }
-        : {};
+        : {}
 
     if (historyState.__skytrackMissionInsightsOpenedFromList === true) {
       const nestedDepth = Number(
-        historyState.__skytrackMissionInsightsHistoryDepth ?? 0,
-      );
-      window.history.go(-(Math.max(0, nestedDepth) + 1));
-      return;
+        historyState.__skytrackMissionInsightsHistoryDepth ?? 0
+      )
+      window.history.go(-(Math.max(0, nestedDepth) + 1))
+      return
     }
 
-    delete historyState.__skytrackMissionInsightsOpenedFromList;
-    const nextSearch = missionReportsSearch(window.location.search);
+    delete historyState.__skytrackMissionInsightsOpenedFromList
+    const nextSearch = missionReportsSearch(window.location.search)
     window.history.replaceState(
       historyState,
-      "",
-      missionReportHref(window.location, nextSearch),
-    );
-    setInsightsRunId(null);
-    onSubpageChange(false);
-  }, [onSubpageChange]);
+      '',
+      missionReportHref(window.location, nextSearch)
+    )
+    setInsightsRunId(null)
+    onSubpageChange(false)
+  }, [onSubpageChange])
 
   useEffect(() => {
     const restoreSubpageFromUrl = () => {
       const nextRunId =
-        parseMissionInsightsRoute(window.location.search)?.runId ?? null;
-      setInsightsRunId(nextRunId);
-      onSubpageChange(nextRunId !== null);
-    };
+        parseMissionInsightsRoute(window.location.search)?.runId ?? null
+      setInsightsRunId(nextRunId)
+      onSubpageChange(nextRunId !== null)
+    }
 
-    window.addEventListener("popstate", restoreSubpageFromUrl);
-    return () => window.removeEventListener("popstate", restoreSubpageFromUrl);
-  }, [onSubpageChange]);
+    window.addEventListener('popstate', restoreSubpageFromUrl)
+    return () => window.removeEventListener('popstate', restoreSubpageFromUrl)
+  }, [onSubpageChange])
 
   useEffect(() => {
-    const handleTopbarBack = () => returnToMissionReports();
-    window.addEventListener("ms:back-to-mission-reports", handleTopbarBack);
+    const handleTopbarBack = () => returnToMissionReports()
+    window.addEventListener('ms:back-to-mission-reports', handleTopbarBack)
     return () =>
-      window.removeEventListener(
-        "ms:back-to-mission-reports",
-        handleTopbarBack,
-      );
-  }, [returnToMissionReports]);
+      window.removeEventListener('ms:back-to-mission-reports', handleTopbarBack)
+  }, [returnToMissionReports])
 
   const columns = useMemo(
     () => buildColumns(openMissionInsights),
-    [openMissionInsights],
-  );
+    [openMissionInsights]
+  )
   const selectedRun =
     insightsRunId === null
       ? null
-      : (simulationReports.find((report) => report.id === insightsRunId) ??
-        null);
-  const showHitlSuccessPreview =
-    selectedRun?.type === "HITL" && selectedRun.status === "Succeeded";
-
+      : missionReportsWithKnownStatus.find(
+          report => report.id === insightsRunId
+        ) ?? null
   return (
     <>
       <section
-        id="mission-reports"
-        className="flex min-w-0 flex-col gap-0"
-        aria-label="Mission Reports"
+        id='mission-reports'
+        className='flex min-w-0 flex-col gap-0'
+        aria-label='Mission Reports'
         hidden={showInsights}
       >
         <PageHeader
-          className="sm:[&_[data-slot=page-header-main]]:!flex-row"
-          title="Mission Reports"
+          className='sm:[&_[data-slot=page-header-main]]:!flex-row'
+          title='Mission Reports'
         />
-        <div className="p-6">
-          <p id="ms-report-preview-help" className="sr-only">
-            Insights opens the selected run overview. Values without a
-            matching prototype state are identified as unavailable samples. Post
-            Flight Analysis is unavailable in this preview.
-          </p>
+        <div className='p-6'>
           <DataTable
             columns={columns}
-            data={simulationReports}
-            getRowId={(report) => report.id}
+            data={missionReportsWithKnownStatus}
+            getRowId={report => report.id}
             pageSize={10}
-            searchPlaceholder="Search"
-            emptyMessage="No simulation runs match this search."
+            searchPlaceholder='Search runs by name'
+            emptyMessage='No mission runs match this search.'
           />
         </div>
       </section>
       {insightsRunId !== null ? (
-        showHitlSuccessPreview ? (
-          <HitlMissionInsightsPreview />
-        ) : (
-          <MissionInsightsPage
-            run={selectedRun}
-            onBack={returnToMissionReports}
-            onOpenMissionDesign={onOpenMissionDesign}
-          />
-        )
+        <MissionInsightsPage
+          run={selectedRun}
+          onBack={returnToMissionReports}
+          onOpenMissionDesign={onOpenMissionDesign}
+        />
       ) : null}
     </>
-  );
+  )
 }

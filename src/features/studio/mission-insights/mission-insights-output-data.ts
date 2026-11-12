@@ -1,6 +1,3 @@
-import stressedAreaMapPreview from "./sample-data/leeville/stressed-area-map-preview.jpg";
-import surveyImageContactSheet from "./sample-data/leeville/survey-image-contact-sheet.jpg";
-
 export type OutputDetailSection = {
   title: string;
   rows: ReadonlyArray<
@@ -12,30 +9,8 @@ export type OutputImagePreview = {
   src: string;
   alt: string;
   caption: string;
+  attribution?: { author: string; sourceUrl: string; license: string; licenseUrl: string };
 };
-
-export const surveyImageFrames = [
-  {
-    index: 0,
-    name: "Leeville survey frame 01",
-    alt: "Generated near-nadir view of an asphalt-shingle roof and surrounding yard in a Leeville-style residential neighborhood.",
-  },
-  {
-    index: 1,
-    name: "Leeville survey frame 02",
-    alt: "Generated oblique view of a detached home, mature trees, and a residential street in a Leeville-style neighborhood.",
-  },
-  {
-    index: 2,
-    name: "Leeville survey frame 03",
-    alt: "Generated close view of asphalt shingles, a roof ridge, and flashing on a residential home.",
-  },
-  {
-    index: 3,
-    name: "Leeville survey frame 04",
-    alt: "Generated angled view of a second detached home and roof in a Leeville-style neighborhood.",
-  },
-] as const;
 
 export type InsightOutput = {
   id: string;
@@ -47,38 +22,55 @@ export type InsightOutput = {
   details: OutputDetailSection[];
 };
 
+function demoMappedAreas(
+  id: string,
+  summary: string,
+  image: string,
+  alt: string,
+  caption: string,
+  author: string,
+  sourceUrl: string,
+  license: string,
+  licenseUrl: string,
+  areas: number,
+  images: number,
+  file: string,
+): InsightOutput {
+  return {
+    id, name: "Mapped areas", status: "Available", summary,
+    preview: {
+      src: image, alt,
+      caption: `Reference image · not captured by this run · ${caption}`,
+      attribution: { author, sourceUrl, license, licenseUrl },
+    },
+    details: [{ title: "Summary", rows: [["Mapped areas", String(areas)], ["Source images", String(images)], ["Output file", file]] }],
+  };
+}
+
+export const demoMappedAreaOutputs: Record<string, InsightOutput> = {
+  "construction-progress": demoMappedAreas("demo-construction-areas", "12 areas from 42 images · construction-progress.geojson", constructionReference, "Aerial digital surface model of a motorway construction site.", "construction site", "Kbosak", "https://commons.wikimedia.org/wiki/File:DSM_construction_site.jpg", "CC BY 3.0", "https://creativecommons.org/licenses/by/3.0/", 12, 42, "construction-progress.geojson"),
+  "flood-impact": demoMappedAreas("demo-flood-areas", "18 of 20 impact areas from 36 images · flood-impact.geojson", floodReference, "Aerial view of flooding in Pakistan.", "flood impact", "Department of Foreign Affairs and Trade", "https://commons.wikimedia.org/wiki/File:Aerial_view_of_flooding,_Pakistan_2010.jpg", "CC BY 2.0", "https://creativecommons.org/licenses/by/2.0/", 18, 36, "flood-impact.geojson"),
+  "bridge-inspection": demoMappedAreas("demo-bridge-areas", "8 areas from 64 images · bridge-inspection.geojson", bridgeReference, "Drone view of a bridge during an inspection.", "bridge inspection", "FedericaGaspari", "https://commons.wikimedia.org/wiki/File:Drone_view_of_a_bridge_during_an_inspection.jpg", "CC BY-SA 4.0", "https://creativecommons.org/licenses/by-sa/4.0/", 8, 64, "bridge-inspection.geojson"),
+  "erosion-survey": demoMappedAreas("demo-erosion-areas", "11 areas from 33 images · erosion-survey.geojson", erosionReference, "Stream bank erosion along a waterway.", "stream bank erosion", "El Grafo", "https://commons.wikimedia.org/wiki/File:Stream_bank_erosion.jpg", "CC BY-SA 4.0", "https://creativecommons.org/licenses/by-sa/4.0/", 11, 33, "erosion-survey.geojson"),
+};
+
 export const stressedAreaMap: InsightOutput = {
   id: "stressed-area-map",
-  name: "Stressed-area map",
+  name: "Mapped areas",
   status: "Available",
-  summary: "2 planned scan areas · 12 m nominal altitude · 2 m/s target speed",
+  summary: "27 areas from 11 images · stressed-areas.geojson",
   preview: {
-    src: stressedAreaMapPreview,
-    alt: "Synthetic top-down view of a Leeville Pike neighborhood with two amber roof review overlays.",
-    caption:
-      "Illustrative review zones based on Leeville world context; not run-derived or georeferenced.",
+    src: okSourceImage,
+    alt: "Source image 000003.jpg for the mapped areas output.",
+    caption: "Source image · 000003.jpg",
   },
   details: [
     {
       title: "Summary",
       rows: [
-        ["World", "Leeville Pike roof assessment"],
-        ["Mission profile", "Mini-Pro · 2 planned scan areas · 1 route"],
-        ["Plan settings", "12 m nominal altitude · 2 m/s target speed"],
-      ],
-    },
-    {
-      title: "Map preview",
-      rows: [
-        [
-          "Image source",
-          "Synthetic overview generated using the bundled Leeville world as visual reference",
-        ],
-        [
-          "Overlay meaning",
-          "Two illustrative planned review zones only; no verified roof defect or detection is represented",
-        ],
-        ["Map status", "Not georeferenced · not generated by a mission run"],
+        ["Detected areas", "27"],
+        ["Source images", "11"],
+        ["Output file", "stressed-areas.geojson"],
       ],
     },
   ],
@@ -88,57 +80,19 @@ export const surveyImageSet: InsightOutput = {
   id: "survey-image-set",
   name: "Survey image set",
   status: "Available",
-  summary:
-    "24 sample image records · 4 generated preview frames · 2 planned scan areas",
+  summary: "24 of 24 images · JPEG · 1920 × 1080",
   preview: {
-    src: surveyImageContactSheet,
-    alt: "Four synthetic drone-camera views of Leeville-style asphalt-shingle homes: nadir roof, oblique neighborhood, shingle detail, and a second roof angle.",
-    caption:
-      "4 generated preview frames from a 24-record demo set; none were captured in this mission.",
+    src: okSurveyImage,
+    alt: "Survey image 000001.jpg",
+    caption: "Survey image · 000001.jpg",
   },
   details: [
     {
       title: "Summary",
       rows: [
-        ["World", "Leeville Pike roof assessment"],
-        ["Vehicle", "Mini-Pro"],
-        [
-          "Mission profile",
-          "2 planned scan areas · 12 m nominal altitude · 2 m/s target speed",
-        ],
-        [
-          "Sample size",
-          "24 demo image records · 4 frames shown in the contact sheet",
-        ],
-      ],
-    },
-    {
-      title: "Preview frames",
-      rows: [
-        ["Frame 1", "Near-nadir overview of an asphalt-shingle roof"],
-        ["Frame 2", "Oblique roof view with surrounding trees and street"],
-        [
-          "Frame 3",
-          "Closer roof-surface view of shingles, ridge, and flashing",
-        ],
-        ["Frame 4", "Second residential roof from a different angle"],
-        [
-          "Capture metadata",
-          "No timestamp, EXIF, coordinates, or detection result is supplied",
-        ],
-      ],
-    },
-    {
-      title: "Demo provenance",
-      rows: [
-        [
-          "Image source",
-          "Generated synthetic imagery using the bundled Leeville world as visual reference",
-        ],
-        [
-          "Status",
-          "Illustrative only · not an actual drone capture or verified inspection result",
-        ],
+        ["Images", "24 of 24"],
+        ["Format", "JPEG"],
+        ["Dimensions", "1920 × 1080"],
       ],
     },
   ],
@@ -146,9 +100,14 @@ export const surveyImageSet: InsightOutput = {
 
 export const rescueLocationsFailed: InsightOutput = {
   id: "rescue-locations-failed",
-  name: "Rescue locations",
+  name: "Location results",
   status: "Partial",
   summary: "1 of 3 locations saved · rescue_locations.txt",
+  preview: {
+    src: failedRescueImage,
+    alt: "Source image 000002.jpg associated with the location results output.",
+    caption: "Source image · 000002.jpg",
+  },
   details: [
     {
       title: "Summary",
@@ -244,9 +203,14 @@ export const rescueLocationsFailed: InsightOutput = {
 
 export const searchImageSet: InsightOutput = {
   id: "search-image-set",
-  name: "Search image set",
+  name: "Captured image set",
   status: "Partial",
   summary: "5 of 6 images · JPEG · 1280 × 720 · 1 file not written",
+  preview: {
+    src: failedSearchImage,
+    alt: "Search image 000001.jpg",
+    caption: "Search image · 000001.jpg",
+  },
   details: [
     {
       title: "Summary",
@@ -348,3 +312,11 @@ export const searchImageSet: InsightOutput = {
 };
 
 export { rescueLocationsReal } from "./mission-insights-output-real";
+import okSourceImage from "./sample-data/ok/img_0003.jpg";
+import okSurveyImage from "./sample-data/ok/img_0001.jpg";
+import failedRescueImage from "./sample-data/fail/img_0002.jpg";
+import failedSearchImage from "./sample-data/fail/img_0001.jpg";
+import constructionReference from "./sample-data/demo/construction-map-reference.jpg?url";
+import floodReference from "./sample-data/demo/flood-impact-reference.jpg?url";
+import bridgeReference from "./sample-data/demo/bridge-inspection-reference.jpg?url";
+import erosionReference from "./sample-data/demo/erosion-reference.jpg?url";

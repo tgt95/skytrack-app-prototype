@@ -39,13 +39,17 @@ export function MissionInsightsFlightScene({
   time,
   cameraMode,
   layers,
+  fullscreen = false,
 }: {
   time: number;
   cameraMode: ReplayCamera;
   layers: ReplayLayers;
+  fullscreen?: boolean;
 }) {
   const mountRef = useRef<HTMLDivElement>(null);
   const runtimeRef = useRef<SceneRuntime | null>(null);
+  const cameraModeRef = useRef<ReplayCamera | null>(null);
+  const followRef = useRef<boolean | null>(null);
   const [renderError, setRenderError] = useState(false);
 
   useEffect(() => {
@@ -220,6 +224,8 @@ export function MissionInsightsFlightScene({
       runtime.renderer.dispose();
       runtime.renderer.domElement.remove();
       runtimeRef.current = null;
+      cameraModeRef.current = null;
+      followRef.current = null;
     };
   }, []);
 
@@ -256,53 +262,64 @@ export function MissionInsightsFlightScene({
       visual.panel.material.opacity = current ? 0.42 : past ? 0.18 : 0.06;
     }
 
-    const target = layers.follow
+    const shouldFollowDrone = layers.follow || cameraMode === "chase";
+    const target = shouldFollowDrone
       ? vectorFor(position.n, position.e, position.alt)
       : runtime.center;
-    runtime.controls.target.copy(target);
-    const offset = runtime.span;
-    if (cameraMode === "top") {
-      runtime.camera.position.set(target.x, offset * 1.8, target.z + 0.01);
-    } else if (cameraMode === "side") {
-      runtime.camera.position.set(
-        target.x + offset * 1.6,
-        offset * 0.42,
-        target.z,
-      );
-    } else if (cameraMode === "chase") {
-      const yaw = (position.yaw * Math.PI) / 180;
-      runtime.camera.position.set(
-        target.x - Math.sin(yaw) * 3.4,
-        target.y + 1.7,
-        target.z + Math.cos(yaw) * 3.4,
-      );
-    } else {
-      runtime.camera.position.set(
-        target.x + offset * 0.75,
-        offset * 0.68,
-        target.z + offset * 0.82,
-      );
+    const cameraPresetChanged = cameraModeRef.current !== cameraMode;
+    const followChanged = followRef.current !== layers.follow;
+    if (cameraPresetChanged || followChanged) {
+      runtime.controls.target.copy(target);
+      const offset = runtime.span;
+      if (cameraMode === "top") {
+        runtime.camera.position.set(target.x, offset * 1.8, target.z + 0.01);
+      } else if (cameraMode === "side") {
+        runtime.camera.position.set(
+          target.x + offset * 1.6,
+          offset * 0.42,
+          target.z,
+        );
+      } else if (cameraMode === "chase") {
+        const yaw = (position.yaw * Math.PI) / 180;
+        runtime.camera.position.set(
+          target.x - Math.sin(yaw) * 3.4,
+          target.y + 1.7,
+          target.z + Math.cos(yaw) * 3.4,
+        );
+      } else {
+        runtime.camera.position.set(
+          target.x + offset * 0.75,
+          target.y + offset * 0.68,
+          target.z + offset * 0.82,
+        );
+      }
+      runtime.camera.lookAt(target);
+    } else if (shouldFollowDrone) {
+      const delta = target.clone().sub(runtime.controls.target);
+      runtime.camera.position.add(delta);
+      runtime.controls.target.copy(target);
     }
-    runtime.camera.lookAt(target);
+    cameraModeRef.current = cameraMode;
+    followRef.current = layers.follow;
     runtime.controls.update();
   }, [time, cameraMode, layers]);
 
   return (
     <div
-      className="relative h-[clamp(28rem,45vw,30rem)] min-w-0 overflow-hidden rounded-(--radius) border border-border bg-(--card)"
+      className={`relative ${fullscreen ? "min-h-0 flex-1" : "h-[clamp(28rem,45vw,30rem)]"} min-w-0 overflow-hidden rounded-tl-(--radius) rounded-tr-(--radius) border border-border bg-(--card) xl:rounded-tr-none`}
       role="img"
-      aria-label="Three-dimensional sample flight path, position, waypoint and depth observation replay"
+      aria-label="Three-dimensional flight path, position, waypoint and depth observation replay"
       data-testid="ms-insights-flight-scene"
     >
       <div ref={mountRef} className="h-full w-full" />
       {renderError ? (
-        <p className="absolute inset-x-4 bottom-4 m-0 rounded-(--radius) border border-border bg-(--card) p-3 text-(--muted-foreground)">
+        <p className="absolute inset-x-4 bottom-4 m-0 rounded-(--radius) border border-border bg-(--card) p-3 text-muted-foreground">
           The 3D scene could not start in this browser. Replay controls, values,
           charts, and planner events remain available below.
         </p>
       ) : null}
       <span className="sr-only">
-        Relative north/east/down flight samples. Select a planner event or move
+        Relative north/east/down flight path. Select a planner event or move
         the replay slider to update the position marker.
       </span>
     </div>

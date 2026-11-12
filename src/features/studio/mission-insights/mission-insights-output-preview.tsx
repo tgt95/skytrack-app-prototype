@@ -33,9 +33,6 @@ export function MissionInsightsOutputPreview({
           className="block aspect-video w-full rounded-(--radius) border border-border object-cover"
         />
       )}
-      <figcaption className="m-0 text-(--muted-foreground)">
-        {preview.caption}
-      </figcaption>
     </figure>
   );
 }

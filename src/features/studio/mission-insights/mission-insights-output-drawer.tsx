@@ -81,7 +81,7 @@ export function MissionInsightsOutputDrawer({
                     >
                       Download from Mission Computer ({output.remoteFileCount})
                     </Button>
-                    <span className="text-(--muted-foreground)">
+                    <span className="text-muted-foreground">
                       Remote download is unavailable in this preview.
                     </span>
                   </div>
@@ -120,7 +120,7 @@ export function MissionInsightsOutputDrawer({
                               key={`${section.title}-${label}`}
                               className="contents"
                             >
-                              <dt className="text-(--muted-foreground)">
+                              <dt className="text-muted-foreground">
                                 {label}
                               </dt>
                               <dd className="m-0 min-w-0 break-words">
@@ -164,7 +164,7 @@ export function MissionInsightsOutputDrawer({
                   <p
                     role="status"
                     aria-live="polite"
-                    className="m-0 text-(--muted-foreground)"
+                    className="m-0 text-muted-foreground"
                   >
                     {copyNotice}
                   </p>

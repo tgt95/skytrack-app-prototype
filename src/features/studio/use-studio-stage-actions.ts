@@ -38,7 +38,7 @@ export function useStudioStageActions({
       if (next === "plan") say("Plan tab. Mission planner.");
       else if (next === "fly")
         say("Flight execution requires an active vehicle connection.");
-      else say("Report tab. Showing sample simulation runs.");
+      else say("Showing mission reports.");
     },
     [say, setAppTab],
   );

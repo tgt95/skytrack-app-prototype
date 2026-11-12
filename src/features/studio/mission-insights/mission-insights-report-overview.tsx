@@ -1,148 +1,139 @@
-import { type MissionInsightSample } from "./mission-insights-data";
-import { type InsightOutput } from "./mission-insights-output-data";
+import { type MissionInsightSample } from './mission-insights-data'
+import { type InsightOutput } from './mission-insights-output-data'
 import {
   DetailSection,
   MissionInsightsEvidenceSummary,
-  MissionInsightsSampleNotice,
-  MissionInsightsOutputs,
   MissionInsightsRunSummary,
-  MissionInsightsTopIssues,
-} from "./mission-insights-page-sections";
+  MissionInsightsTopIssues
+} from './mission-insights-page-sections'
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
-} from "skytrack-ui/chart";
-import { BarChart, CartesianGrid, XAxis, YAxis, Bar, Cell } from "recharts";
+  ChartTooltipContent
+} from 'skytrack-ui/chart'
+import { Pie, PieChart, Cell } from 'recharts'
+import { MissionInsightsFlightReplay } from './mission-insights-flight-replay'
+import { MissionInsightsOverviewMedia } from './mission-insights-overview-media'
 
-export function OverviewTab({
+export function OverviewTab ({
   sample,
   onOpenOutput,
-  onOpenSurveyImages,
-  onOpenFlightPath,
+  onOpenMedia,
+  onOpenIssue,
   onSeek,
+  replayTime,
+  seekNotice
 }: {
-  sample: MissionInsightSample;
-  onOpenOutput: (output: InsightOutput) => void;
-  onOpenSurveyImages: () => void;
-  onOpenFlightPath: () => void;
-  onSeek: (time: number, label?: string) => void;
+  sample: MissionInsightSample
+  onOpenOutput: (output: InsightOutput) => void
+  onOpenMedia: (id: string) => void
+  onOpenIssue: (issueCode: string) => void
+  onSeek: (time: number | null, label?: string) => void
+  replayTime: number
+  seekNotice: string
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-6">
-      <MissionInsightsSampleNotice />
-      <MissionInsightsRunSummary sample={sample} />
-      <MissionInsightsTopIssues
-        sample={sample}
-        onSeek={(time, label) => {
-          onSeek(time, label);
-          onOpenFlightPath();
-        }}
-      />
-      <MissionInsightsOutputs
-        sample={sample}
-        onOpen={onOpenOutput}
-        onOpenSurveyImages={onOpenSurveyImages}
-      />
-      <MissionInsightsEvidenceSummary sample={sample} />
-      <DetailSection title="Run distributions">
-        <div className="grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-2">
-          <CategoryChart
-            title="Actions by status"
-            rows={sample.actions}
-            unit="Actions"
+    <div className='grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-12'>
+      <div className='grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-3 xl:col-span-12'>
+        <MissionInsightsRunSummary sample={sample} />
+        <MissionInsightsTopIssues sample={sample} onViewIssue={onOpenIssue} />
+        <MissionInsightsEvidenceSummary sample={sample} />
+      </div>
+      <div className='flex flex-col gap-6 xl:col-span-12 3xl:col-span-8'>
+        <DetailSection title='Flight replay'>
+          <MissionInsightsFlightReplay
+            sample={sample}
+            time={replayTime}
+            seekNotice={seekNotice}
+            onSeek={(time, label) => onSeek(time, label)}
           />
-          <CategoryChart
-            title="Files by type"
-            rows={sample.files}
-            unit="Files"
-          />
-        </div>
-      </DetailSection>
+        </DetailSection>
+      </div>
+      <div className='grid grid-cols-1 xl:grid-cols-2 3xl:grid-cols-1 gap-6 col-span-12 3xl:col-span-4'>
+        <MissionInsightsOverviewMedia
+          sample={sample}
+          onOpenOutput={onOpenOutput}
+          onOpenMedia={onOpenMedia}
+        />
+        <DetailSection title='Run distributions'>
+          <div className='grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-2'>
+            <CategoryChart
+              title='Actions by status'
+              rows={sample.actions}
+              unit='Actions'
+            />
+            <CategoryChart
+              title='Files by type'
+              rows={sample.files}
+              unit='Files'
+            />
+          </div>
+        </DetailSection>
+      </div>
     </div>
-  );
+  )
 }
 
-export function CategoryChart({
+export function CategoryChart ({
   title,
   rows,
-  unit,
+  unit
 }: {
-  title: string;
-  rows: ReadonlyArray<readonly [string, number]>;
-  unit: string;
+  title: string
+  rows: ReadonlyArray<readonly [string, number]>
+  unit: string
 }) {
-  const data = rows.map(([name, count]) => ({ name, count }));
+  const data = rows.map(([name, count]) => ({ name, count }))
   const config: ChartConfig = {
-    count: { label: unit, color: "var(--chart-1)" },
-  };
+    count: { label: unit, color: 'var(--chart-1)' }
+  }
   const palette = [
-    "var(--chart-1)",
-    "var(--chart-2)",
-    "var(--chart-3)",
-    "var(--chart-4)",
-  ];
+    'var(--chart-1)',
+    'var(--chart-2)',
+    'var(--chart-3)',
+    'var(--chart-4)'
+  ]
 
   return (
-    <section className="flex min-w-0 flex-col gap-3" aria-label={title}>
-      <h3 className="m-0 text-lg font-medium text-foreground">{title}</h3>
+    <section className='flex min-w-0 flex-col gap-3' aria-label={title}>
+      <h3 className='m-0 text-lg font-medium text-foreground'>{title}</h3>
       {data.length ? (
         <ChartContainer
-          className="h-60 min-w-0 w-full"
+          className='h-60 min-w-0 w-full'
           config={config}
           aria-label={`${title}; exact values are listed below`}
         >
-          <BarChart
-            data={data}
-            accessibilityLayer
-            layout="vertical"
-            margin={{ left: 4, right: 16, top: 4, bottom: 4 }}
-          >
-            <CartesianGrid
-              stroke="var(--border)"
-              strokeDasharray="3 3"
-              horizontal={false}
-            />
-            <XAxis
-              type="number"
-              allowDecimals={false}
-              tickLine={false}
-              axisLine={false}
-            />
-            <YAxis
-              type="category"
-              dataKey="name"
-              width={110}
-              tickLine={false}
-              axisLine={false}
-            />
-            <ChartTooltip
-              content={<ChartTooltipContent className="rounded-(--radius)" />}
-            />
-            <Bar
-              dataKey="count"
-              name={unit}
-              radius={0}
+          <PieChart accessibilityLayer>
+            <Pie
+              data={data}
+              dataKey='count'
+              nameKey='name'
+              innerRadius={48}
+              outerRadius={76}
+              paddingAngle={1}
               isAnimationActive={false}
             >
               {data.map((row, index) => (
                 <Cell key={row.name} fill={palette[index % palette.length]} />
               ))}
-            </Bar>
-          </BarChart>
+            </Pie>
+            <ChartTooltip
+              content={<ChartTooltipContent className='rounded-(--radius)' />}
+            />
+          </PieChart>
         </ChartContainer>
       ) : (
-        <p className="m-0 text-(--muted-foreground)">
-          No {unit.toLowerCase()} values are recorded for this sample.
+        <p className='m-0 text-muted-foreground'>
+          No {unit.toLowerCase()} values recorded.
         </p>
       )}
       {data.length ? (
-        <ul className="m-0 flex list-none flex-col gap-2 p-0">
+        <ul className='m-0 flex list-none flex-col gap-2 p-0'>
           {rows.map(([name, count]) => (
-            <li key={name} className="flex items-center justify-between gap-3">
+            <li key={name} className='flex items-center justify-between gap-3'>
               <span>{name}</span>
-              <span className="tabular-nums">
+              <span className='tabular-nums'>
                 {count} {unit.toLowerCase()}
               </span>
             </li>
@@ -150,5 +141,5 @@ export function CategoryChart({
         </ul>
       ) : null}
     </section>
-  );
+  )
 }

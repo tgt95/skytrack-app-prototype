@@ -5,10 +5,6 @@ import okPlanSource from "./sample-data/ok/plan.json?raw";
 import failedScriptSource from "./sample-data/fail/script.py?raw";
 import realScriptSource from "./sample-data/real/script.py?raw";
 import type { MissionInsightSample } from "./mission-insights-data";
-import {
-  surveyImageFrames,
-  surveyImageSet,
-} from "./mission-insights-output-data";
 
 export type JsonRecord = Record<string, unknown>;
 
@@ -51,6 +47,19 @@ const sampleFolder: Record<MissionInsightSample["key"], string> = {
   "real-succeeded": "real",
 };
 
+function evidenceCompletenessCopy(sample: MissionInsightSample) {
+  const { summary, detail } = sample.evidenceCompleteness;
+  return detail ? `${summary} · ${detail}` : summary;
+}
+
+const demoRunIdentity: Record<string, { runId: string; startedAt: string }> = {
+  "construction-progress": { runId: "demo_construction_20261112", startedAt: "2026-11-12T09:00:00+07:00" },
+  "flood-impact": { runId: "demo_flood_20261111", startedAt: "2026-11-11T14:20:00+07:00" },
+  "bridge-inspection": { runId: "demo_bridge_20261110", startedAt: "2026-11-10T10:40:00+07:00" },
+  "erosion-survey": { runId: "demo_erosion_20261109", startedAt: "2026-11-09T08:30:00+07:00" },
+  "interrupted-survey": { runId: "demo_interrupted_20261108", startedAt: "2026-11-08T16:15:00+07:00" },
+};
+
 export function asRecord(value: unknown): JsonRecord {
   return typeof value === "object" && value !== null && !Array.isArray(value)
     ? (value as JsonRecord)
@@ -70,6 +79,46 @@ export function numberValue(value: unknown): number | null {
 }
 
 export function reportForSample(sample: MissionInsightSample): JsonRecord {
+  if (sample.demoCase) {
+    const source = reports[sample.key];
+    const identity = demoRunIdentity[sample.demoCase];
+    return {
+      ...source,
+      report_id: `rpt_demo_${sample.demoCase}`,
+      created_at: identity.startedAt,
+      source: { kind: "demo_fixture", label: "SkyTrack Demo Fixture" },
+      run: {
+        ...asRecord(source.run),
+        run_id: identity.runId,
+        run_name: sample.runLabel,
+        status: sample.status === "Failed" ? "failed" : "completed",
+        started_at: identity.startedAt,
+        duration_ms: Number.parseFloat(sample.duration) * 1000,
+        local_folder: `sample://demo/${sample.demoCase}`,
+      },
+      scenario: { world_id: sample.world.toLowerCase().replaceAll(" ", "_") },
+      mission_definition: {
+        authoring_mode: "demo_fixture",
+        definition_artifact_id: `demo_${sample.demoCase}_mission`,
+        definition_file: { name: sample.missionLogicFile, uri: `sample://demo/${sample.missionLogicFile}`, local_path: "sample://demo/illustrative-only" },
+      },
+      vehicles: [{ vehicle_id: `demo_vehicle_${sample.demoCase}`, name: sample.vehicle, vehicle_type: "illustrative multirotor", payloads: [] }],
+      diagnostics: { items: sample.issues.map((issue) => ({ severity: issue.severity.toLowerCase(), code: issue.code, message: issue.message, time_s: issue.time })) },
+      waypoints: [],
+      flight_path: {},
+      demo_fixture: {
+        illustrative_only: true,
+        case: sample.demoCase,
+        outcome: sample.outcome,
+        evidence_completeness: evidenceCompletenessCopy(sample),
+        source_files_are_reference_images: true,
+      },
+      executions: [],
+      artifacts: [],
+      invocations: [],
+      ai_models: [],
+    };
+  }
   return reports[sample.key];
 }
 
@@ -163,59 +212,32 @@ export function sampleMedia(sample: MissionInsightSample): InsightMedia[] {
 export function sampleGalleryMedia(
   sample: MissionInsightSample,
 ): InsightMedia[] {
-  const surveyPreview = surveyImageSet.preview;
-  if (sample.key !== "simulation-succeeded" || !surveyPreview) {
-    return sampleMedia(sample);
-  }
-
-  return surveyImageFrames.map((frame) => {
-    const id = `leeville-survey-preview-${String(frame.index + 1).padStart(2, "0")}`;
-
-    return {
-      artifact: {
-        artifact_id: id,
-        role: "synthetic_survey_preview",
-        media_type: "image/jpeg",
-        uri: `sample://leeville/${id}`,
-        availability: { state: "local" },
-        metadata: {
-          file: { name: frame.name, kind: "Generated preview frame" },
-        },
-        created_by: { component: "Generated demo preview" },
-      },
-      detection: null,
-      id,
-      name: frame.name,
-      kind: "image",
-      actionName: "Leeville survey preview frames",
-      availability: "local",
-      captureTime: null,
-      durationSeconds: null,
-      width: null,
-      height: null,
-      sizeBytes: null,
-      imageUrl: surveyPreview.src,
-      detectionCount: 0,
-      processingError: "",
-      syntheticPreview: true,
-      previewFrameIndex: frame.index,
-      previewAlt: frame.alt,
-    } satisfies InsightMedia;
-  });
+  return sampleMedia(sample);
 }
 
 export function sampleWorldImage(sample: MissionInsightSample): string | null {
+  if (sample.demoCase) return null;
   const folder = sampleFolder[sample.key];
   return imageAssets[`./sample-data/world/${folder}-top.jpg`] ?? null;
 }
 
 export function missionLogicSource(sample: MissionInsightSample): string {
+  if (sample.demoCase) {
+    return JSON.stringify({
+      demo_fixture: true,
+      scenario: sample.runLabel,
+      mission: sample.missionLogicDescription,
+      outcome: sample.outcome,
+      evidence: evidenceCompletenessCopy(sample),
+    }, null, 2);
+  }
   if (sample.key === "simulation-succeeded") return okPlanSource;
   if (sample.key === "simulation-failed") return failedScriptSource;
   return realScriptSource;
 }
 
 export function missionLogicLanguage(sample: MissionInsightSample) {
+  if (sample.demoCase) return "JSON";
   return sample.key === "simulation-succeeded" ? "JSON" : "Python";
 }
 

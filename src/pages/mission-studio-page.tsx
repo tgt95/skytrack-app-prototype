@@ -472,7 +472,6 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
         onSaveProfile={accountSettings.updateAccountProfile}
         onChangeNotifications={accountSettings.updateNotificationPreferences}
         onChangeMissionDesignPreferences={accountSettings.updateMissionDesignPreferences}
-        onAnnounce={uiState.say}
         onLogout={onLogout}
       />
       <ImportAIModelDialog

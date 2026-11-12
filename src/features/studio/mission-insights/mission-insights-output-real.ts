@@ -1,10 +1,16 @@
 import type { InsightOutput } from "./mission-insights-output-data";
+import realSourceImage from "./sample-data/real/cap_1791339346000.png";
 
 export const rescueLocationsReal: InsightOutput = {
   id: "rescue-locations-real",
-  name: "Rescue locations",
+  name: "Location results",
   status: "Partial",
   summary: "2 of 3 locations saved · rescue_locations.txt",
+  preview: {
+    src: realSourceImage,
+    alt: "Locally available source image cap_1791339346000.png associated with the location results output.",
+    caption: "Source image · cap_1791339346000.png",
+  },
   remoteFileCount: 3,
   details: [
     {

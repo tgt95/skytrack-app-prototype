@@ -15,13 +15,15 @@
 - **Page pattern:** Keep current PageHeader and report subpage behavior. Do not add another route or `main` landmark.
 - **Shared Simulation/Real overview order:**
   1. Persistent prototype-data disclosure.
-  2. Mission result: outcome, run status, type, and duration.
+  2. Mission result: outcome headline and source-backed supporting facts. Run status, type, start time, and duration remain in the page header; do not repeat them in this section.
   3. Needs attention: highest-priority issue and replay action when a timestamp exists.
   4. Outputs: result deliverables and source links.
   5. Evidence: completeness, availability, and signature/verification state.
   6. Run distributions. Flight path, replay, timeline, and other detail remain in dedicated report tabs.
 - **HITL report order:** prototype-data disclosure; mission result; needs-attention summary; readiness verdicts; flight metrics and MQTT action trace; evidence and checksum integrity; simulation comparison with explicit note that parity is not computed by the current collector; versions and hardware/software configuration.
 - **Mode-specific meaning:** Simulation and Real report task outcomes and mission evidence. HITL reports bench validation, readiness, hardware trace, configuration, and evidence integrity. Share hierarchy; retain mode-specific content.
+- **Timeline Actions structure:** Show a selected-run action interval chart first, scaled to `run.duration_ms` and `actions[].t0_s`/`t1_s`; put status and action labels on the chart axis. Keep exact action inputs, outputs, errors, IDs, and UTC timestamps in a collapsed `Action details` table below it.
+- **Timeline Events structure:** Read stream count/range/gaps from the selected report's `event_streams[0]`; display only the documented prototype event sample rows for that run, with Type and Component filters, Sequence/Time/Type/Component columns, and an inline gap row when applicable. Keep shared Flight replay events in the Flight path tab and out of this report stream.
 - **Responsive priority:** Single column on narrow screens; content sections may use two columns on wide screens. Keep metric strips readable and comparison tables horizontally usable.
 - **Preview scope:** Existing sample states only: Simulation success/failure, Real success, and HITL PASS. Values remain illustrative, not live telemetry or operational results. No backend, hardware control, or parity calculation.
 - **Assumptions:** A missing sample state remains unavailable and must not be inferred from another mode's data.

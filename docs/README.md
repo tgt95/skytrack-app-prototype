@@ -123,6 +123,7 @@ Imports xuyên thư mục trong `src/` dùng alias `@/`; import trong cùng thư
 docs/
 ├── README.md
 ├── mission-studio-entity-map.md
+├── mission-report-field-inventory.md
 ├── entities/                Một note kebab-case cho mỗi entity
 └── superpowers/
     ├── specs/                Spec kỹ thuật có ngày
@@ -130,6 +131,7 @@ docs/
 ```
 
 - `mission-studio-entity-map.md` có sơ đồ Mermaid, entity catalog, quan hệ và source links.
+- `mission-report-field-inventory.md` liệt kê field Mission Insights report theo tab và mục đích sử dụng.
 - `entities/` ghi định nghĩa, quan hệ và bằng chứng của từng khái niệm; tag hỗ trợ Obsidian Graph, không tạo phân cấp thư mục source.
 - `superpowers/specs/` và `superpowers/plans/` giữ tài liệu theo từng công việc. Tài liệu cũ có thể chỉ mang tính lịch sử; xem task hoặc decision record để biết trạng thái.
 

@@ -1,15 +1,12 @@
-import type { Dispatch, SetStateAction } from "react";
-import { Attachment, AttachmentContent, AttachmentDescription, AttachmentMedia, AttachmentTitle, AttachmentTrigger } from "skytrack-ui/attachment";
-import { Alert, AlertDescription } from "skytrack-ui/alert";
-import { DetailSection } from "./mission-insights-page-sections";
+import { FileImageIcon, FileVideoIcon, LaptopIcon, WarningCircleIcon } from "@phosphor-icons/react";
+import type { ReactNode } from "react";
 import { Badge } from "skytrack-ui/badge";
-import { Toggle } from "skytrack-ui/toggle";
-import { ToggleGroup } from "skytrack-ui/toggle-group";
+import { Button } from "skytrack-ui/button";
+import { Search } from "skytrack-ui/search";
 import type { InsightMedia } from "./mission-insights-report-data";
-import { statusLabel, SurveyContactSheetFrame } from "./mission-insights-report-shared";
-import { LaptopIcon, WarningCircleIcon } from "@phosphor-icons/react";
 
 export type MediaFilter = "all" | "images" | "videos" | "detections" | "remote";
+export type MediaBrowserSelection = MediaFilter | "other-files";
 
 export function matchesMediaFilter(item: InsightMedia, filter: MediaFilter) {
   if (filter === "images") return item.kind === "image";
@@ -19,227 +16,133 @@ export function matchesMediaFilter(item: InsightMedia, filter: MediaFilter) {
   return true;
 }
 
-type MediaFilterItem = { value: MediaFilter; label: string };
+export function MediaBrowserFilters({
+  selection,
+  onChange,
+  groups,
+}: {
+  selection: MediaBrowserSelection;
+  onChange: (selection: MediaBrowserSelection) => void;
+  groups: ReadonlyArray<{
+    label: string;
+    items: ReadonlyArray<{ value: MediaBrowserSelection; label: string }>;
+  }>;
+}) {
+  return (
+    <nav className="flex min-w-0 flex-col gap-4 p-4" aria-label="Media filters">
+      <h3 className="m-0 mb-2 text-sm font-semibold text-foreground">Browse</h3>
+      {groups.map((group) => (
+        <section key={group.label} className="flex min-w-0 flex-col gap-1" aria-label={group.label}>
+          <h4 className="m-0 mb-1 px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{group.label}</h4>
+          {group.items.map((item) => (
+            <Button
+              key={item.value}
+              type="button"
+              size="sm"
+              variant={selection === item.value ? "secondary" : "ghost"}
+              aria-pressed={selection === item.value}
+              className="h-auto w-full justify-start whitespace-normal px-3 py-2 text-left"
+              onClick={() => onChange(item.value)}
+            >
+              {item.label}
+            </Button>
+          ))}
+        </section>
+      ))}
+    </nav>
+  );
+}
 
-export function MediaGallerySection({
+export function MediaFileSearchBar({
+  query,
+  onQueryChange,
+  trailingFilter,
+}: {
+  query: string;
+  onQueryChange: (value: string) => void;
+  trailingFilter: ReactNode;
+}) {
+  return (
+    <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
+      <Search
+        value={query}
+        onValueChange={onQueryChange}
+        placeholder="Search file name"
+        aria-label="Search file name"
+        className="min-w-0 flex-1"
+      />
+      {trailingFilter}
+    </div>
+  );
+}
+
+export function MediaBrowserFileList({
   media,
   syntheticGallery,
-  filter,
-  setFilter,
-  filterItems,
-  visibleMedia,
   selectedId,
-  setSelectedId,
-  setOverlayVisible,
+  onSelect,
+  searchBar,
 }: {
   media: InsightMedia[];
   syntheticGallery: boolean;
-  filter: MediaFilter;
-  setFilter: Dispatch<SetStateAction<MediaFilter>>;
-  filterItems: ReadonlyArray<MediaFilterItem>;
-  visibleMedia: InsightMedia[];
   selectedId: string;
-  setSelectedId: Dispatch<SetStateAction<string>>;
-  setOverlayVisible: Dispatch<SetStateAction<boolean>>;
+  onSelect: (id: string) => void;
+  searchBar: ReactNode;
 }) {
   return (
-      <DetailSection
-        title={syntheticGallery ? "Survey image set" : "Captured media"}
-        toolbar={
-          <Badge
-            className="rounded-(--radius)"
-            count={`${media.length} ${
-              syntheticGallery ? "preview frames" : "records"
-            }`}
-            status="secondary"
-          />
-        }
-      >
-        <Alert variant="info" role="note">
-          <AlertDescription>
-            {syntheticGallery
-              ? "These four generated Leeville survey frames are illustrative previews, not captures from the selected run. The report fixture's 24 image artifact records are separate from these preview frames."
-              : "These prototype capture images are illustrative drone-camera samples for this demo. They are not photos from the selected Mission Studio run."}
-          </AlertDescription>
-        </Alert>
-        <div className="flex min-w-0 flex-col gap-4">
-          <ToggleGroup
-            aria-label="Filter media records"
-            variant="outline"
-            size="sm"
-            value={[filter]}
-            onValueChange={(value) => {
-              if (!value[0]) return;
-              const nextFilter = value[0] as MediaFilter;
-              const nextVisible = media.filter((item) =>
-                matchesMediaFilter(item, nextFilter),
-              );
-              setFilter(nextFilter);
-              setSelectedId((current) =>
-                nextVisible.some((item) => item.id === current)
-                  ? current
-                  : (nextVisible[0]?.id ?? ""),
-              );
-            }}
-            className="flex max-w-full flex-wrap gap-2"
-          >
-            {filterItems.map((item) => (
-              <Toggle key={item.value} value={item.value}>
-                {item.label}
-              </Toggle>
-            ))}
-          </ToggleGroup>
-          <p className="m-0 text-(--muted-foreground)">
-            {syntheticGallery
-              ? `Showing ${visibleMedia.length} of ${media.length} generated preview frames.`
-              : `Showing ${visibleMedia.length} of ${media.length} media records. Groups follow the producing action.`}
-          </p>
-          {visibleMedia.length ? (
-            [...new Set(visibleMedia.map((item) => item.actionName))].map(
-              (actionName) => (
-                <section
-                  key={actionName}
-                  className="flex min-w-0 flex-col gap-3"
-                  aria-label={actionName}
+    <section className="flex min-w-0 flex-col gap-3 p-4" aria-label="Media records">
+      <header className="flex items-center justify-between gap-3">
+        <h3 className="m-0 text-sm font-semibold text-foreground">{syntheticGallery ? "Survey images" : "Captured media"}</h3>
+        <Badge className="rounded-(--radius)" count={media.length} status="secondary" />
+      </header>
+      {searchBar}
+      <p className="m-0 text-xs text-muted-foreground">Showing {media.length} records</p>
+      {media.length ? (
+        <ul className="m-0 flex list-none flex-col gap-1 p-0" aria-label="Media files">
+          {media.map((item) => {
+            const selected = item.id === selectedId;
+            const Icon = item.kind === "video" ? FileVideoIcon : FileImageIcon;
+            const availability = item.syntheticPreview
+              ? "Preview"
+              : item.availability === "local"
+                ? "On this computer"
+                : item.availability === "remote_only"
+                  ? "Mission Computer"
+                  : item.availability === "missing"
+                    ? "Missing"
+                    : "Unavailable";
+            return (
+              <li key={item.id}>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={selected ? "secondary" : "ghost"}
+                  aria-pressed={selected}
+                  className="h-auto w-full justify-start gap-3 whitespace-normal px-3 py-3 text-left"
+                  onClick={() => onSelect(item.id)}
                 >
-                  <h3 className="m-0 text-lg font-medium text-foreground">
-                    {actionName}
-                  </h3>
-                  <div className="grid min-w-0 grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
-                    {visibleMedia
-                      .filter((item) => item.actionName === actionName)
-                      .map((item) => (
-                        <Attachment
-                          key={item.id}
-                          orientation="vertical"
-                          className={`min-w-0 overflow-hidden ${
-                            selectedId === item.id
-                              ? "border-primary ring-1 ring-primary"
-                              : ""
-                          }`}
-                        >
-                          <AttachmentMedia
-                            variant="image"
-                            className={
-                              item.syntheticPreview
-                                ? "relative aspect-video w-full"
-                                : "relative w-full"
-                            }
-                          >
-                            {item.imageUrl ? (
-                              item.syntheticPreview &&
-                              item.previewFrameIndex !== undefined ? (
-                                <SurveyContactSheetFrame
-                                  src={item.imageUrl}
-                                  frameIndex={item.previewFrameIndex}
-                                  alt={
-                                    item.previewAlt ??
-                                    `Generated survey preview ${item.name}`
-                                  }
-                                  className="size-full"
-                                />
-                              ) : (
-                                <img
-                                  src={item.imageUrl}
-                                  alt={`Sample drone capture ${item.name}`}
-                                  loading="lazy"
-                                />
-                              )
-                            ) : item.availability === "remote_only" ? (
-                              <div className="flex aspect-square w-full flex-col items-center justify-center gap-2 bg-(--muted) p-2 text-center text-(--muted-foreground)">
-                                <LaptopIcon aria-hidden="true" />
-                                <span>On Mission Computer</span>
-                              </div>
-                            ) : (
-                              <div className="flex aspect-square w-full flex-col items-center justify-center gap-2 bg-(--muted) p-2 text-center text-(--muted-foreground)">
-                                <WarningCircleIcon aria-hidden="true" />
-                                <span>Preview unavailable</span>
-                              </div>
-                            )}
-                          </AttachmentMedia>
-                          <AttachmentContent>
-                            <AttachmentTitle>{item.name}</AttachmentTitle>
-                            <AttachmentDescription>
-                              {item.syntheticPreview
-                                ? `Generated preview · Frame ${
-                                    (item.previewFrameIndex ?? 0) + 1
-                                  }`
-                                : item.kind === "video"
-                                  ? `Video poster · ${
-                                      item.durationSeconds?.toFixed(1) ?? "—"
-                                    } s`
-                                  : `${item.captureTime?.toFixed(1) ?? "—"} s · ${
-                                      item.width ?? "—"
-                                    } × ${item.height ?? "—"}`}
-                            </AttachmentDescription>
-                          </AttachmentContent>
-                          <div className="flex flex-wrap items-center gap-2 px-2 pb-2">
-                            <Badge
-                              className="rounded-(--radius)"
-                              count={
-                                item.syntheticPreview
-                                  ? "Generated preview"
-                                  : item.availability === "local"
-                                    ? "Local sample"
-                                    : item.availability === "remote_only"
-                                      ? "On Mission Computer"
-                                      : item.availability === "missing"
-                                        ? "File not written"
-                                        : "Unavailable"
-                              }
-                              status={
-                                item.syntheticPreview
-                                  ? "secondary"
-                                  : item.availability === "local"
-                                    ? "success"
-                                    : item.availability === "missing"
-                                      ? "error"
-                                      : "warning"
-                              }
-                            />
-                            {!item.syntheticPreview &&
-                            item.detectionCount > 0 ? (
-                              <Badge
-                                className="rounded-(--radius)"
-                                count={`${item.detectionCount} detections`}
-                                status="secondary"
-                              />
-                            ) : null}
-                            {!item.syntheticPreview && item.processingError ? (
-                              <Badge
-                                className="rounded-(--radius)"
-                                count="Model failed"
-                                status="error"
-                              />
-                            ) : null}
-                          </div>
-                          <AttachmentTrigger
-                            className="z-20"
-                            aria-label={`Select ${item.name}, ${
-                              item.syntheticPreview
-                                ? "generated preview"
-                                : item.availability === "local"
-                                  ? "local sample"
-                                  : statusLabel(item.availability)
-                            }`}
-                            aria-pressed={selectedId === item.id}
-                            onClick={() => {
-                              setSelectedId(item.id);
-                              setOverlayVisible(true);
-                            }}
-                          />
-                        </Attachment>
-                      ))}
-                  </div>
-                </section>
-              ),
-            )
-          ) : (
-            <p className="m-0 text-(--muted-foreground)">
-              No media records match this filter.
-            </p>
-          )}
-        </div>
-      </DetailSection>
+                  <Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+                  <span className="flex min-w-0 flex-1 flex-col gap-1">
+                    <span className="truncate font-medium">{item.name}</span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      {item.actionName} · {availability}
+                    </span>
+                  </span>
+                  {item.detectionCount > 0 ? (
+                    <Badge className="rounded-(--radius)" count={item.detectionCount} status="secondary" />
+                  ) : item.availability === "remote_only" ? (
+                    <LaptopIcon className="size-4 shrink-0" aria-hidden="true" />
+                  ) : item.availability === "missing" ? (
+                    <WarningCircleIcon className="size-4 shrink-0 text-destructive" aria-hidden="true" />
+                  ) : null}
+                </Button>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="m-0 py-6 text-sm text-muted-foreground">No media records match this search or filter.</p>
+      )}
+    </section>
   );
 }

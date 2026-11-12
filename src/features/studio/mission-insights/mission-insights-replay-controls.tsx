@@ -1,14 +1,35 @@
-import { CheckIcon, PauseIcon, PlayIcon } from "@phosphor-icons/react";
+import {
+  CheckIcon,
+  ArrowsInSimpleIcon,
+  ArrowsOutSimpleIcon,
+  FastForwardIcon,
+  GearIcon,
+  PauseIcon,
+  PlayIcon,
+  RewindIcon,
+} from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
-import { CheckboxIndicator, CheckboxRoot } from "skytrack-ui/checkbox";
-import { FieldLabel, FieldRoot } from "skytrack-ui/field";
+import {
+  Menu,
+  MenuCheckboxItem,
+  MenuCheckboxItemIndicator,
+  MenuGroup,
+  MenuGroupLabel,
+  MenuPortal,
+  MenuPositioner,
+  MenuPopup,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuRadioItemIndicator,
+  MenuSeparator,
+  MenuTrigger,
+} from "skytrack-ui/menu";
 import {
   Select,
   SelectIcon,
   SelectItem,
   SelectItemIndicator,
   SelectItemText,
-  SelectLabel,
   SelectList,
   SelectPopup,
   SelectPortal,
@@ -23,8 +44,6 @@ import {
   SliderThumb,
   SliderTrack,
 } from "skytrack-ui/slider";
-import { Toggle } from "skytrack-ui/toggle";
-import { ToggleGroup } from "skytrack-ui/toggle-group";
 import type {
   ReplayCamera,
   ReplayLayers,
@@ -38,37 +57,25 @@ const speedOptions = [
   { value: "8", label: "8×" },
 ] as const;
 
-function formatClock(seconds: number) {
-  return `${seconds.toFixed(1)} s`;
-}
+const cameraOptions: ReadonlyArray<readonly [ReplayCamera, string]> = [
+  ["3d", "3D"],
+  ["top", "Top"],
+  ["side", "Side"],
+  ["chase", "Chase"],
+];
 
-function CheckboxField({
-  id,
-  label,
-  checked,
-  onCheckedChange,
-}: {
-  id: string;
-  label: string;
-  checked: boolean;
-  onCheckedChange: (checked: boolean) => void;
-}) {
-  return (
-    <FieldRoot className="flex-row items-center gap-2">
-      <FieldLabel className="flex items-center gap-2">
-        <CheckboxRoot
-          id={id}
-          checked={checked}
-          onCheckedChange={(value) => onCheckedChange(value === true)}
-        >
-          <CheckboxIndicator>
-            <CheckIcon aria-hidden="true" />
-          </CheckboxIndicator>
-        </CheckboxRoot>
-        {label}
-      </FieldLabel>
-    </FieldRoot>
-  );
+const layerOptions: ReadonlyArray<readonly [keyof ReplayLayers, string]> = [
+  ["follow", "Follow drone"],
+  ["future", "Show future depth frames"],
+  ["nearGround", "Include near-ground frames"],
+  ["mixedRange", "Include mixed-range frames"],
+  ["seenEmptyLater", "Show “seen empty later”"],
+];
+
+function formatClock(seconds: number) {
+  const totalSeconds = Math.max(0, Math.floor(seconds));
+  const minutes = Math.floor(totalSeconds / 60);
+  return `${minutes}:${String(totalSeconds % 60).padStart(2, "0")}`;
 }
 
 export function MissionInsightsReplayControls({
@@ -83,6 +90,9 @@ export function MissionInsightsReplayControls({
   layers,
   onLayerChange,
   onSeek,
+  onFullscreenToggle,
+  fullscreen,
+  className = "",
 }: {
   time: number;
   maxTime: number;
@@ -95,23 +105,84 @@ export function MissionInsightsReplayControls({
   layers: ReplayLayers;
   onLayerChange: (key: keyof ReplayLayers, value: boolean) => void;
   onSeek: (time: number) => void;
+  onFullscreenToggle: () => void;
+  fullscreen: boolean;
+  className?: string;
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-4 rounded-(--radius) border border-border bg-(--card) p-4">
-      <div className="flex min-w-0 flex-wrap items-center gap-3">
-        <Button
-          variant="outline"
-          onClick={() => onPlayingChange(!playing)}
-          aria-pressed={playing}
-        >
-          {playing ? (
-            <PauseIcon aria-hidden="true" />
-          ) : (
-            <PlayIcon aria-hidden="true" />
-          )}
-          {playing ? "Pause" : "Play"}
-        </Button>
-        <FieldRoot className="flex-row items-center gap-2">
+    <div
+      className={`min-w-0 bg-muted/25 rounded-bl-(--radius) rounded-br-(--radius) border border-border border-t-0 bg-card p-3 text-card-foreground xl:rounded-br-none ${className}`}
+    >
+      <Slider
+        value={time}
+        min={0}
+        max={maxTime}
+        step={0.1}
+        onValueChange={(value) =>
+          onSeek(typeof value === "number" ? value : (value[0] ?? 0))
+        }
+        aria-label="Replay timeline"
+      >
+        <SliderControl className="p-2">
+          <SliderTrack>
+            <SliderIndicator />
+            <SliderThumb aria-label="Replay time" />
+          </SliderTrack>
+        </SliderControl>
+      </Slider>
+
+      <div className="flex min-w-0 items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-1 sm:gap-2">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            className="text-card-foreground hover:bg-muted hover:text-card-foreground"
+            onClick={() => {
+              if (playing) {
+                onPlayingChange(false);
+                return;
+              }
+              if (time >= maxTime) onSeek(0);
+              onPlayingChange(true);
+            }}
+            aria-label={playing ? "Pause replay" : "Play replay"}
+            aria-pressed={playing}
+          >
+            {playing ? (
+              <PauseIcon aria-hidden="true" />
+            ) : (
+              <PlayIcon aria-hidden="true" />
+            )}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            className="text-card-foreground hover:bg-muted hover:text-card-foreground"
+            onClick={() => onSeek(Math.max(0, time - 10))}
+            aria-label="Back 10 seconds"
+            title="Back 10 seconds"
+          >
+            <RewindIcon aria-hidden="true" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            className="text-card-foreground hover:bg-muted hover:text-card-foreground"
+            onClick={() => onSeek(Math.min(maxTime, time + 10))}
+            aria-label="Forward 10 seconds"
+            title="Forward 10 seconds"
+          >
+            <FastForwardIcon aria-hidden="true" />
+          </Button>
+          <span className="ml-1 whitespace-nowrap text-sm tabular-nums sm:ml-2">
+            {formatClock(time)} / {formatClock(maxTime)}
+          </span>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
           <Select
             value={speed}
             onValueChange={(value) => {
@@ -119,16 +190,18 @@ export function MissionInsightsReplayControls({
             }}
             items={speedOptions}
           >
-            <SelectLabel>Playback speed</SelectLabel>
-            <SelectTrigger className="w-24" aria-label="Playback speed">
+            <SelectTrigger
+              className="h-8 min-w-0 border-0 bg-transparent px-1 text-card-foreground shadow-none hover:bg-muted"
+              aria-label="Playback speed"
+            >
               <SelectValue>
                 {speedOptions.find((option) => option.value === speed)?.label ??
                   "1×"}
               </SelectValue>
-              <SelectIcon />
+              <SelectIcon className="text-muted-foreground" />
             </SelectTrigger>
             <SelectPortal>
-              <SelectPositioner side="bottom" align="start" sideOffset={4}>
+              <SelectPositioner side="top" align="end" sideOffset={8}>
                 <SelectPopup>
                   <SelectList>
                     {speedOptions.map((option) => (
@@ -142,78 +215,82 @@ export function MissionInsightsReplayControls({
               </SelectPositioner>
             </SelectPortal>
           </Select>
-        </FieldRoot>
-        <span className="ml-auto tabular-nums">
-          {formatClock(time)} / {formatClock(maxTime)}
-        </span>
-      </div>
-      <Slider
-        value={time}
-        min={0}
-        max={maxTime}
-        step={0.1}
-        onValueChange={(value) =>
-          onSeek(typeof value === "number" ? value : (value[0] ?? 0))
-        }
-      >
-        <SliderControl>
-          <SliderTrack>
-            <SliderIndicator />
-            <SliderThumb aria-label="Replay time" />
-          </SliderTrack>
-        </SliderControl>
-      </Slider>
-      <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
-        <FieldRoot className="flex-row items-center gap-2">
-          <FieldLabel id="ms-replay-camera-label">Camera</FieldLabel>
-          <ToggleGroup
-            value={[cameraMode]}
-            onValueChange={(value: string[]) => {
-              const next = value[0] as ReplayCamera | undefined;
-              if (next) onCameraModeChange(next);
-            }}
-            variant="outline"
-            size="sm"
-            aria-label="Replay camera"
-            aria-labelledby="ms-replay-camera-label"
+
+          <Menu>
+            <MenuTrigger
+              type="button"
+              className="inline-flex size-8 shrink-0 items-center justify-center rounded-(--radius) bg-transparent p-0 text-card-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              aria-label="Replay settings"
+              title="Replay settings"
+            >
+              <GearIcon aria-hidden="true" className="size-4" />
+            </MenuTrigger>
+            <MenuPortal>
+              <MenuPositioner side="top" align="end" sideOffset={8}>
+                <MenuPopup aria-label="Replay settings" className="w-64">
+                  <MenuRadioGroup
+                    value={cameraMode}
+                    onValueChange={(value) => {
+                      if (value) onCameraModeChange(value as ReplayCamera);
+                    }}
+                  >
+                    <MenuGroupLabel>Camera</MenuGroupLabel>
+                    {cameraOptions.map(([value, label]) => (
+                      <MenuRadioItem
+                        key={value}
+                        value={value}
+                        inset
+                        className="!pl-8"
+                      >
+                        <MenuRadioItemIndicator>
+                          <CheckIcon
+                            aria-hidden="true"
+                            weight="bold"
+                            className="size-3.5"
+                          />
+                        </MenuRadioItemIndicator>
+                        {label}
+                      </MenuRadioItem>
+                    ))}
+                  </MenuRadioGroup>
+                  <MenuSeparator />
+                  <MenuGroup>
+                    <MenuGroupLabel>Layers</MenuGroupLabel>
+                    {layerOptions.map(([key, label]) => (
+                      <MenuCheckboxItem
+                        key={key}
+                        checked={layers[key]}
+                        className="!pl-8"
+                        onCheckedChange={(checked) =>
+                          onLayerChange(key, checked)
+                        }
+                        inset
+                      >
+                        <MenuCheckboxItemIndicator />
+                        {label}
+                      </MenuCheckboxItem>
+                    ))}
+                  </MenuGroup>
+                </MenuPopup>
+              </MenuPositioner>
+            </MenuPortal>
+          </Menu>
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            className="text-card-foreground hover:bg-muted hover:text-card-foreground"
+            onClick={onFullscreenToggle}
+            aria-label={fullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+            title={fullscreen ? "Exit fullscreen" : "Fullscreen"}
           >
-            <Toggle value="3d">3D</Toggle>
-            <Toggle value="top">Top</Toggle>
-            <Toggle value="side">Side</Toggle>
-            <Toggle value="chase">Chase</Toggle>
-          </ToggleGroup>
-        </FieldRoot>
-        <div className="flex min-w-0 flex-wrap gap-x-4 gap-y-2">
-          <CheckboxField
-            id="ms-follow-drone"
-            label="Follow drone"
-            checked={layers.follow}
-            onCheckedChange={(value) => onLayerChange("follow", value)}
-          />
-          <CheckboxField
-            id="ms-future-depth"
-            label="Show future depth frames"
-            checked={layers.future}
-            onCheckedChange={(value) => onLayerChange("future", value)}
-          />
-          <CheckboxField
-            id="ms-ground-depth"
-            label="Include near-ground frames"
-            checked={layers.nearGround}
-            onCheckedChange={(value) => onLayerChange("nearGround", value)}
-          />
-          <CheckboxField
-            id="ms-mixed-depth"
-            label="Include mixed-range frames"
-            checked={layers.mixedRange}
-            onCheckedChange={(value) => onLayerChange("mixedRange", value)}
-          />
-          <CheckboxField
-            id="ms-empty-later"
-            label="Show “seen empty later”"
-            checked={layers.seenEmptyLater}
-            onCheckedChange={(value) => onLayerChange("seenEmptyLater", value)}
-          />
+            {fullscreen ? (
+              <ArrowsInSimpleIcon aria-hidden="true" />
+            ) : (
+              <ArrowsOutSimpleIcon aria-hidden="true" />
+            )}
+          </Button>
         </div>
       </div>
     </div>

@@ -14,7 +14,6 @@ import {
 } from "skytrack-ui/menu";
 import { Toolbar, ToolbarGroup } from "skytrack-ui/toolbar";
 import {
-  MISSION_INSIGHTS_SAMPLE_DISCLOSURE,
   type MissionReportRun,
   type MissionInsightSample,
 } from "./mission-insights-data";
@@ -85,7 +84,6 @@ export function MissionInsightsPageToolbar({
                       selectedRun: run,
                       sample,
                       replay: replayTimeline,
-                      sampleDisclosure: MISSION_INSIGHTS_SAMPLE_DISCLOSURE,
                     })
                   }
                 >

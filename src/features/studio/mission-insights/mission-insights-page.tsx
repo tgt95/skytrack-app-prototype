@@ -43,12 +43,12 @@ function noSampleMessage(run: MissionReportRun | null) {
   if (!run)
     return "No Mission Reports row matches this run ID. Return to the report list and select a run.";
   if (run.type === "Real" && run.status === "Failed") {
-    return "The supplied overview has no Real Failed sample. No metrics or output values are available for this type and status.";
+    return "No report data is available for failed real flights.";
   }
   if (run.type === "HITL") {
-    return "The supplied overview has no HITL report state. HITL uses its separate readiness and evidence report; this selected HITL status has no matching sample here.";
+    return "No report data is available for this HITL run.";
   }
-  return "No sample report matches this run type and status.";
+  return "No report data is available for this run type and status.";
 }
 
 export function MissionInsightsPage({
@@ -132,7 +132,7 @@ export function MissionInsightsPage({
             1,
           )} s, beyond this ${end.toFixed(
             1,
-          )} s replay sample; the marker is shown at the final sample time.`
+          )} s replay; the marker is shown at the final replay time.`
         : label
           ? `Replay moved to ${label} at ${nextTime.toFixed(1)} s.`
           : "",
@@ -155,15 +155,22 @@ export function MissionInsightsPage({
       data-testid="ms-mission-insights"
     >
       {!sample ? (
-        <PageHeader title="Mission Insights" toolbar={pageToolbar} />
+        <PageHeader
+          title="Mission Insights"
+          toolbar={pageToolbar}
+          className="sticky top-0 z-20"
+        />
       ) : null}
 
       {sample ? (
-        <div className="flex w-full min-w-0 flex-col gap-6">
-          {/* <MissionInsightsSampleNotice /> */}
+        <div className="flex w-full min-w-0 flex-col gap-6 bg-muted/50">
           <MissionInsightsReportTabs
             renderPageHeader={(tabNavigation) => (
-              <PageHeader title="Mission Insights" toolbar={pageToolbar}>
+              <PageHeader
+                title="Mission Insights"
+                toolbar={pageToolbar}
+                className="sticky top-0 z-20"
+              >
                 <section
                   aria-labelledby="mission-general-info-title"
                   className="mb-3 flex min-w-0 flex-col gap-3"
@@ -189,7 +196,7 @@ export function MissionInsightsPage({
                                 : "min-w-0"
                             }
                           >
-                            <dt className="text-(--muted-foreground)">
+                            <dt className="text-muted-foreground">
                               {label}
                             </dt>
                             <dd className="m-0 mt-1 break-words">{value}</dd>
@@ -200,7 +207,7 @@ export function MissionInsightsPage({
                         aria-labelledby="mission-general-info-compact-title"
                         className="flex min-w-0 flex-col gap-3"
                       >
-                        <dl className="m-0 grid min-w-0 max-w-400 grid-cols-2 gap-x-3 gap-y-1 sm:grid-cols-3 xl:grid-cols-8">
+                        <dl className="m-0 grid min-w-0 max-w-400 grid-cols-2 gap-x-3 gap-y-1 sm:grid-cols-3 xl:grid-cols-7">
                           {[
                             { label: "Run ID", value: run.id, Icon: HashIcon },
                             {
@@ -215,7 +222,8 @@ export function MissionInsightsPage({
                             },
                             {
                               label: "Type",
-                              value: run.type,
+                              value:
+                                run.type === "Real" ? "Real flight" : run.type,
                               Icon: AirplaneTiltIcon,
                             },
                             {
@@ -241,7 +249,7 @@ export function MissionInsightsPage({
                               key={label}
                               className={
                                 label === "World"
-                                  ? "min-w-0 xl:col-span-2"
+                                  ? "min-w-0 xl:col-span-1"
                                   : "min-w-0"
                               }
                             >
@@ -253,7 +261,7 @@ export function MissionInsightsPage({
                                     aria-label={label}
                                     title={label}
                                     tabIndex={0}
-                                    className="inline-flex shrink-0 rounded-(--radius) text-(--muted-foreground) focus-visible:outline-2 focus-visible:outline-(--ring) focus-visible:outline-offset-2"
+                                    className="inline-flex shrink-0 rounded-(--radius) text-muted-foreground focus-visible:outline-2 focus-visible:outline-(--ring) focus-visible:outline-offset-2"
                                   >
                                     <Icon
                                       aria-hidden="true"
@@ -285,14 +293,8 @@ export function MissionInsightsPage({
                       status="warning"
                     />
                   )}
-                  {/* {sample ? (
-                    <p className='m-0 text-(--muted-foreground)'>
-                      Prototype sample: {sample.runLabel} · {sample.world} ·{' '}
-                      {sample.vehicle}
-                    </p>
-                  ) : null} */}
                   {copyNotice ? (
-                    <span role="status" className="text-(--muted-foreground)">
+                    <span role="status" className="text-muted-foreground">
                       {copyNotice}
                     </span>
                   ) : null}
@@ -304,7 +306,6 @@ export function MissionInsightsPage({
             activeTab={activeTab}
             onTabChange={navigateReportTab}
             onOpenOutput={setSelectedOutput}
-            onOpenSurveyImages={openSurveyImages}
             replayTime={replayTime}
             seekNotice={seekNotice}
             onSeek={seekReplay}
@@ -339,13 +340,12 @@ export function MissionInsightsPage({
                 Apply mission logic to Mission Design?
               </AlertDialogTitle>
               <AlertDialogDescription>
-                The sample records {sample?.missionLogicFile} (
+                {sample?.missionLogicFile} (
                 {sample?.missionLogicDescription}) as the mission logic for this
-                run. This local preview can open Mission Design, but it does not
-                import or replace saved mission content.
+                run.
               </AlertDialogDescription>
               {sample ? (
-                <p className="m-0 text-(--muted-foreground)">
+                <p className="m-0 text-muted-foreground">
                   Source file: {sample.missionLogicFile}
                 </p>
               ) : null}
@@ -366,9 +366,6 @@ export function MissionInsightsPage({
           </AlertDialogPopup>
         </AlertDialogPortal>
       </AlertDialog>
-      <span id="ms-pfa-unavailable" className="sr-only">
-        Post Flight Analysis is not available in this Mission Studio preview.
-      </span>
     </section>
   );
 }
