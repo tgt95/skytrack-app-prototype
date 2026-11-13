@@ -22,6 +22,8 @@ export interface LibMission {
   starred: boolean;
   shared: boolean;
   viewOnly: boolean;
+  sharedWith?: string[];
+  sharedRoles?: Record<string, SharedMissionRole>;
   world?: string;
   worldType?: "2D" | "3D";
   worldId?: string;
@@ -30,6 +32,8 @@ export interface LibMission {
   /** Canonical Studio mission snapshot saved locally by the Design Save action. */
   missionData?: string;
 }
+
+export type SharedMissionRole = "view-only" | "editor";
 
 export interface LibProject {
   id: string;
@@ -48,6 +52,7 @@ export interface LibTemplate {
 export const DB_KEY = STORAGE_KEYS.libraryDatabase;
 export const DB_VERSION = STORAGE_VERSIONS.libraryDatabase;
 export const STAKEHOLDER_DEMO_MISSION_ID = "m-local-mvrqcly0-101";
+const SAMPLE_SHARED_USERS = ["alex.chen@example.com", "sam.rivera@example.com"];
 
 interface DatabaseShape {
   version: number;
@@ -65,6 +70,14 @@ function isMission(value: unknown): value is LibMission {
     typeof m.starred === "boolean" &&
     typeof m.shared === "boolean" &&
     typeof m.viewOnly === "boolean" &&
+    (m.sharedWith === undefined ||
+      (Array.isArray(m.sharedWith) &&
+        m.sharedWith.every((email) => typeof email === "string"))) &&
+    (m.sharedRoles === undefined ||
+      (isRecord(m.sharedRoles) &&
+        Object.values(m.sharedRoles).every(
+          (role) => role === "view-only" || role === "editor",
+        ))) &&
     (m.world === undefined || typeof m.world === "string") &&
     (m.worldType === undefined ||
       m.worldType === "2D" ||
@@ -201,8 +214,36 @@ function normalizeProjects(projects: LibProject[]): LibProject[] {
         typeof snapshot?.vehicle === "string" ? snapshot.vehicle : undefined;
       const snapshotDroneId =
         typeof snapshot?.droneId === "string" ? snapshot.droneId : undefined;
+      const sharedWith = (mission.sharedWith ?? SAMPLE_SHARED_USERS).reduce<
+        string[]
+      >((emails, email) => {
+        const normalized = email.trim().toLocaleLowerCase();
+        if (
+          normalized &&
+          !emails.some((current) => current.toLocaleLowerCase() === normalized)
+        )
+          emails.push(email.trim());
+        return emails;
+      }, []);
+      const sharedRoles = sharedWith.reduce<Record<string, SharedMissionRole>>(
+        (roles, email) => {
+          const normalizedEmail = email.toLocaleLowerCase();
+          roles[normalizedEmail] =
+            mission.sharedRoles?.[normalizedEmail] === "editor"
+              ? "editor"
+              : "view-only";
+          return roles;
+        },
+        {},
+      );
       return {
         ...mission,
+        shared:
+          mission.sharedWith === undefined
+            ? mission.shared || sharedWith.length > 0
+            : sharedWith.length > 0,
+        sharedWith,
+        sharedRoles,
         worldType: mission.worldType ?? snapshotWorldType ?? seeded?.worldType,
         world: mission.world ?? snapshotWorld ?? seeded?.world,
         worldId: mission.worldId ?? snapshotWorldId,

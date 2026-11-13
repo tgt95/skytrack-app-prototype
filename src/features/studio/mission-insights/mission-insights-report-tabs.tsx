@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import type { MissionInsightsReportTab } from "@/features/studio/mission-report-url";
-import type { InsightOutput } from "./mission-insights-output-data";
 import type { MissionInsightSample } from "./mission-insights-data";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "skytrack-ui/tabs";
 import { OverviewTab } from "./mission-insights-report-overview";
@@ -29,7 +28,6 @@ export function MissionInsightsReportTabs({
   sample,
   activeTab,
   onTabChange,
-  onOpenOutput,
   replayTime,
   seekNotice,
   onSeek,
@@ -38,7 +36,6 @@ export function MissionInsightsReportTabs({
   sample: MissionInsightSample;
   activeTab: MissionInsightsReportTab;
   onTabChange: (tab: MissionInsightsReportTab) => void;
-  onOpenOutput: (output: InsightOutput) => void;
   replayTime: number;
   seekNotice: string;
   onSeek: (time: number, label?: string) => void;
@@ -69,9 +66,12 @@ export function MissionInsightsReportTabs({
         <ReportWorkspace width="wide">
           <OverviewTab
             sample={sample}
-            onOpenOutput={onOpenOutput}
             onOpenMedia={(id) => {
               setRequestedMediaId(id);
+              onTabChange("media-files");
+            }}
+            onOpenMediaFiles={() => {
+              setRequestedMediaId(null);
               onTabChange("media-files");
             }}
             onOpenIssue={(issueCode) => {

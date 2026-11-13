@@ -43,9 +43,9 @@
    - Templates page: PageTitle + helper + debounced (500ms) "Search
      templates" textbox + `N result(s) for "keyword"`; skeleton cards while
      loading.
-   - ShareMissionDialog: email field (maxLength 254, invalid shows "Enter a
-     valid email address"), Permission select with only "View only",
-     Cancel + "Share Mission".
+   - ShareMissionDialog: invite one peer by email; invalid, duplicate, and
+     owner addresses are rejected; recipients default to View only and can
+     change to Editor. The dialog lists each peer's role and supports removal.
    - Home template titles/descriptions below are pixel-observed from live
      captures 08/10-home (v1.2.17); bottom-row descriptions were truncated
      in-capture and are completed here as explicitly mocked copy.
@@ -53,7 +53,7 @@
    skytrack-ui, styling uses semantic tokens only. Prototype chrome that is
    NOT the real shell: top bar ("Local preview" badge, "Restart to update"
    mock) and sidebar brand (full SkyTrack logo).
-   Success feedback uses the parent live-region announce, not Toast UI. */
+   Share-role and copy-link feedback uses the Library toast manager and live region. */
 
 import { useEffect, useState } from "react";
 import { SidebarProvider } from "skytrack-ui/sidebar";
@@ -180,6 +180,8 @@ export default function StudioLibrary({
     projectDialogReturnFocusRef,
     shareDlg,
     setShareDlg,
+    removeSharedAccess,
+    updateSharedRole,
     deleteMission,
     setDeleteMission,
     deleteProject,
@@ -524,9 +526,12 @@ export default function StudioLibrary({
         }}
         missionActions={{
           projects: workspaceProjects,
+          onAnnounce,
           shareDlg,
           setShareDlg,
           shareMission,
+          removeSharedAccess,
+          updateSharedRole,
           cloneTarget,
           setCloneTarget,
           cloneMission,

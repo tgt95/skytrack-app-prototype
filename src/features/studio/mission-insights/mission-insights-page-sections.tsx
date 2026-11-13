@@ -1,11 +1,10 @@
 import { useId, useState, type ReactNode } from 'react'
 import {
   CaretRightIcon,
-  CheckCircleIcon,
   CheckIcon,
   InfoIcon,
   WarningIcon,
-  XCircleIcon
+  XIcon,
 } from '@phosphor-icons/react'
 import { Alert, AlertDescription } from 'skytrack-ui/alert'
 import { Badge } from 'skytrack-ui/badge'
@@ -25,12 +24,6 @@ import type {
   InsightIssue,
   MissionInsightSample
 } from './mission-insights-data'
-import {
-  asRecord,
-  asRecords,
-  reportForSample,
-  sampleMedia
-} from './mission-insights-report-data'
 import { MissionInsightsOutputPreview } from './mission-insights-output-preview'
 
 export function DetailSection ({
@@ -125,7 +118,7 @@ export function MissionInsightsRunSummary ({
 
   return (
     <DetailSection title='Mission result' className={className}>
-      <div className='flex min-w-0 flex-row items-center gap-8'>
+      <div className='flex min-w-0 flex-row items-center gap-6'>
         <div className='flex min-w-0 items-center gap-4'>
           <span
             className={`grid size-14 shrink-0 place-items-center rounded-full border-1 ${resultTone}`}
@@ -150,192 +143,17 @@ export function MissionInsightsRunSummary ({
         <div className='shrink-0 bg-border w-px h-auto self-stretch' />
         {facts.length > 0 ? (
           <dl
-            className={`m-0 min-w-0 flex flex-[1_1_auto] gap-x-6 gap-y-4 ${factColumns}`}
+            className={`m-0 min-w-0 flex flex-[auto_1_auto] gap-x-4 gap-y-4 ${factColumns}`}
           >
             {facts.map(([label, value]) => (
               <div key={label} className='min-w-0'>
                 <dt className='text-sm text-muted-foreground'>{label}</dt>
-                <dd className='m-0 mt-1 break-words font-medium'>{value}</dd>
+                <dd className='m-0 mt-1 break-words'>{value}</dd>
               </div>
             ))}
           </dl>
         ) : null}
       </div>
-    </DetailSection>
-  )
-}
-
-export function MissionInsightsEvidenceSummary ({
-  sample,
-  onOpenOutput,
-  onOpenMedia,
-  className = ''
-}: {
-  sample: MissionInsightSample
-  onOpenOutput: (output: InsightOutput) => void
-  onOpenMedia: (id: string) => void
-  className?: string
-}) {
-  const CompletenessIcon =
-    sample.evidenceCompleteness.state === 'complete'
-      ? CheckCircleIcon
-      : XCircleIcon
-  const completenessIconClass =
-    sample.evidenceCompleteness.state === 'complete'
-      ? 'text-success'
-      : 'text-muted-foreground'
-  const FilesStatusIcon =
-    sample.evidenceAvailability.state === 'available'
-      ? CheckCircleIcon
-      : XCircleIcon
-  const IntegrityStatusIcon =
-    sample.evidenceAvailability.integrityState === 'verified'
-      ? CheckCircleIcon
-      : XCircleIcon
-  const filesIconClass =
-    sample.evidenceAvailability.state === 'available'
-      ? 'text-success'
-      : 'text-muted-foreground'
-  const integrityIconClass =
-    sample.evidenceAvailability.integrityState === 'verified'
-      ? 'text-success'
-      : 'text-muted-foreground'
-  const media = sampleMedia(sample)
-  const report = reportForSample(sample)
-  const integrityDetails = asRecords(
-    asRecord(asRecord(report.integrity).verification).details
-  )
-  const openEvidenceReference = (label: string) => {
-    const normalizedLabel = label.toLowerCase()
-    const count = normalizedLabel.match(/(\d+)\s+of\s+(\d+)/)
-    const refersToIncompleteSet =
-      count !== null && Number(count[1]) < Number(count[2])
-    const relatedOutput = sample.outputs.find(output => {
-      const outputText = `${output.name} ${output.summary}`.toLowerCase()
-      if (/location|rescue|area|map|geojson/.test(normalizedLabel)) {
-        return /location|rescue|area|map|geojson/.test(outputText)
-      }
-      if (/image|photo|capture|media/.test(normalizedLabel)) {
-        return /image|photo|capture|media|survey/.test(outputText)
-      }
-      return false
-    })
-
-    if (/image|photo|capture|media|file/.test(normalizedLabel)) {
-      const integrityResult = /smaller|mismatch/.test(normalizedLabel)
-        ? 'mismatch'
-        : /not found|missing|unavailable/.test(normalizedLabel)
-          ? 'unavailable'
-          : null
-      const integrityFinding = integrityResult
-        ? integrityDetails.find(item => item.result === integrityResult)
-        : null
-      const findingId = integrityFinding
-        ? String(integrityFinding.artifact_id ?? '')
-        : ''
-      const targetMedia =
-        media.find(item => item.id === findingId) ??
-        (integrityResult === 'unavailable'
-          ? media.find(item => item.availability === 'missing')
-          : integrityResult === 'mismatch'
-            ? media.find(item => item.availability === 'mismatch') ??
-              media.find(item => item.kind === 'video')
-            : refersToIncompleteSet
-              ? media.find(item => item.availability === 'missing') ??
-                media.find(item => item.kind === 'image')
-            : /match|verified|on this device/.test(normalizedLabel)
-              ? media.find(item => item.availability === 'local')
-              : media.find(item => item.kind === 'image'))
-
-      if (targetMedia) {
-        onOpenMedia(targetMedia.id)
-        return
-      }
-    }
-
-    if (relatedOutput) {
-      onOpenOutput(relatedOutput)
-      return
-    }
-
-    if (sample.outputs[0]) onOpenOutput(sample.outputs[0])
-  }
-
-  const renderLinkedLines = (value: string) =>
-    value.split(' · ').map((line, index) => (
-      <span key={`${index}-${line}`}>
-        {index > 0 ? <span aria-hidden='true'> · </span> : null}
-        <button
-          type='button'
-          className='inline cursor-pointer border-0 bg-transparent p-0 text-left text-muted-foreground hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-          onClick={() => openEvidenceReference(line)}
-        >
-          {line}
-        </button>
-      </span>
-    ))
-
-  const renderStatusLines = (value: string) => {
-    const [signature, ...details] = value.split(' · ')
-    return (
-      <>
-        <span>{signature}</span>
-        {details.length ? (
-          <span className='block text-muted-foreground'>
-            {renderLinkedLines(details.join(' · '))}
-          </span>
-        ) : null}
-      </>
-    )
-  }
-
-  return (
-    <DetailSection title='Evidence' className={className}>
-      <dl className='m-0 grid min-w-0 grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2'>
-        <div className='min-w-0'>
-          <dt className='text-muted-foreground'>Completeness</dt>
-          <dd className='m-0 mt-1 flex min-w-0 items-start gap-2'>
-            <CompletenessIcon
-              className={`mt-0.5 size-4 shrink-0 ${completenessIconClass}`}
-              weight='fill'
-              aria-hidden='true'
-            />
-            <div className='min-w-0 break-words'>
-              <p className='m-0'>{sample.evidenceCompleteness.summary}</p>
-              {sample.evidenceCompleteness.detail ? (
-                <p className='m-0 mt-1'>
-                  {renderLinkedLines(sample.evidenceCompleteness.detail)}
-                </p>
-              ) : null}
-            </div>
-          </dd>
-        </div>
-        <div className='min-w-0'>
-          <dt className='text-muted-foreground'>Availability</dt>
-          <dd className='m-0 mt-1 flex min-w-0 flex-col gap-2'>
-            <div className='flex min-w-0 items-start gap-2'>
-              <FilesStatusIcon
-                className={`mt-0.5 size-4 shrink-0 ${filesIconClass}`}
-                weight='fill'
-                aria-hidden='true'
-              />
-              <div className='min-w-0 break-words'>
-                {renderStatusLines(sample.evidenceAvailability.files)}
-              </div>
-            </div>
-            <div className='flex min-w-0 items-start gap-2'>
-              <IntegrityStatusIcon
-                className={`mt-0.5 size-4 shrink-0 ${integrityIconClass}`}
-                weight='fill'
-                aria-hidden='true'
-              />
-              <div className='min-w-0 break-words'>
-                {renderStatusLines(sample.evidenceAvailability.integrity)}
-              </div>
-            </div>
-          </dd>
-        </div>
-      </dl>
     </DetailSection>
   )
 }
@@ -424,12 +242,12 @@ export function MissionInsightsTopIssues ({
     <>
       <button
         type='button'
-        className={`flex min-w-0 w-full items-center gap-4 rounded-(--radius) border border-border bg-(--card) px-5 py-4 text-left shadow-xs transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer ${className}`}
+        className={`flex min-w-0 w-full items-center gap-4 rounded-(--radius) border border-border bg-(--card) px-5 py-4 text-left transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer ${className}`}
         aria-haspopup='dialog'
         aria-expanded={open}
         onClick={() => setOpen(true)}
       >
-        <span className='min-w-0 h6'>Needs attention</span>
+        <span className='min-w-0 h6'>Top issues</span>
         <span className='flex min-w-0 flex-wrap items-center justify-end gap-2'>
           {summaryBadges.length ? (
             summaryBadges.map(summary => (
@@ -455,7 +273,7 @@ export function MissionInsightsTopIssues ({
           )}
         </span>
         <CaretRightIcon
-          className='size-5 shrink-0 text-muted-foreground ml-auto'
+          className='size-4 shrink-0 text-muted-foreground ml-auto'
           aria-hidden='true'
         />
       </button>
@@ -468,12 +286,10 @@ export function MissionInsightsTopIssues ({
               className='w-[min(38rem,calc(100vw-1rem))] max-w-full'
               aria-label='Mission issues'
             >
-              <DrawerContent className='flex h-full min-h-0 flex-col gap-4 p-5 sm:p-6'>
+              <DrawerContent className='flex h-full min-h-0 flex-col gap-4'>
                 <header className='flex min-w-0 items-start justify-between gap-4'>
                   <div className='min-w-0'>
-                    <DrawerTitle className='h4 m-0'>
-                      Needs attention
-                    </DrawerTitle>
+                    <DrawerTitle className='h4 m-0'>Top issues</DrawerTitle>
                     <DrawerDescription className='mt-2'>
                       {sample.issueTotal}{' '}
                       {sample.issueTotal === 1 ? 'issue' : 'issues'} recorded
@@ -482,10 +298,10 @@ export function MissionInsightsTopIssues ({
                   </div>
                   <Button
                     variant='outline'
-                    size='sm'
+                    size='icon-sm'
                     onClick={() => setOpen(false)}
                   >
-                    Close
+                    <XIcon aria-hidden="true" />
                   </Button>
                 </header>
                 {sample.issues.length ? (

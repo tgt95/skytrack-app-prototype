@@ -54,7 +54,7 @@ export function MissionInsightsOutputDrawer({
               className="w-[min(38rem,calc(100vw-1rem))] max-w-full"
               aria-label={`${output.name} details`}
             >
-              <DrawerContent className="flex h-full min-h-0 flex-col gap-4 p-5 sm:p-6">
+              <DrawerContent className="flex h-full min-h-0 flex-col gap-4">
                 <header className="flex min-w-0 items-start justify-between gap-4">
                   <div className="min-w-0">
                     <DrawerTitle className="h4 m-0">{output.name}</DrawerTitle>

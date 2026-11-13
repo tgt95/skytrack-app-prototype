@@ -16,7 +16,6 @@ import {
 } from "skytrack-ui/dialog";
 import {
   FieldControl,
-  FieldError,
   FieldLabel,
   FieldRoot,
 } from "skytrack-ui/field";
@@ -220,104 +219,6 @@ export function ProjectDialog({
   );
 }
 
-function isEmailLike(v: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
-}
-
-export function ShareDialog({
-  dlg,
-  onClose,
-  onSubmit,
-}: {
-  dlg: { projectId: string; missionId: string; name: string } | null;
-  onClose: () => void;
-  onSubmit: () => void;
-}) {
-  const [email, setEmail] = useState("");
-  useEffect(() => {
-    setEmail("");
-  }, [dlg]);
-  const valid = isEmailLike(email);
-  return (
-    <Dialog
-      open={dlg !== null}
-      onOpenChange={(v: boolean) => {
-        if (!v) onClose();
-      }}
-    >
-      <DialogPortal>
-        <DialogBackdrop />
-        <DialogPopup aria-label="Share mission">
-          <DialogHeader>
-            <DialogTitle className="heading">Share mission</DialogTitle>
-            <DialogDescription>
-              {dlg ? <>Invite someone to &ldquo;{dlg.name}&rdquo;.</> : null}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="ms-lib-form flex flex-col gap-3 py-1 px-0">
-            <FieldRoot
-              name="share-email"
-              validationMode="onChange"
-              validate={(v) => {
-                const text = typeof v === "string" ? v : "";
-                if (text.length > 0 && !isEmailLike(text))
-                  return "Enter a valid email address";
-                return undefined;
-              }}
-            >
-              <FieldLabel>Email</FieldLabel>
-              <FieldControl
-                value={email}
-                onValueChange={(v) => setEmail(typeof v === "string" ? v : "")}
-                placeholder="teammate@example.com"
-                maxLength={254}
-                aria-label="Email"
-              />
-              <FieldError />
-            </FieldRoot>
-            <FieldRoot name="share-permission">
-              <FieldLabel id="ms-lib-share-perm-label">
-                Permission
-              </FieldLabel>
-              <Select value="view-only" onValueChange={() => undefined}>
-                <SelectTrigger
-                  aria-labelledby="ms-lib-share-perm-label"
-                >
-                  <SelectValue>View only</SelectValue>
-                </SelectTrigger>
-                <SelectPortal>
-                  <SelectPositioner>
-                    <SelectPopup>
-                      <SelectList>
-                        <SelectItem value="view-only">
-                          <SelectItemIndicator />
-                          <SelectItemText>View only</SelectItemText>
-                        </SelectItem>
-                      </SelectList>
-                    </SelectPopup>
-                  </SelectPositioner>
-                </SelectPortal>
-              </Select>
-            </FieldRoot>
-          </div>
-          <DialogFooter className="flex-row flex-wrap items-center justify-end">
-            <DialogClose className="w-auto flex-[0_0_auto]">Cancel</DialogClose>
-            <Button
-              size="sm"
-              variant="default"
-              disabled={!valid}
-              onClick={onSubmit}
-              className="w-auto flex-[0_0_auto]"
-            >
-              Share Mission
-            </Button>
-          </DialogFooter>
-        </DialogPopup>
-      </DialogPortal>
-    </Dialog>
-  );
-}
-
 export function CloneProjectPicker({
   projects,
   onPick,
@@ -331,16 +232,12 @@ export function CloneProjectPicker({
   return (
     <div className="ms-lib-form flex flex-col gap-3 py-1 px-0">
       <FieldRoot name="clone-project">
-        <FieldLabel id="ms-lib-clone-project-label">
-          Project
-        </FieldLabel>
+        <FieldLabel id="ms-lib-clone-project-label">Project</FieldLabel>
         <Select
           value={pid}
           onValueChange={(v) => setPid(typeof v === "string" ? v : String(v))}
         >
-          <SelectTrigger
-            aria-labelledby="ms-lib-clone-project-label"
-          >
+          <SelectTrigger aria-labelledby="ms-lib-clone-project-label">
             <SelectValue placeholder="Select a project">
               {projects.find((p) => p.id === pid)?.name ?? ""}
             </SelectValue>

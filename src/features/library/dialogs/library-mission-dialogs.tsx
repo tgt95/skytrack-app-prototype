@@ -15,11 +15,16 @@ import {
   CloneProjectPicker,
   MissionDialog,
   ProjectDialog,
-  ShareDialog,
 } from "./library-dialogs.tsx";
-import CreateMissionWizard, { type WizardResult } from "@/features/library/create-wizard";
+import { ShareDialog } from "./mission-share-dialog.tsx";
+import CreateMissionWizard, {
+  type WizardResult,
+} from "@/features/library/create-wizard";
 import { useWorldGlbImport } from "@/features/library/use-world-glb-import";
-import type { LibProject } from "@/features/library/database/store";
+import type {
+  LibProject,
+  SharedMissionRole,
+} from "@/features/library/database/store";
 import type { WorkspaceDroneProfile } from "@/features/library/database/drone-store";
 import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
 
@@ -130,7 +135,10 @@ export interface LibraryMissionActionDialogsProps {
   projects: LibProject[];
   shareDlg: ShareDlg;
   setShareDlg: (next: ShareDlg) => void;
-  shareMission: () => void;
+  shareMission: (email: string) => boolean;
+  removeSharedAccess: (email: string) => void;
+  updateSharedRole: (email: string, role: SharedMissionRole) => boolean;
+  onAnnounce: (message: string) => void;
   cloneTarget: { missionId: string; name: string } | null;
   setCloneTarget: (next: { missionId: string; name: string } | null) => void;
   cloneMission: (projectId: string) => void;
@@ -148,6 +156,9 @@ export function LibraryMissionActionDialogs({
   shareDlg,
   setShareDlg,
   shareMission,
+  removeSharedAccess,
+  updateSharedRole,
+  onAnnounce,
   cloneTarget,
   setCloneTarget,
   cloneMission,
@@ -159,14 +170,22 @@ export function LibraryMissionActionDialogs({
   setDeleteProject,
   confirmDeleteProject,
 }: LibraryMissionActionDialogsProps) {
+  const selectedMission = shareDlg
+    ? (projects
+        .find((project) => project.id === shareDlg.projectId)
+        ?.missions.find((mission) => mission.id === shareDlg.missionId) ?? null)
+    : null;
   return (
     <>
-      {/* Share mission — real copy: email (254, "Enter a valid email
-          address"), Permission ["View only"], Cancel + Share Mission. */}
+      {/* Share mission: peer email, access roles, and current access list. */}
       <ShareDialog
         dlg={shareDlg}
+        mission={selectedMission}
         onClose={() => setShareDlg(null)}
         onSubmit={shareMission}
+        onRemove={removeSharedAccess}
+        onChangeRole={updateSharedRole}
+        onAnnounce={onAnnounce}
       />
       {/* Clone target project picker (simplified ProjectSelection). */}
       <Dialog

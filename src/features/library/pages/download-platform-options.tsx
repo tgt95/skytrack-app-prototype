@@ -6,7 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "skytrack-ui/accordion";
-import { runEnvironmentToastManager } from "@/features/library/library-topbar";
+import { libraryToastManager } from "@/features/library/library-toast-manager";
 import {
   androidMark,
   HOST_OPTIONS,
@@ -175,7 +175,7 @@ export default function DownloadPlatformOptions({
                     key={image.filename}
                     aria-label={`${image.label}: ${image.downloadLabel}; ${image.filename}; demo package has no installer attached`}
                     onClick={() =>
-                      runEnvironmentToastManager.add({
+                      libraryToastManager.add({
                         title: "Demo package only — no installer file attached",
                       })
                     }
@@ -192,7 +192,7 @@ export default function DownloadPlatformOptions({
                 type="button"
                 aria-label={`${hostOs} ${downloadLabel}; demo package has no installer attached`}
                 onClick={() =>
-                  runEnvironmentToastManager.add({
+                  libraryToastManager.add({
                     title: "Demo package only — no installer file attached",
                   })
                 }

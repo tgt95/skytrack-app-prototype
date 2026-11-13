@@ -5,10 +5,16 @@ import {
   saveProjects,
   type LibMission,
   type LibProject,
+  type SharedMissionRole,
 } from "@/features/library/database/store";
+import { readAccountProfile } from "@/features/library/account/account-menu-state";
 import { DEFAULT_WORKSPACE_ID } from "./workspace-data.ts";
+import { libraryToastManager } from "@/features/library/library-toast-manager";
 import type { WizardResult } from "@/features/library/create-wizard";
-import type { LibraryEntry, LibrarySection } from "@/features/library/library-types";
+import type {
+  LibraryEntry,
+  LibrarySection,
+} from "@/features/library/library-types";
 
 interface UseLibraryProjectsOptions {
   activeWorkspaceId: string;
@@ -332,7 +338,51 @@ export function useLibraryProjects({
     openMission(result.projectId, target?.name ?? "", fresh.id);
   };
 
-  const shareMission = () => {
+  const shareMission = (email: string) => {
+    if (!shareDlg) return false;
+    const normalizedEmail = email.trim().toLocaleLowerCase();
+    const ownerEmail = readAccountProfile().email.toLocaleLowerCase();
+    const mission = projectsRef.current
+      .find((project) => project.id === shareDlg.projectId)
+      ?.missions.find((item) => item.id === shareDlg.missionId);
+    const existing = mission?.sharedWith ?? [];
+    if (
+      !mission ||
+      !normalizedEmail ||
+      normalizedEmail === ownerEmail ||
+      existing.some((item) => item.toLocaleLowerCase() === normalizedEmail)
+    )
+      return false;
+
+    const sharedWith = [...existing, email.trim()];
+    const saved = commitProjects(
+      projectsRef.current.map((project) =>
+        project.id !== shareDlg.projectId
+          ? project
+          : {
+              ...project,
+              missions: project.missions.map((item) =>
+                item.id === shareDlg.missionId
+                  ? {
+                      ...item,
+                      shared: true,
+                      sharedWith,
+                      sharedRoles: {
+                        ...item.sharedRoles,
+                        [normalizedEmail]: "view-only",
+                      },
+                    }
+                  : item,
+              ),
+            },
+      ),
+    );
+    if (!saved) return false;
+    onAnnounce(`View only access added for ${email.trim()}.`);
+    return true;
+  };
+
+  const removeSharedAccess = (email: string) => {
     if (!shareDlg) return;
     const saved = commitProjects(
       projectsRef.current.map((project) =>
@@ -340,17 +390,73 @@ export function useLibraryProjects({
           ? project
           : {
               ...project,
-              missions: project.missions.map((mission) =>
-                mission.id === shareDlg.missionId
-                  ? { ...mission, shared: true }
-                  : mission,
+              missions: project.missions.map((mission) => {
+                if (mission.id !== shareDlg.missionId) return mission;
+                const sharedWith = (mission.sharedWith ?? []).filter(
+                  (item) =>
+                    item.toLocaleLowerCase() !== email.toLocaleLowerCase(),
+                );
+                const sharedRoles = Object.fromEntries(
+                  Object.entries(mission.sharedRoles ?? {}).filter(
+                    ([sharedEmail]) =>
+                      sharedEmail.toLocaleLowerCase() !==
+                      email.toLocaleLowerCase(),
+                  ),
+                );
+                return {
+                  ...mission,
+                  shared: sharedWith.length > 0,
+                  sharedWith,
+                  sharedRoles,
+                };
+              }),
+            },
+      ),
+    );
+    if (saved) onAnnounce(`Access removed for ${email}.`);
+  };
+
+  const updateSharedRole = (email: string, role: SharedMissionRole) => {
+    if (!shareDlg) return false;
+    const normalizedEmail = email.trim().toLocaleLowerCase();
+    const mission = projectsRef.current
+      .find((project) => project.id === shareDlg.projectId)
+      ?.missions.find((item) => item.id === shareDlg.missionId);
+    if (
+      !mission?.sharedWith?.some(
+        (item) => item.toLocaleLowerCase() === normalizedEmail,
+      )
+    )
+      return false;
+
+    const saved = commitProjects(
+      projectsRef.current.map((project) =>
+        project.id !== shareDlg.projectId
+          ? project
+          : {
+              ...project,
+              missions: project.missions.map((item) =>
+                item.id === shareDlg.missionId
+                  ? {
+                      ...item,
+                      sharedRoles: {
+                        ...item.sharedRoles,
+                        [normalizedEmail]: role,
+                      },
+                    }
+                  : item,
               ),
             },
       ),
     );
-    if (!saved) return;
-    onAnnounce("Mission shared.");
-    setShareDlg(null);
+    if (saved) {
+      const roleLabel = role === "editor" ? "Editor" : "View only";
+      onAnnounce(`Access for ${email} changed to ${roleLabel}.`);
+      libraryToastManager.add({
+        title: `Access for ${email} changed to ${roleLabel}.`,
+      });
+    }
+    return saved;
   };
 
   return {
@@ -367,6 +473,8 @@ export function useLibraryProjects({
     projectDialogReturnFocusRef,
     shareDlg,
     setShareDlg,
+    removeSharedAccess,
+    updateSharedRole,
     deleteMission,
     setDeleteMission,
     deleteProject,

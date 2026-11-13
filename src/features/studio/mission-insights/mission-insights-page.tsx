@@ -32,8 +32,6 @@ import {
   type MissionInsightsReportTab,
 } from "@/features/studio/mission-report-url";
 import { sampleForRun, type MissionReportRun } from "./mission-insights-data";
-import type { InsightOutput } from "./mission-insights-output-data";
-import { MissionInsightsOutputDrawer } from "./mission-insights-output-drawer";
 import { replayTimeline } from "./replay-sample";
 import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import { MissionInsightsReportTabs } from "./mission-insights-report-tabs";
@@ -61,9 +59,6 @@ export function MissionInsightsPage({
   onOpenMissionDesign: () => void;
 }) {
   const sample = run ? sampleForRun(run) : null;
-  const [selectedOutput, setSelectedOutput] = useState<InsightOutput | null>(
-    null,
-  );
   const [applyOpen, setApplyOpen] = useState(false);
   const [replayTime, setReplayTime] = useState(0);
   const [seekNotice, setSeekNotice] = useState("");
@@ -105,11 +100,6 @@ export function MissionInsightsPage({
     },
     [activeTab],
   );
-
-  const openSurveyImages = useCallback(() => {
-    setSelectedOutput(null);
-    navigateReportTab("media-files");
-  }, [navigateReportTab]);
 
   async function copyReportUrl() {
     try {
@@ -163,7 +153,13 @@ export function MissionInsightsPage({
       ) : null}
 
       {sample ? (
-        <div className="flex w-full min-w-0 flex-col gap-6 bg-muted/50">
+        <div
+          className={
+            activeTab === "media-files"
+              ? "flex w-full min-w-0 flex-col gap-6"
+              : "flex w-full min-w-0 flex-col gap-6 bg-muted/50"
+          }
+        >
           <MissionInsightsReportTabs
             renderPageHeader={(tabNavigation) => (
               <PageHeader
@@ -305,7 +301,6 @@ export function MissionInsightsPage({
             sample={sample}
             activeTab={activeTab}
             onTabChange={navigateReportTab}
-            onOpenOutput={setSelectedOutput}
             replayTime={replayTime}
             seekNotice={seekNotice}
             onSeek={seekReplay}
@@ -322,14 +317,6 @@ export function MissionInsightsPage({
           </Button>
         </div>
       )}
-
-      <MissionInsightsOutputDrawer
-        output={selectedOutput}
-        onOpenSurveyImages={openSurveyImages}
-        onOpenChange={(open) => {
-          if (!open) setSelectedOutput(null);
-        }}
-      />
 
       <AlertDialog open={applyOpen} onOpenChange={setApplyOpen}>
         <AlertDialogPortal>

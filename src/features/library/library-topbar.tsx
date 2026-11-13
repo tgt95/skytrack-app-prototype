@@ -31,15 +31,15 @@ import {
   ToastRoot,
   ToastTitle,
   ToastViewport,
-  createToastManager,
   useToastManager,
 } from "skytrack-ui/toast";
 import { Separator } from "skytrack-ui/separator";
 import skytrackLogoFull from "@/assets/skytrack-logo-full.svg?raw";
 import DevScenarioSlot from "@/features/dev-tools/dev-scenario-slot";
 import { DEV_SCENARIO_SLOTS } from "@/features/dev-tools/scenario-slots";
+import { libraryToastManager } from "./library-toast-manager";
 
-export const runEnvironmentToastManager = createToastManager();
+export { libraryToastManager } from "./library-toast-manager";
 
 function RunEnvironmentToastList() {
   const { toasts } = useToastManager();
@@ -86,7 +86,7 @@ export default function LibraryTopbar({
 
   return (
     <>
-      <ToastProvider toastManager={runEnvironmentToastManager}>
+      <ToastProvider toastManager={libraryToastManager}>
         <ToastPortal>
           <ToastViewport className="fixed bottom-4 left-4 right-auto mx-0 flex max-w-sm flex-col-reverse">
             <RunEnvironmentToastList />
@@ -180,7 +180,7 @@ export default function LibraryTopbar({
                         : null;
                   if (!next || next === runEnvironment) return;
                   onEnvironmentChange(next);
-                  runEnvironmentToastManager.add({
+                  libraryToastManager.add({
                     title: `Switched to ${
                       next === "local" ? "Local Docker" : "Cloud"
                     }`,

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { CaretDownIcon, CheckIcon } from "@phosphor-icons/react";
+import type { CSSProperties } from "react";
 import type { MissionInsightsReportTab } from "@/features/studio/mission-report-url";
 import { DetailSection } from "./mission-insights-page-sections";
 import { Badge } from "skytrack-ui/badge";
@@ -15,6 +16,7 @@ import {
   MenuTrigger,
 } from "skytrack-ui/menu";
 import { Separator } from "skytrack-ui/separator";
+import { SidebarProvider } from "skytrack-ui/sidebar";
 import {
   asRecord,
   asRecords,
@@ -281,12 +283,16 @@ export function MediaFilesTab({
 
   return (
     <section className="flex min-w-0 flex-col" aria-label="Media & Files">
-        <div className="grid min-w-0 grid-cols-1 divide-y divide-border xl:grid-cols-[15rem_minmax(20rem,0.85fr)_minmax(0,1.45fr)] xl:divide-x xl:divide-y-0">
-          <MediaBrowserFilters
-            selection={browserSelection === "detections" ? selectionBeforeDetections : browserSelection}
-            onChange={changeBrowserSelection}
-            groups={browseGroups}
-          />
+      <SidebarProvider
+        className="min-h-0 w-full flex-1"
+        style={{ "--sidebar-width": "15rem" } as CSSProperties}
+      >
+        <MediaBrowserFilters
+          selection={browserSelection === "detections" ? selectionBeforeDetections : browserSelection}
+          onChange={changeBrowserSelection}
+          groups={browseGroups}
+        />
+        <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 divide-y divide-border xl:grid-cols-[minmax(20rem,30rem)_minmax(0,1.45fr)] xl:divide-x xl:divide-y-0">
           <div className="min-w-0">
             {browserSelection === "other-files" ? (
               <div className="min-w-0 p-4">
@@ -312,7 +318,7 @@ export function MediaFilesTab({
             )}
           </div>
           <section
-            className="flex min-w-0 flex-col gap-5 p-4"
+            className="flex min-w-0 flex-col gap-5 p-6"
             aria-label={browserSelection === "other-files" ? "Selected file details" : "Selected media preview and details"}
           >
             {browserSelection === "other-files" ? (
@@ -357,6 +363,7 @@ export function MediaFilesTab({
             )}
           </section>
         </div>
+      </SidebarProvider>
     </section>
   );
 }
