@@ -220,6 +220,18 @@ export const missionInsightSamples: Record<
         message: "Image 5 was not written (disk write error)",
         time: 49.0,
       },
+      {
+        severity: "Warning",
+        code: "VIDEO_TRUNCATED",
+        message: "Video stopped at 41.0 s of 72.2 s",
+        time: 47.0,
+      },
+      {
+        severity: "Warning",
+        code: "EVENTS_DROPPED",
+        message: "14 events dropped (sequence 702–715)",
+        time: 61.0,
+      },
     ],
     actions: [
       ["Completed", 3],

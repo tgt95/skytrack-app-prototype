@@ -35,10 +35,24 @@ export function OverviewTab ({
 }) {
   return (
     <div className='grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-12'>
-      <div className='grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-3 xl:col-span-12'>
-        <MissionInsightsRunSummary sample={sample} />
-        <MissionInsightsTopIssues sample={sample} onViewIssue={onOpenIssue} />
-        <MissionInsightsEvidenceSummary sample={sample} />
+      <div className='grid min-w-0 grid-cols-1 gap-6 xl:col-span-12 xl:grid-cols-12'>
+        <div className='flex min-w-0 flex-col overflow-hidden rounded-(--radius) border border-border bg-(--card) shadow-xs xl:col-span-8'>
+          <MissionInsightsRunSummary
+            sample={sample}
+            className='rounded-none border-0 shadow-none'
+          />
+          <MissionInsightsTopIssues
+            sample={sample}
+            onViewIssue={onOpenIssue}
+            className='mt-auto rounded-none border-0 border-t border-border shadow-none'
+          />
+        </div>
+        <MissionInsightsEvidenceSummary
+          sample={sample}
+          onOpenOutput={onOpenOutput}
+          onOpenMedia={onOpenMedia}
+          className='xl:col-span-4'
+        />
       </div>
       <div className='flex flex-col gap-6 xl:col-span-12 3xl:col-span-8'>
         <DetailSection title='Flight replay'>
