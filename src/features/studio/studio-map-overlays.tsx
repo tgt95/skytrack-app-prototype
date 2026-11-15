@@ -37,6 +37,7 @@ const stageNumberClassName =
 
 interface StudioMapOverlaysProps {
   appTab: AppTab;
+  reportSubpageOpen: boolean;
   onReportSubpageChange: (open: boolean) => void;
   onOpenMissionDesign: () => void;
   stage: Stage;
@@ -58,6 +59,7 @@ interface StudioMapOverlaysProps {
 
 export default function StudioMapOverlays({
   appTab,
+  reportSubpageOpen,
   onReportSubpageChange,
   onOpenMissionDesign,
   stage,
@@ -86,7 +88,7 @@ export default function StudioMapOverlays({
       <div
         className={`flex-[1_1_auto] flex items-start justify-center min-w-0 overflow-y-auto${
           isReport ? " ms-body-report" : ""
-        }`}
+        }${isReport && reportSubpageOpen ? " xl:h-full xl:min-h-0" : ""}`}
         data-testid="ms-body-placeholder"
       >
         <section
@@ -97,11 +99,7 @@ export default function StudioMapOverlays({
           }
           role="region"
           aria-label={isReport ? "Report" : title}
-          data-testid={
-            isReport
-              ? "ms-report"
-              : testId
-          }
+          data-testid={isReport ? "ms-report" : testId}
         >
           {isReport ? (
             <SimulationReportTable

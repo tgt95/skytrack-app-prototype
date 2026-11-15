@@ -16,6 +16,19 @@
         "worldId": "sample-world-tuan-workspace-leeville-pike-roof-assessment",
         "vehicle": "Mini-Pro",
         "droneId": "mini-pro-v6"
+      },
+      {
+        "id": "m-local-mwgqzezc-101",
+        "name": "Leeville Pike Flight 2",
+        "editedAgo": "Edited just now",
+        "starred": false,
+        "shared": false,
+        "viewOnly": false,
+        "world": "Leeville Pike roof assessment",
+        "worldType": "3D",
+        "worldId": "sample-world-tuan-workspace-leeville-pike-roof-assessment",
+        "vehicle": "Mini-Pro",
+        "droneId": "mini-pro-v6"
       }
     ]
   }

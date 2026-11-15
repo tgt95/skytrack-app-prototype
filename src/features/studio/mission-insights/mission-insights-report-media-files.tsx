@@ -1,7 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
-import { FileIcon, FolderIcon } from "@phosphor-icons/react";
-import { Badge } from "skytrack-ui/badge";
+import {
+  CaretRightIcon,
+  FileIcon,
+  FolderIcon,
+  FolderOpenIcon,
+} from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
+import {
+  CodeBlock,
+  CodeBlockContent,
+  CodeBlockCopyButton,
+} from "skytrack-ui/code-block";
+import { CodeBlockTree } from "skytrack-ui/code-block-tree";
 import type { ReactNode } from "react";
 import type { JsonRecord } from "./mission-insights-report-data";
 import {
@@ -9,7 +19,17 @@ import {
   numberValue,
   textValue,
 } from "./mission-insights-report-data";
-import { statusLabel, KeyValueList } from "./mission-insights-report-shared";
+import {
+  copyableArtifactPath,
+  displayLocalPath,
+  sanitizedReportPath,
+} from "./mission-insights-report-media-path";
+import { MediaPathActions } from "./mission-insights-report-media-path-actions";
+import {
+  MetadataSection,
+  type MetadataRow,
+} from "./mission-insights-report-media-metadata";
+import { statusLabel } from "./mission-insights-report-shared";
 
 type FileEntry = {
   artifact: JsonRecord;
@@ -22,36 +42,6 @@ type FileTreeNode = {
   folders: Map<string, FileTreeNode>;
   files: FileEntry[];
 };
-
-type ExplorerItem =
-  | { kind: "folder"; name: string }
-  | { kind: "file"; entry: FileEntry };
-
-export function sanitizedReportPath(artifact: JsonRecord): string {
-  const metadata = asRecord(artifact.metadata);
-  const file = asRecord(metadata.file);
-  const candidates = [artifact.uri, file.local_path]
-    .filter((value): value is string => typeof value === "string" && value.length > 0)
-    .map((source) => {
-      const normalized = source.replaceAll("\\", "/");
-      if (normalized.startsWith("sample://")) {
-        return normalized.slice("sample://".length);
-      }
-      if (normalized.startsWith("/") || /^[A-Za-z]:\//.test(normalized) || normalized.includes("://")) {
-        return normalized.split("/").filter(Boolean).at(-1) ?? "file";
-      }
-      return normalized;
-    })
-    .map((candidate) =>
-      candidate
-        .split("/")
-        .filter((part) => part && part !== "." && part !== "..")
-        .join("/"),
-    )
-    .filter(Boolean)
-    .sort((a, b) => b.split("/").length - a.split("/").length);
-  return candidates[0] ?? textValue(file.name, textValue(artifact.type));
-}
 
 function fileEntries(files: JsonRecord[]): FileEntry[] {
   return files.map((artifact) => {
@@ -69,6 +59,18 @@ function fileEntries(files: JsonRecord[]): FileEntry[] {
   });
 }
 
+function allFolderPaths(entries: FileEntry[]): Set<string> {
+  const paths = new Set<string>();
+  for (const entry of entries) {
+    let path = "";
+    for (const directory of entry.directories) {
+      path = path ? `${path}/${directory}` : directory;
+      paths.add(path);
+    }
+  }
+  return paths;
+}
+
 function createNode(): FileTreeNode {
   return { folders: new Map(), files: [] };
 }
@@ -78,7 +80,8 @@ function buildFileTree(entries: FileEntry[]): FileTreeNode {
   for (const entry of entries) {
     let node = root;
     for (const directory of entry.directories) {
-      if (!node.folders.has(directory)) node.folders.set(directory, createNode());
+      if (!node.folders.has(directory))
+        node.folders.set(directory, createNode());
       node = node.folders.get(directory)!;
     }
     node.files.push(entry);
@@ -86,12 +89,123 @@ function buildFileTree(entries: FileEntry[]): FileTreeNode {
   return root;
 }
 
-function nodeAtPath(root: FileTreeNode, path: string[]) {
-  return path.reduce((node, folder) => node.folders.get(folder) ?? createNode(), root);
-}
-
 function fileAvailability(artifact: JsonRecord) {
   return statusLabel(asRecord(artifact.availability).state);
+}
+
+function LocalFileTree({
+  node,
+  selectedFileId,
+  expandedFolders,
+  onToggleFolder,
+  onInspect,
+  depth = 0,
+  parentPath = "",
+}: {
+  node: FileTreeNode;
+  selectedFileId: string;
+  expandedFolders: Set<string>;
+  onToggleFolder: (path: string) => void;
+  onInspect: (id: string) => void;
+  depth?: number;
+  parentPath?: string;
+}) {
+  const folders = [...node.folders.entries()].sort(([a], [b]) =>
+    a.localeCompare(b),
+  );
+  const files = [...node.files].sort((a, b) => a.name.localeCompare(b.name));
+
+  return (
+    <ul className="m-0 grid list-none gap-0.5 p-0">
+      {folders.map(([name, child]) => {
+        const path = parentPath ? `${parentPath}/${name}` : name;
+        const expanded = expandedFolders.has(path);
+        const folderId = `local-folder-${encodeURIComponent(path)}`;
+        return (
+          <li key={path} className="min-w-0">
+            <div
+              className="flex min-w-0 items-center gap-1"
+              style={{ paddingInlineStart: `${depth * 16}px` }}
+            >
+              <Button
+                type="button"
+                size="icon-sm"
+                variant="ghost"
+                className="size-7 shrink-0 p-0"
+                aria-label={`${expanded ? "Collapse" : "Expand"} ${name}`}
+                aria-expanded={expanded}
+                aria-controls={folderId}
+                onClick={() => onToggleFolder(path)}
+              >
+                <CaretRightIcon
+                  className={`size-3.5 transition-transform ${expanded ? "rotate-90" : ""}`}
+                  aria-hidden="true"
+                />
+              </Button>
+              {expanded ? (
+                <FolderOpenIcon
+                  className="size-4 shrink-0 text-(--info)"
+                  aria-hidden="true"
+                />
+              ) : (
+                <FolderIcon
+                  className="size-4 shrink-0 text-(--info)"
+                  aria-hidden="true"
+                />
+              )}
+              <button
+                type="button"
+                className="flex h-8 min-w-0 flex-1 cursor-pointer appearance-none items-center justify-start rounded-(--radius) border-0 bg-transparent px-2 text-left text-foreground [font:inherit] hover:bg-muted/60 focus-visible:outline-2 focus-visible:outline-(--ring) focus-visible:outline-offset-2"
+                aria-expanded={expanded}
+                aria-controls={folderId}
+                onClick={() => onToggleFolder(path)}
+              >
+                <span className="truncate">{name}</span>
+              </button>
+            </div>
+            {expanded ? (
+              <div id={folderId}>
+                <LocalFileTree
+                  node={child}
+                  selectedFileId={selectedFileId}
+                  expandedFolders={expandedFolders}
+                  onToggleFolder={onToggleFolder}
+                  onInspect={onInspect}
+                  depth={depth + 1}
+                  parentPath={path}
+                />
+              </div>
+            ) : null}
+          </li>
+        );
+      })}
+      {files.map((entry) => {
+        const id = textValue(entry.artifact.artifact_id);
+        const selected = id === selectedFileId;
+        return (
+          <li key={id} className="min-w-0">
+            <button
+              type="button"
+              className={`flex h-9 w-full min-w-0 cursor-pointer appearance-none items-center justify-start gap-2 rounded-(--radius) border-0 px-2 py-1 text-left [font:inherit] transition-colors focus-visible:outline-2 focus-visible:outline-(--ring) focus-visible:outline-offset-2 ${
+                selected
+                  ? "bg-secondary text-secondary-foreground"
+                  : "bg-transparent text-foreground hover:bg-muted/60"
+              }`}
+              style={{ paddingInlineStart: `${depth * 16 + 36}px` }}
+              aria-pressed={selected}
+              onClick={() => onInspect(id)}
+            >
+              <FileIcon
+                className="size-4 shrink-0 text-muted-foreground"
+                aria-hidden="true"
+              />
+              <span className="min-w-0 flex-1 truncate">{entry.name}</span>
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  );
 }
 
 export function MediaFilesSection({
@@ -109,145 +223,225 @@ export function MediaFilesSection({
 }) {
   const entries = useMemo(() => fileEntries(files), [files]);
   const tree = useMemo(() => buildFileTree(entries), [entries]);
-  const [folderPath, setFolderPath] = useState<string[]>([]);
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(() =>
+    allFolderPaths(entries),
+  );
 
-  useEffect(() => setFolderPath([]), [files]);
+  useEffect(() => setExpandedFolders(allFolderPaths(entries)), [entries]);
 
   const matchingEntries = entries.filter((entry) =>
     entry.name.toLowerCase().includes(query.trim().toLowerCase()),
   );
-  const columns = query.trim()
-    ? [{ title: "Search results", items: matchingEntries.map((entry) => ({ kind: "file", entry }) as ExplorerItem) }]
-    : folderPath.reduce<Array<{ title: string; items: ExplorerItem[] }>>(
-        (items, _folder, depth) => {
-          const path = folderPath.slice(0, depth);
-          const node = nodeAtPath(tree, path);
-          items.push({
-            title: path.at(-1) ?? "Run files",
-            items: [
-              ...[...node.folders.keys()].sort((a, b) => a.localeCompare(b)).map((name) => ({ kind: "folder", name }) as ExplorerItem),
-              ...[...node.files].sort((a, b) => a.name.localeCompare(b.name)).map((entry) => ({ kind: "file", entry }) as ExplorerItem),
-            ],
-          });
-          return items;
-        },
-        [],
-      );
-  if (!query.trim()) {
-    const node = nodeAtPath(tree, folderPath);
-    columns.push({
-      title: folderPath.at(-1) ?? "Run files",
-      items: [
-        ...[...node.folders.keys()].sort((a, b) => a.localeCompare(b)).map((name) => ({ kind: "folder", name }) as ExplorerItem),
-        ...[...node.files].sort((a, b) => a.name.localeCompare(b.name)).map((entry) => ({ kind: "file", entry }) as ExplorerItem),
-      ],
-    });
-  }
-
   return (
-    <section className="flex min-w-0 flex-col gap-3" aria-label="Other files">
-      <header className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="m-0 text-sm font-semibold text-foreground">Other files</h3>
-        <Badge className="rounded-(--radius)" count={`${files.length} files`} status="secondary" />
-      </header>
+    <section
+      className="flex min-h-0 min-w-0 flex-col gap-3 xl:h-full"
+      aria-label="Other files"
+    >
       {searchBar}
-      <div className="flex min-w-0 overflow-x-auto rounded-(--radius) border border-border">
-        {columns.map((column, columnIndex) => (
-          <section
-            key={`${column.title}-${columnIndex}`}
-            className="min-h-72 w-[min(18rem,78vw)] min-w-64 shrink-0 border-r border-border p-3 last:border-r-0"
-            aria-label={`${column.title} contents`}
-          >
-            <h4 className="m-0 mb-2 truncate text-xs font-semibold text-muted-foreground">{column.title}</h4>
-            {column.items.length ? (
-              <ul className="m-0 flex list-none flex-col gap-1 p-0">
-                {column.items.map((item) =>
-                  item.kind === "folder" ? (
-                    <li key={`folder-${item.name}`}>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant={folderPath[columnIndex] === item.name ? "secondary" : "ghost"}
-                        className="h-auto w-full justify-start gap-2 whitespace-normal px-2 py-2 text-left"
-                        aria-pressed={folderPath[columnIndex] === item.name}
-                        onClick={() => setFolderPath([...folderPath.slice(0, columnIndex), item.name])}
+      <div className="min-h-0 min-w-0 flex-1 overflow-y-auto">
+        {/* <p className="m-0 mb-2 text-xs sub-heading">{visibleFileCount} files</p> */}
+        <div className="min-w-0">
+          {query.trim() ? (
+            matchingEntries.length ? (
+              <ul className="m-0 grid list-none gap-0.5 p-0">
+                {matchingEntries.map((entry) => (
+                  <li
+                    key={textValue(entry.artifact.artifact_id)}
+                    className="min-w-0"
+                  >
+                    <button
+                      type="button"
+                      className={`flex h-9 w-full min-w-0 cursor-pointer appearance-none items-center justify-start gap-2 rounded-(--radius) border-0 px-2 py-1 text-left [font:inherit] transition-colors focus-visible:outline-2 focus-visible:outline-(--ring) focus-visible:outline-offset-2 ${
+                        selectedFileId === entry.artifact.artifact_id
+                          ? "bg-secondary text-secondary-foreground"
+                          : "bg-transparent text-foreground hover:bg-muted/60"
+                      }`}
+                      aria-pressed={
+                        selectedFileId === entry.artifact.artifact_id
+                      }
+                      onClick={() =>
+                        onInspect(textValue(entry.artifact.artifact_id))
+                      }
+                    >
+                      <FileIcon
+                        className="size-4 shrink-0 text-muted-foreground"
+                        aria-hidden="true"
+                      />
+                      <span className="min-w-0 flex-1 truncate">
+                        {entry.name}
+                      </span>
+                      <span
+                        className="min-w-0 max-w-[40%] truncate text-xs text-muted-foreground"
+                        title={entry.relativePath}
                       >
-                        <FolderIcon className="size-4 shrink-0 text-(--info)" aria-hidden="true" />
-                        <span className="truncate">{item.name}</span>
-                      </Button>
-                    </li>
-                  ) : (
-                    <li key={textValue(item.entry.artifact.artifact_id)}>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant={selectedFileId === item.entry.artifact.artifact_id ? "secondary" : "ghost"}
-                        className="h-auto w-full justify-start gap-2 whitespace-normal px-2 py-2 text-left"
-                        aria-pressed={selectedFileId === item.entry.artifact.artifact_id}
-                        onClick={() => onInspect(textValue(item.entry.artifact.artifact_id))}
-                      >
-                        <FileIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-                        <span className="flex min-w-0 flex-1 flex-col gap-1">
-                          <span className="truncate">{item.entry.name}</span>
-                          <span className="truncate text-xs text-muted-foreground">
-                            {query.trim() ? `${item.entry.relativePath} · ` : ""}
-                            {statusLabel(item.entry.artifact.type)} · {fileAvailability(item.entry.artifact)}
-                          </span>
-                        </span>
-                      </Button>
-                    </li>
-                  ),
-                )}
+                        {entry.relativePath}
+                      </span>
+                    </button>
+                  </li>
+                ))}
               </ul>
             ) : (
-              <p className="m-0 py-3 text-sm text-muted-foreground">
-                {query.trim() ? "No file names match this search." : "No files or folders here."}
+              <p className="m-0 px-2 py-3 text-sm text-muted-foreground">
+                No file names match this search.
               </p>
-            )}
-          </section>
-        ))}
+            )
+          ) : entries.length ? (
+            <LocalFileTree
+              node={tree}
+              selectedFileId={selectedFileId}
+              expandedFolders={expandedFolders}
+              onToggleFolder={(path) =>
+                setExpandedFolders((current) => {
+                  const next = new Set(current);
+                  if (next.has(path)) next.delete(path);
+                  else next.add(path);
+                  return next;
+                })
+              }
+              onInspect={onInspect}
+            />
+          ) : (
+            <p className="m-0 px-2 py-3 text-sm text-muted-foreground">
+              No files are available in this report.
+            </p>
+          )}
+        </div>
       </div>
-      <p className="m-0 text-xs text-muted-foreground">
-        Paths are sanitized report paths. Absolute host paths are hidden.
-      </p>
     </section>
   );
 }
 
 export function FileDetailsPanel({
   file,
-  onClear,
+  fileName,
+  source,
+  emptyMessage,
 }: {
   file: JsonRecord | null;
-  onClear: () => void;
+  fileName: string;
+  source: string;
+  emptyMessage: string;
 }) {
+  const mimeType = textValue(file?.media_type, "").toLowerCase();
+  const extension = fileName.split(".").at(-1)?.toLowerCase() ?? "";
+  const isJson = extension === "json" || mimeType.includes("json");
+  const isCode = [
+    "c",
+    "cc",
+    "cpp",
+    "css",
+    "go",
+    "h",
+    "hpp",
+    "html",
+    "java",
+    "js",
+    "jsx",
+    "md",
+    "py",
+    "rs",
+    "sh",
+    "sql",
+    "ts",
+    "tsx",
+    "xml",
+    "yaml",
+    "yml",
+  ].includes(extension);
+  const previewValue = source || file;
+  const copyValue = isJson
+    ? typeof previewValue === "string"
+      ? previewValue
+      : (JSON.stringify(previewValue, null, 2) ?? "")
+    : source;
+  const localPath = file ? displayLocalPath(file) : "";
+  const metadataRows: MetadataRow[] = file
+    ? [
+        ["SHA-256", <code key="sha">{textValue(file.sha256)}</code>],
+        ["Role", textValue(file.role)],
+        ["Kind", statusLabel(file.type)],
+        ["Media type", textValue(file.media_type)],
+        [
+          "Local path",
+          <span className="flex min-w-0 items-center gap-2" key="local-path">
+            <code className="min-w-0 flex-1 truncate" title={localPath}>
+              {localPath}
+            </code>
+            <MediaPathActions
+              value={localPath}
+              copyValue={copyableArtifactPath(file)}
+            />
+          </span>,
+        ],
+        ["Availability", fileAvailability(file)],
+        ["Size", `${numberValue(file.size_bytes)?.toLocaleString() ?? "—"} B`],
+      ]
+    : [];
+
   return (
-    <section className="flex min-w-0 flex-col gap-4" aria-label="File details">
-      <header className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h3 className="m-0 text-sm font-semibold text-foreground">File details</h3>
-          <p className="m-0 mt-1 break-all text-xs text-muted-foreground">
-            {file ? `${textValue(file.artifact_id)} · ${statusLabel(file.type)}` : "Select a file to inspect its metadata."}
-          </p>
+    <section
+      className="flex min-h-0 min-w-0 flex-col xl:h-full"
+      aria-label="File details"
+    >
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-6 py-4">
+        <h3 className="h6 m-0 min-w-0 truncate text-foreground">
+          {file ? fileName : "File details"}
+        </h3>
+        <div className="flex shrink-0 items-center gap-1">
+          {file && (isJson || (isCode && source)) ? (
+            <CodeBlockCopyButton
+              value={copyValue}
+              aria-label="Copy file content"
+            />
+          ) : null}
         </div>
-        {file ? <Button variant="ghost" size="sm" onClick={onClear}>Clear</Button> : null}
       </header>
       {file ? (
-        <>
-          <KeyValueList
-            columns="sm:grid-cols-1"
-            rows={[
-              ["SHA-256", <code key="sha">{textValue(file.sha256)}</code>],
-              ["Role", textValue(file.role)],
-              ["Kind", statusLabel(file.type)],
-              ["Media type", textValue(file.media_type)],
-              ["Path", <code key="uri">{sanitizedReportPath(file)}</code>],
-              ["Availability", fileAvailability(file)],
-              ["Size", `${numberValue(file.size_bytes)?.toLocaleString() ?? "—"} B`],
-            ]}
-          />
-        </>
-      ) : null}
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="flex min-w-0 flex-col">
+            {isJson ? (
+              <CodeBlockTree
+                key={textValue(file?.artifact_id, fileName)}
+                className="w-full min-w-0 rounded-none border-0 border-b border-border bg-transparent [&_[data-slot=code-block-header]]:hidden [&_[data-slot=code-block-line-number]]:border-r-0 [&_[data-slot=code-block-line-number]]:bg-transparent [&_[data-slot=scroll-area-viewport]]:relative [&_[data-slot=scroll-area-viewport]]:after:absolute [&_[data-slot=scroll-area-viewport]]:after:inset-y-0 [&_[data-slot=scroll-area-viewport]]:after:left-[calc(var(--code-block-gutter-width)-1px)] [&_[data-slot=scroll-area-viewport]]:after:w-px [&_[data-slot=scroll-area-viewport]]:after:bg-border [&_[data-slot=scroll-area-viewport]]:after:content-['']"
+                value={previewValue}
+                title={fileName}
+                defaultExpandAll
+                showLineNumbersToggle={false}
+              />
+            ) : isCode && source ? (
+              <CodeBlock
+                size="sm"
+                lineNumbers
+                className="w-full rounded-none border-0"
+              >
+                <CodeBlockContent className="max-h-[28rem]">
+                  {source}
+                </CodeBlockContent>
+              </CodeBlock>
+            ) : null}
+            <div className="p-6">
+              <MetadataSection
+                title="Information"
+                rows={metadataRows}
+                labelWidth="compact"
+              />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="flex min-h-0 flex-1 items-center justify-center p-6">
+          <div
+            className="flex max-w-sm flex-col items-center gap-3 text-center"
+            role="status"
+          >
+            <FileIcon
+              className="size-8 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <p className="m-0 text-sm text-muted-foreground">{emptyMessage}</p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

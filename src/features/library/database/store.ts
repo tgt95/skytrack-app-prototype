@@ -11,6 +11,7 @@
 
 import projectsSeed from "./seeds/projects.json";
 import leevilleMissionSeed from "./seeds/missions/leeville-pike-flight.json";
+import leevilleFlight2MissionSeed from "./seeds/missions/leeville-pike-flight-2.json";
 import templatesSeed from "./seeds/templates.json";
 import { getWorkspace } from "@/features/library/workspace/workspace-data.ts";
 import { STORAGE_KEYS, STORAGE_VERSIONS } from "@/shared/storage-keys";
@@ -137,7 +138,12 @@ function seedProjects(): LibProject[] {
     missions: project.missions.map((mission) =>
       mission.id === STAKEHOLDER_DEMO_MISSION_ID
         ? { ...mission, missionData: JSON.stringify(leevilleMissionSeed) }
-        : mission,
+        : mission.id === "m-local-mwgqzezc-101"
+          ? {
+              ...mission,
+              missionData: JSON.stringify(leevilleFlight2MissionSeed),
+            }
+          : mission,
     ),
   }));
 }
@@ -186,6 +192,107 @@ function ensureStakeholderDemoMission(projects: LibProject[]): LibProject[] {
               : project.name,
           missions: [...project.missions, demoMission],
         }
+      : project,
+  );
+}
+
+function ensureLeevilleFlight2Mission(projects: LibProject[]): LibProject[] {
+  const seedProject = seedProjects().find((project) =>
+    project.missions.some((mission) => mission.id === "m-local-mwgqzezc-101"),
+  );
+  const seedMission = seedProject?.missions.find(
+    (mission) => mission.id === "m-local-mwgqzezc-101",
+  );
+  if (!seedProject || !seedMission) return projects;
+  const existing = projects
+    .flatMap((project) => project.missions)
+    .find((mission) => mission.id === seedMission.id);
+  if (existing) {
+    return projects.map((project) => ({
+      ...project,
+      missions: project.missions.map((mission) => {
+        if (mission.id !== seedMission.id || !mission.missionData)
+          return mission;
+        try {
+          const current = JSON.parse(mission.missionData) as {
+            areas?: Array<Record<string, unknown>>;
+            aiWorkflows?: Array<Record<string, unknown>>;
+            avoids?: Array<Record<string, unknown>>;
+          };
+          const seeded = JSON.parse(seedMission.missionData ?? "{}") as {
+            areas?: Array<Record<string, unknown>>;
+            aiWorkflows?: Array<Record<string, unknown>>;
+            avoids?: Array<Record<string, unknown>>;
+          };
+          if (
+            !Array.isArray(current.areas) ||
+            !Array.isArray(seeded.areas) ||
+            !Array.isArray(current.aiWorkflows) ||
+            !Array.isArray(seeded.aiWorkflows)
+          )
+            return mission;
+          const seededPitchByArea = new Map(
+            seeded.areas.flatMap((area) => {
+              const pitch = (
+                area.reconnaissance as Record<string, unknown> | undefined
+              )?.gimbalPitchDeg;
+              return typeof area.id === "string" && typeof pitch === "number"
+                ? [[area.id, pitch] as const]
+                : [];
+            }),
+          );
+          const areas = current.areas.map((area) => {
+            const pitch =
+              typeof area.id === "string"
+                ? seededPitchByArea.get(area.id)
+                : undefined;
+            if (pitch === undefined) return area;
+            const reconnaissance =
+              (area.reconnaissance as Record<string, unknown> | undefined) ??
+              {};
+            return {
+              ...area,
+              reconnaissance: { ...reconnaissance, gimbalPitchDeg: pitch },
+            };
+          });
+          const seededWorkflowsById = new Map(
+            seeded.aiWorkflows.map((workflow) => [workflow.id, workflow]),
+          );
+          const aiWorkflows = current.aiWorkflows.map((workflow) => {
+            const seededWorkflow = seededWorkflowsById.get(workflow.id);
+            if (!seededWorkflow) return workflow;
+            return {
+              ...workflow,
+              modelId: seededWorkflow.modelId,
+              objectClass: seededWorkflow.objectClass,
+            };
+          });
+          const avoids =
+            current.avoids && current.avoids.length > 0
+              ? current.avoids
+              : (seeded.avoids ?? []);
+          return {
+            ...mission,
+            missionData: JSON.stringify({
+              ...current,
+              areas,
+              aiWorkflows,
+              avoids,
+            }),
+          };
+        } catch {
+          return mission;
+        }
+      }),
+    }));
+  }
+  const ownerProject = projects.find(
+    (project) => project.id === seedProject.id,
+  );
+  if (!ownerProject) return [...projects, seedProject];
+  return projects.map((project) =>
+    project.id === ownerProject.id
+      ? { ...project, missions: [...project.missions, seedMission] }
       : project,
   );
 }
@@ -265,7 +372,9 @@ export function loadProjects(): LibProject[] {
     if (raw) {
       const parsed: unknown = JSON.parse(raw) as unknown;
       if (isDatabase(parsed)) {
-        return ensureStakeholderDemoMission(normalizeProjects(parsed.projects));
+        return ensureLeevilleFlight2Mission(
+          ensureStakeholderDemoMission(normalizeProjects(parsed.projects)),
+        );
       }
     }
   } catch {

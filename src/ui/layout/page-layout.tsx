@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import type { ReactNode } from "react";
 import { Tabs, TabsPanel } from "skytrack-ui/tabs";
 import type { StudioMission } from "@/domain/mission-model";
@@ -121,6 +127,30 @@ export default function StudioShell({
   const [reportSubpageOpen, setReportSubpageOpen] = useState(
     () => parseMissionInsightsRoute(window.location.search) !== null,
   );
+  useLayoutEffect(() => {
+    if (!reportSubpageOpen) return;
+    const browserDocument = window.document;
+    const previousOverflow = browserDocument.body.style.overflow;
+    const previousScrollTop = browserDocument.scrollingElement?.scrollTop ?? 0;
+    const desktopQuery = window.matchMedia("(min-width: 80rem)");
+    const syncBodyScroll = () => {
+      browserDocument.body.style.overflow = desktopQuery.matches
+        ? "hidden"
+        : previousOverflow;
+      if (desktopQuery.matches && browserDocument.scrollingElement) {
+        browserDocument.scrollingElement.scrollTop = 0;
+      }
+    };
+    syncBodyScroll();
+    desktopQuery.addEventListener("change", syncBodyScroll);
+    return () => {
+      desktopQuery.removeEventListener("change", syncBodyScroll);
+      browserDocument.body.style.overflow = previousOverflow;
+      if (browserDocument.scrollingElement) {
+        browserDocument.scrollingElement.scrollTop = previousScrollTop;
+      }
+    };
+  }, [reportSubpageOpen]);
   const { dirty } = document;
   const {
     stage,
@@ -204,7 +234,7 @@ export default function StudioShell({
   );
   return (
     <div
-      className="ms-root flex flex-col h-[calc(100dvh-3.125rem)] min-h-140 bg-(--background) text-foreground text-sm [@media_(max-width:_61.25rem)]:h-auto [@media_(max-width:_61.25rem)]:min-h-0 ms-route-content [view-transition-name:ms-route-content]"
+      className={`ms-root flex flex-col h-[calc(100dvh-3.125rem)] min-h-140 bg-(--background) text-foreground text-sm [@media_(max-width:_61.25rem)]:h-auto [@media_(max-width:_61.25rem)]:min-h-0 ms-route-content [view-transition-name:ms-route-content]${reportSubpageOpen ? " [@media_(min-width:_80rem)]:overflow-hidden" : ""}`}
       data-testid="ms-root"
       data-report-subpage={reportSubpageOpen}
     >
@@ -258,6 +288,7 @@ export default function StudioShell({
           ) : null}
           <StudioMapOverlays
             appTab={appTab}
+            reportSubpageOpen={reportSubpageOpen}
             onReportSubpageChange={setReportSubpageOpen}
             onOpenMissionDesign={openMissionDesignFromReport}
             stage={stage}

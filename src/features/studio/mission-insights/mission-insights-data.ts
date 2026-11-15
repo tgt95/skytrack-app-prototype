@@ -13,6 +13,7 @@ export type MissionRunStatus = "Succeeded" | "Failed" | "Unknown";
 
 export type MissionReportRun = {
   id: string;
+  missionId?: string;
   runName: string;
   project: string;
   world: string;
@@ -31,9 +32,7 @@ export type DemoMissionCase =
   | "erosion-survey"
   | "interrupted-survey";
 
-export function formatMissionRunLabel(
-  run: Pick<MissionReportRun, "runName">,
-) {
+export function formatMissionRunLabel(run: Pick<MissionReportRun, "runName">) {
   return run.runName;
 }
 
@@ -56,16 +55,13 @@ type EvidenceAvailability = {
   state: "available" | "partial" | "none";
   files: string;
   integrityState:
-    | "verified"
-    | "issues"
-    | "not_checked"
-    | "not_provided"
-    | "no_files";
+    "verified" | "issues" | "not_checked" | "not_provided" | "no_files";
   integrity: string;
 };
 
 export type MissionInsightSample = {
   key: "simulation-succeeded" | "simulation-failed" | "real-succeeded";
+  missionId?: string;
   demoCase?: DemoMissionCase;
   runLabel: string;
   type: Exclude<MissionRunType, "HITL">;
@@ -269,7 +265,8 @@ export const missionInsightSamples: Record<
     },
     evidenceAvailability: {
       state: "partial",
-      files: "10 of 13 files are on this device · 3 remain on the Mission Computer",
+      files:
+        "10 of 13 files are on this device · 3 remain on the Mission Computer",
       integrityState: "not_checked",
       integrity:
         "Manifest signature not checked · 13 files listed, not verified",
@@ -316,6 +313,58 @@ export const missionInsightSamples: Record<
 export function sampleForRun(
   run: MissionReportRun,
 ): MissionInsightSample | null {
+  if (run.missionId === "m-local-mwgqzezc-101") {
+    return {
+      ...missionInsightSamples["simulation-succeeded"],
+      missionId: run.missionId,
+      runLabel: run.runName,
+      world: run.world,
+      date: run.startedAtLabel,
+      duration: `${run.durationSeconds.toFixed(1)} s`,
+      vehicle: "Mini-Pro",
+      source: "SkyTrack Mission Studio",
+      missionLogicFile: "mission.json",
+      missionLogicDescription: "Simulated from Leeville Pike Flight 2",
+      outcomeTitle: "Mission completed",
+      outcome: "All 26 waypoints reached · landed at pad",
+      evidenceCompleteness: {
+        state: "complete",
+        summary: "11 of 11 planned photos captured",
+        detail: "All captures rendered from the Leeville world",
+      },
+      evidenceAvailability: {
+        state: "available",
+        files: "11 of 11 images available on this device",
+        integrityState: "not_provided",
+        integrity: "Capture integrity not checked",
+      },
+      outputs: [],
+      replayStats: [
+        ["Duration", "79.8 s"],
+        ["Maximum altitude", "12.0 m"],
+        ["Maximum speed", "2.0 m/s"],
+        ["Distance flown", "159.6 m"],
+      ],
+      replayDescription: "26 waypoints · 2 survey areas · 11 photo captures",
+      issuesSummary: "No issues",
+      issueTotal: 0,
+      issues: [],
+      actions: [
+        ["Completed", 3],
+        ["Partial", 0],
+        ["Failed", 0],
+        ["Not started", 0],
+      ],
+      files: [
+        ["Image", 11],
+        ["Video", 0],
+        ["Detection result", 0],
+        ["Telemetry", 0],
+        ["Input", 0],
+        ["Output", 0],
+      ],
+    };
+  }
   if (run.demoCase) return demoMissionSamples[run.demoCase];
   if (run.type === "Simulation" && run.status === "Succeeded") {
     return missionInsightSamples["simulation-succeeded"];
@@ -334,10 +383,16 @@ const demoMissionSamples: Record<DemoMissionCase, MissionInsightSample> = {
     key: "simulation-succeeded",
     demoCase: "construction-progress",
     runLabel: "Construction progress mapping",
-    type: "Simulation", status: "Succeeded", world: "Construction site",
-    date: "Nov 12, 2026 - 09:00", duration: "212.0 s", vehicle: "demo-drone-c1",
-    source: "SkyTrack Mission Studio", missionLogicFile: "construction-survey.json",
-    missionLogicDescription: "18 waypoints · 3 survey blocks · return home enabled",
+    type: "Simulation",
+    status: "Succeeded",
+    world: "Construction site",
+    date: "Nov 12, 2026 - 09:00",
+    duration: "212.0 s",
+    vehicle: "demo-drone-c1",
+    source: "SkyTrack Mission Studio",
+    missionLogicFile: "construction-survey.json",
+    missionLogicDescription:
+      "18 waypoints · 3 survey blocks · return home enabled",
     outcomeTitle: "Survey completed",
     outcome: "3 blocks captured · 12 mapped areas · 42 source images",
     evidenceCompleteness: {
@@ -351,20 +406,49 @@ const demoMissionSamples: Record<DemoMissionCase, MissionInsightSample> = {
       integrityState: "not_provided",
       integrity: "File check data was not included",
     },
-    outputs: [demoMappedAreaOutputs["construction-progress"]], replayStats: [["Duration", "212.0 s"], ["Maximum altitude", "38.0 m"], ["Distance flown", "1.42 km"], ["Survey blocks", "3"], ["Mapped areas", "12"]],
+    outputs: [demoMappedAreaOutputs["construction-progress"]],
+    replayStats: [
+      ["Duration", "212.0 s"],
+      ["Maximum altitude", "38.0 m"],
+      ["Distance flown", "1.42 km"],
+      ["Survey blocks", "3"],
+      ["Mapped areas", "12"],
+    ],
     replayDescription: "Construction survey · replay summary",
-    issuesSummary: "No issues", issueTotal: 0, issues: [],
-    actions: [["Completed", 6], ["Partial", 0], ["Failed", 0], ["Not started", 0]],
-    files: [["Image", 42], ["Video", 1], ["Telemetry", 1], ["Input", 2], ["Output", 1]],
+    issuesSummary: "No issues",
+    issueTotal: 0,
+    issues: [],
+    actions: [
+      ["Completed", 6],
+      ["Partial", 0],
+      ["Failed", 0],
+      ["Not started", 0],
+    ],
+    files: [
+      ["Image", 42],
+      ["Video", 1],
+      ["Telemetry", 1],
+      ["Input", 2],
+      ["Output", 1],
+    ],
   },
   "flood-impact": {
-    key: "simulation-succeeded", demoCase: "flood-impact",
-    runLabel: "Flood impact survey", type: "Simulation", status: "Succeeded",
-    world: "River basin", date: "Nov 11, 2026 - 14:20", duration: "186.0 s", vehicle: "demo-drone-f2",
-    source: "SkyTrack Mission Studio", missionLogicFile: "flood-survey.json",
-    missionLogicDescription: "15 waypoints · 2 banks surveyed · return home enabled",
+    key: "simulation-succeeded",
+    demoCase: "flood-impact",
+    runLabel: "Flood impact survey",
+    type: "Simulation",
+    status: "Succeeded",
+    world: "River basin",
+    date: "Nov 11, 2026 - 14:20",
+    duration: "186.0 s",
+    vehicle: "demo-drone-f2",
+    source: "SkyTrack Mission Studio",
+    missionLogicFile: "flood-survey.json",
+    missionLogicDescription:
+      "15 waypoints · 2 banks surveyed · return home enabled",
     outcomeTitle: "Survey completed with gaps",
-    outcome: "18 impact areas mapped from 40 planned images · 4 images unavailable",
+    outcome:
+      "18 impact areas mapped from 40 planned images · 4 images unavailable",
     evidenceCompleteness: {
       state: "partial",
       summary: "Some results are incomplete",
@@ -376,19 +460,53 @@ const demoMissionSamples: Record<DemoMissionCase, MissionInsightSample> = {
       integrityState: "not_provided",
       integrity: "File check data was not included",
     },
-    outputs: [{ ...demoMappedAreaOutputs["flood-impact"], status: "Partial" }], replayStats: [["Duration", "186.0 s"], ["Maximum altitude", "46.0 m"], ["Distance flown", "1.18 km"], ["Mapped areas", "18 of 20"], ["Images unavailable", "4"]],
+    outputs: [{ ...demoMappedAreaOutputs["flood-impact"], status: "Partial" }],
+    replayStats: [
+      ["Duration", "186.0 s"],
+      ["Maximum altitude", "46.0 m"],
+      ["Distance flown", "1.18 km"],
+      ["Mapped areas", "18 of 20"],
+      ["Images unavailable", "4"],
+    ],
     replayDescription: "Flood impact survey · replay summary",
-    issuesSummary: "1 warning · image gap", issueTotal: 1,
-    issues: [{ severity: "Warning", code: "DEMO_IMAGE_GAP", message: "4 planned images unavailable", time: 151.0 }],
-    actions: [["Completed", 5], ["Partial", 1], ["Failed", 0], ["Not started", 0]],
-    files: [["Image", 36], ["Video", 1], ["Telemetry", 1], ["Input", 2], ["Output", 1]],
+    issuesSummary: "1 warning · image gap",
+    issueTotal: 1,
+    issues: [
+      {
+        severity: "Warning",
+        code: "DEMO_IMAGE_GAP",
+        message: "4 planned images unavailable",
+        time: 151.0,
+      },
+    ],
+    actions: [
+      ["Completed", 5],
+      ["Partial", 1],
+      ["Failed", 0],
+      ["Not started", 0],
+    ],
+    files: [
+      ["Image", 36],
+      ["Video", 1],
+      ["Telemetry", 1],
+      ["Input", 2],
+      ["Output", 1],
+    ],
   },
   "bridge-inspection": {
-    key: "simulation-succeeded", demoCase: "bridge-inspection",
-    runLabel: "Bridge inspection mapping", type: "Simulation", status: "Succeeded",
-    world: "River crossing", date: "Nov 10, 2026 - 10:40", duration: "248.0 s", vehicle: "demo-drone-b3",
-    source: "SkyTrack Mission Studio", missionLogicFile: "bridge-inspection.json",
-    missionLogicDescription: "22 waypoints · 2 bridge spans · 4 inspection passes",
+    key: "simulation-succeeded",
+    demoCase: "bridge-inspection",
+    runLabel: "Bridge inspection mapping",
+    type: "Simulation",
+    status: "Succeeded",
+    world: "River crossing",
+    date: "Nov 10, 2026 - 10:40",
+    duration: "248.0 s",
+    vehicle: "demo-drone-b3",
+    source: "SkyTrack Mission Studio",
+    missionLogicFile: "bridge-inspection.json",
+    missionLogicDescription:
+      "22 waypoints · 2 bridge spans · 4 inspection passes",
     outcomeTitle: "Inspection completed",
     outcome: "8 mapped inspection areas · 64 images · 2 spans covered",
     evidenceCompleteness: {
@@ -401,18 +519,46 @@ const demoMissionSamples: Record<DemoMissionCase, MissionInsightSample> = {
       integrityState: "not_provided",
       integrity: "File check data was not included",
     },
-    outputs: [demoMappedAreaOutputs["bridge-inspection"]], replayStats: [["Duration", "248.0 s"], ["Maximum altitude", "31.0 m"], ["Distance flown", "1.76 km"], ["Bridge spans", "2"], ["Mapped areas", "8"]],
+    outputs: [demoMappedAreaOutputs["bridge-inspection"]],
+    replayStats: [
+      ["Duration", "248.0 s"],
+      ["Maximum altitude", "31.0 m"],
+      ["Distance flown", "1.76 km"],
+      ["Bridge spans", "2"],
+      ["Mapped areas", "8"],
+    ],
     replayDescription: "Bridge inspection · replay summary",
-    issuesSummary: "No issues", issueTotal: 0, issues: [],
-    actions: [["Completed", 8], ["Partial", 0], ["Failed", 0], ["Not started", 0]],
-    files: [["Image", 64], ["Video", 1], ["Telemetry", 1], ["Input", 2], ["Output", 1]],
+    issuesSummary: "No issues",
+    issueTotal: 0,
+    issues: [],
+    actions: [
+      ["Completed", 8],
+      ["Partial", 0],
+      ["Failed", 0],
+      ["Not started", 0],
+    ],
+    files: [
+      ["Image", 64],
+      ["Video", 1],
+      ["Telemetry", 1],
+      ["Input", 2],
+      ["Output", 1],
+    ],
   },
   "erosion-survey": {
-    key: "simulation-succeeded", demoCase: "erosion-survey",
-    runLabel: "Streambank erosion survey", type: "Simulation", status: "Succeeded",
-    world: "Creek corridor", date: "Nov 09, 2026 - 08:30", duration: "174.0 s", vehicle: "demo-drone-e4",
-    source: "SkyTrack Mission Studio", missionLogicFile: "erosion-survey.json",
-    missionLogicDescription: "14 waypoints · 1.1 km corridor · nadir and oblique passes",
+    key: "simulation-succeeded",
+    demoCase: "erosion-survey",
+    runLabel: "Streambank erosion survey",
+    type: "Simulation",
+    status: "Succeeded",
+    world: "Creek corridor",
+    date: "Nov 09, 2026 - 08:30",
+    duration: "174.0 s",
+    vehicle: "demo-drone-e4",
+    source: "SkyTrack Mission Studio",
+    missionLogicFile: "erosion-survey.json",
+    missionLogicDescription:
+      "14 waypoints · 1.1 km corridor · nadir and oblique passes",
     outcomeTitle: "Survey completed",
     outcome: "11 mapped erosion areas · 33 images · 1.1 km corridor covered",
     evidenceCompleteness: {
@@ -425,20 +571,49 @@ const demoMissionSamples: Record<DemoMissionCase, MissionInsightSample> = {
       integrityState: "not_provided",
       integrity: "File check data was not included",
     },
-    outputs: [demoMappedAreaOutputs["erosion-survey"]], replayStats: [["Duration", "174.0 s"], ["Maximum altitude", "35.0 m"], ["Distance flown", "1.31 km"], ["Corridor length", "1.1 km"], ["Mapped areas", "11"]],
+    outputs: [demoMappedAreaOutputs["erosion-survey"]],
+    replayStats: [
+      ["Duration", "174.0 s"],
+      ["Maximum altitude", "35.0 m"],
+      ["Distance flown", "1.31 km"],
+      ["Corridor length", "1.1 km"],
+      ["Mapped areas", "11"],
+    ],
     replayDescription: "Streambank survey · replay summary",
-    issuesSummary: "No issues", issueTotal: 0, issues: [],
-    actions: [["Completed", 5], ["Partial", 0], ["Failed", 0], ["Not started", 0]],
-    files: [["Image", 33], ["Video", 1], ["Telemetry", 1], ["Input", 2], ["Output", 1]],
+    issuesSummary: "No issues",
+    issueTotal: 0,
+    issues: [],
+    actions: [
+      ["Completed", 5],
+      ["Partial", 0],
+      ["Failed", 0],
+      ["Not started", 0],
+    ],
+    files: [
+      ["Image", 33],
+      ["Video", 1],
+      ["Telemetry", 1],
+      ["Input", 2],
+      ["Output", 1],
+    ],
   },
   "interrupted-survey": {
-    key: "simulation-failed", demoCase: "interrupted-survey",
-    runLabel: "Interrupted corridor survey", type: "Simulation", status: "Failed",
-    world: "North service corridor", date: "Nov 08, 2026 - 16:15", duration: "42.0 s", vehicle: "demo-drone-i5",
-    source: "SkyTrack Mission Studio", missionLogicFile: "corridor-survey.json",
-    missionLogicDescription: "12 waypoints · 3 planned segments · return home enabled",
+    key: "simulation-failed",
+    demoCase: "interrupted-survey",
+    runLabel: "Interrupted corridor survey",
+    type: "Simulation",
+    status: "Failed",
+    world: "North service corridor",
+    date: "Nov 08, 2026 - 16:15",
+    duration: "42.0 s",
+    vehicle: "demo-drone-i5",
+    source: "SkyTrack Mission Studio",
+    missionLogicFile: "corridor-survey.json",
+    missionLogicDescription:
+      "12 waypoints · 3 planned segments · return home enabled",
     outcomeTitle: "Survey interrupted",
-    outcome: "Run stopped before any mapped areas or output files were produced",
+    outcome:
+      "Run stopped before any mapped areas or output files were produced",
     evidenceCompleteness: {
       state: "none",
       summary: "No mission results were produced before the run stopped",
@@ -449,11 +624,37 @@ const demoMissionSamples: Record<DemoMissionCase, MissionInsightSample> = {
       integrityState: "no_files",
       integrity: "No files available to check",
     },
-    outputs: [], replayStats: [["Duration", "42.0 s"], ["Waypoints reached", "2 of 12"], ["Distance flown", "86 m"], ["Mapped areas", "0"], ["Output files", "0"]],
+    outputs: [],
+    replayStats: [
+      ["Duration", "42.0 s"],
+      ["Waypoints reached", "2 of 12"],
+      ["Distance flown", "86 m"],
+      ["Mapped areas", "0"],
+      ["Output files", "0"],
+    ],
     replayDescription: "Interrupted run · no output artifacts",
-    issuesSummary: "1 error · control link loss", issueTotal: 1,
-    issues: [{ severity: "Error", code: "DEMO_LINK_INTERRUPTED", message: "Control link loss stopped the run before output generation", time: 42.0 }],
-    actions: [["Completed", 1], ["Partial", 0], ["Failed", 1], ["Not started", 4]],
-    files: [["Image", 0], ["Video", 0], ["Telemetry", 1], ["Input", 2], ["Output", 0]],
+    issuesSummary: "1 error · control link loss",
+    issueTotal: 1,
+    issues: [
+      {
+        severity: "Error",
+        code: "DEMO_LINK_INTERRUPTED",
+        message: "Control link loss stopped the run before output generation",
+        time: 42.0,
+      },
+    ],
+    actions: [
+      ["Completed", 1],
+      ["Partial", 0],
+      ["Failed", 1],
+      ["Not started", 4],
+    ],
+    files: [
+      ["Image", 0],
+      ["Video", 0],
+      ["Telemetry", 1],
+      ["Input", 2],
+      ["Output", 0],
+    ],
   },
 };

@@ -42,7 +42,9 @@ export function MissionInsightsReportTabs({
   renderPageHeader: (tabNavigation: ReactNode) => ReactNode;
 }) {
   const [requestedMediaId, setRequestedMediaId] = useState<string | null>(null);
-  const [selectedIssueCode, setSelectedIssueCode] = useState<string | null>(null);
+  const [selectedIssueCode, setSelectedIssueCode] = useState<string | null>(
+    null,
+  );
 
   return (
     <Tabs
@@ -103,6 +105,7 @@ export function MissionInsightsReportTabs({
           <MediaFilesTab
             sample={sample}
             selectedMediaId={requestedMediaId}
+            active={activeTab === "media-files"}
             onNavigate={onTabChange}
           />
         </ReportWorkspace>
@@ -114,10 +117,7 @@ export function MissionInsightsReportTabs({
       </TabsPanel>
       <TabsPanel value="timeline" className="min-w-0">
         <ReportWorkspace>
-          <TimelineTab
-            sample={sample}
-            selectedIssueCode={selectedIssueCode}
-          />
+          <TimelineTab sample={sample} selectedIssueCode={selectedIssueCode} />
         </ReportWorkspace>
       </TabsPanel>
       <TabsPanel value="mission-logic" className="min-w-0">

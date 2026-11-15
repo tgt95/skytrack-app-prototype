@@ -1,33 +1,38 @@
-import { useEffect, useMemo, useState } from "react";
-import { CaretDownIcon, CheckIcon } from "@phosphor-icons/react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  FileImageIcon,
+  FileVideoIcon,
+  FilesIcon,
+  FunnelSimpleIcon,
+} from "@phosphor-icons/react";
 import type { CSSProperties } from "react";
 import type { MissionInsightsReportTab } from "@/features/studio/mission-report-url";
-import { DetailSection } from "./mission-insights-page-sections";
 import { Badge } from "skytrack-ui/badge";
 import { Button } from "skytrack-ui/button";
 import {
   Menu,
+  MenuGroup,
+  MenuGroupLabel,
   MenuPortal,
   MenuPopup,
   MenuPositioner,
-  MenuRadioGroup,
-  MenuRadioItem,
-  MenuRadioItemIndicator,
+  MenuSeparator,
   MenuTrigger,
 } from "skytrack-ui/menu";
+import { RadioGroup, RadioRoot } from "skytrack-ui/radio";
 import { Separator } from "skytrack-ui/separator";
 import { SidebarProvider } from "skytrack-ui/sidebar";
+import { CheckboxIndicator, CheckboxRoot } from "skytrack-ui/checkbox";
 import {
   asRecord,
   asRecords,
-  numberValue,
   reportArtifacts,
   reportForSample,
-  sampleActions,
   sampleGalleryMedia,
+  missionLogicSource,
   textValue,
-  type InsightMedia,
   type JsonRecord,
+  type InsightMedia,
 } from "./mission-insights-report-data";
 import { statusLabel } from "./mission-insights-report-shared";
 import type { MissionInsightSample } from "./mission-insights-data";
@@ -37,18 +42,40 @@ import {
   MediaFileSearchBar,
   matchesMediaFilter,
   type MediaBrowserSelection,
-  type MediaFilter,
+  type MediaViewMode,
 } from "./mission-insights-report-media-gallery";
 import {
   MediaFilesSection,
   FileDetailsPanel,
-  sanitizedReportPath,
 } from "./mission-insights-report-media-files";
+import { sanitizedReportPath } from "./mission-insights-report-media-path";
 import { MediaMetadataPanel } from "./mission-insights-report-media-metadata";
-import { MediaPreview } from "./mission-insights-report-media-preview";
+import {
+  MediaPreview,
+  MediaPreviewHeader,
+} from "./mission-insights-report-media-preview";
+
+type MediaSourceFilter = "local" | "remote_only";
+type MediaStatusFilter = "available" | "missing" | "error";
+
+function reportArtifactName(artifact: JsonRecord) {
+  const metadata = asRecord(artifact.metadata);
+  const file = asRecord(metadata.file);
+  return textValue(
+    file.name,
+    sanitizedReportPath(artifact).split("/").at(-1) ?? "",
+  );
+}
+
+function toggleFilterValue<T extends string>(values: T[], value: T): T[] {
+  return values.includes(value)
+    ? values.filter((current) => current !== value)
+    : [...values, value];
+}
 
 function initialMediaId(media: InsightMedia[], sample: MissionInsightSample) {
   const preferred =
+    media.find((item) => item.kind === "image" && item.detectionCount > 0) ??
     media.find((item) => item.syntheticPreview) ??
     (sample.key === "simulation-succeeded"
       ? media.find((item) => item.name === "000005.jpg")
@@ -59,26 +86,66 @@ function initialMediaId(media: InsightMedia[], sample: MissionInsightSample) {
 export function MediaFilesTab({
   sample,
   selectedMediaId,
+  active,
   onNavigate,
 }: {
   sample: MissionInsightSample;
   selectedMediaId: string | null;
+  active: boolean;
   onNavigate: (tab: MissionInsightsReportTab) => void;
 }) {
   const report = reportForSample(sample);
   const [browserSelection, setBrowserSelection] =
-    useState<MediaBrowserSelection>("all");
-  const [selectionBeforeDetections, setSelectionBeforeDetections] =
-    useState<MediaFilter>("all");
+    useState<MediaBrowserSelection>("images");
+  const [selectionBeforeDetections, setSelectionBeforeDetections] = useState<
+    "images" | "videos"
+  >("images");
+  const [selectedSources, setSelectedSources] = useState<MediaSourceFilter[]>(
+    [],
+  );
+  const [selectedStatuses, setSelectedStatuses] = useState<MediaStatusFilter[]>(
+    [],
+  );
   const [selectedKind, setSelectedKind] = useState("all");
+  const [viewMode, setViewMode] = useState<MediaViewMode>("list");
   const [query, setQuery] = useState("");
+  const mediaPanelRef = useRef<HTMLElement>(null);
+  const [mediaPanelTop, setMediaPanelTop] = useState(0);
   const media = useMemo(() => sampleGalleryMedia(sample), [sample]);
-  const syntheticGallery = media.some((item) => item.syntheticPreview);
   const [selectedId, setSelectedId] = useState(() =>
     initialMediaId(media, sample),
   );
   const [overlayVisible, setOverlayVisible] = useState(true);
   const [selectedFileId, setSelectedFileId] = useState("");
+
+  useLayoutEffect(() => {
+    if (!active) return;
+    const panel = mediaPanelRef.current;
+    if (!panel?.isConnected) return;
+    const page = panel.closest('[data-testid="ms-mission-insights"]');
+    const pageHeader = page?.querySelector('[data-slot="page-header"]');
+    const updateTop = () => {
+      if (!panel.isConnected || panel.getClientRects().length === 0) return;
+      const headerBottom = pageHeader?.getBoundingClientRect().bottom;
+      // Inactive report tabs can remain in layout while their transition ends,
+      // temporarily pushing the media panel far below the viewport. The sticky
+      // page header is the stable boundary the panel should fill from.
+      const panelTop = Math.ceil(
+        headerBottom && headerBottom > 0 ? headerBottom : panel.offsetTop,
+      );
+      setMediaPanelTop((current) =>
+        current === panelTop ? current : panelTop,
+      );
+    };
+    const observer = new ResizeObserver(updateTop);
+    observer.observe(pageHeader ?? panel);
+    window.addEventListener("resize", updateTop);
+    updateTop();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateTop);
+    };
+  }, [active]);
 
   useEffect(() => {
     setSelectedId(
@@ -87,7 +154,9 @@ export function MediaFilesTab({
         : initialMediaId(media, sample),
     );
     setSelectedFileId("");
-    setBrowserSelection("all");
+    setBrowserSelection("images");
+    setSelectedSources([]);
+    setSelectedStatuses([]);
     setSelectedKind("all");
     setQuery("");
   }, [media, sample, selectedMediaId]);
@@ -95,23 +164,40 @@ export function MediaFilesTab({
   const visibleMedia = useMemo(
     () =>
       media
-        .filter((item) =>
-          browserSelection === "other-files"
-            ? false
-            : matchesMediaFilter(item, browserSelection),
+        .filter((item) => {
+          if (browserSelection === "other-files") return false;
+          return matchesMediaFilter(item, browserSelection);
+        })
+        .filter(
+          (item) =>
+            selectedSources.length === 0 ||
+            selectedSources.includes(item.availability as MediaSourceFilter),
         )
-        .filter((item) => item.name.toLowerCase().includes(query.trim().toLowerCase())),
-    [browserSelection, media, query],
+        .filter((item) => {
+          if (selectedStatuses.length === 0) return true;
+          return selectedStatuses.some((status) => {
+            if (status === "error") return Boolean(item.processingError);
+            if (status === "missing") return item.availability === "missing";
+            return ["local", "remote_only"].includes(item.availability);
+          });
+        })
+        .filter((item) =>
+          item.name.toLowerCase().includes(query.trim().toLowerCase()),
+        ),
+    [browserSelection, media, query, selectedSources, selectedStatuses],
   );
-  const selected = media.find((item) => item.id === selectedId) ?? null;
+  const selected = visibleMedia.find((item) => item.id === selectedId) ?? null;
   useEffect(() => {
-    if (browserSelection === "other-files") return;
+    if (browserSelection === "other-files" || selectedFileId) {
+      setSelectedId("");
+      return;
+    }
     setSelectedId((current) =>
       visibleMedia.some((item) => item.id === current)
         ? current
         : (visibleMedia[0]?.id ?? ""),
     );
-  }, [browserSelection, visibleMedia]);
+  }, [browserSelection, selectedFileId, visibleMedia]);
   const selectedDetection = selected?.detection
     ? asRecord(selected.detection.metadata)
     : {};
@@ -125,29 +211,73 @@ export function MediaFilesTab({
   );
   const visibleFiles = useMemo(
     () =>
-      selectedKind === "all"
-        ? files
-        : files.filter((artifact) => textValue(artifact.type) === selectedKind),
-    [files, selectedKind],
+      files
+        .filter(
+          (artifact) =>
+            selectedKind === "all" || textValue(artifact.type) === selectedKind,
+        )
+        .filter((artifact) => {
+          if (selectedSources.length === 0) return true;
+          const source = textValue(asRecord(artifact.availability).state);
+          return selectedSources.includes(source as MediaSourceFilter);
+        })
+        .filter((artifact) => {
+          if (selectedStatuses.length === 0) return true;
+          const source = textValue(asRecord(artifact.availability).state);
+          return selectedStatuses.some((status) => {
+            if (status === "error") return source === "error";
+            if (status === "missing") return source === "missing";
+            return ["local", "remote_only"].includes(source);
+          });
+        }),
+    [files, selectedKind, selectedSources, selectedStatuses],
   );
-  const searchedFiles = useMemo(
-    () => {
-      const normalizedQuery = query.trim().toLowerCase();
-      if (!normalizedQuery) return visibleFiles;
-      return visibleFiles.filter((artifact) => {
-        const metadata = asRecord(artifact.metadata);
-        const file = asRecord(metadata.file);
-        const fileName = textValue(
-          file.name,
-          sanitizedReportPath(artifact).split("/").at(-1) ?? "",
-        );
-        return fileName.toLowerCase().includes(normalizedQuery);
-      });
-    },
-    [query, visibleFiles],
-  );
+  const searchedFiles = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return visibleFiles;
+    return visibleFiles.filter((artifact) => {
+      return reportArtifactName(artifact)
+        .toLowerCase()
+        .includes(normalizedQuery);
+    });
+  }, [query, visibleFiles]);
   const selectedFile =
-    searchedFiles.find((artifact) => artifact.artifact_id === selectedFileId) ?? null;
+    searchedFiles.find((artifact) => artifact.artifact_id === selectedFileId) ??
+    null;
+  useEffect(() => {
+    if (
+      selectedFileId &&
+      !searchedFiles.some(
+        (artifact) => textValue(artifact.artifact_id) === selectedFileId,
+      )
+    ) {
+      setSelectedFileId("");
+    }
+  }, [searchedFiles, selectedFileId]);
+  const selectedFileMetadata = asRecord(selectedFile?.metadata);
+  const selectedFileDetails = asRecord(selectedFileMetadata.file);
+  const selectedFileName = selectedFile ? reportArtifactName(selectedFile) : "";
+  const selectedFileContent =
+    textValue(
+      selectedFileDetails.content,
+      textValue(
+        selectedFileMetadata.content,
+        textValue(selectedFile?.content, ""),
+      ),
+    ) ||
+    (textValue(selectedFile?.type) === "mission_source"
+      ? missionLogicSource(sample)
+      : "");
+  const fileEmptyMessage =
+    files.length === 0
+      ? "This report has no other files."
+      : searchedFiles.length === 0
+        ? "No other files match the current search or filters."
+        : "Select a file to view its preview and details.";
+  const mediaEmptyMessage =
+    media.length === 0
+      ? "This report has no media items."
+      : "No media matches the current search or filters.";
   const kindOptions = useMemo(() => {
     const counts = new Map<string, number>();
     for (const file of files) {
@@ -155,23 +285,16 @@ export function MediaFilesTab({
       counts.set(kind, (counts.get(kind) ?? 0) + 1);
     }
     return [
-      { value: "all", label: `All kinds ${files.length}` },
+      { value: "all", label: "All kinds", count: files.length },
       ...[...counts.entries()]
         .sort(([a], [b]) => a.localeCompare(b))
-        .map(([kind, count]) => ({ value: kind, label: `${statusLabel(kind)} ${count}` })),
+        .map(([kind, count]) => ({
+          value: kind,
+          label: statusLabel(kind),
+          count,
+        })),
     ];
   }, [files]);
-  const actionMap = new Map(
-    sampleActions(report).map((action) => [
-      textValue(action.action_id),
-      action,
-    ]),
-  );
-  const selectedAction = selected
-    ? actionMap.get(
-        textValue(asRecord(selected.artifact.context).action_id, ""),
-      )
-    : null;
   const failedInvocation = selected
     ? asRecords(report.invocations).some(
         (invocation) =>
@@ -181,29 +304,47 @@ export function MediaFilesTab({
     : false;
   const browseGroups: ReadonlyArray<{
     label: string;
-    items: ReadonlyArray<{ value: MediaBrowserSelection; label: string }>;
+    items: ReadonlyArray<{
+      value: MediaBrowserSelection;
+      label: string;
+      count: number;
+      Icon: typeof FilesIcon;
+    }>;
   }> = [
     {
-      label: "Media",
+      label: "Files",
       items: [
-        { value: "all", label: `All ${media.length}` },
-        { value: "images", label: `Images ${media.filter((item) => item.kind === "image").length}` },
-        { value: "videos", label: `Videos ${media.filter((item) => item.kind === "video").length}` },
+        {
+          value: "images",
+          label: "Images",
+          count: media.filter((item) => item.kind === "image").length,
+          Icon: FileImageIcon,
+        },
+        {
+          value: "videos",
+          label: "Videos",
+          count: media.filter((item) => item.kind === "video").length,
+          Icon: FileVideoIcon,
+        },
+        {
+          value: "other-files",
+          label: "Other files",
+          count: files.length,
+          Icon: FilesIcon,
+        },
       ],
-    },
-    {
-      label: "Local",
-      items: [{ value: "other-files", label: `Local files ${files.length}` }],
-    },
-    {
-      label: "Mission Computer",
-      items: [{ value: "remote", label: `On Mission Computer ${media.filter((item) => item.availability !== "local").length}` }],
     },
   ];
 
   function changeBrowserSelection(nextSelection: MediaBrowserSelection) {
     setBrowserSelection(nextSelection);
-    if (nextSelection === "other-files") return;
+    setSelectedFileId("");
+    if (nextSelection === "other-files") {
+      setSelectedId("");
+      if (browserSelection !== "other-files") setSelectedKind("all");
+      return;
+    }
+    setSelectedKind("all");
     const nextVisible = media.filter((item) =>
       matchesMediaFilter(item, nextSelection),
     );
@@ -214,88 +355,205 @@ export function MediaFilesTab({
     );
   }
 
-  function toggleDetectionFilter() {
-    if (browserSelection === "detections") {
-      setBrowserSelection(selectionBeforeDetections);
+  function setDetectionFilterEnabled(enabled: boolean) {
+    if (enabled) {
+      setSelectionBeforeDetections(
+        browserSelection === "videos" ? "videos" : "images",
+      );
+      setBrowserSelection("detections");
       return;
     }
-    setSelectionBeforeDetections(
-      browserSelection === "other-files" ? "all" : browserSelection,
-    );
-    setBrowserSelection("detections");
+    if (browserSelection === "detections") {
+      setBrowserSelection(selectionBeforeDetections);
+    }
   }
 
-  const detectionFilterButton = (
-    <Button
-      type="button"
-      size="sm"
-      variant={browserSelection === "detections" ? "secondary" : "outline"}
-      aria-pressed={browserSelection === "detections"}
-      onClick={toggleDetectionFilter}
-    >
-      With detections {media.filter((item) => item.detectionCount > 0).length}
-    </Button>
-  );
-  const kindFilterButton = (
+  function checkboxFilterRow({
+    checked,
+    label,
+    onChange,
+  }: {
+    checked: boolean;
+    label: string;
+    onChange: (checked: boolean) => void;
+  }) {
+    return (
+      <label className="flex cursor-pointer items-center gap-3 rounded-(--radius) px-2 py-2 text-sm">
+        <CheckboxRoot
+          checked={checked}
+          onCheckedChange={(value) => onChange(value === true)}
+        >
+          <CheckboxIndicator aria-hidden="true">✓</CheckboxIndicator>
+        </CheckboxRoot>
+        <span>{label}</span>
+      </label>
+    );
+  }
+
+  const hasActiveFilters =
+    browserSelection === "detections" ||
+    selectedKind !== "all" ||
+    selectedSources.length > 0 ||
+    selectedStatuses.length > 0;
+  const filterButton = (
     <Menu>
       <MenuTrigger
-        aria-label={`Filter by kind${selectedKind === "all" ? "" : `, ${statusLabel(selectedKind)}`}`}
+        aria-label={`Filter${hasActiveFilters ? ", filters active" : ""}`}
         render={
-          <Button type="button" variant={selectedKind === "all" ? "outline" : "secondary"} size="sm" />
+          <Button
+            type="button"
+            variant={hasActiveFilters ? "secondary" : "outline"}
+            size="icon-sm"
+          />
         }
       >
-        Kind{selectedKind === "all" ? "" : ` · ${statusLabel(selectedKind)}`}
-        <CaretDownIcon aria-hidden="true" />
+        <Badge dot={hasActiveFilters} status="processing">
+          <FunnelSimpleIcon aria-hidden="true" />
+        </Badge>
       </MenuTrigger>
       <MenuPortal>
         <MenuPositioner side="bottom" align="end" sideOffset={4}>
-          <MenuPopup aria-label="Filter files by kind" className="max-h-[min(60vh,32rem)] overflow-y-auto">
-            <MenuRadioGroup
-              value={selectedKind}
-              onValueChange={(value) => {
-                if (value) {
-                  setSelectedKind(value);
-                  setSelectedFileId("");
-                }
-              }}
-            >
-              {kindOptions.map((item) => (
-                <MenuRadioItem key={item.value} value={item.value}>
-                  <MenuRadioItemIndicator>
-                    <CheckIcon aria-hidden="true" className="size-3.5" />
-                  </MenuRadioItemIndicator>
-                  {item.label}
-                </MenuRadioItem>
-              ))}
-            </MenuRadioGroup>
+          <MenuPopup
+            aria-label="Media and file filters"
+            className="max-h-[min(60vh,32rem)] min-w-56 overflow-y-auto"
+          >
+            {browserSelection === "other-files" ? (
+              <MenuGroup className="w-full">
+                <MenuGroupLabel>File type</MenuGroupLabel>
+                <RadioGroup
+                  value={selectedKind}
+                  onValueChange={(value) => {
+                    if (typeof value === "string" && value) {
+                      setSelectedKind(value);
+                      setSelectedFileId("");
+                    }
+                  }}
+                  aria-label="File type"
+                  className="w-full gap-0.5"
+                >
+                  {kindOptions.map((item) => (
+                    <div
+                      key={item.value}
+                      className="flex w-full cursor-pointer items-center gap-3 rounded-(--radius) px-2 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground"
+                      onClick={() => {
+                        setSelectedKind(item.value);
+                        setSelectedFileId("");
+                      }}
+                    >
+                      <RadioRoot value={item.value} aria-label={item.label} />
+                      <span className="min-w-0 flex-1">{item.label}</span>
+                      <span className="shrink-0 text-muted-foreground">
+                        {item.count}
+                      </span>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </MenuGroup>
+            ) : (
+              <MenuGroup>
+                <MenuGroupLabel>Media</MenuGroupLabel>
+                {checkboxFilterRow({
+                  checked: browserSelection === "detections",
+                  label: "Filter by detection",
+                  onChange: setDetectionFilterEnabled,
+                })}
+              </MenuGroup>
+            )}
+            <MenuSeparator />
+            <MenuGroup>
+              <MenuGroupLabel>Source</MenuGroupLabel>
+              {checkboxFilterRow({
+                checked: selectedSources.includes("local"),
+                label: "Local",
+                onChange: () =>
+                  setSelectedSources((current) =>
+                    toggleFilterValue(current, "local"),
+                  ),
+              })}
+              {checkboxFilterRow({
+                checked: selectedSources.includes("remote_only"),
+                label: "Mission Computer",
+                onChange: () =>
+                  setSelectedSources((current) =>
+                    toggleFilterValue(current, "remote_only"),
+                  ),
+              })}
+            </MenuGroup>
+            <MenuSeparator />
+            <MenuGroup>
+              <MenuGroupLabel>Status</MenuGroupLabel>
+              {checkboxFilterRow({
+                checked: selectedStatuses.includes("available"),
+                label: "Available",
+                onChange: () =>
+                  setSelectedStatuses((current) =>
+                    toggleFilterValue(current, "available"),
+                  ),
+              })}
+              {checkboxFilterRow({
+                checked: selectedStatuses.includes("missing"),
+                label: "Missing",
+                onChange: () =>
+                  setSelectedStatuses((current) =>
+                    toggleFilterValue(current, "missing"),
+                  ),
+              })}
+              {checkboxFilterRow({
+                checked: selectedStatuses.includes("error"),
+                label: "Error",
+                onChange: () =>
+                  setSelectedStatuses((current) =>
+                    toggleFilterValue(current, "error"),
+                  ),
+              })}
+            </MenuGroup>
           </MenuPopup>
         </MenuPositioner>
       </MenuPortal>
     </Menu>
   );
+  const showMediaViewMode = ["images", "videos", "detections"].includes(
+    browserSelection,
+  );
   const searchBar = (
     <MediaFileSearchBar
       query={query}
       onQueryChange={setQuery}
-      trailingFilter={browserSelection === "other-files" ? kindFilterButton : detectionFilterButton}
+      trailingFilter={filterButton}
+      viewMode={viewMode}
+      onViewModeChange={setViewMode}
+      showViewMode={showMediaViewMode}
     />
   );
 
   return (
-    <section className="flex min-w-0 flex-col" aria-label="Media & Files">
+    <section
+      ref={mediaPanelRef}
+      className="flex min-w-0 flex-col xl:h-[var(--media-panel-height)] xl:min-h-0"
+      style={
+        {
+          "--media-panel-height": `calc(100dvh - ${mediaPanelTop}px)`,
+        } as CSSProperties
+      }
+      aria-label="Media & Files"
+    >
       <SidebarProvider
-        className="min-h-0 w-full flex-1"
+        className="min-h-0 w-full flex-1 xl:h-full"
         style={{ "--sidebar-width": "15rem" } as CSSProperties}
       >
         <MediaBrowserFilters
-          selection={browserSelection === "detections" ? selectionBeforeDetections : browserSelection}
+          selection={
+            browserSelection === "detections"
+              ? selectionBeforeDetections
+              : browserSelection
+          }
           onChange={changeBrowserSelection}
           groups={browseGroups}
         />
-        <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 divide-y divide-border xl:grid-cols-[minmax(20rem,30rem)_minmax(0,1.45fr)] xl:divide-x xl:divide-y-0">
-          <div className="min-w-0">
+        <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 divide-y divide-border xl:h-full xl:grid-cols-[minmax(20rem,1fr)_minmax(0,1.5fr)] xl:divide-x xl:divide-y-0">
+          <div className="min-h-0 min-w-0 xl:h-full">
             {browserSelection === "other-files" ? (
-              <div className="min-w-0 p-4">
+              <div className="min-h-0 min-w-0 p-6 xl:h-full">
                 <MediaFilesSection
                   files={visibleFiles}
                   selectedFileId={selectedFileId}
@@ -307,9 +565,10 @@ export function MediaFilesTab({
             ) : (
               <MediaBrowserFileList
                 media={visibleMedia}
-                syntheticGallery={syntheticGallery}
                 selectedId={selectedId}
                 searchBar={searchBar}
+                viewMode={showMediaViewMode ? viewMode : "list"}
+                emptyMessage={mediaEmptyMessage}
                 onSelect={(id) => {
                   setSelectedId(id);
                   setOverlayVisible(true);
@@ -318,216 +577,71 @@ export function MediaFilesTab({
             )}
           </div>
           <section
-            className="flex min-w-0 flex-col gap-5 p-6"
-            aria-label={browserSelection === "other-files" ? "Selected file details" : "Selected media preview and details"}
+            className="flex min-h-0 min-w-0 flex-col xl:h-full"
+            aria-label={
+              browserSelection === "other-files"
+                ? "Selected file details"
+                : "Selected media preview and details"
+            }
           >
             {browserSelection === "other-files" ? (
               <FileDetailsPanel
                 file={selectedFile}
-                onClear={() => setSelectedFileId("")}
+                fileName={selectedFileName}
+                source={selectedFileContent}
+                emptyMessage={fileEmptyMessage}
               />
             ) : selected ? (
               <>
-                <MediaPreview
+                <MediaPreviewHeader
                   selected={selected}
                   overlayVisible={overlayVisible}
                   setOverlayVisible={setOverlayVisible}
-                  detectionObjects={detectionObjects}
-                  failedInvocation={failedInvocation}
-                  onNavigate={onNavigate}
                 />
-                <Separator />
-                <MediaMetadataPanel
-                  selected={selected}
-                  detectionObjects={detectionObjects}
-                  failedInvocation={failedInvocation}
-                  selectedAction={Boolean(selectedAction)}
-                  onNavigate={onNavigate}
-                />
-                {selected.kind === "video" ? (
-                  <>
-                    <Separator />
-                    <MediaVideoTimeline
+                <div className="min-h-0 flex-1 overflow-y-auto p-6">
+                  <div className="flex min-w-0 flex-col gap-5">
+                    <MediaPreview
                       selected={selected}
                       media={media}
                       report={report}
-                      onSelect={setSelectedId}
+                      overlayVisible={overlayVisible}
+                      detectionObjects={detectionObjects}
+                      failedInvocation={failedInvocation}
+                      onNavigate={onNavigate}
                     />
-                  </>
-                ) : null}
+                    <Separator />
+                    <MediaMetadataPanel
+                      selected={selected}
+                      report={report}
+                      detectionObjects={detectionObjects}
+                      failedInvocation={failedInvocation}
+                      onNavigate={onNavigate}
+                    />
+                  </div>
+                </div>
               </>
             ) : (
-              <p className="m-0 py-8 text-muted-foreground">
-                Select a media item to inspect its preview and metadata.
-              </p>
+              <div
+                className="flex min-h-0 flex-1 flex-col items-center justify-center gap-2 p-6 text-center"
+                role="status"
+              >
+                <FileImageIcon
+                  className="size-8 text-muted-foreground"
+                  aria-hidden="true"
+                />
+                <p className="m-0 font-medium text-foreground">
+                  {media.length === 0
+                    ? "No media available"
+                    : "No matching media"}
+                </p>
+                <p className="m-0 max-w-sm text-sm text-muted-foreground">
+                  {mediaEmptyMessage}
+                </p>
+              </div>
             )}
           </section>
         </div>
       </SidebarProvider>
     </section>
-  );
-}
-
-function MediaVideoTimeline({
-  selected,
-  media,
-  report,
-  onSelect,
-}: {
-  selected: InsightMedia;
-  media: InsightMedia[];
-  report: JsonRecord;
-  onSelect: (id: string) => void;
-}) {
-  const metadata = asRecord(selected.artifact.metadata);
-  const start = numberValue(metadata.start_time_s);
-  const recordedDuration = numberValue(metadata.duration_ms);
-  const expectedDuration =
-    numberValue(metadata.expected_duration_ms) ?? recordedDuration;
-  if (
-    start === null ||
-    recordedDuration === null ||
-    expectedDuration === null ||
-    expectedDuration <= 0
-  ) {
-    return (
-      <DetailSection title="Video timeline">
-        <p className="m-0 text-muted-foreground">
-          No timeline values available.
-        </p>
-      </DetailSection>
-    );
-  }
-  const images = media.filter(
-    (item) => item.kind === "image" && item.captureTime !== null,
-  );
-  const invocations = asRecords(report.invocations);
-  const recordedSeconds = recordedDuration / 1000;
-  const expectedSeconds = expectedDuration / 1000;
-  const truncated = metadata.truncated === true;
-  const captureMarkers = images.flatMap((item) => {
-    const offset = item.captureTime! - start;
-    if (offset < 0 || offset > expectedSeconds) return [];
-    return [
-      {
-        item,
-        offset,
-        position: Math.max(0, Math.min(100, (offset / expectedSeconds) * 100)),
-      },
-    ];
-  });
-  const invocationMarkers = invocations.flatMap((invocation) => {
-    if (invocation.result !== "with_results") return [];
-    const time = numberValue(invocation.started_s);
-    if (time === null || time < start || time > start + expectedSeconds)
-      return [];
-    return [
-      {
-        time,
-        position: Math.max(
-          0,
-          Math.min(100, ((time - start) / expectedSeconds) * 100),
-        ),
-      },
-    ];
-  });
-
-  return (
-    <DetailSection
-      className="xl:col-span-2"
-      title="Video timeline"
-      toolbar={
-        <Badge
-          className="rounded-(--radius)"
-          count={truncated ? "Truncated" : `${recordedSeconds.toFixed(1)} s`}
-          status={truncated ? "warning" : "secondary"}
-        />
-      }
-    >
-      <p className="m-0 text-muted-foreground">
-        {truncated
-          ? `Recorded ${recordedSeconds.toFixed(1)} s of ${expectedSeconds.toFixed(1)} s. Remaining span has no recorded video.`
-          : `Recorded ${recordedSeconds.toFixed(1)} s from ${start.toFixed(1)} s.`}{" "}
-      </p>
-      <div
-        className="relative h-14 px-1"
-        role="group"
-        aria-label="Video capture and model invocation timeline"
-      >
-        <div className="absolute inset-x-1 top-6 h-2 overflow-hidden rounded-(--radius) border border-border bg-(--muted)">
-          <div
-            className="h-full bg-(--info)"
-            style={{
-              width: `${Math.min(100, (recordedSeconds / expectedSeconds) * 100)}%`,
-            }}
-          />
-          {truncated ? (
-            <div
-              className="absolute inset-y-0 right-0 border-l border-dashed border-warning bg-(--warning)/10"
-              style={{
-                width: `${Math.max(0, 100 - (recordedSeconds / expectedSeconds) * 100)}%`,
-              }}
-            />
-          ) : null}
-        </div>
-        {captureMarkers.map(({ item, offset, position }) => (
-          <Button
-            key={item.id}
-            variant="outline"
-            size="icon-xs"
-            aria-label={`Open capture ${item.name} at ${offset.toFixed(1)} seconds`}
-            title={`${item.name} · ${offset.toFixed(1)} s`}
-            className="absolute top-4 z-10 -translate-x-1/2 rounded-full border-warning bg-(--card)"
-            style={{ left: `${position}%` }}
-            onClick={() => onSelect(item.id)}
-          >
-            <span className="sr-only">Open capture {item.name}</span>
-          </Button>
-        ))}
-        {invocationMarkers.map((marker, index) => (
-          <span
-            key={`inv-${index}`}
-            title={`Model invocation at ${(marker.time - start).toFixed(1)} s`}
-            aria-label={`Model invocation at ${(marker.time - start).toFixed(1)} seconds`}
-            className="absolute top-7 z-10 size-2 -translate-x-1/2 rounded-full bg-(--primary)"
-            style={{ left: `${marker.position}%` }}
-          />
-        ))}
-      </div>
-      <div className="flex flex-wrap gap-x-4 gap-y-2 text-muted-foreground">
-        <span>
-          <span
-            aria-hidden="true"
-            className="mr-1 inline-block size-2 rounded-full bg-(--info)"
-          />
-          Recorded video
-        </span>
-        {truncated ? (
-          <span>
-            <span
-              aria-hidden="true"
-              className="mr-1 inline-block size-2 border border-dashed border-warning"
-            />
-            Not recorded
-          </span>
-        ) : null}
-        <span>
-          <span
-            aria-hidden="true"
-            className="mr-1 inline-block size-2 rounded-full border border-warning"
-          />
-          Image capture · select to inspect
-        </span>
-        {invocationMarkers.length ? (
-          <span>
-            <span
-              aria-hidden="true"
-              className="mr-1 inline-block size-2 rounded-full bg-(--primary)"
-            />
-            Model invocation
-          </span>
-        ) : null}
-      </div>
-    </DetailSection>
   );
 }

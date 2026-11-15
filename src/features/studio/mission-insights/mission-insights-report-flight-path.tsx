@@ -1,5 +1,9 @@
 import { useState } from "react";
 import {
+  ArrowCounterClockwiseIcon,
+  SlidersHorizontalIcon,
+} from "@phosphor-icons/react";
+import {
   type JsonRecord,
   asRecord,
   textValue,
@@ -9,14 +13,51 @@ import {
   sampleMedia,
   sampleActions,
   sampleWorldImage,
+  modelForId,
 } from "./mission-insights-report-data";
 import { type MissionInsightSample } from "./mission-insights-data";
 import { DetailSection } from "./mission-insights-page-sections";
 import { Badge } from "skytrack-ui/badge";
 import { type MissionInsightsReportTab } from "@/features/studio/mission-report-url";
 import { Button } from "skytrack-ui/button";
+import { Switch, SwitchThumb } from "skytrack-ui/switch";
+import {
+  Popover,
+  PopoverPopup,
+  PopoverPortal,
+  PopoverPositioner,
+  PopoverTitle,
+  PopoverTrigger,
+} from "skytrack-ui/popover";
 import { KeyValueList, recordDuration } from "./mission-insights-report-shared";
 import { MissionInsightsReportFlightPath3D } from "./mission-insights-report-flight-path-3d";
+
+const defaultMapLayers = {
+  route: true,
+  waypoints: true,
+  captures: true,
+  detections: true,
+  areas: true,
+  avoids: true,
+  altitude: true,
+};
+
+type MapLayer = keyof typeof defaultMapLayers;
+type MapHover =
+  | {
+      kind: "capture";
+      item: ReturnType<typeof sampleMedia>[number];
+      x: number;
+      y: number;
+    }
+  | { kind: "waypoint"; point: JsonRecord; index: number; x: number; y: number }
+  | {
+      kind: "detection";
+      item: JsonRecord;
+      label: string;
+      x: number;
+      y: number;
+    };
 
 export function capturePoseSummary(artifact: JsonRecord) {
   const pose = asRecord(asRecord(artifact.metadata).capture_pose);
@@ -60,6 +101,8 @@ export function FlightPathMap({
   onSelectDiagnostic: () => void;
   className?: string;
 }) {
+  const [layers, setLayers] = useState(defaultMapLayers);
+  const [hoveredMarker, setHoveredMarker] = useState<MapHover | null>(null);
   const report = reportForSample(sample);
   const field = asRecord(report.field);
   const waypoints = asRecords(report.waypoints);
@@ -71,6 +114,13 @@ export function FlightPathMap({
   const lastPosition = asRecord(flightPath.last_position);
   const samples = asRecords(flightPath.samples);
   const polygon = coordinatePairs(field.polygon_m);
+  const areaPolygons = asRecords(field.areas)
+    .map((area) => coordinatePairs(area.polygon_m))
+    .filter((area) => area.length > 2);
+  const displayedPolygons = areaPolygons.length ? areaPolygons : [polygon];
+  const avoidPolygons = asRecords(field.avoids)
+    .map((avoid) => coordinatePairs(avoid.polygon_m))
+    .filter((avoid) => avoid.length > 2);
   const media = sampleMedia(sample).filter((item) => item.kind === "image");
   const captures = media.flatMap((item) => {
     const pose = localPoint(asRecord(item.artifact.metadata).capture_pose);
@@ -78,7 +128,7 @@ export function FlightPathMap({
   });
   const detections = asRecords(report.detections_geo).flatMap((item) => {
     const point = localPoint(item);
-    return point ? [{ label: textValue(item.class), point }] : [];
+    return point ? [{ item, label: textValue(item.class), point }] : [];
   });
   const pathPoints = samples.flatMap((point) => {
     const coordinates = localPoint(point);
@@ -104,7 +154,8 @@ export function FlightPathMap({
     "var(--chart-4)",
   ];
   const bounds = [
-    ...polygon,
+    ...displayedPolygons.flat(),
+    ...avoidPolygons.flat(),
     ...pathPoints,
     ...[pad, touchdown, lastPosition].flatMap((point) => {
       const coordinates = localPoint(point);
@@ -144,17 +195,86 @@ export function FlightPathMap({
       title={`Top view · ${textValue(field.label, sample.world)}`}
       className={className}
       toolbar={
-        sample.key === "real-succeeded" ? (
-          <Badge
-            className="rounded-(--radius)"
-            count="Reference image"
-            status="secondary"
-          />
-        ) : null
+        <div className="flex items-center gap-2">
+          {sample.key === "real-succeeded" ? (
+            <Badge
+              className="rounded-(--radius)"
+              count="Reference image"
+              status="secondary"
+            />
+          ) : null}
+          <Popover>
+            <PopoverTrigger
+              aria-label="Map layers"
+              render={
+                <Button variant="outline" size="icon-sm">
+                  <SlidersHorizontalIcon aria-hidden="true" />
+                </Button>
+              }
+            />
+            <PopoverPortal>
+              <PopoverPositioner side="bottom" align="end" sideOffset={6}>
+                <PopoverPopup
+                  className="w-64 gap-3 p-3"
+                  aria-label="Map layers"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <PopoverTitle className="text-sm font-semibold">
+                      Layers
+                    </PopoverTitle>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 gap-1 px-2 text-xs"
+                      onClick={() => setLayers(defaultMapLayers)}
+                    >
+                      <ArrowCounterClockwiseIcon aria-hidden="true" />
+                      Reset
+                    </Button>
+                  </div>
+                  {(
+                    [
+                      ["route", "Flight path"],
+                      ["waypoints", "Waypoints"],
+                      ["captures", "Image captures"],
+                      ["detections", "Detection results"],
+                      ["areas", "Areas"],
+                      ["avoids", "Avoid zones"],
+                      ["altitude", "Altitude heatmap"],
+                    ] as [MapLayer, string][]
+                  ).map(([key, label]) => (
+                    <div
+                      key={key}
+                      className="flex items-center justify-between gap-3 text-sm"
+                    >
+                      <span>{label}</span>
+                      <Switch
+                        checked={layers[key]}
+                        onCheckedChange={(checked) =>
+                          setLayers((current) => ({
+                            ...current,
+                            [key]: checked,
+                          }))
+                        }
+                        aria-label={label}
+                      >
+                        <SwitchThumb />
+                      </Switch>
+                    </div>
+                  ))}
+                </PopoverPopup>
+              </PopoverPositioner>
+            </PopoverPortal>
+          </Popover>
+        </div>
       }
     >
       <figure className="m-0 flex min-w-0 flex-col gap-3">
-        <div className="relative aspect-video min-w-0 overflow-hidden rounded-(--radius) border border-border bg-(--muted)">
+        <div
+          className="relative aspect-video min-w-0 overflow-hidden rounded-(--radius) border border-border bg-(--muted)"
+          onMouseLeave={() => setHoveredMarker(null)}
+        >
           {worldImage ? (
             <img
               src={worldImage}
@@ -167,23 +287,52 @@ export function FlightPathMap({
             viewBox="0 0 100 60"
             preserveAspectRatio="xMidYMid meet"
             role="img"
-            aria-label="Flight path, field, pad, waypoints, image captures, detections, and endpoint"
+            aria-label={`Top-down flight map${layers.avoids ? `, ${avoidPolygons.length} Avoid zones` : ""}${layers.areas ? ", Areas" : ""}${layers.route ? ", flight path" : ""}, pad${layers.waypoints ? ", waypoints" : ""}${layers.captures ? ", image captures" : ""}${layers.detections && detections.length ? ", detections" : ""}, and endpoint`}
           >
             <desc>
-              Map path, field, pad, waypoints, captures, detections, and endpoint.
+              Top-down map with Avoid zones, Areas, path, pad, waypoints,
+              captures
+              {detections.length ? ", detections," : ","} and endpoint.
             </desc>
-            {polygon.length > 2 ? (
-              <polygon
-                points={polygon
-                  .map((point) => mapPoint(point).join(","))
-                  .join(" ")}
-                fill="var(--primary)"
-                fillOpacity="0.08"
-                stroke="var(--primary)"
-                strokeWidth="0.45"
-                vectorEffect="non-scaling-stroke"
-              />
-            ) : null}
+            {layers.avoids
+              ? avoidPolygons.map((avoid, index) => (
+                  <polygon
+                    key={`avoid-${index}`}
+                    points={avoid
+                      .map((point) => mapPoint(point).join(","))
+                      .join(" ")}
+                    fill="var(--destructive)"
+                    fillOpacity="0.32"
+                    stroke="var(--destructive)"
+                    strokeWidth="0.55"
+                    vectorEffect="non-scaling-stroke"
+                  >
+                    <title>
+                      {textValue(
+                        asRecords(field.avoids)[index]?.label,
+                        "Avoid zone",
+                      )}
+                    </title>
+                  </polygon>
+                ))
+              : null}
+            {layers.areas
+              ? displayedPolygons.map((area, index) =>
+                  area.length > 2 ? (
+                    <polygon
+                      key={`area-${index}`}
+                      points={area
+                        .map((point) => mapPoint(point).join(","))
+                        .join(" ")}
+                      fill="var(--primary)"
+                      fillOpacity="0.08"
+                      stroke="var(--primary)"
+                      strokeWidth="0.45"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  ) : null,
+                )
+              : null}
             {padPoint
               ? (() => {
                   const [x, y] = mapPoint(padPoint);
@@ -201,7 +350,7 @@ export function FlightPathMap({
                   );
                 })()
               : null}
-            {waypoints.length > 1 ? (
+            {layers.route && waypoints.length > 1 ? (
               <polyline
                 points={waypoints
                   .flatMap((point) => {
@@ -218,135 +367,240 @@ export function FlightPathMap({
                 <title>Planned route through defined waypoints</title>
               </polyline>
             ) : null}
-            {altitudeSamples.slice(1).map((point, index) => {
-              const start = mapPoint(altitudeSamples[index].coordinates);
-              const end = mapPoint(point.coordinates);
-              const ratio =
-                maxPathAltitude > minPathAltitude
-                  ? (point.altitude - minPathAltitude) /
-                    (maxPathAltitude - minPathAltitude)
-                  : 0;
-              const bucket = Math.min(
-                altitudePalette.length - 1,
-                Math.floor(ratio * altitudePalette.length),
-              );
-              return (
-                <line
-                  key={`map-path-${index}`}
-                  x1={start[0]}
-                  y1={start[1]}
-                  x2={end[0]}
-                  y2={end[1]}
-                  stroke={altitudePalette[bucket]}
-                  strokeWidth="0.75"
-                  vectorEffect="non-scaling-stroke"
-                >
-                  <title>{point.altitude.toFixed(1)} m altitude</title>
-                </line>
-              );
-            })}
-            {waypoints.map((point, index) => {
-              const coordinates = localPoint(point);
-              if (!coordinates) return null;
-              const [x, y] = mapPoint(coordinates);
-              return (
-                <g key={`waypoint-${index}`}>
-                  <circle
-                    cx={x}
-                    cy={y}
-                    r="0.9"
-                    fill={
-                      point.reached === true
-                        ? "var(--success)"
-                        : "var(--background)"
-                    }
-                    stroke={
-                      point.reached === true
-                        ? "var(--background)"
-                        : "var(--warning)"
-                    }
-                    strokeWidth="0.25"
-                  />
-                  <text
-                    x={x + 1}
-                    y={y - 1}
-                    fill={
-                      point.reached === true
-                        ? "var(--success)"
-                        : "var(--warning)"
-                    }
-                    fontSize="2.2"
+            {layers.route && layers.altitude ? (
+              altitudeSamples.slice(1).map((point, index) => {
+                const start = mapPoint(altitudeSamples[index].coordinates);
+                const end = mapPoint(point.coordinates);
+                const ratio =
+                  maxPathAltitude > minPathAltitude
+                    ? (point.altitude - minPathAltitude) /
+                      (maxPathAltitude - minPathAltitude)
+                    : 0;
+                const bucket = Math.min(
+                  altitudePalette.length - 1,
+                  Math.floor(ratio * altitudePalette.length),
+                );
+                return (
+                  <line
+                    key={`map-path-${index}`}
+                    x1={start[0]}
+                    y1={start[1]}
+                    x2={end[0]}
+                    y2={end[1]}
+                    stroke={altitudePalette[bucket]}
+                    strokeWidth="0.75"
+                    vectorEffect="non-scaling-stroke"
                   >
-                    WP{numberValue(point.index) ?? index + 1}
-                  </text>
-                </g>
-              );
-            })}
-            {captures.map(({ item, point }) => {
-              const [x, y] = mapPoint(point);
-              const selected = item.id === selectedCaptureId;
-              return (
-                <g
-                  key={item.id}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`Select capture ${item.name} at ${item.captureTime?.toFixed(1) ?? "unknown"} seconds`}
-                  onClick={() => onSelectCapture(item.id)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      onSelectCapture(item.id);
-                    }
-                  }}
-                  className="cursor-pointer outline-none focus-visible:drop-shadow-[0_0_2px_var(--ring)]"
-                >
-                  <circle
-                    cx={x}
-                    cy={y}
-                    r={selected ? "1.35" : "0.9"}
-                    fill={
-                      item.availability === "local"
-                        ? "var(--warning)"
-                        : "var(--background)"
-                    }
-                    stroke={selected ? "var(--ring)" : "var(--warning)"}
-                    strokeWidth={selected ? "0.5" : "0.25"}
-                    strokeDasharray={
-                      item.availability === "local" ? undefined : "0.45 0.3"
-                    }
-                  />
-                  <title>{item.name} capture</title>
-                </g>
-              );
-            })}
-            {detections.map(({ label, point }, index) => {
-              const [x, y] = mapPoint(point);
-              const sourceDetection = asRecords(report.detections_geo).find(
-                (item) =>
-                  textValue(item.class) === label &&
-                  localPoint(item)?.[0] === point[0] &&
-                  localPoint(item)?.[1] === point[1],
-              );
-              const saved =
-                asRecord(sourceDetection).saved_as_rescue_location === true;
-              return (
-                <g key={`${label}-${index}`}>
-                  <rect
-                    x={x - 0.6}
-                    y={y - 0.6}
-                    width="1.2"
-                    height="1.2"
-                    fill={saved ? "var(--destructive)" : "var(--background)"}
-                    stroke={saved ? "var(--destructive)" : "var(--warning)"}
-                    strokeWidth="0.2"
-                    strokeDasharray={saved ? undefined : "0.4 0.25"}
-                  />
-                  <title>
-                    {label} · {saved ? "saved" : "not saved"}
-                  </title>
-                </g>
-              );
-            })}
+                    <title>{point.altitude.toFixed(1)} m altitude</title>
+                  </line>
+                );
+              })
+            ) : layers.route ? (
+              altitudeSamples.length > 1 ? (
+                <polyline
+                  points={altitudeSamples
+                    .map((point) => mapPoint(point.coordinates).join(","))
+                    .join(" ")}
+                  fill="none"
+                  stroke="var(--muted-foreground)"
+                  strokeWidth="0.65"
+                  vectorEffect="non-scaling-stroke"
+                />
+              ) : null
+            ) : null}
+            {layers.waypoints
+              ? waypoints.map((point, index) => {
+                  const coordinates = localPoint(point);
+                  if (!coordinates) return null;
+                  const [x, y] = mapPoint(coordinates);
+                  const isCapturePoint = asRecords(point.actions).some(
+                    (action) => action.kind === "photo",
+                  );
+                  const isRouteEndpoint =
+                    index === 0 || index === waypoints.length - 1;
+                  return (
+                    <g
+                      key={`waypoint-${index}`}
+                      tabIndex={0}
+                      role="img"
+                      aria-label={`Waypoint ${numberValue(point.index) ?? index + 1}, ${numberValue(point.z_m)?.toFixed(1) ?? "unknown"} metres altitude${isCapturePoint ? ", photo capture" : ""}`}
+                      onMouseEnter={() =>
+                        setHoveredMarker({
+                          kind: "waypoint",
+                          point,
+                          index,
+                          x,
+                          y,
+                        })
+                      }
+                      onFocus={() =>
+                        setHoveredMarker({
+                          kind: "waypoint",
+                          point,
+                          index,
+                          x,
+                          y,
+                        })
+                      }
+                      onBlur={() => setHoveredMarker(null)}
+                      className="cursor-pointer outline-none focus-visible:drop-shadow-[0_0_2px_var(--ring)]"
+                    >
+                      <circle
+                        cx={x}
+                        cy={y}
+                        r="1.5"
+                        fill="transparent"
+                        pointerEvents="all"
+                      />
+                      <circle
+                        cx={x}
+                        cy={y}
+                        r="0.65"
+                        fill={
+                          point.reached === true
+                            ? "var(--success)"
+                            : "var(--background)"
+                        }
+                        stroke={
+                          point.reached === true
+                            ? "var(--background)"
+                            : "var(--warning)"
+                        }
+                        strokeWidth="0.2"
+                      >
+                        <title>
+                          Waypoint {numberValue(point.index) ?? index + 1}
+                          {isCapturePoint ? " · Photo capture" : ""}
+                        </title>
+                      </circle>
+                      {isRouteEndpoint ? (
+                        <text
+                          x={x + 1}
+                          y={y - 1}
+                          fill={
+                            point.reached === true
+                              ? "var(--success)"
+                              : "var(--warning)"
+                          }
+                          fontSize="2.2"
+                        >
+                          WP{numberValue(point.index) ?? index + 1}
+                        </text>
+                      ) : null}
+                    </g>
+                  );
+                })
+              : null}
+            {layers.captures
+              ? captures.map(({ item, point }) => {
+                  const [x, y] = mapPoint(point);
+                  const selected = item.id === selectedCaptureId;
+                  return (
+                    <g
+                      key={item.id}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Select capture ${item.name} at ${item.captureTime?.toFixed(1) ?? "unknown"} seconds`}
+                      onMouseEnter={() =>
+                        setHoveredMarker({ kind: "capture", item, x, y })
+                      }
+                      onFocus={() =>
+                        setHoveredMarker({ kind: "capture", item, x, y })
+                      }
+                      onBlur={() => setHoveredMarker(null)}
+                      onClick={() => onSelectCapture(item.id)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          onSelectCapture(item.id);
+                        }
+                      }}
+                      className="cursor-pointer outline-none focus-visible:drop-shadow-[0_0_2px_var(--ring)]"
+                    >
+                      <circle
+                        cx={x}
+                        cy={y}
+                        r="1.5"
+                        fill="transparent"
+                        pointerEvents="all"
+                      />
+                      <circle
+                        cx={x}
+                        cy={y}
+                        r={selected ? "1.0" : "0.65"}
+                        fill={
+                          item.availability === "local"
+                            ? "var(--warning)"
+                            : "var(--background)"
+                        }
+                        stroke={selected ? "var(--ring)" : "var(--warning)"}
+                        strokeWidth={selected ? "0.5" : "0.25"}
+                        strokeDasharray={
+                          item.availability === "local" ? undefined : "0.45 0.3"
+                        }
+                      />
+                      <title>{item.name} capture</title>
+                    </g>
+                  );
+                })
+              : null}
+            {layers.detections
+              ? detections.map(({ item, label, point }, index) => {
+                  const [x, y] = mapPoint(point);
+                  const saved = item.saved_as_rescue_location === true;
+                  return (
+                    <g
+                      key={`${label}-${index}`}
+                      tabIndex={0}
+                      role="img"
+                      aria-label={`${label} detection${saved ? ", saved" : ""}`}
+                      onMouseEnter={() =>
+                        setHoveredMarker({
+                          kind: "detection",
+                          item,
+                          label,
+                          x,
+                          y,
+                        })
+                      }
+                      onFocus={() =>
+                        setHoveredMarker({
+                          kind: "detection",
+                          item,
+                          label,
+                          x,
+                          y,
+                        })
+                      }
+                      onBlur={() => setHoveredMarker(null)}
+                      className="cursor-pointer outline-none focus-visible:drop-shadow-[0_0_2px_var(--ring)]"
+                    >
+                      <circle
+                        cx={x}
+                        cy={y}
+                        r="1.5"
+                        fill="transparent"
+                        pointerEvents="all"
+                      />
+                      <rect
+                        x={x - 0.42}
+                        y={y - 0.42}
+                        width="0.84"
+                        height="0.84"
+                        fill={
+                          saved ? "var(--destructive)" : "var(--background)"
+                        }
+                        stroke={saved ? "var(--destructive)" : "var(--warning)"}
+                        strokeWidth="0.2"
+                        strokeDasharray={saved ? undefined : "0.4 0.25"}
+                      />
+                      <title>
+                        {label} · {saved ? "saved" : "not saved"}
+                      </title>
+                    </g>
+                  );
+                })
+              : null}
             {touchdownPoint
               ? (() => {
                   const [x, y] = mapPoint(touchdownPoint);
@@ -362,7 +616,7 @@ export function FlightPathMap({
                   );
                 })()
               : null}
-            {lastPositionPoint
+            {lastPositionPoint && Object.keys(primaryDiagnostic).length > 0
               ? (() => {
                   const [x, y] = mapPoint(lastPositionPoint);
                   const code = textValue(
@@ -433,40 +687,168 @@ export function FlightPathMap({
               </circle>
             ) : null}
           </svg>
+          {hoveredMarker ? (
+            <div
+              role="tooltip"
+              className="pointer-events-none absolute z-20 w-56 -translate-x-1/2 -translate-y-[calc(100%+0.5rem)] rounded-(--radius) border border-border bg-popover p-2 text-popover-foreground shadow-md"
+              style={{
+                left: `${Math.max(18, Math.min(82, hoveredMarker.x))}%`,
+                top: `${Math.max(24, (hoveredMarker.y / 60) * 100)}%`,
+              }}
+            >
+              {hoveredMarker.kind === "capture" ? (
+                <div className="flex flex-col gap-2">
+                  {hoveredMarker.item.imageUrl ? (
+                    <img
+                      src={hoveredMarker.item.imageUrl}
+                      alt={`Preview of ${hoveredMarker.item.name}`}
+                      className="aspect-video w-full rounded-(--radius) border border-border object-cover"
+                    />
+                  ) : (
+                    <div className="grid aspect-video w-full place-items-center rounded-(--radius) bg-muted text-xs text-muted-foreground">
+                      Preview unavailable
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <p className="m-0 truncate text-xs font-medium">
+                      {hoveredMarker.item.name}
+                    </p>
+                    <p className="m-0 text-xs text-muted-foreground">
+                      Image capture ·{" "}
+                      {hoveredMarker.item.captureTime?.toFixed(1) ??
+                        "Time unknown"}{" "}
+                      s
+                    </p>
+                    <p className="m-0 text-xs text-muted-foreground">
+                      {hoveredMarker.item.detectionCount} detection
+                      {hoveredMarker.item.detectionCount === 1 ? "" : "s"}
+                    </p>
+                  </div>
+                </div>
+              ) : hoveredMarker.kind === "waypoint" ? (
+                <div className="flex flex-col gap-1">
+                  <p className="m-0 text-sm font-medium">
+                    Waypoint{" "}
+                    {numberValue(hoveredMarker.point.index) ??
+                      hoveredMarker.index + 1}
+                  </p>
+                  <p className="m-0 text-xs text-muted-foreground">
+                    X {numberValue(hoveredMarker.point.x_m)?.toFixed(1) ?? "—"}{" "}
+                    m · Y{" "}
+                    {numberValue(hoveredMarker.point.y_m)?.toFixed(1) ?? "—"} m
+                  </p>
+                  <p className="m-0 text-xs text-muted-foreground">
+                    Altitude{" "}
+                    {numberValue(hoveredMarker.point.z_m)?.toFixed(1) ?? "—"} m
+                    ·{" "}
+                    {hoveredMarker.point.reached === true
+                      ? "Reached"
+                      : "Not reached"}
+                  </p>
+                  {asRecords(hoveredMarker.point.actions).length ? (
+                    <p className="m-0 text-xs text-muted-foreground">
+                      Actions ·{" "}
+                      {asRecords(hoveredMarker.point.actions)
+                        .map((action) =>
+                          textValue(action.label, textValue(action.kind)),
+                        )
+                        .join(", ")}
+                    </p>
+                  ) : null}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-1">
+                  <p className="m-0 text-sm font-medium">
+                    {hoveredMarker.label}
+                  </p>
+                  <p className="m-0 text-xs text-muted-foreground">
+                    Detection result ·{" "}
+                    {hoveredMarker.item.saved_as_rescue_location === true
+                      ? "Saved location"
+                      : "Not saved"}
+                  </p>
+                  {numberValue(hoveredMarker.item.confidence) !== null ? (
+                    <p className="m-0 text-xs text-muted-foreground">
+                      Confidence ·{" "}
+                      {(
+                        numberValue(hoveredMarker.item.confidence)! * 100
+                      ).toFixed(0)}
+                      %
+                    </p>
+                  ) : null}
+                  {textValue(
+                    hoveredMarker.item.model_name ||
+                      hoveredMarker.item.model_id,
+                  ) ? (
+                    <p className="m-0 text-xs text-muted-foreground">
+                      Model ·{" "}
+                      {textValue(
+                        asRecord(
+                          modelForId(
+                            report,
+                            textValue(hoveredMarker.item.model_id),
+                          ),
+                        ).name,
+                        textValue(
+                          hoveredMarker.item.model_name,
+                          textValue(hoveredMarker.item.model_id),
+                        ),
+                      )}
+                    </p>
+                  ) : null}
+                </div>
+              )}
+            </div>
+          ) : null}
         </div>
         <div
           className="flex flex-wrap gap-x-4 gap-y-2 text-muted-foreground"
           aria-label="Map legend"
         >
-          <span>
-            <span
-              aria-hidden="true"
-              className="mr-1 inline-block size-2 rounded-full bg-(--info)"
-            />
-            Planned route
-          </span>
-          <span>
-            <span
-              aria-hidden="true"
-              className="mr-1 inline-block size-2 rounded-full bg-(--chart-2)"
-            />
-            Flown path · altitude
-          </span>
-          <span>
-            <span
-              aria-hidden="true"
-              className="mr-1 inline-block size-2 rounded-full bg-(--success)"
-            />
-            Waypoint reached
-          </span>
-          <span>
-            <span
-              aria-hidden="true"
-              className="mr-1 inline-block size-2 rounded-full border border-warning"
-            />
-            Waypoint not reached
-          </span>
-          {captures.length ? (
+          {layers.route ? (
+            <span>
+              <span
+                aria-hidden="true"
+                className="mr-1 inline-block size-2 rounded-full bg-(--info)"
+              />
+              Planned route
+            </span>
+          ) : null}
+          {layers.altitude && altitudeSamples.length ? (
+            <span className="flex items-center gap-2">
+              <span>Flight altitude</span>
+              <span
+                aria-label={`Flight altitude from ${minPathAltitude.toFixed(1)} to ${maxPathAltitude.toFixed(1)} metres`}
+                className="inline-block h-2 w-20 rounded-full"
+                style={{
+                  background:
+                    "linear-gradient(to right, var(--chart-1), var(--chart-2), var(--chart-3), var(--chart-4))",
+                }}
+              />
+              <span className="text-xs">
+                {minPathAltitude.toFixed(1)}–{maxPathAltitude.toFixed(1)} m
+              </span>
+            </span>
+          ) : null}
+          {layers.waypoints ? (
+            <span>
+              <span
+                aria-hidden="true"
+                className="mr-1 inline-block size-2 rounded-full bg-(--success)"
+              />
+              Waypoint reached
+            </span>
+          ) : null}
+          {layers.waypoints ? (
+            <span>
+              <span
+                aria-hidden="true"
+                className="mr-1 inline-block size-2 rounded-full border border-warning"
+              />
+              Waypoint not reached
+            </span>
+          ) : null}
+          {layers.captures && captures.length ? (
             <span>
               <span
                 aria-hidden="true"
@@ -475,7 +857,8 @@ export function FlightPathMap({
               Image capture
             </span>
           ) : null}
-          {captures.some((capture) => capture.item.availability !== "local") ? (
+          {layers.captures &&
+          captures.some((capture) => capture.item.availability !== "local") ? (
             <span>
               <span
                 aria-hidden="true"
@@ -484,7 +867,7 @@ export function FlightPathMap({
               Capture unavailable locally
             </span>
           ) : null}
-          {detections.length ? (
+          {layers.detections && detections.length ? (
             <span>
               <span
                 aria-hidden="true"
@@ -728,7 +1111,10 @@ function FlightPathReportDetails({
         (t1 - t0),
     ];
   });
-  const boundedCoords = [...coords, ...waypointCoords.map(({ point }) => point)];
+  const boundedCoords = [
+    ...coords,
+    ...waypointCoords.map(({ point }) => point),
+  ];
   const minX = Math.min(...boundedCoords.map(([x]) => x));
   const maxX = Math.max(...boundedCoords.map(([x]) => x));
   const minY = Math.min(...boundedCoords.map(([, y]) => y));
@@ -744,14 +1130,19 @@ function FlightPathReportDetails({
   const landingAltitude =
     landingStart === null
       ? null
-      : flightSamples.reduce<{ time: number; altitude: number } | null>((nearest, point) => {
-          const time = numberValue(point.t_s);
-          const altitude = numberValue(point.z_m);
-          if (time === null || altitude === null) return nearest;
-          return nearest === null || Math.abs(time - landingStart) < Math.abs(nearest.time - landingStart)
-            ? { time, altitude }
-            : nearest;
-        }, null)?.altitude ?? null;
+      : (flightSamples.reduce<{ time: number; altitude: number } | null>(
+          (nearest, point) => {
+            const time = numberValue(point.t_s);
+            const altitude = numberValue(point.z_m);
+            if (time === null || altitude === null) return nearest;
+            return nearest === null ||
+              Math.abs(time - landingStart) <
+                Math.abs(nearest.time - landingStart)
+              ? { time, altitude }
+              : nearest;
+          },
+          null,
+        )?.altitude ?? null);
   const climbSummary = takeoff
     ? `0 → ${numberValue(asRecord(takeoff.inputs).target_altitude_m)?.toFixed(1) ?? maxAltitude?.toFixed(1) ?? "—"} m (${takeoffDuration})`
     : "Not recorded";
@@ -814,10 +1205,10 @@ function FlightPathReportDetails({
         className="xl:col-span-2"
       >
         <p className="m-0 text-muted-foreground">
-          Flight path sampled every{" "}
-          {numberValue(flight.sample_interval_s)?.toFixed(1) ?? "—"} s. Projection
-          uses local X/Y/Z coordinates; line color shows
-          consecutive-sample speed.
+          {numberValue(flight.sample_interval_s) === null
+            ? "Mission waypoints projected in local X/Y/Z coordinates."
+            : `Flight path sampled every ${numberValue(flight.sample_interval_s)!.toFixed(1)} s. Projection uses local X/Y/Z coordinates.`}{" "}
+          Line color shows consecutive-sample speed.
         </p>
         {coords.length ? (
           <figure className="m-0 flex min-w-0 flex-col gap-3">

@@ -36,6 +36,7 @@ import { replayTimeline } from "./replay-sample";
 import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import { MissionInsightsReportTabs } from "./mission-insights-report-tabs";
 import { MissionInsightsPageToolbar } from "./mission-insights-page-toolbar";
+import { useMissionCapturePreviews } from "./mission-insights-simulated-captures";
 
 function noSampleMessage(run: MissionReportRun | null) {
   if (!run)
@@ -65,6 +66,10 @@ export function MissionInsightsPage({
   const [copyNotice, setCopyNotice] = useState("");
   const [activeTab, setActiveTab] = useState(() =>
     parseMissionInsightsReportTab(window.location.search),
+  );
+  useMissionCapturePreviews(
+    sample,
+    activeTab === "flight-path" || activeTab === "media-files",
   );
 
   useEffect(() => {
@@ -327,9 +332,8 @@ export function MissionInsightsPage({
                 Apply mission logic to Mission Design?
               </AlertDialogTitle>
               <AlertDialogDescription>
-                {sample?.missionLogicFile} (
-                {sample?.missionLogicDescription}) as the mission logic for this
-                run.
+                {sample?.missionLogicFile} ({sample?.missionLogicDescription})
+                as the mission logic for this run.
               </AlertDialogDescription>
               {sample ? (
                 <p className="m-0 text-muted-foreground">

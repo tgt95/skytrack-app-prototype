@@ -109,11 +109,11 @@ export function CategoryChart ({
 
   return (
     <section className={`flex min-w-0 flex-col ${compact ? 'gap-2' : 'gap-3'}`} aria-label={title}>
-      <h3 className={`m-0 font-medium text-foreground ${compact ? 'text-base' : 'text-lg'}`}>{title}</h3>
+      <div className={`m-0 font-medium text-foreground ${compact ? 'text-base' : 'h6'}`}>{title}</div>
       {data.length ? (
         <div className='grid min-w-0 grid-cols-1 items-center gap-4 md:grid-cols-2'>
           <ChartContainer
-            className={`${compact ? 'h-32' : 'h-60'} min-w-0 w-full`}
+            className={`${compact ? 'h-32' : 'h-50'} min-w-0 w-full`}
             config={config}
             aria-label={`${title}; exact values are listed in the legend`}
           >
