@@ -111,8 +111,15 @@ export function MissionInsightsReportTabs({
         </ReportWorkspace>
       </TabsPanel>
       <TabsPanel value="ai-models" className="min-w-0">
-        <ReportWorkspace>
-          <AIModelsTab sample={sample} onNavigate={onTabChange} />
+        <ReportWorkspace width="wide">
+          <AIModelsTab
+            sample={sample}
+            onNavigate={onTabChange}
+            onOpenMedia={(id) => {
+              setRequestedMediaId(id);
+              onTabChange("media-files");
+            }}
+          />
         </ReportWorkspace>
       </TabsPanel>
       <TabsPanel value="timeline" className="min-w-0">

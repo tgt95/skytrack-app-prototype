@@ -469,7 +469,7 @@ export function MissionInsightsReportFlightPath3D({
   }, [report]);
 
   return (
-    <div className="relative min-w-0 overflow-hidden rounded-(--radius) border border-border bg-(--card)">
+    <div className="relative min-w-0 overflow-hidden rounded-(--radius) bg-(--card)">
       <div
         ref={containerRef}
         className="h-[520px] w-full"

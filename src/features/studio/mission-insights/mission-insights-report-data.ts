@@ -290,10 +290,37 @@ export function reportForSample(sample: MissionInsightSample): JsonRecord {
         const workspaceModel = loadWorkspaceResources().aiModels.find(
           (model) => model.id === modelId,
         );
+        const configuredModels = workspaceModel
+          ? loadWorkspaceResources()
+              .aiModels.filter(
+                (model) =>
+                  model.workspaceId === workspaceModel.workspaceId &&
+                  model.id !== modelId &&
+                  model.status !== "Archived",
+              )
+              .map((model) => ({
+                model_id: model.id,
+                name: model.name,
+                version: model.version,
+                task: model.task || "Not supplied",
+                producer_type: model.origin ?? "workspace",
+                classes: [],
+                invocations: {
+                  total: 0,
+                  with_results: 0,
+                  zero_results: 0,
+                  failed: 0,
+                },
+                inputs_processed: 0,
+                detections: 0,
+                status: "configured_not_invoked",
+              }))
+          : [];
+        const demoInvocationDurationMs = 100;
         const aiModel = {
           model_id: modelId,
           name: workspaceModel?.name ?? "Roof inspection v1",
-          version: workspaceModel?.version || "Demo",
+          version: workspaceModel?.version || "",
           task: workspaceModel?.task || "detection",
           producer_type: workspaceModel?.origin ?? "workspace",
           classes: ["Building"],
@@ -305,6 +332,8 @@ export function reportForSample(sample: MissionInsightSample): JsonRecord {
           },
           inputs_processed: aiSnapshotPoints.length,
           detections: aiSnapshotPoints.length,
+          mean_duration_ms: demoInvocationDurationMs,
+          p95_duration_ms: demoInvocationDurationMs,
           status: "demo results",
         };
         const aiSnapshotImages = aiSnapshotPoints.map(
@@ -339,6 +368,7 @@ export function reportForSample(sample: MissionInsightSample): JsonRecord {
               metadata: {
                 width_px: 1920,
                 height_px: 1080,
+                preview: "../leeville/survey-image-contact-sheet.jpg",
                 capture_time_s: captureTime,
                 capture_pose: {
                   frame_id: "world_enu",
@@ -464,7 +494,7 @@ export function reportForSample(sample: MissionInsightSample): JsonRecord {
             output_artifact_id: `art_leeville_detection_${sequence}`,
             workflow_id: textValue(flow.id),
             started_s: waypointTimes.get(point.waypoint_id) ?? 0,
-            duration_ms: 100,
+            duration_ms: demoInvocationDurationMs,
             result: "with_results",
             result_count: 1,
           };
@@ -532,7 +562,9 @@ export function reportForSample(sample: MissionInsightSample): JsonRecord {
             status: "completed",
             duration_ms: elapsed * 1000,
           },
-          ai_models: aiSnapshotPoints.length ? [aiModel] : [],
+          ai_models: aiSnapshotPoints.length
+            ? [aiModel, ...configuredModels]
+            : [],
           diagnostics: { items: [] },
           event_streams: [],
           invocations: aiInvocations,
@@ -788,13 +820,16 @@ export function sampleMedia(sample: MissionInsightSample): InsightMedia[] {
           : normalizedCaptureName;
       const previewPath = textValue(metadata.preview, "");
       const previewName = previewPath.split("/").at(-1) ?? "";
-      const imageUrl = sample.missionId
-        ? missionCapturePreview(textValue(artifact.artifact_id))
-        : availability.state === "local"
+      const staticPreview =
+        availability.state === "local"
           ? (imageAssets[`./sample-data/${folder}/${previewName}`] ??
             imageAssets[`./sample-data/${folder}/${assetName}`] ??
             null)
           : null;
+      const imageUrl = sample.missionId
+        ? (missionCapturePreview(textValue(artifact.artifact_id)) ??
+          staticPreview)
+        : staticPreview;
       const context = asRecord(artifact.context);
       const failedInvocation = asRecords(report.invocations).find(
         (invocation) =>

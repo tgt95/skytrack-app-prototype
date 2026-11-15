@@ -70,7 +70,7 @@ export function statusVariant(value: unknown) {
 
 export function KeyValueList({
   rows,
-  columns = "sm:grid-cols-2",
+  columns = "sm:grid-cols-5",
 }: {
   rows: ReadonlyArray<readonly [string, ReactNode]>;
   columns?: string;

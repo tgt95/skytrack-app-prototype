@@ -297,22 +297,10 @@
   ],
   "field": {
     "polygon_m": [
-      [
-        0,
-        0
-      ],
-      [
-        14,
-        0
-      ],
-      [
-        14,
-        7
-      ],
-      [
-        0,
-        7
-      ]
+      [0, 0],
+      [14, 0],
+      [14, 7],
+      [0, 7]
     ],
     "label": "Grandfinale cage",
     "pad": {
@@ -1072,9 +1060,7 @@
         "vehicle_id": "vehicle_01",
         "event_id": null
       },
-      "derived_from": [
-        "art_image_0002"
-      ],
+      "derived_from": ["art_image_0002"],
       "availability": {
         "state": "local",
         "location": "~/SkyTrack/runs/10062026-152739/artifacts/detections/000002.json"
@@ -1093,12 +1079,7 @@
           {
             "class": "person",
             "confidence": 0.91,
-            "bbox": [
-              0.42,
-              0.3,
-              0.56,
-              0.74
-            ]
+            "bbox": [0.42, 0.3, 0.56, 0.74]
           }
         ]
       },
@@ -1240,9 +1221,7 @@
         "vehicle_id": "vehicle_01",
         "event_id": null
       },
-      "derived_from": [
-        "art_image_0004"
-      ],
+      "derived_from": ["art_image_0004"],
       "availability": {
         "state": "local",
         "location": "~/SkyTrack/runs/10062026-152739/artifacts/detections/000004.json"
@@ -1261,12 +1240,7 @@
           {
             "class": "person",
             "confidence": 0.84,
-            "bbox": [
-              0.18,
-              0.4,
-              0.31,
-              0.86
-            ]
+            "bbox": [0.18, 0.4, 0.31, 0.86]
           }
         ]
       },
@@ -1484,9 +1458,7 @@
         "vehicle_id": "vehicle_01",
         "event_id": null
       },
-      "derived_from": [
-        "art_detection_0002"
-      ],
+      "derived_from": ["art_detection_0002"],
       "availability": {
         "state": "local",
         "location": "~/SkyTrack/runs/10062026-152739/outputs/rescue_locations.txt"
@@ -1502,13 +1474,12 @@
     {
       "model_id": "model_person",
       "name": "yolo-person",
+      "runs_on": "local",
       "version": "2.1.0",
       "sha256": "8d10aa3f\u2026e2c7",
       "producer_type": "participant_code",
       "task": "detection",
-      "classes": [
-        "person"
-      ],
+      "classes": ["person"],
       "invocations": {
         "total": 5,
         "with_results": 2,
@@ -1523,6 +1494,7 @@
     {
       "model_id": "model_depth",
       "name": "depth-estimator",
+      "runs_on": "local",
       "version": "0.9.0",
       "sha256": "0aa9f3c2\u202611b8",
       "producer_type": "participant_code",
@@ -1636,12 +1608,8 @@
       "type": "rescue_locations",
       "status": "partial",
       "summary": "1 of 3 locations saved",
-      "artifact_ids": [
-        "art_rescue_locations"
-      ],
-      "produced_by_action_ids": [
-        "action_report_person_01"
-      ]
+      "artifact_ids": ["art_rescue_locations"],
+      "produced_by_action_ids": ["action_report_person_01"]
     },
     {
       "output_id": "output_images",
@@ -1656,19 +1624,14 @@
         "art_image_0004",
         "art_image_0006"
       ],
-      "produced_by_action_ids": [
-        "action_capture_01"
-      ]
+      "produced_by_action_ids": ["action_capture_01"]
     }
   ],
   "diagnostics": {
     "completeness": "incomplete",
     "availability": "partially_available",
     "dropped_event_count": 14,
-    "incomplete_artifact_ids": [
-      "art_video_0001",
-      "art_image_0005"
-    ],
+    "incomplete_artifact_ids": ["art_video_0001", "art_image_0005"],
     "items": [
       {
         "severity": "error",

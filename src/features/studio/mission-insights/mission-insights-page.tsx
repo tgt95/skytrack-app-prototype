@@ -208,7 +208,8 @@ export function MissionInsightsPage({
                         aria-labelledby="mission-general-info-compact-title"
                         className="flex min-w-0 flex-col gap-3"
                       >
-                        <dl className="m-0 grid min-w-0 max-w-400 grid-cols-2 gap-x-3 gap-y-1 sm:grid-cols-3 xl:grid-cols-7">
+                        {/* m-0 grid min-w-0 max-w-400 grid-cols-2 gap-x-3 gap-y-1 sm:grid-cols-3 xl:grid-cols-7 */}
+                        <dl className="flex flex-col sm:flex-row min-w-0 max-w-400 gap-x-12 gap-y-1">
                           {[
                             { label: "Run ID", value: run.id, Icon: HashIcon },
                             {
@@ -277,7 +278,7 @@ export function MissionInsightsPage({
                                   </span>
                                 </SkyTooltip>
                                 <span
-                                  className={`${value === "Succeeded" ? "text-success" : value === "Failed" ? "text-destructive" : ""} min-w-0 wrap-break-word`}
+                                  className={`${value === "Succeeded" ? "text-success" : value === "Failed" ? "text-destructive" : ""} min-w-0 w-full max-w-[190px] wrap-break-word truncate`}
                                 >
                                   {value}
                                 </span>
