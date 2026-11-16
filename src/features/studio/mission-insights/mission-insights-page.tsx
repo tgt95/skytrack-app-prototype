@@ -138,7 +138,6 @@ export function MissionInsightsPage({
     <MissionInsightsPageToolbar
       sample={sample}
       run={run}
-      onApply={() => setApplyOpen(true)}
       onCopyUrl={copyReportUrl}
     />
   );
@@ -307,6 +306,7 @@ export function MissionInsightsPage({
             sample={sample}
             activeTab={activeTab}
             onTabChange={navigateReportTab}
+            onApply={() => setApplyOpen(true)}
             replayTime={replayTime}
             seekNotice={seekNotice}
             onSeek={seekReplay}

@@ -1,17 +1,5 @@
-import {
-  DotsThreeIcon,
-  DownloadSimpleIcon,
-  LinkSimpleIcon,
-} from "@phosphor-icons/react";
+import { DownloadSimpleIcon, LinkSimpleIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
-import {
-  Menu,
-  MenuItem,
-  MenuPopup,
-  MenuPortal,
-  MenuPositioner,
-  MenuTrigger,
-} from "skytrack-ui/menu";
 import { Toolbar, ToolbarGroup } from "skytrack-ui/toolbar";
 import {
   type MissionReportRun,
@@ -38,12 +26,10 @@ function downloadReport(
 export function MissionInsightsPageToolbar({
   sample,
   run,
-  onApply,
   onCopyUrl,
 }: {
   sample: MissionInsightSample | null;
   run: MissionReportRun | null;
-  onApply: () => void;
   onCopyUrl: () => void;
 }) {
   if (!sample) return null;
@@ -54,46 +40,24 @@ export function MissionInsightsPageToolbar({
       className="max-w-full border-0 bg-transparent p-0"
     >
       <ToolbarGroup className="flex flex-wrap gap-2">
-        <Button variant="outline" size="sm" onClick={onApply}>
-          Apply to Mission Design
+        <Button variant="outline" size="sm" onClick={onCopyUrl}>
+          <LinkSimpleIcon aria-hidden="true" />
+          Copy URL
         </Button>
-        <Menu>
-          <MenuTrigger
-            aria-label="More actions"
-            data-testid="ms-insights-more-actions"
-            render={
-              <Button
-                variant="outline"
-                size="icon-sm"
-                aria-label="More actions"
-              />
-            }
-          >
-            <DotsThreeIcon aria-hidden="true" />
-          </MenuTrigger>
-          <MenuPortal>
-            <MenuPositioner side="bottom" align="end" sideOffset={4}>
-              <MenuPopup aria-label="Mission Insights actions">
-                <MenuItem onSelect={onCopyUrl}>
-                  <LinkSimpleIcon aria-hidden="true" />
-                  Copy URL
-                </MenuItem>
-                <MenuItem
-                  onSelect={() =>
-                    downloadReport(run, sample.key, {
-                      selectedRun: run,
-                      sample,
-                      replay: replayTimeline,
-                    })
-                  }
-                >
-                  <DownloadSimpleIcon aria-hidden="true" />
-                  Download report
-                </MenuItem>
-              </MenuPopup>
-            </MenuPositioner>
-          </MenuPortal>
-        </Menu>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() =>
+            downloadReport(run, sample.key, {
+              selectedRun: run,
+              sample,
+              replay: replayTimeline,
+            })
+          }
+        >
+          <DownloadSimpleIcon aria-hidden="true" />
+          Download report
+        </Button>
       </ToolbarGroup>
     </Toolbar>
   );

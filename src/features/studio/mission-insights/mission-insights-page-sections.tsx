@@ -313,7 +313,7 @@ export function MissionInsightsTopIssues({
                     {sample.issues.map((issue) => (
                       <li
                         key={issue.code}
-                        className="flex min-w-0 flex-col gap-3 py-4 sm:flex-row sm:items-start"
+                        className="flex min-w-0 flex-col items-start gap-3 py-4"
                       >
                         <div className="w-20">
                           <Badge
@@ -323,7 +323,7 @@ export function MissionInsightsTopIssues({
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="m-0 font-medium">
-                            <code>{issue.code}</code>
+                            <code className="break-all">{issue.code}</code>
                           </p>
                           <p className="m-0 mt-1 break-words text-muted-foreground">
                             {issue.message}
@@ -338,13 +338,13 @@ export function MissionInsightsTopIssues({
                           variant="outline"
                           size="sm"
                           className="shrink-0 self-start"
-                          title={`Open ${issue.code} in Timeline`}
+                          title={`View event for ${issue.code} in Timeline`}
                           onClick={() => {
                             setOpen(false);
                             onViewIssue(issue.code);
                           }}
                         >
-                          View in Timeline
+                          View event in Timeline
                         </Button>
                       </li>
                     ))}

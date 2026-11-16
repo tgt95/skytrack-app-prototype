@@ -28,6 +28,7 @@ export function MissionInsightsReportTabs({
   sample,
   activeTab,
   onTabChange,
+  onApply,
   replayTime,
   seekNotice,
   onSeek,
@@ -36,6 +37,7 @@ export function MissionInsightsReportTabs({
   sample: MissionInsightSample;
   activeTab: MissionInsightsReportTab;
   onTabChange: (tab: MissionInsightsReportTab) => void;
+  onApply: () => void;
   replayTime: number;
   seekNotice: string;
   onSeek: (time: number, label?: string) => void;
@@ -45,6 +47,7 @@ export function MissionInsightsReportTabs({
   const [selectedIssueCode, setSelectedIssueCode] = useState<string | null>(
     null,
   );
+  const [selectedIssueRequest, setSelectedIssueRequest] = useState(0);
 
   return (
     <Tabs
@@ -78,6 +81,7 @@ export function MissionInsightsReportTabs({
             }}
             onOpenIssue={(issueCode) => {
               setSelectedIssueCode(issueCode);
+              setSelectedIssueRequest((request) => request + 1);
               onTabChange("timeline");
             }}
             replayTime={replayTime}
@@ -123,17 +127,30 @@ export function MissionInsightsReportTabs({
         </ReportWorkspace>
       </TabsPanel>
       <TabsPanel value="timeline" className="min-w-0">
-        <ReportWorkspace>
-          <TimelineTab sample={sample} selectedIssueCode={selectedIssueCode} />
+        <ReportWorkspace width="wide">
+          <TimelineTab
+            sample={sample}
+            selectedIssueCode={selectedIssueCode}
+            selectedIssueRequest={selectedIssueRequest}
+            onNavigate={onTabChange}
+            onOpenMedia={(id) => {
+              setRequestedMediaId(id);
+              onTabChange("media-files");
+            }}
+            onOpenMediaFiles={() => {
+              setRequestedMediaId(null);
+              onTabChange("media-files");
+            }}
+          />
         </ReportWorkspace>
       </TabsPanel>
       <TabsPanel value="mission-logic" className="min-w-0">
-        <ReportWorkspace>
-          <MissionLogicTab sample={sample} />
+        <ReportWorkspace width="wide" padding="none">
+          <MissionLogicTab sample={sample} onApply={onApply} />
         </ReportWorkspace>
       </TabsPanel>
       <TabsPanel value="raw-json" className="min-w-0">
-        <ReportWorkspace>
+        <ReportWorkspace width="wide" padding="none">
           <RawJsonTab sample={sample} />
         </ReportWorkspace>
       </TabsPanel>

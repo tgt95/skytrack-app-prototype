@@ -4,7 +4,7 @@ import {
   asRecord,
   textValue,
 } from "./mission-insights-report-data";
-import { FileCodeIcon } from "@phosphor-icons/react";
+import { DownloadSimpleIcon } from "@phosphor-icons/react";
 import { DetailSection } from "./mission-insights-page-sections";
 import { Button } from "skytrack-ui/button";
 import { CodeBlockTree } from "skytrack-ui/code-block-tree";
@@ -53,8 +53,8 @@ export function RawJsonTab({ sample }: { sample: MissionInsightSample }) {
           title="Mission Insight report JSON"
           showLineNumbersToggle={false}
           toolbarActions={
-            <Button variant="ghost" size="sm" onClick={downloadJson}>
-              <FileCodeIcon aria-hidden="true" />
+            <Button variant="outline" size="sm" onClick={downloadJson}>
+              <DownloadSimpleIcon aria-hidden="true" />
               Download JSON
             </Button>
           }

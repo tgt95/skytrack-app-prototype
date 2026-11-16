@@ -9,6 +9,7 @@
     "check:architecture": "node scripts/architecture-guardrails.cjs",
     "build": "tsc -b && vite build",
     "build:pages": "npm run build && node scripts/copy-pages-fallback.mjs",
+    "deploy:pages": "node scripts/deploy-pages.mjs",
     "typecheck": "tsc -b --pretty false",
     "lint": "oxlint",
     "format:check": "prettier --check .",
@@ -23,7 +24,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-markdown": "^10.1.0",
-    "skytrack-ui": "file:vendor/skytrack-ui-0.1.5.tgz",
+    "skytrack-ui": "file:vendor/skytrack-ui-0.1.6.tgz",
     "three": "^0.186.1"
   },
   "devDependencies": {

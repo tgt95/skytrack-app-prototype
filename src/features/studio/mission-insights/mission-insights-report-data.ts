@@ -916,11 +916,6 @@ export function missionLogicLineCount(sample: MissionInsightSample) {
     .split(/\r?\n/).length;
 }
 
-export function safeArtifactLocation(artifact: JsonRecord): string {
-  const uri = textValue(artifact.uri, "sample://artifact");
-  return uri.startsWith("sample://") ? uri : `sample://${uri.split("/").pop()}`;
-}
-
 export function modelForId(report: JsonRecord, modelId: string) {
   return asRecords(report.ai_models).find(
     (model) => model.model_id === modelId,
