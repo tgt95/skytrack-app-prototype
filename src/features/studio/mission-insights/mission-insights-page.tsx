@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import {
   AirplaneTiltIcon,
   CalendarBlankIcon,
@@ -37,6 +37,7 @@ import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import { MissionInsightsReportTabs } from "./mission-insights-report-tabs";
 import { MissionInsightsPageToolbar } from "./mission-insights-page-toolbar";
 import { useMissionCapturePreviews } from "./mission-insights-simulated-captures";
+import { getMissionReportSurface } from "./mission-insights-surface";
 
 function noSampleMessage(run: MissionReportRun | null) {
   if (!run)
@@ -67,6 +68,26 @@ export function MissionInsightsPage({
   const [activeTab, setActiveTab] = useState(() =>
     parseMissionInsightsReportTab(window.location.search),
   );
+  const reportSurface = getMissionReportSurface("mission-insights", activeTab);
+
+  useLayoutEffect(() => {
+    const rootStyle = document.documentElement.style;
+    const previousSurface = rootStyle.getPropertyValue(
+      "--mission-report-surface",
+    );
+    rootStyle.setProperty(
+      "--mission-report-surface",
+      `var(--${reportSurface})`,
+    );
+    return () => {
+      if (previousSurface) {
+        rootStyle.setProperty("--mission-report-surface", previousSurface);
+      } else {
+        rootStyle.removeProperty("--mission-report-surface");
+      }
+    };
+  }, [reportSurface]);
+
   useMissionCapturePreviews(
     sample,
     activeTab === "flight-path" || activeTab === "media-files",
@@ -157,13 +178,7 @@ export function MissionInsightsPage({
       ) : null}
 
       {sample ? (
-        <div
-          className={
-            activeTab === "media-files"
-              ? "flex w-full min-w-0 flex-col gap-6"
-              : "flex w-full min-w-0 flex-col gap-6 bg-muted/50"
-          }
-        >
+        <div className="flex w-full min-w-0 flex-col gap-6">
           <MissionInsightsReportTabs
             renderPageHeader={(tabNavigation) => (
               <PageHeader
@@ -207,7 +222,6 @@ export function MissionInsightsPage({
                         aria-labelledby="mission-general-info-compact-title"
                         className="flex min-w-0 flex-col gap-3"
                       >
-                        {/* m-0 grid min-w-0 max-w-400 grid-cols-2 gap-x-3 gap-y-1 sm:grid-cols-3 xl:grid-cols-7 */}
                         <dl className="flex flex-col sm:flex-row min-w-0 max-w-400 gap-x-12 gap-y-1">
                           {[
                             { label: "Run ID", value: run.id, Icon: HashIcon },

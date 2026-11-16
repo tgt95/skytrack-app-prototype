@@ -352,7 +352,7 @@ export function AIModelsTab({
       accessorKey: "name",
       header: "Model",
       cell: ({ row }) => (
-        <span className="font-medium text-foreground">{row.original.name}</span>
+        <span className="text-foreground">{row.original.name}</span>
       ),
     },
     {

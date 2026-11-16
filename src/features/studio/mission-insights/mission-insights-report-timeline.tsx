@@ -397,9 +397,9 @@ function ActionsTable({
       header: "Artifacts",
       meta: { align: "right" },
       cell: ({ row }) => (
-        <span className="whitespace-nowrap text-muted-foreground tabular-nums">
+        <span className="whitespace-nowrap tabular-nums">
           {row.original.artifactCount}{" "}
-          {row.original.artifactCount === 1 ? "artifact" : "artifacts"}
+          {row.original.artifactCount <= 1 ? "artifact" : "artifacts"}
         </span>
       ),
     },
@@ -631,11 +631,15 @@ function EventStreamTable({
                       <Badge
                         count=""
                         status={row.event.status}
-                        className="size-1.5 min-w-1.5 rounded-full p-0"
+                        className={`size-2 min-w-2 rounded-full p-0 ${
+                          row.event.status === "secondary"
+                            ? "bg-muted-foreground"
+                            : ""
+                        }`}
                         aria-hidden="true"
                       />
                       <code
-                        className={`text-xs ${
+                        className={`text-sm ${
                           row.event.status === "warning"
                             ? "text-warning"
                             : row.event.status === "error"
@@ -647,7 +651,7 @@ function EventStreamTable({
                       </code>
                     </span>
                   </td>
-                  <td className="px-3 py-2 text-muted-foreground">
+                  <td className="px-3 py-2">
                     {row.event.component}
                   </td>
                 </tr>
@@ -669,13 +673,13 @@ function EventStreamTable({
                       <Badge
                         count=""
                         status="warning"
-                        className="size-1.5 min-w-1.5 rounded-full p-0"
+                        className="size-2 min-w-2 rounded-full p-0"
                         aria-hidden="true"
                       />
                       <span>
                         {row.gap.missing} events missing (sequence{" "}
                         {row.gap.from}–{row.gap.to}) ·{" "}
-                        <code className="text-xs">EVENTS_DROPPED</code>
+                        <code className="text-sm">EVENTS_DROPPED</code>
                       </span>
                     </span>
                   </td>
@@ -788,6 +792,17 @@ export function TimelineTab({
         .toLowerCase()
         .includes(eventSearch.trim().toLowerCase()),
   );
+  const firstSequence = numberValue(stream.first_sequence);
+  const lastSequence = numberValue(stream.last_sequence);
+  const eventCount = numberValue(stream.event_count);
+  const visibleEventCount = filteredEvents.length;
+  const visibleEventCountText = `${visibleEventCount.toLocaleString()} ${visibleEventCount === 1 ? "event" : "events"}`;
+  const eventCountText =
+    eventCount === null || eventCount === visibleEventCount
+      ? visibleEventCountText
+      : visibleEventCount < eventCount
+        ? `${visibleEventCount.toLocaleString()} of ${eventCount.toLocaleString()} events`
+        : `${visibleEventCountText} · report total ${eventCount.toLocaleString()}`;
 
   return (
     <div className="flex min-w-0 flex-col gap-6">
@@ -835,38 +850,25 @@ export function TimelineTab({
               className="flex min-w-0 flex-col gap-3"
               aria-labelledby="event-stream-heading"
             >
-              <header className="flex min-w-0 flex-wrap items-center justify-between gap-3">
-                <div className="flex min-w-0 flex-wrap items-baseline gap-2">
-                  <h3
-                    id="event-stream-heading"
-                    className="m-0 text-lg font-medium text-foreground"
-                  >
-                    Event stream
-                  </h3>
-                  <span className="text-xs text-muted-foreground">
-                    <code className="text-xs text-foreground">
-                      events/events.jsonl
-                    </code>
-                    {" · sequence "}
-                    {numberValue(stream.first_sequence)?.toLocaleString() ??
-                      "Not supplied"}
-                    –
-                    {numberValue(stream.last_sequence)?.toLocaleString() ??
-                      "Not supplied"}
-                    {gapRows.length
-                      ? ` · ${gapRows.length} ${
-                          gapRows.length === 1 ? "gap" : "gaps"
-                        }: sequence ${gapRows
-                          .map((gap) => `${gap.from}–${gap.to}`)
-                          .join(", ")}`
-                      : " · 0 gaps"}
-                  </span>
+              <header className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-1">
+                <div id="event-stream-heading" className="h4">
+                  Event stream
                 </div>
-                <span className="text-xs text-muted-foreground tabular-nums">
-                  Showing {filteredEvents.length} of{" "}
-                  {numberValue(stream.event_count)?.toLocaleString() ??
-                    "Not supplied"}{" "}
-                  events{droppedCount ? ` · ${droppedCount} missing` : ""}
+                <span className="w-full text-sm text-muted-foreground">
+                  <code className="text-sm text-foreground">
+                    events/events.jsonl
+                  </code>
+                  {" · "}
+                  {firstSequence !== null && lastSequence !== null
+                    ? `Sequence ${firstSequence.toLocaleString()}–${lastSequence.toLocaleString()}`
+                    : "Sequence unavailable"}
+                  {gapRows.length
+                    ? ` · ${gapRows.length} ${
+                        gapRows.length === 1 ? "gap" : "gaps"
+                      }: sequence ${gapRows
+                        .map((gap) => `${gap.from}–${gap.to}`)
+                        .join(", ")}`
+                    : " · 0 gaps"}
                 </span>
               </header>
               <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -903,6 +905,12 @@ export function TimelineTab({
                       })),
                     ]}
                   />
+                </div>
+              </div>
+              <div className="mt-2 flex min-w-0 items-baseline justify-between gap-3">
+                <div className="text-xs sub-heading tabular-nums">
+                  {eventCountText}
+                  {droppedCount ? ` · ${droppedCount} missing` : ""}
                 </div>
               </div>
               <EventStreamTable

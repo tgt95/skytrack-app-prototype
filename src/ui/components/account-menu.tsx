@@ -67,7 +67,7 @@ export function AccountMenu({
         type="button"
         className={
           compact
-            ? "flex size-8 shrink-0 items-center justify-center rounded-(--radius) border-0 bg-transparent p-0 text-(--sidebar-foreground) cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground)"
+            ? "flex size-8 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--sidebar-foreground) cursor-pointer hover:bg-(--sidebar-accent) hover:text-(--sidebar-accent-foreground)"
             : "[&:hover]:bg-(--sidebar-accent) [&:hover]:text-(--sidebar-accent-foreground) flex items-center gap-3 min-h-10.5 w-full pt-1.5 pr-2.5 pb-1.5 pl-0.5 [border:0] rounded-(--radius) bg-transparent text-(--sidebar-foreground) [font:inherit] text-[0.9375rem] text-left cursor-pointer [@media_(max-width:_61.25rem)]:w-10.5 [@media_(max-width:_61.25rem)]:justify-center [@media_(max-width:_61.25rem)]:p-0"
         }
         aria-label={`${profile.name} account menu`}

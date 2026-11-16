@@ -391,7 +391,9 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
     resetToSeed,
   });
 
-  const devScenarioTool = import.meta.env.DEV ? <DevScenarioTool /> : null;
+  const showDevScenarioTool =
+    import.meta.env.DEV || import.meta.env.BASE_URL !== "/";
+  const devScenarioTool = showDevScenarioTool ? <DevScenarioTool /> : null;
 
   if (route.kind === "not-found") {
     return (

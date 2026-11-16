@@ -1,5 +1,10 @@
-import { CheckCircleIcon } from "@phosphor-icons/react";
-import { type MissionInsightSample } from "./mission-insights-data";
+import {
+  CheckCircleIcon,
+  XCircleIcon,
+  DownloadSimpleIcon,
+  ArrowCircleDownRightIcon
+} from '@phosphor-icons/react'
+import { type MissionInsightSample } from './mission-insights-data'
 import {
   reportForSample,
   asRecord,
@@ -8,131 +13,161 @@ import {
   textValue,
   numberValue,
   missionLogicLineCount,
-  missionLogicLanguage,
-} from "./mission-insights-report-data";
+  missionLogicLanguage
+} from './mission-insights-report-data'
 import {
   copyableArtifactPath,
-  displayLocalPath,
-} from "./mission-insights-report-media-path";
-import { MediaPathActions } from "./mission-insights-report-media-path-actions";
-import { Badge } from "skytrack-ui/badge";
-import { Button } from "skytrack-ui/button";
-import { KeyValueList } from "./mission-insights-report-shared.tsx";
+  displayLocalPath
+} from './mission-insights-report-media-path'
+import { MediaPathActions } from './mission-insights-report-media-path-actions'
+import { Badge } from 'skytrack-ui/badge'
+import { Button } from 'skytrack-ui/button'
+import { KeyValueList } from './mission-insights-report-shared.tsx'
 import {
   CodeBlock,
   CodeBlockHeader,
+  CodeBlockTitle,
   CodeBlockActions,
   CodeBlockCopyButton,
-  CodeBlockContent,
-} from "skytrack-ui/code-block";
+  CodeBlockContent
+} from 'skytrack-ui/code-block'
 
-export function MissionLogicTab({
+export function MissionLogicTab ({
   sample,
-  onApply,
+  onApply
 }: {
-  sample: MissionInsightSample;
-  onApply: () => void;
+  sample: MissionInsightSample
+  onApply: () => void
 }) {
-  const report = reportForSample(sample);
-  const definition = asRecord(report.mission_definition);
-  const file = asRecord(definition.definition_file);
-  const sdk = asRecord(definition.sdk);
-  const revision = asRecord(definition.source_revision);
+  const report = reportForSample(sample)
+  const definition = asRecord(report.mission_definition)
+  const file = asRecord(definition.definition_file)
+  const sdk = asRecord(definition.sdk)
+  const revision = asRecord(definition.source_revision)
   const sourceArtifact =
     reportArtifacts(report).find(
-      (artifact) => artifact.artifact_id === definition.definition_artifact_id,
-    ) ?? {};
-  const availability = asRecord(asRecord(sourceArtifact).availability);
-  const source = missionLogicSource(sample);
-  const language = missionLogicLanguage(sample);
-  const lineCount = missionLogicLineCount(sample);
-  const availabilityState = textValue(availability.state, "Not supplied");
-  const fileSize = numberValue(file.size_bytes);
-  const localPath = displayLocalPath(sourceArtifact);
+      artifact => artifact.artifact_id === definition.definition_artifact_id
+    ) ?? {}
+  const availability = asRecord(asRecord(sourceArtifact).availability)
+  const source = missionLogicSource(sample)
+  const language = missionLogicLanguage(sample)
+  const fileName = textValue(file.name, sample.missionLogicFile)
+  const lineCount = missionLogicLineCount(sample)
+  const availabilityState = textValue(availability.state, 'Not supplied')
+  const fileSize = numberValue(file.size_bytes)
+  const localPath = displayLocalPath(sourceArtifact)
   const sdkValue = sdk.name
-    ? `${textValue(sdk.name)} ${textValue(sdk.version, "")}`
-    : "—";
+    ? `${textValue(sdk.name)} ${textValue(sdk.version, '')}`
+    : '—'
+
+  function downloadSource () {
+    const fileType =
+      language.toLowerCase() === 'python'
+        ? 'text/x-python;charset=utf-8'
+        : 'application/json;charset=utf-8'
+    const blob = new Blob([source], { type: fileType })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = fileName
+    link.click()
+    URL.revokeObjectURL(url)
+  }
 
   return (
-    <div className="grid w-full min-w-0 grid-cols-1 bg-card lg:grid-cols-[minmax(0,2.4fr)_minmax(300px,400px)]">
-      <section className="flex min-w-0 flex-col gap-4 border-b border-border p-6 lg:border-b-0 lg:border-r">
-        <header className="flex min-w-0 flex-wrap items-center gap-3">
-          <h2 className="h4 m-0">Mission logic</h2>
+    <div className='grid w-full min-w-0 grid-cols-1 bg-card lg:grid-cols-[minmax(0,2.4fr)_minmax(300px,400px)]'>
+      <section className='flex min-w-0 flex-col gap-4 border-b border-border p-6 lg:border-b-0 lg:border-r'>
+        <header className='flex min-w-0 flex-wrap items-center gap-3'>
+          <div className='h4'>Mission logic</div>
           <Badge
-            className="rounded-(--radius)"
+            className='rounded-(--radius)'
             count={
-              definition.authoring_mode === "design"
-                ? "UI design plan"
-                : "Python script"
+              definition.authoring_mode === 'design'
+                ? 'UI design plan'
+                : language === 'Python'
+                ? 'Python script'
+                : 'JSON file'
             }
-            status="secondary"
+            status='secondary'
           />
         </header>
-        <CodeBlock size="sm" lineNumbers startLine={1}>
+        <CodeBlock size='sm' lineNumbers startLine={1}>
           <CodeBlockHeader>
+            <CodeBlockTitle className='min-w-0 truncate font-mono text-sm text-muted-foreground'>
+              {fileName} · {language}
+            </CodeBlockTitle>
             <CodeBlockActions>
-              <Button variant="outline" size="sm" onClick={onApply}>
+              <Button variant='outline' size='sm' onClick={onApply}>
+                <ArrowCircleDownRightIcon />
                 Apply to Mission Design
+              </Button>
+              <Button variant='outline' size='sm' onClick={downloadSource}>
+                <DownloadSimpleIcon aria-hidden='true' />
+                Download
               </Button>
               <CodeBlockCopyButton value={source} />
             </CodeBlockActions>
           </CodeBlockHeader>
           <CodeBlockContent
             language={language.toLowerCase()}
-            className="h-[38rem] max-h-[70vh]"
+            className='h-[38rem] max-h-[70vh]'
           >
             {source}
           </CodeBlockContent>
         </CodeBlock>
       </section>
-      <section className="flex min-w-0 flex-col gap-4 p-6">
-        <h2 className="h4 m-0">Metadata</h2>
+      <section className='flex min-w-0 flex-col gap-4 p-6'>
+        <h2 className='h4 m-0'>Metadata</h2>
         <KeyValueList
-          columns="grid-cols-1"
+          columns='grid-cols-1'
           rows={[
             [
-              "File size",
+              'File size',
               fileSize === null
-                ? "Not supplied"
-                : `${fileSize.toLocaleString()} B`,
+                ? 'Not supplied'
+                : `${fileSize.toLocaleString()} B`
             ],
-            ["Line count", `${lineCount} lines`],
-            ...(definition.authoring_mode === "design"
-              ? ([["Authored in", "Mission Studio · Design"]] as const)
+            ['Line count', `${lineCount} lines`],
+            ...(definition.authoring_mode === 'design'
+              ? ([['Authored in', 'Mission Studio · Design']] as const)
               : ([
-                  ["Entrypoint", textValue(definition.entrypoint, "—")],
-                  ["SDK", sdkValue],
+                  ['Entrypoint', textValue(definition.entrypoint, '—')],
+                  ['SDK', sdkValue]
                 ] as const)),
-            ["Source revision", textValue(revision.value)],
+            ['Source revision', textValue(revision.value)],
             [
-              "Availability",
+              'Availability',
               <span
-                key="availability"
-                className="inline-flex items-center gap-1.5 text-xs text-foreground"
+                key='availability'
+                className='inline-flex items-center gap-1.5 text-foreground'
               >
-                {availabilityState === "local" ? (
+                {availabilityState === 'local' ? (
                   <CheckCircleIcon
-                    className="size-4 shrink-0 text-success"
-                    weight="fill"
-                    aria-hidden="true"
+                    className='size-4 shrink-0 text-success'
+                    weight='fill'
+                    aria-hidden='true'
                   />
                 ) : (
-                  <Badge dot status="secondary" />
+                  <XCircleIcon
+                    className='size-4 shrink-0 text-muted-foreground'
+                    weight='fill'
+                    aria-hidden='true'
+                  />
                 )}
-                {availabilityState === "local" ? "Local" : availabilityState}
-              </span>,
+                {availabilityState === 'local' ? 'Local' : availabilityState}
+              </span>
             ],
-            ...(definition.authoring_mode === "design"
+            ...(definition.authoring_mode === 'design'
               ? []
               : ([
                   [
-                    "Local path",
+                    'Local path',
                     <span
-                      className="flex min-w-0 items-center gap-2"
-                      key="path"
+                      className='flex min-w-0 items-center gap-2'
+                      key='path'
                     >
                       <code
-                        className="min-w-0 flex-1 truncate text-foreground"
+                        className='min-w-0 flex-1 truncate text-foreground'
                         title={localPath}
                       >
                         {localPath}
@@ -141,12 +176,12 @@ export function MissionLogicTab({
                         value={localPath}
                         copyValue={copyableArtifactPath(sourceArtifact)}
                       />
-                    </span>,
-                  ],
-                ] as const)),
+                    </span>
+                  ]
+                ] as const))
           ]}
         />
       </section>
     </div>
-  );
+  )
 }

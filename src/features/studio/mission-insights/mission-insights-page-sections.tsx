@@ -40,13 +40,13 @@ export function DetailSection({
   const headingId = useId();
   return (
     <section
-      className={`flex min-w-0 flex-col gap-4 rounded-(--radius) border border-border bg-(--card) p-6 shadow-xs ${className}`}
+      className={`flex min-w-0 flex-col gap-4 rounded-(--radius) not-[.no-border]:border not-[.no-border]:border-border bg-(--card) p-6 shadow-xs ${className} `}
       aria-labelledby={headingId}
     >
       <header className="flex min-w-0 flex-wrap items-center justify-between gap-3">
-        <h2 id={headingId} className="h4 m-0">
+        <div id={headingId} className="h4">
           {title}
-        </h2>
+        </div>
         {toolbar ? (
           <div className="flex min-w-0 items-center gap-2">{toolbar}</div>
         ) : null}
