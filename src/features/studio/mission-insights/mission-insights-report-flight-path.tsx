@@ -261,7 +261,6 @@ function FlightPathSummary ({
                 <Badge
                   aria-label={touchdownLabel}
                   count={touchdownLabel}
-                  size='sm'
                   status={touchdownStatus}
                 />
               </span>
