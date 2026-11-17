@@ -1,9 +1,21 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChartScatterIcon, AirplaneLandingIcon } from "@phosphor-icons/react";
 import { Badge } from "skytrack-ui/badge";
-import { Button } from "skytrack-ui/button";
 import { DataTable, type DataTableColumnDef } from "skytrack-ui/data-table";
 import { PageHeader } from "skytrack-ui/page-header";
+import {
+  SplitButton,
+  SplitButtonAction,
+  SplitButtonTrigger,
+} from "skytrack-ui/split-button";
+import {
+  Menu,
+  MenuItem,
+  MenuPopup,
+  MenuPortal,
+  MenuPositioner,
+  MenuTrigger,
+} from "skytrack-ui/menu";
 import {
   missionInsightsSearch,
   missionReportHref,
@@ -304,35 +316,51 @@ function buildColumns(
       header: "Action",
       enableSorting: false,
       enableHiding: false,
-      cell: ({ row }) => (
-        <div
-          className="flex flex-row flex-wrap gap-2"
-          role="group"
-          aria-label={`Actions for ${row.original.runName}`}
-        >
-          <Button
+      cell: ({ row }) => {
+        const reportUnavailable = row.original.status === "Unknown";
+        const openMissionInsights = () => {
+          const sample = reportSampleFor(row.original);
+          if (sample) onOpenMissionInsights(sample);
+        };
+
+        return (
+          <SplitButton
             variant="outline"
             size="sm"
-            disabled={row.original.status === "Unknown"}
-            onClick={() => {
-              const sample = reportSampleFor(row.original);
-              if (sample) onOpenMissionInsights(sample);
-            }}
+            disabled={reportUnavailable}
             title={
-              row.original.status === "Unknown"
+              reportUnavailable
                 ? "Report not generated: the run ended before reporting started"
                 : undefined
             }
+            aria-label={`Actions for ${row.original.runName}`}
           >
-            <ChartScatterIcon />
-            Mission Insights
-          </Button>
-          <Button variant="outline" size="sm" disabled>
-            <AirplaneLandingIcon />
-            Post Flight Analysis
-          </Button>
-        </div>
-      ),
+            <SplitButtonAction onClick={openMissionInsights}>
+              <ChartScatterIcon aria-hidden="true" />
+              View report
+            </SplitButtonAction>
+            <Menu>
+              <MenuTrigger
+                render={<SplitButtonTrigger aria-label="More report actions" />}
+              />
+              <MenuPortal>
+                <MenuPositioner side="bottom" align="end" sideOffset={4}>
+                  <MenuPopup>
+                    <MenuItem onClick={openMissionInsights}>
+                      <ChartScatterIcon aria-hidden="true" />
+                      Mission Insights
+                    </MenuItem>
+                    <MenuItem disabled>
+                      <AirplaneLandingIcon aria-hidden="true" />
+                      Post Flight Analysis
+                    </MenuItem>
+                  </MenuPopup>
+                </MenuPositioner>
+              </MenuPortal>
+            </Menu>
+          </SplitButton>
+        );
+      },
     },
   ];
 }

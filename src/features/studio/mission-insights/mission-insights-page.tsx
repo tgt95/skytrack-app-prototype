@@ -26,6 +26,17 @@ import {
 } from "skytrack-ui/alert-dialog";
 import { PageHeader } from "skytrack-ui/page-header";
 import {
+  ToastClose,
+  ToastContent,
+  ToastPortal,
+  ToastProvider,
+  ToastRoot,
+  ToastTitle,
+  ToastViewport,
+  createToastManager,
+  useToastManager,
+} from "skytrack-ui/toast";
+import {
   missionInsightsTabSearch,
   missionReportHref,
   parseMissionInsightsReportTab,
@@ -38,6 +49,22 @@ import { MissionInsightsReportTabs } from "./mission-insights-report-tabs";
 import { MissionInsightsPageToolbar } from "./mission-insights-page-toolbar";
 import { useMissionCapturePreviews } from "./mission-insights-simulated-captures";
 import { getMissionReportSurface } from "./mission-insights-surface";
+
+const missionInsightsToastManager = createToastManager();
+
+function MissionInsightsToastList() {
+  const { toasts } = useToastManager();
+  return toasts.map((toast) => (
+    <ToastRoot key={toast.id} toast={toast}>
+      <ToastContent>
+        <div className="min-w-0 flex-1">
+          <ToastTitle />
+        </div>
+        <ToastClose size="icon" variant="ghost" aria-label="Dismiss toast" />
+      </ToastContent>
+    </ToastRoot>
+  ));
+}
 
 function noSampleMessage(run: MissionReportRun | null) {
   if (!run)
@@ -64,7 +91,6 @@ export function MissionInsightsPage({
   const [applyOpen, setApplyOpen] = useState(false);
   const [replayTime, setReplayTime] = useState(0);
   const [seekNotice, setSeekNotice] = useState("");
-  const [copyNotice, setCopyNotice] = useState("");
   const [activeTab, setActiveTab] = useState(() =>
     parseMissionInsightsReportTab(window.location.search),
   );
@@ -130,11 +156,15 @@ export function MissionInsightsPage({
   async function copyReportUrl() {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      setCopyNotice("Report URL copied.");
+      missionInsightsToastManager.add({
+        title: "Report URL copied.",
+        type: "success",
+      });
     } catch {
-      setCopyNotice(
-        "Could not copy the report URL. Copy it from the address bar.",
-      );
+      missionInsightsToastManager.add({
+        title: "Could not copy report URL. Copy it from the address bar.",
+        type: "error",
+      });
     }
   }
 
@@ -169,6 +199,13 @@ export function MissionInsightsPage({
       aria-label="Mission Insights"
       data-testid="ms-mission-insights"
     >
+      <ToastProvider toastManager={missionInsightsToastManager}>
+        <ToastPortal>
+          <ToastViewport className="fixed bottom-4 left-4 right-auto mx-0 flex max-w-sm flex-col-reverse">
+            <MissionInsightsToastList />
+          </ToastViewport>
+        </ToastPortal>
+      </ToastProvider>
       {!sample ? (
         <PageHeader
           title="Mission Insights"
@@ -308,11 +345,6 @@ export function MissionInsightsPage({
                       status="warning"
                     />
                   )}
-                  {copyNotice ? (
-                    <span role="status" className="text-muted-foreground">
-                      {copyNotice}
-                    </span>
-                  ) : null}
                 </section>
                 {tabNavigation}
               </PageHeader>
