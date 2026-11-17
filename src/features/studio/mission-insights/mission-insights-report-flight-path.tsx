@@ -3,7 +3,7 @@ import {
   ArrowCounterClockwiseIcon,
   BuildingIcon,
   CameraIcon,
-  SlidersHorizontalIcon
+  GearIcon
 } from '@phosphor-icons/react'
 import {
   type JsonRecord,
@@ -303,7 +303,7 @@ function FlightPathLegend ({
       className={`flex min-w-0 flex-col gap-4 p-6 ${className}`}
     >
       <div className='flex flex-col gap-1 text-sm text-muted-foreground'>
-        <span className='shrink-0'>Altitude heatmap</span>
+        <span className='text-foreground shrink-0'>Altitude heatmap</span>
         <div className='flex w-full items-center gap-2'>
           <span>{minAltitude.toFixed(0)} m</span>
           <span
@@ -964,7 +964,7 @@ export function FlightPathMap ({
               </circle>
             ) : null}
           </svg>
-          <div className='absolute right-2 bottom-2 z-30'>
+          <div className='absolute right-2 bottom-2 z-1'>
             <Popover>
               <PopoverTrigger
                 aria-label='Map layers'
@@ -974,7 +974,7 @@ export function FlightPathMap ({
                     size='icon-sm'
                     className='border-border !bg-card shadow-md'
                   >
-                    <SlidersHorizontalIcon aria-hidden='true' />
+                    <GearIcon aria-hidden='true' />
                   </Button>
                 }
               />

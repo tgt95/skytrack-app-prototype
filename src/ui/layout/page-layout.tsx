@@ -267,7 +267,7 @@ export default function StudioShell({
           className=" [@media_(max-width:_61.25rem)]:flex-col flex flex-[1_1_auto] min-h-0"
           data-testid="ms-body"
         >
-          {!hideStudioChrome && !reportSubpageOpen ? (
+          {!hideStudioChrome ? (
             <StudioLeftRail
               appTab={appTab}
               orientation={appTabsOrientation}
@@ -338,7 +338,7 @@ export default function StudioShell({
           />
         </div>
       </ReportViewTabsShell>
-      {!hideStudioChrome && !reportSubpageOpen ? (
+      {!hideStudioChrome && appTab !== "report" ? (
         <StudioStatusFooter
           dirty={dirty}
           ui={{ stage, selection, settings, rightOpen }}

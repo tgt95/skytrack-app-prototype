@@ -336,7 +336,6 @@ function buildColumns(
             aria-label={`Actions for ${row.original.runName}`}
           >
             <SplitButtonAction onClick={openMissionInsights}>
-              <ChartScatterIcon aria-hidden="true" />
               View report
             </SplitButtonAction>
             <Menu>

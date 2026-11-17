@@ -72,7 +72,7 @@ export function MediaBrowserFilters({
     <Sidebar
       collapsible="none"
       aria-label="Media filters"
-      className="h-full min-h-0 border-sidebar-border bg-sidebar text-sidebar-foreground [&_.sidebar-content]:flex-col [&_.sidebar-content]:gap-0 [&_.sidebar-group]:border-b [&_.sidebar-group]:border-sidebar-border [&_.sidebar-group]:last:border-b-0 [&_.sidebar-group-label]:px-4 [&_.sidebar-group-label]:py-3 [&_.sidebar-group-label]:text-xs [&_.sidebar-group-label]:font-medium [&_.sidebar-group-label]:text-sidebar-foreground/70 [&_.sidebar-menu-button]:px-4 [&_.sidebar-menu-button]:py-3 [&_.sidebar-menu-button]:text-sm"
+      className="h-full min-h-0 border-sidebar-border bg-card text-sidebar-foreground [&_.sidebar-content]:flex-col [&_.sidebar-content]:gap-0 [&_.sidebar-group]:border-b [&_.sidebar-group]:border-sidebar-border [&_.sidebar-group]:last:border-b-0 [&_.sidebar-group-label]:px-4 [&_.sidebar-group-label]:py-3 [&_.sidebar-group-label]:text-xs [&_.sidebar-group-label]:font-medium [&_.sidebar-group-label]:text-sidebar-foreground/70 [&_.sidebar-menu-button]:px-4 [&_.sidebar-menu-button]:py-3 [&_.sidebar-menu-button]:text-sm"
     >
       {/* <SidebarHeader className="px-4 py-3">
         <span className="text-xs sub-heading text-sidebar-foreground/70">

@@ -84,10 +84,7 @@ export function ShortcutsDialog({
           className=" w-[min(56rem,calc(100vw-2rem))] max-w-none max-h-[calc(100dvh-2rem)] overflow-y-auto"
         >
           <DialogHeader>
-            <DialogTitle className="heading">Keyboard shortcuts</DialogTitle>
-            <DialogDescription>
-              Shortcuts are ignored while typing in fields or the code editor.
-            </DialogDescription>
+            <DialogTitle>Keyboard shortcuts</DialogTitle>
           </DialogHeader>
           <div
             className=" grid grid-cols-[minmax(0,1fr)] gap-5"
@@ -96,27 +93,27 @@ export function ShortcutsDialog({
             {SHORTCUT_GROUPS.map((group) => (
               <section
                 key={group.title}
-                className=" min-w-0"
+                className="flex flex-col gap-4 not-first:pt-4 not-first:border-t not-first:border-t-border min-w-0"
                 aria-labelledby={`ms-shortcuts-${group.title.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-")}`}
                 data-testid="ms-shortcut-group"
               >
-                <h3
+                <div
                   id={`ms-shortcuts-${group.title.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-")}`}
-                  className="heading mt-0 mx-0 mb-2.5 pt-2.5 border-t border-t-border text-[0.9375rem] font-semibold leading-[1.4]"
+                  className="h6"
                 >
                   {group.title}
-                </h3>
+                </div>
                 <ul className="ms-shortcuts [list-style:none] m-0 p-0 flex flex-col gap-2.5">
                   {group.shortcuts.map((shortcut) => (
                     <li
                       key={shortcut.keys}
                       className={
-                        ' flex min-w-0 gap-3 items-center justify-between text-sm leading-[1.4] **:data-[slot="badge-count"]:flex-[0_0_auto] **:data-[slot="badge-count"]:whitespace-nowrap'
+                        ' flex min-w-0 gap-3 items-center justify-between text-sm **:data-[slot="badge-count"]:flex-[0_0_auto] **:data-[slot="badge-count"]:whitespace-nowrap'
                       }
                       data-testid="ms-shortcut-row"
                     >
                       <span>{shortcut.what}</span>
-                      <Badge className="rounded-(--radius)" count={shortcut.keys} status="outline" />
+                      <Badge count={shortcut.keys} status="outline" />
                     </li>
                   ))}
                 </ul>
