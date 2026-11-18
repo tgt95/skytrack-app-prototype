@@ -1,9 +1,11 @@
 import {
   CaretDownIcon,
   CaretUpIcon,
+  GearIcon,
   QuestionIcon,
 } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
+import { Switch, SwitchThumb } from "skytrack-ui/switch";
 import { Alert, AlertDescription } from "skytrack-ui/alert";
 import {
   Select,
@@ -38,6 +40,7 @@ import { InspectorField } from "@/features/design/controls/inspector-field";
 import {
   SAFETY_OPTIONS,
   safetyModeOf,
+  windEnvironmentOf,
   type SafetyMode,
   type StudioMission,
   type ValidationIssue,
@@ -50,6 +53,7 @@ export interface MissionSettingsCardProps {
   onOpenChange: (open: boolean) => void;
   onUpdateMission: (next: StudioMission, label?: string) => void;
   onAnnounce: (message: string) => void;
+  onOpenWindSettings: () => void;
 }
 
 export function MissionChecksCard({
@@ -95,8 +99,10 @@ export default function MissionSettingsCard({
   onOpenChange,
   onUpdateMission,
   onAnnounce,
+  onOpenWindSettings,
 }: MissionSettingsCardProps) {
   const unitSystem = useMeasurementSystem();
+  const windEnvironment = windEnvironmentOf(mission);
   const takeoffChoices = Array.from(
     new Set([mission.takeoffAltM, 2, 5, 10, 12, 15, 20, 30]),
   ).sort((a, b) => a - b);
@@ -248,6 +254,39 @@ export default function MissionSettingsCard({
                 </SelectPositioner>
               </SelectPortal>
             </Select>
+          </InspectorField>
+          <InspectorField label="Wind environment" labelId="ms-wind-enabled-label">
+            <div className="flex w-full items-center justify-between gap-3">
+              <Switch
+                checked={windEnvironment.enabled}
+                size="sm"
+                aria-labelledby="ms-wind-enabled-label"
+                data-testid="ms-wind-enabled"
+                onCheckedChange={(enabled: boolean) =>
+                  onUpdateMission(
+                    {
+                      ...mission,
+                      windEnvironment: { ...windEnvironment, enabled },
+                    },
+                    `Wind environment ${enabled ? "enabled" : "disabled"}.`,
+                  )
+                }
+              >
+                <SwitchThumb />
+              </Switch>
+              <SkyTooltip>
+                <Button
+                  size="icon-sm"
+                  variant="ghost"
+                  aria-label="Wind environment settings"
+                  title="Wind environment settings"
+                  data-testid="ms-wind-settings-open"
+                  onClick={onOpenWindSettings}
+                >
+                  <GearIcon aria-hidden="true" />
+                </Button>
+              </SkyTooltip>
+            </div>
           </InspectorField>
         </div>
       ) : null}

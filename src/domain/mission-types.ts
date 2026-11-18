@@ -198,6 +198,8 @@ export interface StudioMission {
       absent means obstacle avoidance; flows through snapshots/undo as part of
       the mission object. */
   safetyMode?: SafetyMode;
+  /** Mission-wide visual wind field. Missing legacy data resolves to OFF. */
+  windEnvironment?: WindEnvironmentSettings;
   routes?: MissionRouteMeta[];
   /** User-created Route/Area block order. Missing means legacy Route-first order. */
   sequenceOrder?: MissionSequenceItem[];
@@ -214,6 +216,34 @@ export interface StudioMission {
 
 export type SafetyMode = "obstacle" | "privacy" | "off";
 
+export type WindControlMode = "force" | "equivalent-speed";
+
+export interface WindEnvironmentSettings {
+  enabled: boolean;
+  controlBy: WindControlMode;
+  forceN: number;
+  speedMS: number;
+  azimuthDeg: number;
+  elevationDeg: number;
+}
+
+export const DEFAULT_WIND_ENVIRONMENT: WindEnvironmentSettings = {
+  enabled: false,
+  controlBy: "equivalent-speed",
+  forceN: 0.5,
+  speedMS: 6,
+  azimuthDeg: 120,
+  elevationDeg: 0,
+};
+
+export const WIND_AIR_DENSITY_KG_M3 = 1.225;
+export const WIND_CD_AREA_M2 = 0.06;
+
+export function equivalentWindSpeedFromForce(forceN: number): number {
+  const force = Math.min(20, Math.max(0, Number.isFinite(forceN) ? forceN : 0));
+  return Math.sqrt((2 * force) / (WIND_AIR_DENSITY_KG_M3 * WIND_CD_AREA_M2));
+}
+
 export const SAFETY_OPTIONS: { value: SafetyMode; label: string }[] = [
   { value: "obstacle", label: "Obstacle avoidance" },
   { value: "privacy", label: "People / Privacy" },
@@ -222,6 +252,31 @@ export const SAFETY_OPTIONS: { value: SafetyMode; label: string }[] = [
 
 export function safetyModeOf(mission: StudioMission): SafetyMode {
   return mission.safetyMode ?? "obstacle";
+}
+
+export function windEnvironmentOf(
+  mission: Pick<StudioMission, "windEnvironment">,
+): WindEnvironmentSettings {
+  return mission.windEnvironment ?? DEFAULT_WIND_ENVIRONMENT;
+}
+
+export function normalizeWindEnvironment(value: unknown): WindEnvironmentSettings {
+  if (typeof value !== "object" || value === null) {
+    return { ...DEFAULT_WIND_ENVIRONMENT };
+  }
+  const raw = value as Partial<WindEnvironmentSettings>;
+  const bounded = (candidate: unknown, fallback: number, min: number, max: number) =>
+    typeof candidate === "number" && Number.isFinite(candidate)
+      ? Math.min(max, Math.max(min, candidate))
+      : fallback;
+  return {
+    enabled: raw.enabled === true,
+    controlBy: raw.controlBy === "force" ? "force" : "equivalent-speed",
+    forceN: bounded(raw.forceN, DEFAULT_WIND_ENVIRONMENT.forceN, 0, 20),
+    speedMS: bounded(raw.speedMS, DEFAULT_WIND_ENVIRONMENT.speedMS, 0, 20),
+    azimuthDeg: bounded(raw.azimuthDeg, DEFAULT_WIND_ENVIRONMENT.azimuthDeg, 0, 360),
+    elevationDeg: bounded(raw.elevationDeg, DEFAULT_WIND_ENVIRONMENT.elevationDeg, -90, 90),
+  };
 }
 
 export interface VehicleSpec {
@@ -312,6 +367,7 @@ export function emptyMission(): StudioMission {
     targetSpeedMS: 2,
     returnHomeOnEnd: true,
     cameraSafetyCheck: true,
+    windEnvironment: { ...DEFAULT_WIND_ENVIRONMENT },
     routes: [],
     waypoints: [],
     areas: [],

@@ -3,6 +3,9 @@ export {
   DEFAULT_AREA_RECON_FLIGHT_SETTINGS,
   DEFAULT_MISSION_ORIGIN,
   DEFAULT_RECON_FLIGHT_SETTINGS,
+  DEFAULT_WIND_ENVIRONMENT,
+  WIND_AIR_DENSITY_KG_M3,
+  WIND_CD_AREA_M2,
   MOCK_RECON_CAMERA_PROFILE,
   SAFETY_OPTIONS,
   VEHICLES,
@@ -11,6 +14,9 @@ export {
   emptyMission,
   getAreaFlightAltitudeM,
   safetyModeOf,
+  equivalentWindSpeedFromForce,
+  normalizeWindEnvironment,
+  windEnvironmentOf,
   uid,
   vehicleSpecOf
 } from './mission-types'
@@ -48,7 +54,9 @@ export type {
   ValidationIssue,
   VehicleSpec,
   Waypoint,
-  WaypointAction
+  WaypointAction,
+  WindControlMode,
+  WindEnvironmentSettings
 } from './mission-types'
 
 export {

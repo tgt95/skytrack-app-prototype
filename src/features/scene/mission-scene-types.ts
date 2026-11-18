@@ -3,6 +3,7 @@ import type { MissionBasemapStyle } from './basemaps'
 import type { SimPlan } from '@/features/simulation/simulation'
 
 export interface MissionSceneHandle {
+  getCameraHeading: () => number
   downloadMapImage: () => boolean
   resetCamera: () => void
   focusVehicle: () => void

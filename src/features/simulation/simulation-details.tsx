@@ -10,7 +10,7 @@ import {
   ProgressIndicator,
   ProgressTrack
 } from 'skytrack-ui/progress'
-import type { StudioMission } from '@/domain/mission-model'
+import { equivalentWindSpeedFromForce, windEnvironmentOf, type StudioMission } from '@/domain/mission-model'
 import type {
   SimPlan,
   SimSettings,
@@ -71,6 +71,10 @@ export default function SimulationDetails ({
   settings
 }: SimulationDetailsProps) {
   const unitSystem = useMeasurementSystem()
+  const wind = windEnvironmentOf(mission)
+  const windSpeedMS = wind.controlBy === 'force'
+    ? equivalentWindSpeedFromForce(wind.forceN)
+    : wind.speedMS
   const running = status === 'running'
   const paused = status === 'paused'
   const pct = totalT > 0 ? Math.min(100, (simT / totalT) * 100) : 0
@@ -197,8 +201,10 @@ export default function SimulationDetails ({
       </Accordion>
       <p className='px-3 text-xs text-muted-foreground'>
         {settings.runTimes}× run ·{' '}
-        {settings.speedFactor.toFixed(2).replace(/\.?0+$/, '')}× speed · wind{' '}
-        {speedToDisplay(settings.windMS, unitSystem)} {speedUnit(unitSystem)} ·{' '}
+        {settings.speedFactor.toFixed(2).replace(/\.?0+$/, '')}× speed ·{' '}
+        {wind.enabled
+          ? `wind ${speedToDisplay(windSpeedMS, unitSystem)} ${speedUnit(unitSystem)} · `
+          : 'wind off · '}
         {settings.reducedMotion ? 'reduced motion' : 'full motion'}
         {settings.mockFailureAtSeq > 0
           ? ` · failure at WP ${settings.mockFailureAtSeq}`

@@ -5,7 +5,6 @@ import { memo, useState } from "react";
 import { Tabs, TabsList, TabsTab } from "skytrack-ui/tabs";
 import {
   type CameraActionKind,
-  type MissionArea,
   type SceneSelection,
   type StudioMission,
   type ValidationIssue,
@@ -17,11 +16,14 @@ import { DesignSequenceBlocks } from "./sequence/design-sequence-blocks";
 import MissionSettingsCard, {
   MissionChecksCard,
 } from "./panels/mission-settings-card";
+import { MissionSettingsToastHost } from "./panels/mission-settings-toast";
 import CodeInspectorPanel from "./panels/code-inspector-panel";
 import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 import AvoidInspectorCard from "./panels/avoid-inspector-card";
 import type { SequenceDropPosition } from "./sequence/sequence-drag";
 import useDesignPanelState from "./use-design-panel-state";
+import { WindEnvironmentSettingsSubpage } from "./panels/wind-environment-settings-subpage";
+import { useAreaEditActions } from "./use-area-edit-actions";
 export { ZoneDraftPanel } from "./drawing/zone-draft-panel";
 
 export interface DesignPanelProps {
@@ -157,68 +159,52 @@ function DesignPanel(props: DesignPanelProps) {
     cancelPreviewWaypoint,
   } = useDesignPanelState(props);
   const [settingsOpen, setSettingsOpen] = useState(true);
+  const [windSettingsOpen, setWindSettingsOpen] = useState(false);
+  const { startAreaEdit, previewAreaDraft, cancelAreaEdit, commitAreaEdit } = useAreaEditActions({
+    mission,
+    editingAvoidId,
+    onCancelPreview,
+    onDetailEditStateChange,
+    onPreviewMission,
+    onCommitPreview,
+    setEditingAreaId,
+    setEditingAvoidId,
+    setAreaDraft,
+    setAvoidDraft,
+  });
+
+  const openWindSettings = () => setWindSettingsOpen(true);
 
   if (reconTarget !== null) {
     return (
-      <ReconSettingsPage
-        codeView={codeView}
-        target={reconTarget}
-        value={reconDraft}
-        onChange={updateReconDraft}
-        onBack={cancelReconSettings}
-        onCancel={cancelReconSettings}
-        onSave={commitReconSettings}
+      <>
+        <MissionSettingsToastHost />
+        <ReconSettingsPage
+          codeView={codeView}
+          target={reconTarget}
+          value={reconDraft}
+          onChange={updateReconDraft}
+          onBack={cancelReconSettings}
+          onCancel={cancelReconSettings}
+          onSave={commitReconSettings}
+        />
+      </>
+    );
+  }
+
+  if (windSettingsOpen) {
+    return (
+      <WindEnvironmentSettingsSubpage
+        mission={mission}
+        onUpdateMission={onUpdateMission}
+        onClose={() => setWindSettingsOpen(false)}
       />
     );
   }
 
-  const startAreaEdit = (area: MissionArea) => {
-    if (editingAvoidId) onCancelPreview();
-    setEditingAvoidId(null);
-    setAvoidDraft(null);
-    onDetailEditStateChange(true);
-    setEditingAreaId(area.id);
-    setAreaDraft({
-      ...area,
-      lineSpacingM: area.lineSpacingM ?? 6,
-      orientationDeg: area.orientationDeg ?? 0,
-      paddingM: area.paddingM ?? 0,
-    });
-  };
-
-  const previewAreaDraft = (areaId: string, nextDraft: MissionArea) => {
-    setAreaDraft(nextDraft);
-    onPreviewMission({
-      ...mission,
-      areas: mission.areas.map((item) =>
-        item.id === areaId ? nextDraft : item,
-      ),
-    });
-  };
-
-  const cancelAreaEdit = () => {
-    onCancelPreview();
-    setEditingAreaId(null);
-    setAreaDraft(null);
-    onDetailEditStateChange(false);
-  };
-
-  const commitAreaEdit = (areaId: string, nextDraft: MissionArea) => {
-    onCommitPreview(
-      {
-        ...mission,
-        areas: mission.areas.map((item) =>
-          item.id === areaId ? nextDraft : item,
-        ),
-      },
-      "Area scan settings committed.",
-    );
-    setEditingAreaId(null);
-    setAreaDraft(null);
-    onDetailEditStateChange(false);
-  };
-
   return (
+    <>
+    <MissionSettingsToastHost />
     <div
       className={`ms-inspector flex flex-col gap-3${codeView ? " ms-inspector-code h-full min-h-0 box-border" : ""}`}
       data-testid="ms-design-panel"
@@ -268,6 +254,7 @@ function DesignPanel(props: DesignPanelProps) {
                 onOpenChange={setSettingsOpen}
                 onUpdateMission={onUpdateMission}
                 onAnnounce={onAnnounce}
+                onOpenWindSettings={openWindSettings}
               />
             )}
         </div>
@@ -406,6 +393,7 @@ function DesignPanel(props: DesignPanelProps) {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

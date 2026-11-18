@@ -3,6 +3,7 @@ import { Button } from "skytrack-ui/button";
 import type { useDrawingSession } from "@/features/studio/use-drawing-session";
 import type { useStudioSimulationModel } from "@/features/studio/use-studio-simulation-model";
 import type { useStudioUiState } from "@/features/studio/use-studio-ui-state";
+import { equivalentWindSpeedFromForce, windEnvironmentOf, type StudioMission } from "@/domain/mission-model";
 import {
   formatDistance,
   speedToDisplay,
@@ -12,7 +13,7 @@ import {
 
 type FooterUiState = Pick<
   ReturnType<typeof useStudioUiState>,
-  "stage" | "selection" | "settings" | "rightOpen"
+  "stage" | "selection" | "rightOpen"
 >;
 type FooterDrawingState = Pick<
   ReturnType<typeof useDrawingSession>,
@@ -24,6 +25,7 @@ type FooterSimulationState = Pick<
 >;
 
 interface StudioStatusFooterProps {
+  mission: StudioMission;
   dirty: boolean;
   ui: FooterUiState;
   drawing: FooterDrawingState;
@@ -33,6 +35,7 @@ interface StudioStatusFooterProps {
 }
 
 export default function StudioStatusFooter({
+  mission,
   dirty,
   ui,
   drawing,
@@ -42,7 +45,14 @@ export default function StudioStatusFooter({
 }: StudioStatusFooterProps) {
   const unitSystem = useMeasurementSystem();
   const simActive = ui.stage === "simulation";
-  const statusLine = `${ui.stage === "design" ? "Design" : "Simulation"} · ${drawing.tool} tool${ui.selection ? ` · selected ${ui.selection.kind}` : ""}${drawing.pending.length > 0 ? ` · ${drawing.pending.length} pts` : ""} · sim ${simulation.sim.status}${simulation.plan ? ` · t=${simulation.sim.simT.toFixed(1)}s/${simulation.totalT.toFixed(0)}s` : ""}${simulation.telemetry && simActive ? ` · home ${formatDistance(simulation.telemetry.homeDistM, unitSystem, 0)} · wind ${speedToDisplay(ui.settings.windMS, unitSystem)} ${speedUnit(unitSystem)} · GPS RTK` : ""}${dirty ? " · unsaved" : " · saved"}`;
+  const wind = windEnvironmentOf(mission);
+  const windSpeedMS = wind.controlBy === "force"
+    ? equivalentWindSpeedFromForce(wind.forceN)
+    : wind.speedMS;
+  const windStatus = wind.enabled
+    ? `wind ${speedToDisplay(windSpeedMS, unitSystem)} ${speedUnit(unitSystem)}`
+    : "wind off";
+  const statusLine = `${ui.stage === "design" ? "Design" : "Simulation"} · ${drawing.tool} tool${ui.selection ? ` · selected ${ui.selection.kind}` : ""}${drawing.pending.length > 0 ? ` · ${drawing.pending.length} pts` : ""} · sim ${simulation.sim.status}${simulation.plan ? ` · t=${simulation.sim.simT.toFixed(1)}s/${simulation.totalT.toFixed(0)}s` : ""}${simulation.telemetry && simActive ? ` · home ${formatDistance(simulation.telemetry.homeDistM, unitSystem, 0)} · ${windStatus} · GPS RTK` : ""}${dirty ? " · unsaved" : " · saved"}`;
 
   return (
     <footer

@@ -27,11 +27,6 @@
       "why": "Camera pointer arbitration, gesture state, listener ordering, and disposal are one lifecycle; splitting solely for line count would scatter cancellation and restoration ownership."
     },
     {
-      "path": "src/features/design/design-panel.tsx",
-      "maxLines": 412,
-      "why": "Temporarily accept the current Mission Studio release state per Owner authorization to defer project line limits during the 2026-10-27 Pages release. Track a focused composition refactor in the workspace follow-up record and remove this exception when the file returns to the 400-line target."
-    },
-    {
       "path": "src/features/design/sequence/ai-workflow-card.tsx",
       "maxLines": 654,
       "why": "This card currently owns the AI workflow editor interaction and preview state. Keep the ceiling fixed and split only after a focused component boundary is reviewed."

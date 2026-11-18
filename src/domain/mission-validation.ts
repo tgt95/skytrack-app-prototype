@@ -1,5 +1,6 @@
 import {
   canonicalizeReconSettings,
+  normalizeWindEnvironment,
   vehicleSpecOf,
   type AvoidZone,
   type CameraActionKind,
@@ -251,6 +252,16 @@ function isSequenceOrderItem(value: unknown): value is MissionSequenceItem {
     typeof value.id === 'string'
 }
 
+function isWindEnvironment(value: unknown): boolean {
+  return isRecord(value) &&
+    typeof value.enabled === 'boolean' &&
+    (value.controlBy === 'force' || value.controlBy === 'equivalent-speed') &&
+    isFiniteNumber(value.forceN) && value.forceN >= 0 && value.forceN <= 20 &&
+    isFiniteNumber(value.speedMS) && value.speedMS >= 0 && value.speedMS <= 20 &&
+    isFiniteNumber(value.azimuthDeg) && value.azimuthDeg >= 0 && value.azimuthDeg <= 360 &&
+    isFiniteNumber(value.elevationDeg) && value.elevationDeg >= -90 && value.elevationDeg <= 90;
+}
+
 function isSnapshotMission(value: unknown): value is StudioMission {
   if (!isRecord(value)) return false
   if (typeof value.id !== 'string' || typeof value.name !== 'string' ||
@@ -261,6 +272,7 @@ function isSnapshotMission(value: unknown): value is StudioMission {
       !Array.isArray(value.waypoints) || !value.waypoints.every(isWaypoint)) return false
   if (value.worldType !== undefined && value.worldType !== '2D' && value.worldType !== '3D') return false
   if (value.safetyMode !== undefined && !['obstacle', 'privacy', 'off'].includes(value.safetyMode as string)) return false
+  if (value.windEnvironment !== undefined && !isWindEnvironment(value.windEnvironment)) return false
   if (value.droneId !== undefined && (typeof value.droneId !== 'string' || value.droneId.length > 128)) return false
   if (value.worldId !== undefined && (typeof value.worldId !== 'string' || value.worldId.length > 128)) return false
   if (value.routes !== undefined && (!Array.isArray(value.routes) || !value.routes.every(isRoute))) return false
@@ -279,6 +291,9 @@ export function missionFromSnapshot(raw: string): StudioMission {
     throw new TypeError('Saved mission data has an invalid shape.')
   }
   const mission = parsed
+  if (mission.windEnvironment !== undefined) {
+    mission.windEnvironment = normalizeWindEnvironment(mission.windEnvironment)
+  }
   if (typeof mission.droneId !== 'string' || mission.droneId.length > 128) delete mission.droneId
   if (typeof mission.worldId !== 'string' || mission.worldId.length > 128) delete mission.worldId
   // Per-mission origin survives save/load/undo as part of the snapshot.

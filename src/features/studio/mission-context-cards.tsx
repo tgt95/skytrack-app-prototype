@@ -1,7 +1,7 @@
 import {
   CaretDownIcon,
   DroneIcon,
-  MapTrifoldIcon,
+  GlobeHemisphereWestIcon,
   PlusIcon,
 } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
@@ -127,7 +127,7 @@ export function MissionContextCards({
           onClick={onOpenWorldPicker}
         >
           <span className="ms-drone-thumb flex-[0_0_auto] inline-flex items-center justify-center w-10 h-10 text-[1.375rem] border border-border rounded-(--radius) bg-(--background) text-muted-foreground [@media_(max-width:_61.25rem)]:w-8 [@media_(max-width:_61.25rem)]:h-8 [@media_(max-width:_61.25rem)]:text-lg" aria-hidden="true">
-            <MapTrifoldIcon />
+            <GlobeHemisphereWestIcon />
           </span>
           <span className="ms-drone-meta flex-[1_1_auto] flex flex-col justify-center gap-px min-w-0 justify-center">
             <span className="ms-drone-name-row flex items-center gap-1.5 min-w-0">

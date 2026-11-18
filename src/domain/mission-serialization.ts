@@ -1,23 +1,10 @@
 import {
-  DEFAULT_AREA_RECON_FLIGHT_SETTINGS,
-  DEFAULT_RECON_FLIGHT_SETTINGS,
-  WORLDS,
-  actionLabel,
-  reconSettingsFrom,
-  round2,
-  uid,
-  type AvoidZone,
-  type CameraActionKind,
-  type EnuPoint,
-  type GeoOrigin,
-  type MissionArea,
-  type MissionAIWorkflow,
-  type MissionRouteMeta,
-  type MissionSequenceItem,
-  type ReconFlightSettings,
-  type StudioMission,
-  type Waypoint,
-  type WaypointAction
+  DEFAULT_AREA_RECON_FLIGHT_SETTINGS, DEFAULT_RECON_FLIGHT_SETTINGS, WORLDS,
+  actionLabel, normalizeWindEnvironment, reconSettingsFrom, round2, uid,
+  type AvoidZone, type CameraActionKind, type EnuPoint, type GeoOrigin,
+  type MissionArea, type MissionAIWorkflow, type MissionRouteMeta,
+  type MissionSequenceItem, type ReconFlightSettings, type StudioMission,
+  type WindEnvironmentSettings, type Waypoint, type WaypointAction
 } from './mission-types'
 import {
   getMissionRoutes,
@@ -119,6 +106,7 @@ interface CodeMission {
   waypoints?: CodeWaypoint[]
   areas?: CodeArea[]
   avoids?: CodeAvoid[]
+  windEnvironment?: WindEnvironmentSettings
 }
 
 const ACTION_ALIASES: Record<string, CameraActionKind> = {
@@ -164,6 +152,7 @@ export function missionToCode(mission: StudioMission): string {
     speed: norm.targetSpeedMS,
     takeoffAlt: norm.takeoffAltM,
     safety: norm.safetyMode ?? 'obstacle',
+    ...(norm.windEnvironment ? { windEnvironment: { ...norm.windEnvironment } } : {}),
     returnHome: norm.returnHomeOnEnd,
     home: { ...norm.spawn },
     ...(isValidGeoOrigin(norm.origin) ? { origin: { ...norm.origin } } : {}),
@@ -495,6 +484,9 @@ export function missionFromCode(
     targetSpeedMS: typeof code.speed === 'number' && Number.isFinite(code.speed) && code.speed > 0 ? code.speed : base.targetSpeedMS,
     takeoffAltM: typeof code.takeoffAlt === 'number' && Number.isFinite(code.takeoffAlt) && code.takeoffAlt >= 0 ? code.takeoffAlt : base.takeoffAltM,
     safetyMode: code.safety === 'privacy' ? 'privacy' : code.safety === 'off' ? 'off' : (base.safetyMode ?? 'obstacle'),
+    windEnvironment: code.windEnvironment === undefined
+      ? base.windEnvironment
+      : normalizeWindEnvironment(code.windEnvironment),
     returnHomeOnEnd: typeof code.returnHome === 'boolean' ? code.returnHome : base.returnHomeOnEnd,
     spawn: finitePoint(code.home) ? { x: code.home.x, y: code.home.y } : base.spawn,
     routes: routes.length > 0 ? routes : undefined,

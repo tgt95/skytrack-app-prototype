@@ -15,12 +15,6 @@ import {
 } from "skytrack-ui/slider";
 import { Switch, SwitchThumb } from "skytrack-ui/switch";
 import type { SimSettings } from "./simulation-types";
-import {
-  speedFromDisplay,
-  speedToDisplay,
-  speedUnit,
-  useMeasurementSystem,
-} from "@/shared/measurement-units";
 import { InspectorField } from "@/features/design/controls/inspector-field";
 
 export interface SimulationSettingsFormProps {
@@ -37,7 +31,6 @@ export function SimulationSettingsForm({
   onClose,
   maxSeq = 99,
 }: SimulationSettingsFormProps) {
-  const unitSystem = useMeasurementSystem();
   return (
     <div className="flex flex-col gap-3">
       <InspectorField label="Run times" labelId="ms-sim-run-times-label">
@@ -112,39 +105,6 @@ export function SimulationSettingsForm({
           </Switch>
           Step vehicle, no camera glide
         </label>
-      </InspectorField>
-      <InspectorField
-        label={`Wind (${speedUnit(unitSystem)})`}
-        labelId="ms-sim-wind-label"
-      >
-        <div className="w-100/2 max-w-50">
-          <NumberField
-            value={speedToDisplay(settings.windMS, unitSystem)}
-            min={0}
-            max={speedToDisplay(12, unitSystem)}
-            step={0.5}
-            onValueChange={(v: number | null) => {
-              if (v !== null)
-                onChange({
-                  ...settings,
-                  windMS: speedFromDisplay(v, unitSystem),
-                });
-            }}
-          >
-            <NumberFieldGroup size="sm" className="w-full">
-              <NumberFieldDecrement aria-label="Decrease wind">
-                −
-              </NumberFieldDecrement>
-              <NumberFieldInput
-                size="sm"
-                aria-label={`Wind ${speedUnit(unitSystem)}`}
-              />
-              <NumberFieldIncrement aria-label="Increase wind">
-                +
-              </NumberFieldIncrement>
-            </NumberFieldGroup>
-          </NumberField>
-        </div>
       </InspectorField>
       <InspectorField
         label="Inject failure at waypoint (0 = none)"

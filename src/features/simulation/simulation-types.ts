@@ -9,7 +9,6 @@ export interface SimSettings {
   runTimes: number;
   speedFactor: number;
   reducedMotion: boolean;
-  windMS: number;
   mockFailureAtSeq: number;
 }
 
@@ -17,7 +16,6 @@ export const DEFAULT_SIM_SETTINGS: SimSettings = {
   runTimes: 1,
   speedFactor: 1,
   reducedMotion: false,
-  windMS: 2.5,
   mockFailureAtSeq: 0,
 };
 

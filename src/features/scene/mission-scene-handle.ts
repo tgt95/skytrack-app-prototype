@@ -28,6 +28,10 @@ interface MissionSceneHandleArgs {
 
 export function createMissionSceneHandle({ viewerRef, cesiumRef, fitRef, missionRef, planRef, reducedRef, clockRef, topDownRef, zdragRef, wpDragRef, pendingDragRef, editControlsRef, abortPendingDrag, abortWpDrag, abortZdrag }: MissionSceneHandleArgs): MissionSceneHandle {
   return {
+    getCameraHeading: () => {
+      const viewer = viewerRef.current
+      return viewer && !viewer.isDestroyed() ? viewer.camera.heading : 0
+    },
     downloadMapImage: () => {
       const viewer = viewerRef.current
       const Cesium = cesiumRef.current

@@ -5,6 +5,8 @@ import { DrawingAltitudeRuler } from "@/features/design/drawing/drawing-altitude
 import type { MissionBasemapStyle } from "@/features/scene/basemaps";
 import type { StudioMission } from "@/domain/mission-model";
 import type { SimPlan } from "@/features/simulation/simulation";
+import type { SimStatus } from "@/features/simulation/simulation";
+import { WindParticleOverlay } from "@/features/simulation/wind-particle-overlay";
 import type { useAddressSearch } from "@/features/search/use-address-search";
 import { MissionContextCards, type DroneChoice } from "./mission-context-cards";
 import { StudioMapControls } from "./studio-map-controls";
@@ -21,6 +23,7 @@ interface StudioSceneViewportProps {
   stageIsDesign: boolean;
   toolIsArea: boolean;
   simActive: boolean;
+  simulationStatus: SimStatus;
   lidarOn: boolean;
   plan: SimPlan | null;
   simClockRef: { current: number };
@@ -54,6 +57,7 @@ export default function StudioSceneViewport({
   stageIsDesign,
   toolIsArea,
   simActive,
+  simulationStatus,
   lidarOn,
   plan,
   simClockRef,
@@ -116,6 +120,14 @@ export default function StudioSceneViewport({
         ) : null}
         <MissionScene ref={sceneRef} {...sceneProps} />
       </div>
+      {stage === "simulation" ? (
+        <WindParticleOverlay
+          mission={mission}
+          sceneRef={sceneRef}
+          status={simulationStatus}
+          reducedMotion={reducedMotion}
+        />
+      ) : null}
       {simActive && lidarOn && plan ? (
         <LidarPreview
           plan={plan}

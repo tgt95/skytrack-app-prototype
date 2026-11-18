@@ -113,6 +113,7 @@ export function StudioShellSceneViewport({
       stageIsDesign={stage === "design"}
       toolIsArea={tool === "area" && mission.worldType === "2D"}
       simActive={simActive}
+      simulationStatus={sim.status}
       lidarOn={ui.lidarOn}
       plan={plan}
       simClockRef={sim.clockRef}

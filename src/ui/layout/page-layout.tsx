@@ -158,7 +158,6 @@ export default function StudioShell({
     appTabsOrientation,
     selection,
     rightOpen,
-    settings,
     editOpen,
     shortcutsOpen,
     worldPickerOpen,
@@ -340,8 +339,9 @@ export default function StudioShell({
       </ReportViewTabsShell>
       {!hideStudioChrome && appTab !== "report" ? (
         <StudioStatusFooter
+          mission={mission}
           dirty={dirty}
-          ui={{ stage, selection, settings, rightOpen }}
+          ui={{ stage, selection, rightOpen }}
           drawing={{ tool, pending }}
           simulation={{ plan, sim, totalT, telemetry }}
           onOpenShortcuts={() =>
