@@ -229,32 +229,6 @@ export function MissionInsightsPage({
                 >
                   {run && sample ? (
                     <>
-                      {/* Long World values span two desktop tracks; Started and Duration then share row two. */}
-                      {/* <dl className="m-0 grid min-w-0 grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3 xl:grid-cols-6">
-                        {[
-                          ["Run ID", run.id],
-                          ["Drone", sample.vehicle],
-                          ["World", sample.world],
-                          ["Type", run.type],
-                          ["Status", run.status],
-                          ["Started", run.startedAtLabel],
-                          ["Duration", `${run.durationSeconds.toFixed(1)} s`],
-                        ].map(([label, value]) => (
-                          <div
-                            key={label}
-                            className={
-                              label === "World"
-                                ? "min-w-0 xl:col-span-2"
-                                : "min-w-0"
-                            }
-                          >
-                            <dt className="text-muted-foreground">
-                              {label}
-                            </dt>
-                            <dd className="m-0 mt-1 break-words">{value}</dd>
-                          </div>
-                        ))}
-                      </dl> */}
                       <section
                         aria-labelledby="mission-general-info-compact-title"
                         className="flex min-w-0 flex-col gap-3"
@@ -321,7 +295,7 @@ export function MissionInsightsPage({
                                       weight={
                                         value === "Succeeded" ||
                                         value === "Failed"
-                                          ? "fill"
+                                          ? "regular"
                                           : "regular"
                                       }
                                     />

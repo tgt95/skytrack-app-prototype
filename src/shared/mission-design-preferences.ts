@@ -6,6 +6,7 @@ export const MISSION_DESIGN_PREFERENCES_CHANGE_EVENT =
 export interface MissionDesignPreferences {
   zoomDirection: "normal" | "reversed";
   zoomAnchor: "cursor" | "center";
+  mapRenderQuality: "performance" | "balanced" | "high";
   unitSystem: "metric" | "imperial";
   showWaypointLabels: boolean;
   showRouteDistances: boolean;
@@ -18,6 +19,7 @@ export interface MissionDesignPreferences {
 export const DEFAULT_MISSION_DESIGN_PREFERENCES: MissionDesignPreferences = {
   zoomDirection: "normal",
   zoomAnchor: "cursor",
+  mapRenderQuality: "balanced",
   unitSystem: "metric",
   showWaypointLabels: true,
   showRouteDistances: true,
@@ -64,6 +66,11 @@ export function readMissionDesignPreferences(): MissionDesignPreferences {
       zoomDirection:
         stored.zoomDirection === "reversed" ? "reversed" : "normal",
       zoomAnchor: stored.zoomAnchor === "center" ? "center" : "cursor",
+      mapRenderQuality:
+        stored.mapRenderQuality === "performance" ||
+        stored.mapRenderQuality === "high"
+          ? stored.mapRenderQuality
+          : "balanced",
       unitSystem: stored.unitSystem === "imperial" ? "imperial" : "metric",
       showWaypointLabels:
         typeof stored.showWaypointLabels === "boolean"

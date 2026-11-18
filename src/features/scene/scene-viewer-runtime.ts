@@ -3,6 +3,8 @@ import type { StudioMission } from '@/domain/mission-model'
 import { getMissionRouteWaypoints, getMissionRoutes, missionOrigin, projectMockReconFootprintToGround } from '@/domain/mission-model'
 import { samplePlan, type SimPlan } from '@/features/simulation/simulation'
 import { resolveMissionSnap, type MissionCubeSnap } from './mission-compass-model'
+import { readMissionDesignPreferences } from '@/shared/mission-design-preferences'
+import { mapRenderResolutionScale } from './map-render-quality'
 import { MOCK_FOOTPRINT_RENDER_LIFT_M, enuToLngLat, safeColor, themeColor } from './mission-scene-helpers'
 import { removeSceneEntitiesInLayer } from './scene-entity-ownership'
 import { createEditGestures, type EditGestureHooks } from './scene-edit-gestures'
@@ -111,10 +113,9 @@ export function startMissionSceneRuntime(args: SceneRuntimeArgs): (() => void) |
         renderedPreviewCaptureRef.current = null
         renderedPreviewMissionRef.current = null
         viewer.scene.postProcessStages.fxaa.enabled = !viewer.scene.msaaSupported
-        /* Render at device density for crisp map tiles and geometry, capped to
-        avoid unbounded canvas cost on very high-density displays. */
-        viewer.resolutionScale = 0.75
-        // viewer.resolutionScale = Math.min(Math.max(window.devicePixelRatio || 1, 1), 2)
+        viewer.resolutionScale = mapRenderResolutionScale(
+          readMissionDesignPreferences().mapRenderQuality,
+        )
         const sceneBaseColor = missionRef.current.worldType === '2D'
           ? safeColor(Cesium, themeColor('--muted'), '--muted', 1)
           : Cesium.Color.BLACK

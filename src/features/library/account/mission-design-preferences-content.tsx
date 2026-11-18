@@ -37,6 +37,28 @@ export function MissionDesignPreferencesContent({
       className="flex min-w-0 flex-col gap-3.5"
       data-testid="ms-lib-account-preferences-content"
     >
+      <section
+        className="flex flex-col gap-2"
+        aria-labelledby="map-view-preferences-heading"
+      >
+        <MissionPreferenceSelect
+          label="Render quality"
+          name="map-render-quality"
+          value={preferences.mapRenderQuality}
+          options={["performance", "balanced", "high"] as const}
+          formatOption={(value) =>
+            value === "performance"
+              ? "Performance"
+              : value === "high"
+                ? "High quality"
+                : "Balanced"
+          }
+          description="Higher quality sharpens map details and uses more graphics resources."
+          onChange={(mapRenderQuality) =>
+            onChange({ ...preferences, mapRenderQuality })
+          }
+        />
+      </section>
       <div className="grid grid-cols-1 gap-x-4 gap-y-3.5 sm:grid-cols-2">
         <MissionPreferenceSelect
           label="Wheel direction"
@@ -143,6 +165,7 @@ function MissionPreferenceSelect<T extends string>({
   value,
   options,
   formatOption,
+  description,
   onChange,
 }: {
   className?: string;
@@ -151,10 +174,14 @@ function MissionPreferenceSelect<T extends string>({
   value: T;
   options: readonly T[];
   formatOption: (value: T) => string;
+  description?: string;
   onChange: (value: T) => void;
 }) {
   return (
-    <Field.Root name={name} className={`ms-field flex flex-col gap-1 ${className ?? ""}`}>
+    <Field.Root
+      name={name}
+      className={`ms-field flex flex-col gap-1 ${className ?? ""}`}
+    >
       <Field.Label
         className="text-sm font-medium text-foreground"
         nativeLabel={false}
@@ -163,6 +190,7 @@ function MissionPreferenceSelect<T extends string>({
         {label}
       </Field.Label>
       <Select<T>
+        aria-label={label}
         items={options.map((option) => ({
           value: option,
           label: formatOption(option),
@@ -171,7 +199,7 @@ function MissionPreferenceSelect<T extends string>({
         onValueChange={(next: unknown) => onChange(String(next) as T)}
       >
         <SelectTrigger>
-          <SelectValue />
+          <SelectValue>{formatOption(value)}</SelectValue>
           <SelectIcon />
         </SelectTrigger>
         <SelectPortal>
@@ -194,6 +222,11 @@ function MissionPreferenceSelect<T extends string>({
           </SelectPositioner>
         </SelectPortal>
       </Select>
+      {description ? (
+        <Field.Description className="text-xs text-muted-foreground">
+          {description}
+        </Field.Description>
+      ) : null}
     </Field.Root>
   );
 }

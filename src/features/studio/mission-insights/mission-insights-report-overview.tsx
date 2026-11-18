@@ -33,7 +33,7 @@ export function OverviewTab ({
 }) {
   return (
     <div className='grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-12'>
-      <div className='flex min-w-0 flex-col overflow-hidden rounded-(--radius) border border-border bg-(--card) shadow-xs xl:col-span-8'>
+      <div className='flex min-w-0 flex-col overflow-hidden rounded-(--radius) border border-border bg-(--card) shadow-xs xl:col-span-7 2xl:col-span-8'>
         <MissionInsightsRunSummary
           sample={sample}
           className='rounded-none !border-0 !shadow-none'
@@ -48,7 +48,7 @@ export function OverviewTab ({
         sample={sample}
         onOpenMedia={onOpenMedia}
         onOpenMediaFiles={onOpenMediaFiles}
-        className='xl:col-span-4'
+        className='xl:col-span-5 2xl:col-span-4'
       />
       <DetailSection
         title='Run distributions'

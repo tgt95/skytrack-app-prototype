@@ -91,3 +91,7 @@
     }
   }
 }
+
+.cesium-credit-wrapper, .cesium-credit-expand-link {
+  display: none !important;
+}

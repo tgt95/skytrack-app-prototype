@@ -32,6 +32,7 @@ import { MissionSceneStatus } from "./mission-scene-status";
 import { useMissionSceneWorldLayers } from "./use-mission-scene-world-layers";
 import { MissionSceneWorldModelStatus } from "./mission-scene-world-model-status";
 import { MissionScaleIndicator } from "./mission-scale-indicator";
+import { mapRenderResolutionScale } from "./map-render-quality";
 import {
   MISSION_DESIGN_PREFERENCES_CHANGE_EVENT,
   readMissionDesignPreferences,
@@ -421,6 +422,17 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
           updatePreferences,
         );
     }, []);
+
+    useEffect(() => {
+      const viewer = viewerRef.current;
+      const Cesium = cesiumRef.current;
+      if (!viewer || !Cesium || viewer.isDestroyed() || status !== "ready")
+        return;
+      viewer.resolutionScale = mapRenderResolutionScale(
+        readMissionDesignPreferences().mapRenderQuality,
+      );
+      viewer.scene.requestRender();
+    }, [status, preferencesRevision]);
 
     useEffect(() => {
       const viewer = viewerRef.current;

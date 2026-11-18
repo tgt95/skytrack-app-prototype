@@ -61,6 +61,14 @@ export function useLibraryAccountSettings(onAnnounce: (text: string) => void) {
 
   const updateMissionDesignPreferences = (next: MissionDesignPreferences) => {
     if (
+      next.mapRenderQuality !== 'performance' &&
+      next.mapRenderQuality !== 'balanced' &&
+      next.mapRenderQuality !== 'high'
+    ) {
+      onAnnounce('Map render quality setting is unsupported.')
+      return
+    }
+    if (
       !Number.isFinite(next.targetSpeedMS) || next.targetSpeedMS < 0.1 || next.targetSpeedMS > 30 ||
       !Number.isFinite(next.takeoffAltitudeM) || next.takeoffAltitudeM < 0 || next.takeoffAltitudeM > 500 ||
       !Number.isFinite(next.areaLineSpacingM) || next.areaLineSpacingM < 0.1 || next.areaLineSpacingM > 100
