@@ -1,6 +1,11 @@
 /* Local syntax-highlighted Python draft editor. Script contents remain a non-executing UI draft. */
 
-import { useRef, useState, type ReactNode } from "react";
+import { useRef, useState } from "react";
+import {
+  CodeBlockContent,
+  CodeBlockLine,
+  useHighlightedCode,
+} from "skytrack-ui/code-block";
 
 export const PYTHON_SAMPLE = `"""This sample demonstrates how to control a drone using Python. You can customize the flight scenario by adding additional steps."""
 
@@ -28,116 +33,6 @@ def main() -> None:
 if __name__ == "__main__":
     main()`;
 
-const PYTHON_KEYWORDS = new Set([
-  "and",
-  "as",
-  "assert",
-  "async",
-  "await",
-  "break",
-  "case",
-  "class",
-  "continue",
-  "def",
-  "del",
-  "elif",
-  "else",
-  "except",
-  "finally",
-  "for",
-  "from",
-  "global",
-  "if",
-  "import",
-  "in",
-  "is",
-  "lambda",
-  "nonlocal",
-  "not",
-  "or",
-  "pass",
-  "raise",
-  "return",
-  "try",
-  "while",
-  "with",
-  "yield",
-]);
-const PYTHON_TYPES = new Set([
-  "Any",
-  "bool",
-  "dict",
-  "float",
-  "int",
-  "Iterator",
-  "list",
-  "set",
-  "str",
-  "tuple",
-]);
-const PYTHON_CONSTANTS = new Set(["False", "None", "True"]);
-const PYTHON_TOKEN_TAILWIND_CLASS: Record<string, string> = {
-  keyword: "text-(--ms-code-keyword)",
-  string: "text-(--ms-code-string)",
-  number: "text-(--ms-code-number)",
-  comment: "text-(--ms-code-comment)",
-  type: "text-(--ms-code-type)",
-  function: "text-(--ms-code-function)",
-  constant: "text-(--ms-code-constant)",
-  punctuation: "text-(--ms-code-punctuation)",
-};
-
-function pythonTokens(line: string) {
-  const pattern =
-    /(""".*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|#.*$|\b[A-Za-z_][\w]*\b|\b\d+(?:\.\d+)?\b|[()[\]{}.,:=+*/%<>!-]+)/g;
-  const parts: ReactNode[] = [];
-  let start = 0;
-  let nextDeclaration: "function" | "type" | null = null;
-  for (const match of line.matchAll(pattern)) {
-    const index = match.index ?? 0;
-    if (index > start) parts.push(line.slice(start, index));
-    const token = match[0];
-    let kind: string | null = null;
-    if (token.startsWith("#")) kind = "comment";
-    else if (/^(?:"|'|'''|""")/.test(token)) kind = "string";
-    else if (/^\d/.test(token)) kind = "number";
-    else if (/^[A-Za-z_]/.test(token)) {
-      if (PYTHON_KEYWORDS.has(token)) {
-        kind = "keyword";
-        if (token === "def") nextDeclaration = "function";
-        else if (token === "class") nextDeclaration = "type";
-      } else if (PYTHON_CONSTANTS.has(token)) {
-        kind = "constant";
-        nextDeclaration = null;
-      } else if (nextDeclaration) {
-        kind = nextDeclaration;
-        nextDeclaration = null;
-      } else if (PYTHON_TYPES.has(token)) {
-        kind = "type";
-      } else if (/^\s*\(/.test(line.slice(index + token.length))) {
-        kind = "function";
-      }
-    } else if (/^[()[\]{}.,:=+*/%<>!-]+$/.test(token)) {
-      kind = "punctuation";
-    }
-    parts.push(
-      kind ? (
-        <span
-          className={`ms-python-token-${kind} ${PYTHON_TOKEN_TAILWIND_CLASS[kind]}`}
-          key={index}
-        >
-          {token}
-        </span>
-      ) : (
-        token
-      ),
-    );
-    start = index + token.length;
-  }
-  if (start < line.length) parts.push(line.slice(start));
-  return parts;
-}
-
 export function PythonEditor({
   value,
   onChange,
@@ -148,53 +43,53 @@ export function PythonEditor({
   const mirrorRef = useRef<HTMLDivElement>(null);
   const [activeLine, setActiveLine] = useState(1);
   const lines = value.split("\n");
+  const highlightedLines = useHighlightedCode(value, "python");
 
   return (
     <div
       className={[
-        "ms-python-editor relative flex-[1_1_auto] min-h-0 bg-(--ms-code-canvas) text-(--ms-code-ink) font-[\"IBM_Plex_Mono\",ui-monospace,SFMono-Regular,Menlo,monospace] text-sm [font-variant-ligatures:none]",
-        "[--ms-code-canvas:#ffffff] [--ms-code-ink:#000000] [--ms-code-keyword:#af00db] [--ms-code-string:#a31515] [--ms-code-number:#098658] [--ms-code-comment:#008000] [--ms-code-type:#267f99] [--ms-code-function:#795e26] [--ms-code-constant:#0000ff] [--ms-code-punctuation:#000000] [--ms-code-line-number:#858585] [--ms-code-line-number-active:#000000] [--ms-code-active-line:#f3f3f3] [--ms-code-selection:#add6ff]",
-        "[.dark_&]:[--ms-code-canvas:#1e1e1e] [.dark_&]:[--ms-code-ink:#d4d4d4] [.dark_&]:[--ms-code-keyword:#c586c0] [.dark_&]:[--ms-code-string:#ce9178] [.dark_&]:[--ms-code-number:#b5cea8] [.dark_&]:[--ms-code-comment:#6a9955] [.dark_&]:[--ms-code-type:#4ec9b0] [.dark_&]:[--ms-code-function:#dcdcaa] [.dark_&]:[--ms-code-constant:#569cd6] [.dark_&]:[--ms-code-punctuation:#d4d4d4] [.dark_&]:[--ms-code-line-number:#858585] [.dark_&]:[--ms-code-line-number-active:#d4d4d4] [.dark_&]:[--ms-code-active-line:#282828] [.dark_&]:[--ms-code-selection:#264f78]",
+        "ms-python-editor relative flex-[1_1_auto] min-h-0 bg-(--ms-code-canvas) text-(--ms-code-ink) font-mono text-sm leading-6 [font-variant-ligatures:none]",
+        "[--ms-code-canvas:#ffffff] [--ms-code-ink:#000000] [--ms-code-selection:#add6ff] [.dark_&]:[--ms-code-canvas:#1e1e1e] [.dark_&]:[--ms-code-ink:#d4d4d4] [.dark_&]:[--ms-code-selection:#264f78]",
       ].join(" ")}
       data-testid="ms-python-editor"
     >
       <div
-        className=" absolute inset-0 box-border w-full h-full m-0 overflow-auto [font:inherit] leading-[inherit] tracking-[inherit] tab-4 pt-3 pr-3 pb-3 pl-0 pointer-events-none"
+        className="absolute inset-0 box-border w-full h-full m-0 overflow-auto [font:inherit] leading-[inherit] tracking-[inherit] tab-4 pointer-events-none"
         ref={mirrorRef}
         aria-hidden="true"
         data-testid="ms-python-mirror"
       >
-        {lines.map((line, index) => (
-          <div
-            className={[
-              `ms-python-line${activeLine === index + 1 ? " is-active" : ""}`,
-              "grid grid-cols-[2.375rem_minmax(0,1fr)] min-h-[1.55em] [&.is-active_.ms-python-line-number]:bg-(--ms-code-active-line) [&.is-active_.ms-python-line-number]:text-(--ms-code-line-number-active) [&.is-active_[data-testid=ms-python-source]]:bg-(--ms-code-active-line)",
-            ]
-              .filter(Boolean)
-              .join(" ")}
-            key={index}
-          >
-            <span
-              className="ms-python-line-number pr-2 text-right text-(--ms-code-line-number) [user-select:none]"
-              data-testid="ms-python-number"
+        <CodeBlockContent
+          className="min-h-full max-w-none"
+          lineNumbers
+          wrap
+          tabIndex={-1}
+          style={{
+            padding: "12px 12px 12px 0",
+            minHeight: "100%",
+            overflow: "visible",
+            color: "var(--ms-code-ink)",
+          }}
+        >
+          {highlightedLines.map((line, index) => (
+            <CodeBlockLine
+              key={index}
+              variant={activeLine === index + 1 ? "highlighted" : "default"}
             >
-              {index + 1}
-            </span>
-            <span
-              data-testid="ms-python-source"
-              className="pl-2.5 whitespace-pre-wrap wrap-anywhere"
-            >
-              {pythonTokens(line) || " "}
-            </span>
-          </div>
-        ))}
+              {line || "\u00a0"}
+            </CodeBlockLine>
+          ))}
+        </CodeBlockContent>
       </div>
       <textarea
         id="ms-code-editor"
-        className="absolute inset-0 box-border w-full h-full m-0 overflow-auto [font:inherit] leading-[inherit] tracking-[inherit] tab-4 z-1 block pt-3 pr-3 pb-3 pl-12 [border:0] rounded-none resize-none outline-none bg-transparent text-transparent [-webkit-text-fill-color:transparent] caret-(--ms-code-ink) whitespace-pre-wrap wrap-anywhere [&::selection]:bg-(--ms-code-selection) [&::selection]:text-(--ms-code-ink) [&::selection]:[-webkit-text-fill-color:var(--ms-code-ink)]"
+        className="absolute inset-0 box-border w-full h-full m-0 overflow-auto [font:inherit] leading-[inherit] tracking-[inherit] tab-4 z-1 block pt-3 pr-3 pb-3 [border:0] rounded-none resize-none outline-none bg-transparent text-transparent [-webkit-text-fill-color:transparent] caret-(--ms-code-ink) whitespace-pre-wrap wrap-anywhere [&::selection]:bg-(--ms-code-selection) [&::selection]:text-(--ms-code-ink) [&::selection]:[-webkit-text-fill-color:var(--ms-code-ink)]"
         aria-label="Python mission script draft"
         aria-describedby="ms-code-limit"
         value={value}
+        style={{
+          paddingLeft: `calc(${Math.max(2, String(lines.length).length)}ch + 2.625rem)`,
+        }}
         onChange={(event) => onChange(event.target.value)}
         onDragOver={(event) => {
           if (
