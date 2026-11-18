@@ -25,6 +25,7 @@ import {
 } from 'skytrack-ui/drawer'
 import { FieldControl, FieldLabel, FieldRoot } from 'skytrack-ui/field'
 import { Switch, SwitchThumb } from 'skytrack-ui/switch'
+import { Avatar, AvatarFallback } from 'skytrack-ui/avatar'
 import type { AccountMenuPanel } from '@/ui/components/account-menu'
 import type {
   AccountProfile,
@@ -184,13 +185,13 @@ export function AccountMenuDialogs ({
                 className=' flex flex-col gap-3.5 min-w-0'
                 data-testid='ms-lib-account-form'
               >
-                <div
-                  className=' inline-flex items-center justify-center w-13 h-13 flex-[0_0_auto] rounded-full bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1.3125rem] font-[650]'
+                <Avatar
                   aria-hidden='true'
+                  className='size-13 flex-[0_0_auto] bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1.3125rem] font-[650]'
                   data-testid='ms-lib-account-edit-avatar'
                 >
-                  {getUserInitial(name)}
-                </div>
+                  <AvatarFallback>{getUserInitial(name)}</AvatarFallback>
+                </Avatar>
                 <FieldRoot name='account-display-name'>
                   <FieldLabel>Display name</FieldLabel>
                   <FieldControl
@@ -307,13 +308,15 @@ export function AccountMenuDialogs ({
                   className=' flex items-center gap-3 min-w-0 p-3 border border-(--primary) rounded-(--radius) bg-(--card)'
                   data-testid='ms-lib-account-current'
                 >
-                  <span
-                    className=' inline-flex items-center justify-center w-13 h-13 flex-[0_0_auto] rounded-full bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1.3125rem] font-[650] w-10.5 h-10.5 text-[1.0625rem]'
+                  <Avatar
                     aria-hidden='true'
+                    className='size-10.5 flex-[0_0_auto] bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1.0625rem] font-[650]'
                     data-testid='ms-lib-account-current-avatar'
                   >
-                    {getUserInitial(profile.name)}
-                  </span>
+                    <AvatarFallback>
+                      {getUserInitial(profile.name)}
+                    </AvatarFallback>
+                  </Avatar>
                   <span
                     className=' flex flex-[1_1_auto] flex-col gap-0.75 min-w-0'
                     data-testid='ms-lib-account-current-identity'

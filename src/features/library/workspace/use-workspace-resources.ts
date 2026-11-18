@@ -300,10 +300,12 @@ export function useWorkspaceResources({
     name,
     fileName,
     fileSize,
+    thumbnailDataUrl,
   }: {
     name: string;
     fileName: string;
     fileSize: number;
+    thumbnailDataUrl?: string;
   }) => {
     const importedModel: WorkspaceAIModelRecord = {
       id: createId("ai-model"),
@@ -320,6 +322,7 @@ export function useWorkspaceResources({
       note: "",
       packageFileName: fileName,
       packageFileSize: fileSize,
+      thumbnailDataUrl,
     };
     const nextModels = [...resourceStateRef.current.aiModels, importedModel];
     if (

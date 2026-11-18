@@ -38,6 +38,7 @@ import type {
 } from '@/domain/mission-model'
 import { uid } from '@/domain/mission-model'
 import type { AIModelCardModel } from '@/ui/components/ai-model-card'
+import { AIWorkflowModelSelection } from './ai-workflow-model-selection'
 import {
   hasSequenceDrag,
   readSequenceDragItem,
@@ -187,7 +188,7 @@ export function AIWorkflowCard ({
   models,
   sequenceId,
   onChange,
-  onImportModel,
+  onManageAIModels,
   onDeleteModel,
   onDelete
 }: {
@@ -196,7 +197,7 @@ export function AIWorkflowCard ({
   models: AIModelCardModel[]
   sequenceId: string
   onChange: (next: MissionAIWorkflow) => void
-  onImportModel: () => void
+  onManageAIModels: () => void
   onDeleteModel: (modelId: string) => boolean
   onDelete: () => void
 }) {
@@ -441,60 +442,13 @@ export function AIWorkflowCard ({
                 Detection starts
               </h4>
               <div className='flex flex-col p-3'>
-                <FieldRoot name={`ai-model-${workflow.id}`}>
-                  <div className='flex flex-row items-center justify-between gap-3 w-full'>
-                    <FieldLabel className='min-w-0'>AI model</FieldLabel>
-                    <Button
-                      className='shrink-0 p-0! h-auto!'
-                      size='sm'
-                      variant='link'
-                      onClick={onImportModel}
-                    >
-                      Import model
-                    </Button>
-                  </div>
-                  <Select
-                    items={models.map(model => ({
-                      value: model.id,
-                      label: model.name
-                    }))}
-                    value={workflow.modelId ?? ''}
-                    onValueChange={(value: unknown) => {
-                      if (typeof value === 'string')
-                        update({ modelId: value || null })
-                    }}
-                  >
-                    <SelectTrigger aria-label='AI model' className='w-full'>
-                      <SelectValue placeholder='Choose AI model' />
-                      <SelectIcon />
-                    </SelectTrigger>
-                    <SelectPortal>
-                      <SelectPositioner
-                        side='bottom'
-                        align='start'
-                        sideOffset={4}
-                      >
-                        <SelectPopup>
-                          <SelectList>
-                            {models.map(model => (
-                              <SelectItem key={model.id} value={model.id}>
-                                <SelectItemIndicator />
-                                <SelectItemText>
-                                  {model.name}
-                                  {model.origin === 'skytrack'
-                                    ? ' · SkyTrack'
-                                    : model.origin === 'user-upload'
-                                    ? ' · You'
-                                    : ''}
-                                </SelectItemText>
-                              </SelectItem>
-                            ))}
-                          </SelectList>
-                        </SelectPopup>
-                      </SelectPositioner>
-                    </SelectPortal>
-                  </Select>
-                </FieldRoot>
+                <AIWorkflowModelSelection
+                  workflowId={workflow.id}
+                  modelId={workflow.modelId}
+                  models={models}
+                  onModelChange={modelId => update({ modelId })}
+                  onManageAIModels={onManageAIModels}
+                />
                 {selectedModel?.origin === 'user-upload' ? (
                   <div className='mt-2 flex items-center justify-between gap-2 text-xs text-muted-foreground'>
                     {confirmModelDeleteId === selectedModel.id ? (

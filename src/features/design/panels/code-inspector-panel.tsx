@@ -1,4 +1,3 @@
-import { PackageIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
 import {
   CodeBlock,
@@ -28,7 +27,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "skytrack-ui/tooltip";
-import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import { PythonEditor } from "./python-editor";
 
 export interface CodeInspectorPanelProps {
@@ -36,9 +34,7 @@ export interface CodeInspectorPanelProps {
   codeDraft: string;
   jsonDraft: string;
   jsonError: string | null;
-  aiModelsOpen: boolean;
   onCodeLangChange: (lang: "python" | "json") => void;
-  onAIModelsOpenChange: (open: boolean) => void;
   onCodeDraftChange: (text: string) => void;
   onJsonDraftChange: (text: string) => void;
   onApplyJson: () => void;
@@ -50,9 +46,7 @@ export default function CodeInspectorPanel({
   codeDraft,
   jsonDraft,
   jsonError,
-  aiModelsOpen,
   onCodeLangChange,
-  onAIModelsOpenChange,
   onCodeDraftChange,
   onJsonDraftChange,
   onApplyJson,
@@ -73,18 +67,6 @@ export default function CodeInspectorPanel({
             role="group"
             aria-label="Mission script actions"
           >
-            <SkyTooltip>
-              <Button
-                size="icon"
-                variant="ghost"
-                aria-label={aiModelsOpen ? "Close AI models" : "Open AI models"}
-                title={aiModelsOpen ? "Close AI models" : "Open AI models"}
-                aria-pressed={aiModelsOpen}
-                onClick={() => onAIModelsOpenChange(!aiModelsOpen)}
-              >
-                <PackageIcon aria-hidden="true" className="size-5" />
-              </Button>
-            </SkyTooltip>
             <Select<"python" | "json">
               items={[
                 { value: "python", label: "Python" },

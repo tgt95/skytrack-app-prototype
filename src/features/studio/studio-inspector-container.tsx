@@ -20,7 +20,7 @@ type InspectorUiState = Pick<
   | "codeDraft"
   | "codeLang"
   | "aiModelsOpen"
-  | "selectedAIModelId"
+  | "selectedAIModelIds"
   | "jsonDraft"
   | "jsonError"
   | "rightOpen"
@@ -32,7 +32,7 @@ type InspectorUiState = Pick<
   | "setCodeDraft"
   | "setPreviewView"
   | "setAIModelsOpen"
-  | "setSelectedAIModelId"
+  | "setSelectedAIModelIds"
   | "setJsonDraft"
   | "setRightOpen"
   | "setSimTab"
@@ -200,7 +200,7 @@ export default function StudioInspectorContainer({
         codeLang: ui.codeLang,
         aiModels,
         aiModelsOpen: ui.aiModelsOpen,
-        selectedAIModelId: ui.selectedAIModelId,
+        selectedAIModelIds: ui.selectedAIModelIds,
         jsonDraft: ui.jsonDraft,
         jsonError: ui.jsonError,
         onCodeViewChange: actions.openCodeView,
@@ -208,7 +208,7 @@ export default function StudioInspectorContainer({
         onCodeDraftChange: ui.setCodeDraft,
         onCodeLangChange: actions.handleCodeLangChange,
         onAIModelsOpenChange: ui.setAIModelsOpen,
-        onSelectAIModel: ui.setSelectedAIModelId,
+        onSelectedAIModelIdsChange: ui.setSelectedAIModelIds,
         onImportAIModel,
         onDeleteAIModel,
         onJsonDraftChange: ui.setJsonDraft,

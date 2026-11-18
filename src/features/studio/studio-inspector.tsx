@@ -85,7 +85,11 @@ export default function StudioInspector({
   } | null>(null);
   const compactViewport = window.matchMedia("(max-width: 61.25rem)").matches;
   const modelPickerVisible =
-    stageIsDesign && codeView && !routeDraftActive && design.aiModelsOpen;
+    stageIsDesign &&
+    !design.previewView &&
+    !routeDraftActive &&
+    !zoneDraftActive &&
+    design.aiModelsOpen;
   const extraPanelWidth = modelPickerVisible
     ? Math.min(
         AI_MODEL_PANEL_WIDTH,
@@ -171,8 +175,8 @@ export default function StudioInspector({
         <AIModelPickerPanel
           panelWidth={aiModelPanelWidth}
           models={design.aiModels}
-          selectedModelId={design.selectedAIModelId}
-          onSelectModel={design.onSelectAIModel}
+          selectedModelIds={design.selectedAIModelIds}
+          onSelectedModelIdsChange={design.onSelectedAIModelIdsChange}
           onImport={design.onImportAIModel}
           onClose={() => design.onAIModelsOpenChange(false)}
           onAnnounce={design.onAnnounce}

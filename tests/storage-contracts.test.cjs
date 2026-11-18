@@ -86,7 +86,16 @@ test('versioned stores and preference/workspace records round-trip through their
     }
     assert.equal(resources.saveWorkspaceResources(worldResources), true)
     assert.equal(JSON.parse(values.get(STORAGE_KEYS.workspaceResources)).version, STORAGE_VERSIONS.workspaceResources)
-    assert.deepEqual(resources.loadWorkspaceResources(), worldResources)
+    const loadedResources = resources.loadWorkspaceResources()
+    assert.deepEqual(loadedResources.worlds, worldResources.worlds)
+    assert.deepEqual(loadedResources.aiModels.map((model) => model.id), [
+      'sample-model-tuan-workspace-common-objects-detection',
+      'sample-model-tuan-workspace-fire-and-explosion-detection',
+      'sample-model-tuan-workspace-objects-detection-by-drones',
+      'sample-model-survey-operations-common-objects-detection',
+      'sample-model-survey-operations-fire-and-explosion-detection',
+      'sample-model-survey-operations-objects-detection-by-drones'
+    ])
 
     assert.equal(theme.saveThemePreference('dark'), true)
     assert.equal(theme.readThemePreference(), 'dark')
