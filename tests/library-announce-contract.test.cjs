@@ -126,7 +126,7 @@ test("Library route forwards its announce value into exactly one retained region
   assert.equal(jsxElements(routePath, "p").length, 0);
 });
 
-test("Library source has one status region and routes dynamic messages through its callback", () => {
+test("Library source has one status region and keeps account flow feedback", () => {
   const libraryDirectory = path.resolve(__dirname, "../src/features/library");
   const statusSources = sourceFiles(libraryDirectory).flatMap((sourcePath) =>
     jsxStatusElements(sourcePath).map(() =>
@@ -176,9 +176,10 @@ test("Library source has one status region and routes dynamic messages through i
     /onAnnounce\(\s*templateSearchAnnouncement\(filteredTemplates\.length,\s*searchTerm\),?\s*\)/,
   );
   assert.match(templatesSource, /\{templates\.length\} result/);
+  assert.match(accountsSource, /You’ll return to sign in/);
   assert.match(
     accountsSource,
-    /onAnnounce\(\s*(["'])Sign-in and account linking are not connected in this prototype\.\1,?\s*\)/,
+    /Saved projects and missions stay in this browser/,
   );
 });
 

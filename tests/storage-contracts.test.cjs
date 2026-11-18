@@ -61,7 +61,13 @@ test('versioned stores and preference/workspace records round-trip through their
     assert.equal(JSON.parse(values.get(STORAGE_KEYS.libraryDatabase)).version, STORAGE_VERSIONS.libraryDatabase)
     assert.deepEqual(library.loadProjects().find((item) => item.id === project.id), {
       ...project,
-      missions: [{ ...mission, worldId: undefined, droneId: undefined }]
+      missions: [{
+        ...mission,
+        worldId: undefined,
+        droneId: undefined,
+        sharedWith: [],
+        sharedRoles: {}
+      }]
     })
 
     const profile = drone.newDroneProfile('guardrail-drone', DEFAULT_WORKSPACE_ID)

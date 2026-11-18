@@ -33,6 +33,12 @@ Module._load = function (request, ...args) {
       };
     }
     if (request === "skytrack-ui/badge") return { Badge: Primitive };
+    if (request === "skytrack-ui/page-header") {
+      return {
+        PageHeader: ({ title, toolbar, children }) =>
+          React.createElement("header", null, title, toolbar, children),
+      };
+    }
     return new Proxy(
       { __esModule: true },
       { get: (target, key) => (key === "__esModule" ? true : Primitive) },

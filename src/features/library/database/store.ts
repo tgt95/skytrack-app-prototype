@@ -321,9 +321,9 @@ function normalizeProjects(projects: LibProject[]): LibProject[] {
         typeof snapshot?.vehicle === "string" ? snapshot.vehicle : undefined;
       const snapshotDroneId =
         typeof snapshot?.droneId === "string" ? snapshot.droneId : undefined;
-      const sharedWith = (mission.sharedWith ?? SAMPLE_SHARED_USERS).reduce<
-        string[]
-      >((emails, email) => {
+      const sharedWith = (
+        mission.sharedWith ?? (seeded ? SAMPLE_SHARED_USERS : [])
+      ).reduce<string[]>((emails, email) => {
         const normalized = email.trim().toLocaleLowerCase();
         if (
           normalized &&

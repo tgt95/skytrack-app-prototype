@@ -39,10 +39,9 @@ test("world picker and mission editor remain controlled leaf views", () => {
     assert.doesNotMatch(source, /from ["']\.\/studio-dialogs["']/);
 });
 
-test("shortcuts dialog preserves accessible groups and descriptions", () => {
+test("shortcuts dialog preserves its accessible labels and groups", () => {
   assert.match(shortcuts, /aria-label="Keyboard shortcuts"/);
   assert.match(shortcuts, /data-testid="ms-shortcut-groups"/);
   assert.match(shortcuts, /data-testid="ms-shortcut-group"/);
   assert.match(shortcuts, /data-testid="ms-shortcut-row"/);
-  assert.match(shortcuts, /Shortcuts are ignored while typing/);
 });

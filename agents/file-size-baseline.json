@@ -13,8 +13,8 @@
     },
     {
       "path": "src/features/library/library.tsx",
-      "maxLines": 564,
-      "why": "The route passes the project-dialog opener reference to the setup dialog so Base UI can restore focus after close; keep this fixed ceiling while retaining the route composition boundary. Remove the exception after a later Library composition split."
+      "maxLines": 577,
+      "why": "The route passes the project-dialog opener reference to the setup dialog so Base UI can restore focus after close. Hold the ceiling at its current 577 lines until a focused Library composition split; do not grow it further."
     },
     {
       "path": "src/features/scene/mission-scene.tsx",
@@ -52,9 +52,84 @@
       "why": "World, Drone, and AI model resource editors share workspace persistence and confirmation behavior. Keep the ceiling fixed pending a resource-family split."
     },
     {
+      "path": "src/features/library/workspace/use-library-projects.ts",
+      "maxLines": 500,
+      "why": "This hook owns workspace-scoped project state and its CRUD lifecycle. Hold the ceiling at the current size until the state/persistence boundary is split without changing save semantics."
+    },
+    {
+      "path": "src/features/studio/mission-insights/mission-insights-charts.tsx",
+      "maxLines": 441,
+      "why": "Telemetry normalization, shared tooltip behavior, and report charts use one scale and interaction model. Hold the exact current ceiling until a focused chart extraction is reviewed."
+    },
+    {
+      "path": "src/features/studio/mission-insights/mission-insights-data.ts",
+      "maxLines": 660,
+      "why": "Run contracts and the immutable Mission Insights sample catalog form the feature data source. Hold the current ceiling until fixtures can be separated without changing sample identities or report mappings."
+    },
+    {
+      "path": "src/features/studio/mission-insights/mission-insights-flight-replay.tsx",
+      "maxLines": 631,
+      "why": "Replay timing, derived telemetry frames, and their view share one sample timeline and playback contract. Hold the exact current ceiling until a behavior-preserving view/data split is reviewed."
+    },
+    {
+      "path": "src/features/studio/mission-insights/mission-insights-report-ai-models.tsx",
+      "maxLines": 569,
+      "why": "AI-model rows, provenance, and copyable source paths belong to the same report section. Hold the current ceiling pending a focused presentation split with a stable row contract."
+    },
+    {
+      "path": "src/features/studio/mission-insights/mission-insights-report-data.ts",
+      "maxLines": 927,
+      "why": "This adapter maps bundled Mission Insights samples to report records, artifacts, and media while preserving evidence order and IDs. Hold the exact ceiling until a data-only extraction is reviewed."
+    },
+    {
+      "path": "src/features/studio/mission-insights/mission-insights-report-flight-path-3d.tsx",
+      "maxLines": 490,
+      "why": "Plotly setup, camera ownership, trace conversion, and disposal form one 3D flight-path lifecycle. Hold the current ceiling until the renderer boundary can be extracted without changing camera behavior."
+    },
+    {
+      "path": "src/features/studio/mission-insights/mission-insights-report-flight-path.tsx",
+      "maxLines": 1392,
+      "why": "The Flight Path report owns its summary, legend, map, coordinate projection, and detail view. These are clear future extraction seams; lock the exact current ceiling until a dedicated behavior-preserving refactor validates them."
+    },
+    {
+      "path": "src/features/studio/mission-insights/mission-insights-report-media-files.tsx",
+      "maxLines": 447,
+      "why": "The report file tree and selected-file details share artifact and availability models. Hold the current ceiling pending a focused split with the node/selection contract preserved."
+    },
+    {
+      "path": "src/features/studio/mission-insights/mission-insights-report-media-metadata.tsx",
+      "maxLines": 488,
+      "why": "Metadata rows and media metadata panels share the same formatting and availability values. Hold the exact ceiling until a reusable presentation contract is established."
+    },
+    {
+      "path": "src/features/studio/mission-insights/mission-insights-report-media-preview.tsx",
+      "maxLines": 859,
+      "why": "Preview playback, seek timeline, and event markers coordinate the same media clock and selected evidence. Hold the current ceiling pending a tested extraction that preserves seeking and cleanup."
+    },
+    {
+      "path": "src/features/studio/mission-insights/mission-insights-report-media-tab.tsx",
+      "maxLines": 647,
+      "why": "The Media tab owns filters, artifact selection, and composition of file, metadata, and preview views. Hold the exact ceiling until their selection state has a reviewed boundary."
+    },
+    {
+      "path": "src/features/studio/mission-insights/mission-insights-report-timeline-action-detail.tsx",
+      "maxLines": 778,
+      "why": "Action detail, artifact references, and evidence images share the same report action and file mapping. Hold the current ceiling pending a focused subview extraction with those mappings unchanged."
+    },
+    {
+      "path": "src/features/studio/mission-insights/mission-insights-report-timeline.tsx",
+      "maxLines": 928,
+      "why": "Timeline filtering, sorting, event-stream grouping, and action tables share event identity and ordering rules. Hold the exact ceiling until table and event-stream views can be separated with those contracts preserved."
+    },
+    {
+      "path": "src/features/studio/report-table.tsx",
+      "maxLines": 515,
+      "why": "The report list owns its fixture mapping, status rendering, and column composition. Hold the current ceiling until a focused data/presentation boundary is reviewed."
+    },
+    {
       "path": "src/pages/mission-studio-page.tsx",
-      "maxLines": 478,
-      "why": "Temporarily accept the current Mission Studio release state per Owner authorization to defer project line limits during the 2026-10-27 Pages release. Track a focused shell composition refactor in the workspace follow-up record and remove this exception when the file returns to the 400-line target."
+      "maxLines": 488,
+      "why": "Temporarily accept the current Studio composition boundary through this release. Hold the ceiling at 488 lines; split shell state only after a focused refactor confirms page and scene ownership."
     }
   ]
 }

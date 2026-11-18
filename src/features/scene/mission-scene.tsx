@@ -33,10 +33,8 @@ import { useMissionSceneWorldLayers } from "./use-mission-scene-world-layers";
 import { MissionSceneWorldModelStatus } from "./mission-scene-world-model-status";
 import { MissionScaleIndicator } from "./mission-scale-indicator";
 import { mapRenderResolutionScale } from "./map-render-quality";
-import {
-  MISSION_DESIGN_PREFERENCES_CHANGE_EVENT,
-  readMissionDesignPreferences,
-} from "@/shared/mission-design-preferences";
+import { useMissionDesignPreferenceRevision } from "./use-mission-design-preference-revision";
+import { readMissionDesignPreferences } from "@/shared/mission-design-preferences";
 
 type CesiumNS = typeof import("cesium");
 
@@ -95,7 +93,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
     },
     ref,
   ) {
-    const [preferencesRevision, setPreferencesRevision] = useState(0);
+    const preferencesRevision = useMissionDesignPreferenceRevision();
     const selectedPhotoWaypointId = getSelectedPhotoId(mission, selection);
     const focusedPhotoWaypointId = showPhotoMarkers
       ? selectedPhotoWaypointId
@@ -408,21 +406,6 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
       source: worldModel,
       basemap,
     });
-    /* Search pin is independently owned and never affects mission state or camera fitting. */
-    useEffect(() => {
-      const updatePreferences = () =>
-        setPreferencesRevision((revision) => revision + 1);
-      window.addEventListener(
-        MISSION_DESIGN_PREFERENCES_CHANGE_EVENT,
-        updatePreferences,
-      );
-      return () =>
-        window.removeEventListener(
-          MISSION_DESIGN_PREFERENCES_CHANGE_EVENT,
-          updatePreferences,
-        );
-    }, []);
-
     useEffect(() => {
       const viewer = viewerRef.current;
       const Cesium = cesiumRef.current;
@@ -432,13 +415,6 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
         readMissionDesignPreferences().mapRenderQuality,
       );
       viewer.scene.requestRender();
-    }, [status, preferencesRevision]);
-
-    useEffect(() => {
-      const viewer = viewerRef.current;
-      const Cesium = cesiumRef.current;
-      if (!viewer || !Cesium || viewer.isDestroyed() || status !== "ready")
-        return;
       const controller = viewer.scene.screenSpaceCameraController;
       const priorZoomEnabled = controller.enableZoom;
       controller.enableZoom = false;

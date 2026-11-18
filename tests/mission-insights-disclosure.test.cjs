@@ -14,16 +14,16 @@ const toolbar = read(
 );
 const overlays = read("src/features/studio/studio-map-overlays.tsx");
 
-test("Mission Insights sample data is disclosed on page and in exports", () => {
-  assert.match(page, /<MissionInsightsSampleNotice\s*\/>/);
-  assert.match(
-    sections,
-    /<AlertDescription>\{MISSION_INSIGHTS_SAMPLE_DISCLOSURE\}<\/AlertDescription>/,
+test("Mission Insights omits boilerplate sample disclaimers and exports report data", () => {
+  assert.doesNotMatch(
+    page,
+    /MissionInsightsSampleNotice|MISSION_INSIGHTS_SAMPLE_DISCLOSURE/,
   );
-  assert.match(
-    toolbar,
-    /sampleDisclosure:\s*MISSION_INSIGHTS_SAMPLE_DISCLOSURE/,
-  );
+  assert.doesNotMatch(sections, /MISSION_INSIGHTS_SAMPLE_DISCLOSURE/);
+  assert.doesNotMatch(toolbar, /sampleDisclosure/);
+  assert.match(page, /noSampleMessage\(run\)/);
+  assert.match(toolbar, /downloadReport\(run, sample\.key/);
+  assert.match(toolbar, /selectedRun:\s*run/);
 });
 
 test("report region uses its stable automation test id", () => {
