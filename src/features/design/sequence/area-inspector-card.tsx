@@ -23,9 +23,11 @@ import {
 import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import { AreaIcon } from "@/ui/components/icons";
 import {
+  type CameraActionKind,
   getAreaScanSpacingM,
   dist3,
   polygonAreaM2,
+  type SceneSelection,
   type MissionArea,
   type ReconFlightSettings,
   type StudioMission,
@@ -38,10 +40,6 @@ import { EndMissionControl } from "./sequence-transfer";
 import { RouteWaypointList } from "./route-waypoint-list";
 import { ACTION_OPTIONS } from "./sequence-action-controls";
 import { createAIWorkflowAt } from "./ai-workflow-utils";
-import type {
-  CameraActionKind,
-  SceneSelection,
-} from "@/domain/mission-model";
 import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 import type { SequenceDropPosition } from "./sequence-drag";
 import {
