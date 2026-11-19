@@ -40,6 +40,7 @@ export interface WorkspaceAIModelRecord {
   note: string;
   packageFileName?: string;
   packageFileSize?: number;
+  thumbnailDataUrl?: string;
 }
 
 export interface WorkspaceResourceState {
@@ -161,6 +162,7 @@ function makeSampleModel(
   name: string,
   origin: AIModelOrigin,
   uploadedBy?: string,
+  details: Partial<WorkspaceAIModelRecord> = {},
 ): WorkspaceAIModelRecord {
   return {
     id: `sample-model-${workspaceId}-${slug(name)}`,
@@ -175,7 +177,74 @@ function makeSampleModel(
     status: "Sample",
     assetReference: "",
     note: "",
+    ...details,
   };
+}
+
+const BUNDLED_AI_MODEL_SAMPLES: Array<
+  Pick<
+    WorkspaceAIModelRecord,
+    "name" | "version" | "task" | "inputModality" | "compatibility"
+  >
+> = [
+  {
+    name: "Common Objects Detection",
+    version: "v26n",
+    task: "det-coco-v26n-b-quantized-fp16.onnx",
+    inputModality: "",
+    compatibility: "",
+  },
+  {
+    name: "Fire and Explosion Detection",
+    version: "v26n",
+    task: "det-firesmoke-v26n-b-quantized-fp16.onnx",
+    inputModality: "",
+    compatibility: "",
+  },
+  {
+    name: "Objects Detection by Drones",
+    version: "v26n",
+    task: "det-visdrone-v26n-b-quantized-fp16.onnx",
+    inputModality: "",
+    compatibility: "",
+  },
+];
+
+function appendBundledAIModelSamples(
+  state: WorkspaceResourceState,
+): WorkspaceResourceState {
+  const aiModels = [...state.aiModels];
+  let changed = false;
+  for (const workspace of WORKSPACES) {
+    for (const sample of BUNDLED_AI_MODEL_SAMPLES) {
+      const id = `sample-model-${workspace.id}-${slug(sample.name)}`;
+      const index = aiModels.findIndex((model) => model.id === id);
+      if (index < 0) {
+        aiModels.push(
+          makeSampleModel(
+            workspace.id,
+            sample.name,
+            "skytrack",
+            undefined,
+            sample,
+          ),
+        );
+        changed = true;
+        continue;
+      }
+      const existing = aiModels[index];
+      if (existing.inputModality !== "" || existing.compatibility !== "") {
+        aiModels[index] = {
+          ...existing,
+          inputModality: "",
+          compatibility: "",
+        };
+        changed = true;
+      }
+    }
+  }
+
+  return changed ? { ...state, aiModels } : state;
 }
 
 function seedState(): WorkspaceResourceState {
@@ -184,8 +253,8 @@ function seedState(): WorkspaceResourceState {
       makeBundledSampleWorld(workspace.id, asset),
     ),
   );
-  const aiModels = WORKSPACES.flatMap((workspace) =>
-    workspace.aiModels.map((name, index) =>
+  const aiModels = WORKSPACES.flatMap((workspace) => [
+    ...workspace.aiModels.map((name, index) =>
       makeSampleModel(
         workspace.id,
         name,
@@ -193,7 +262,10 @@ function seedState(): WorkspaceResourceState {
         index === 0 ? undefined : "Olivia Chen",
       ),
     ),
-  );
+    ...BUNDLED_AI_MODEL_SAMPLES.map((sample) =>
+      makeSampleModel(workspace.id, sample.name, "skytrack", undefined, sample),
+    ),
+  ]);
   return { version: 1, worlds, aiModels };
 }
 
@@ -241,7 +313,11 @@ function isAIModel(value: unknown): value is WorkspaceAIModelRecord {
     (model.packageFileName === undefined ||
       typeof model.packageFileName === "string") &&
     (model.packageFileSize === undefined ||
-      typeof model.packageFileSize === "number")
+      typeof model.packageFileSize === "number") &&
+    (model.thumbnailDataUrl === undefined ||
+      (typeof model.thumbnailDataUrl === "string" &&
+        model.thumbnailDataUrl.length <= 200_000 &&
+        model.thumbnailDataUrl.startsWith("data:image/jpeg;base64,")))
   );
 }
 
@@ -274,12 +350,13 @@ export function loadWorkspaceResources(): WorkspaceResourceState {
           worlds: parsed.worlds,
           aiModels,
         };
-        const migrated = migrateLegacySampleWorlds(state);
-        if (migrated) {
+        const migratedWorlds = migrateLegacySampleWorlds(state) ?? state;
+        const migrated = appendBundledAIModelSamples(migratedWorlds);
+        if (migrated !== state) {
           saveWorkspaceResources(migrated);
           return migrated;
         }
-        return state;
+        return migrated;
       }
     }
   } catch {

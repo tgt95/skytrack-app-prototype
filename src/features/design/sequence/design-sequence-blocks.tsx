@@ -47,7 +47,7 @@ export function DesignSequenceBlocks({
   onMoveAction,
   onInsertActionAt,
   aiModels,
-  onImportAIModel,
+  onManageAIModels,
   onDeleteAIModel,
   onDeleteAction,
   onDeleteZone,
@@ -108,7 +108,7 @@ export function DesignSequenceBlocks({
     kind: CameraActionKind,
   ) => void;
   aiModels: AIModelCardModel[];
-  onImportAIModel: () => void;
+  onManageAIModels: () => void;
   onDeleteAIModel: (modelId: string) => boolean;
   onDeleteAction: (wpId: string, actionId: string) => void;
   onDeleteZone: (kind: "area" | "avoid", id: string) => void;
@@ -182,7 +182,7 @@ export function DesignSequenceBlocks({
               onDeleteRoute={onDeleteRoute}
               onInsertActionAt={onInsertActionAt}
               aiModels={aiModels}
-              onImportAIModel={onImportAIModel}
+              onManageAIModels={onManageAIModels}
               onDeleteAIModel={onDeleteAIModel}
               onSelect={onSelect}
               onPickUpWaypoint={onPickUpWaypoint}
@@ -244,7 +244,7 @@ export function DesignSequenceBlocks({
             onSelect={onSelect}
             onInsertActionAt={onInsertActionAt}
             aiModels={aiModels}
-            onImportAIModel={onImportAIModel}
+            onManageAIModels={onManageAIModels}
             onDeleteAIModel={onDeleteAIModel}
             onPickUpWaypoint={onPickUpWaypoint}
             onPreviewMoveWaypoint={onPreviewMoveWaypoint}

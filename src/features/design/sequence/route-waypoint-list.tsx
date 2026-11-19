@@ -52,7 +52,7 @@ export function RouteWaypointList({
   onAnnounce,
   generatedWaypoints = false,
   aiModels,
-  onImportAIModel,
+  onManageAIModels,
   onDeleteAIModel,
 }: {
   sequenceId: string;
@@ -89,7 +89,7 @@ export function RouteWaypointList({
   onAnnounce: (message: string) => void;
   generatedWaypoints?: boolean;
   aiModels: AIModelCardModel[];
-  onImportAIModel: () => void;
+  onManageAIModels: () => void;
   onDeleteAIModel: (modelId: string) => boolean;
 }) {
   const lastRouteWaypoint = routeWaypoints.at(-1);
@@ -125,7 +125,7 @@ export function RouteWaypointList({
             `${workflow.label} updated.`,
           )
         }
-        onImportModel={onImportAIModel}
+        onManageAIModels={onManageAIModels}
         onDeleteModel={(modelId) => {
           if (!onDeleteAIModel(modelId)) return false;
           onUpdateMission(
