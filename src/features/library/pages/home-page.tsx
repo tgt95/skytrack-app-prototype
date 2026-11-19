@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { CaretRightIcon } from "@phosphor-icons/react";
-import { LibraryPageHeader, LibraryPageLayout } from "@/features/library/cards/library-presentation.tsx";
+import { PageHeader } from "skytrack-ui/page-header";
+import { LibraryPageLayout } from "@/features/library/cards/library-presentation.tsx";
 import type { LibMission, LibTemplate } from "@/features/library/database/store";
 
 type MissionEntry = { projectId: string; project: string; mission: LibMission };
@@ -29,21 +30,25 @@ export function HomePage({
     <LibraryPageLayout
       titleId="ms-lib-home-title"
       header={
-        <LibraryPageHeader
-          titleId="ms-lib-home-title"
-          variant="plain"
-          title="Welcome to SkyTrack"
+        <PageHeader
+          className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-4 pt-5 is-plain border-0 bg-(--background)"
+          data-testid="ms-lib-page-header-row"
+          title={
+            <span id="ms-lib-home-title" data-testid="ms-lib-page-header-copy">
+              Welcome to SkyTrack
+            </span>
+          }
         />
       }
     >
       <section aria-labelledby="ms-lib-recent-title" className="mb-8">
         <div className="ms-section-header flex items-start justify-between gap-3 mb-4">
-          <h2
+          <div
             id="ms-lib-recent-title"
-            className="h4 m-0"
+            className="h4"
           >
             Recent missions
-          </h2>
+          </div>
         </div>
         <div
           className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
@@ -59,12 +64,12 @@ export function HomePage({
       </section>
       <section aria-labelledby="ms-lib-templates-title">
         <div className="ms-section-header flex items-start justify-between gap-3 mb-4">
-          <h2
+          <div
             id="ms-lib-templates-title"
-            className="h4 m-0"
+            className="h4"
           >
             Mission templates
-          </h2>
+          </div>
           <button
             type="button"
             className=" focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 inline-flex items-center gap-1 [border:0] bg-transparent text-foreground text-[0.8125rem] font-semibold cursor-pointer p-1 [&:hover]:text-(--primary)"

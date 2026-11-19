@@ -1,9 +1,9 @@
 import { DroneIcon, PlusIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
+import { PageHeader } from "skytrack-ui/page-header";
 import type { WorkspaceDroneProfile } from "@/features/library/database/drone-store";
 import {
   LibraryCardFrame,
-  LibraryPageHeader,
   LibraryPageLayout,
 } from "@/features/library/cards/library-presentation.tsx";
 
@@ -22,13 +22,20 @@ export function DronesPage({
     <LibraryPageLayout
       titleId="ms-lib-drones-title"
       header={
-        <LibraryPageHeader
-          titleId="ms-lib-drones-title"
-          title="Drones"
-          actions={
-            <Button size="default" variant="default" onClick={onCreate}>
-              <PlusIcon aria-hidden="true" /> Add Drone
-            </Button>
+        <PageHeader
+          className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-4 pt-5"
+          data-testid="ms-lib-page-header-row"
+          title={
+            <span id="ms-lib-drones-title" data-testid="ms-lib-page-header-copy">
+              Drones
+            </span>
+          }
+          toolbar={
+            <div className="inline-flex items-center justify-end gap-2 shrink-0" data-testid="ms-lib-page-header-actions">
+              <Button size="default" variant="default" onClick={onCreate}>
+                <PlusIcon aria-hidden="true" /> Add Drone
+              </Button>
+            </div>
           }
         />
       }

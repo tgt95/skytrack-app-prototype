@@ -32,6 +32,50 @@ export function createMissionSceneHandle({ viewerRef, cesiumRef, fitRef, mission
       const viewer = viewerRef.current
       return viewer && !viewer.isDestroyed() ? viewer.camera.heading : 0
     },
+    getWindScreenVector: (azimuthDeg, elevationDeg) => {
+      const viewer = viewerRef.current
+      const Cesium = cesiumRef.current
+      if (!viewer || !Cesium || viewer.isDestroyed()) return null
+
+      const { scene, camera, canvas } = viewer
+      const center = new Cesium.Cartesian2(canvas.clientWidth / 2, canvas.clientHeight / 2)
+      const ray = camera.getPickRay(center)
+      const anchor = ray ? scene.globe.pick(ray, scene) : undefined
+      const ground = anchor ?? camera.pickEllipsoid(center, scene.globe.ellipsoid)
+      if (!ground) return null
+
+      const azimuth = Cesium.Math.toRadians(azimuthDeg)
+      const elevation = Cesium.Math.toRadians(elevationDeg)
+      const horizontal = Math.cos(elevation)
+      const localWind = Cesium.Cartesian3.fromElements(
+        horizontal * Math.cos(azimuth),
+        horizontal * Math.sin(azimuth),
+        Math.sin(elevation),
+      )
+      const sampleDistanceM = 25
+      Cesium.Cartesian3.multiplyByScalar(localWind, sampleDistanceM, localWind)
+
+      const enuFrame = Cesium.Transforms.eastNorthUpToFixedFrame(ground, scene.globe.ellipsoid)
+      const worldWind = Cesium.Matrix4.multiplyByPointAsVector(
+        enuFrame,
+        localWind,
+        new Cesium.Cartesian3(),
+      )
+      const windPoint = Cesium.Cartesian3.add(ground, worldWind, new Cesium.Cartesian3())
+      const start = scene.cartesianToCanvasCoordinates(ground)
+      const end = scene.cartesianToCanvasCoordinates(windPoint)
+      if (!start || !end || !Number.isFinite(start.x) || !Number.isFinite(start.y) || !Number.isFinite(end.x) || !Number.isFinite(end.y)) return null
+
+      return {
+        x: (end.x - start.x) / sampleDistanceM,
+        y: (end.y - start.y) / sampleDistanceM,
+      }
+    },
+    subscribeCameraChanged: (listener) => {
+      const viewer = viewerRef.current
+      if (!viewer || viewer.isDestroyed()) return () => undefined
+      return viewer.camera.changed.addEventListener(listener)
+    },
     downloadMapImage: () => {
       const viewer = viewerRef.current
       const Cesium = cesiumRef.current

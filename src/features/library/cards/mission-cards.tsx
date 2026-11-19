@@ -5,6 +5,7 @@ import {
   RulerIcon,
 } from "@phosphor-icons/react";
 import { Badge } from "skytrack-ui/badge";
+import { Avatar, AvatarFallback } from "skytrack-ui/avatar";
 import {
   LibraryCardFrame,
   type LibraryCardAction,
@@ -16,6 +17,7 @@ import type { LibMission } from "@/features/library/database/store";
 import type { SharedMissionFixture } from "@/features/library/workspace/workspace-data.ts";
 import type { MapTileOrigin } from "@/shared/map-tiles";
 import { roundTo } from "@/shared/number-utils";
+import { getNameInitials } from "@/shared/name-initials";
 import {
   formatArea,
   formatDistance,
@@ -29,7 +31,6 @@ import {
   routeLengthM,
   type StudioMission,
 } from "@/domain/mission-model";
-import { LibraryAvatar } from "./library-avatar.tsx";
 
 interface MissionCardRecord {
   id: string;
@@ -158,7 +159,13 @@ function MissionCardSummary({
 function MissionCardOwner({ username }: { username: string }) {
   return (
     <div className="inline-flex items-center gap-1.5">
-      <LibraryAvatar name={username} testId="ms-lib-card-owner" />
+      <Avatar
+        aria-hidden="true"
+        className="size-6"
+        data-testid="ms-lib-card-owner"
+      >
+        <AvatarFallback>{getNameInitials(username)}</AvatarFallback>
+      </Avatar>
       <span className="text-sm text-muted-foreground">{username}</span>
     </div>
   );

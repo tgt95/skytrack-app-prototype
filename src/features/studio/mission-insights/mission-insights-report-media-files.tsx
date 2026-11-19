@@ -7,6 +7,12 @@ import {
 } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
 import {
+  Empty,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyTitle,
+} from "skytrack-ui/empty";
+import {
   CodeBlock,
   CodeBlockContent,
   CodeBlockCopyButton,
@@ -281,9 +287,12 @@ export function MediaFilesSection({
                 ))}
               </ul>
             ) : (
-              <p className="m-0 px-2 py-3 text-sm text-muted-foreground">
-                No file names match this search.
-              </p>
+              <Empty>
+                <EmptyTitle>No matching files</EmptyTitle>
+                <EmptyDescription>
+                  No file names match this search.
+                </EmptyDescription>
+              </Empty>
             )
           ) : entries.length ? (
             <LocalFileTree
@@ -301,9 +310,12 @@ export function MediaFilesSection({
               onInspect={onInspect}
             />
           ) : (
-            <p className="m-0 px-2 py-3 text-sm text-muted-foreground">
-              No files are available in this report.
-            </p>
+            <Empty>
+              <EmptyTitle>No files available</EmptyTitle>
+              <EmptyDescription>
+                This report does not include any other files.
+              </EmptyDescription>
+            </Empty>
           )}
         </div>
       </div>
@@ -429,18 +441,12 @@ export function FileDetailsPanel({
           </div>
         </div>
       ) : (
-        <div className="flex min-h-0 flex-1 items-center justify-center p-6">
-          <div
-            className="flex max-w-sm flex-col items-center gap-3 text-center"
-            role="status"
-          >
-            <FileIcon
-              className="size-8 text-muted-foreground"
-              aria-hidden="true"
-            />
-            <p className="m-0 text-sm text-muted-foreground">{emptyMessage}</p>
-          </div>
-        </div>
+        <Empty role="status">
+          <EmptyMedia icon={FileIcon} />
+          <EmptyDescription>
+            {emptyMessage}
+          </EmptyDescription>
+        </Empty>
       )}
     </section>
   );

@@ -81,7 +81,7 @@ export interface AreaInspectorCardProps {
     kind: CameraActionKind,
   ) => void;
   aiModels: AIModelCardModel[];
-  onImportAIModel: () => void;
+  onManageAIModels: () => void;
   onDeleteAIModel: (modelId: string) => boolean;
   onPickUpWaypoint: (id: string) => void;
   onPreviewMoveWaypoint: (id: string, dir: -1 | 1) => void;
@@ -126,7 +126,7 @@ export default function AreaInspectorCard({
   onSelect,
   onInsertActionAt,
   aiModels,
-  onImportAIModel,
+  onManageAIModels,
   onDeleteAIModel,
   onPickUpWaypoint,
   onPreviewMoveWaypoint,
@@ -467,7 +467,7 @@ export default function AreaInspectorCard({
                 onUpdateMission={onUpdateMission}
                 onInsertActionAt={onInsertActionAt}
                 aiModels={aiModels}
-                onImportAIModel={onImportAIModel}
+                onManageAIModels={onManageAIModels}
                 onDeleteAIModel={onDeleteAIModel}
                 onPickUpWaypoint={onPickUpWaypoint}
                 onPreviewMoveWaypoint={onPreviewMoveWaypoint}

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { CheckIcon, WarningCircleIcon, XIcon } from '@phosphor-icons/react'
 import { Badge } from 'skytrack-ui/badge'
+import { Avatar } from 'skytrack-ui/avatar'
+import { getNameInitials } from '@/shared/name-initials'
 import { Button } from 'skytrack-ui/button'
 import {
   Dialog,
@@ -119,7 +121,6 @@ export function AccountMenuDialogs ({
                 </div>
                 <footer className='flex flex-none justify-between border-t border-border pt-3'>
                   <Button
-                    size='sm'
                     variant='outline'
                     onClick={() =>
                       onChangeMissionDesignPreferences(
@@ -129,7 +130,7 @@ export function AccountMenuDialogs ({
                   >
                     Reset default
                   </Button>
-                  <DrawerClose size='sm' onClick={onClose}>
+                  <DrawerClose onClick={onClose}>
                     Close
                   </DrawerClose>
                 </footer>
@@ -154,19 +155,9 @@ export function AccountMenuDialogs ({
           >
             <DialogHeader>
               <DialogTitle className='heading'>{title}</DialogTitle>
-              {panel === 'profile' ? (
-                <DialogDescription>
-                  Manage the name shown in your SkyTrack workspace.
-                </DialogDescription>
-              ) : null}
               {panel === 'settings' ? (
                 <DialogDescription>
                   Review your account details.
-                </DialogDescription>
-              ) : null}
-              {panel === 'notifications' ? (
-                <DialogDescription>
-                  Choose your in-app activity preferences.
                 </DialogDescription>
               ) : null}
               {panel === 'switch' ? (
@@ -181,16 +172,12 @@ export function AccountMenuDialogs ({
 
             {panel === 'profile' ? (
               <div
-                className=' flex flex-col gap-3.5 min-w-0'
+                className='flex flex-col gap-4 min-w-0'
                 data-testid='ms-lib-account-form'
               >
-                <div
-                  className=' inline-flex items-center justify-center w-13 h-13 flex-[0_0_auto] rounded-full bg-(--sidebar-primary) text-(--sidebar-primary-foreground) text-[1.3125rem] font-[650]'
-                  aria-hidden='true'
-                  data-testid='ms-lib-account-edit-avatar'
-                >
-                  {getUserInitial(name)}
-                </div>
+                <Avatar aria-hidden='true' size='lg'>
+                  {getNameInitials(name)}
+                </Avatar>
                 <FieldRoot name='account-display-name'>
                   <FieldLabel>Display name</FieldLabel>
                   <FieldControl
@@ -244,56 +231,50 @@ export function AccountMenuDialogs ({
 
             {panel === 'notifications' ? (
               <div
-                className=' flex flex-col gap-3.5 min-w-0'
+                className='flex flex-col min-w-0 gap-4'
                 data-testid='ms-lib-account-notifications-content'
               >
-                <h3 className='heading m-0 text-[0.8125rem] font-semibold'>
-                  In-app activity
-                </h3>
-                <NotificationRow
-                  title='Mission activity'
-                  description='Updates to missions in your workspace.'
-                  checked={notifications.missionActivity}
-                  onCheckedChange={checked =>
-                    onChangeNotifications({
-                      ...notifications,
-                      missionActivity: checked
-                    })
-                  }
-                />
-                <NotificationRow
-                  title='Shared project activity'
-                  description='Changes to projects shared with you.'
-                  checked={notifications.sharedProjectActivity}
-                  onCheckedChange={checked =>
-                    onChangeNotifications({
-                      ...notifications,
-                      sharedProjectActivity: checked
-                    })
-                  }
-                />
-                <NotificationRow
-                  title='Workspace updates'
-                  description='Changes to workspace resources and access.'
-                  checked={notifications.workspaceUpdates}
-                  onCheckedChange={checked =>
-                    onChangeNotifications({
-                      ...notifications,
-                      workspaceUpdates: checked
-                    })
-                  }
-                />
-                <div
-                  className=' flex items-center justify-between gap-3 min-h-11 border-b border-b-border text-(--muted-foreground) text-[0.8125rem] [border-bottom:0] text-foreground'
-                  data-testid='ms-lib-account-email-status'
-                >
-                  <span>Email notifications</span>
-                  <Badge
-                    className='rounded-(--radius)'
-                    count='Off'
-                    status='secondary'
-                    size='sm'
+                <div className='h6'>In-app activity</div>
+                <div className='flex flex-col'>
+                  <NotificationRow
+                    title='Mission activity'
+                    description='Updates to missions in your workspace.'
+                    checked={notifications.missionActivity}
+                    onCheckedChange={checked =>
+                      onChangeNotifications({
+                        ...notifications,
+                        missionActivity: checked
+                      })
+                    }
                   />
+                  <NotificationRow
+                    title='Shared project activity'
+                    description='Changes to projects shared with you.'
+                    checked={notifications.sharedProjectActivity}
+                    onCheckedChange={checked =>
+                      onChangeNotifications({
+                        ...notifications,
+                        sharedProjectActivity: checked
+                      })
+                    }
+                  />
+                  <NotificationRow
+                    title='Workspace updates'
+                    description='Changes to workspace resources and access.'
+                    checked={notifications.workspaceUpdates}
+                    onCheckedChange={checked =>
+                      onChangeNotifications({
+                        ...notifications,
+                        workspaceUpdates: checked
+                      })
+                    }
+                  />
+                  <div className='flex items-center gap-4 min-h-14 py-3'>
+                    <div className='min-w-0 w-full text-sm font-medium'>
+                      Email notifications
+                    </div>
+                    <Badge count='Off' status='secondary' />
+                  </div>
                 </div>
               </div>
             ) : null}
@@ -312,7 +293,7 @@ export function AccountMenuDialogs ({
                     aria-hidden='true'
                     data-testid='ms-lib-account-current-avatar'
                   >
-                    {getUserInitial(profile.name)}
+                    {getNameInitials(profile.name)}
                   </span>
                   <span
                     className=' flex flex-[1_1_auto] flex-col gap-0.75 min-w-0'
@@ -368,8 +349,6 @@ export function AccountMenuDialogs ({
                     Cancel
                   </DialogClose>
                   <Button
-                    size='sm'
-                    variant='default'
                     disabled={!canSaveName}
                     onClick={() => {
                       if (onSaveProfile(name)) onClose()
@@ -385,8 +364,6 @@ export function AccountMenuDialogs ({
                     Cancel
                   </DialogClose>
                   <Button
-                    size='sm'
-                    variant='default'
                     onClick={onLogout}
                     className='w-auto flex-[0_0_auto]'
                   >
@@ -404,11 +381,6 @@ export function AccountMenuDialogs ({
       </Dialog>
     </>
   )
-}
-
-function getUserInitial (name: string): string {
-  const firstWord = name.trim().split(/\s+/u)[0]
-  return firstWord?.[0]?.toLocaleUpperCase() ?? '?'
 }
 
 function AccountDetail ({ label, value }: { label: string; value: string }) {
@@ -439,19 +411,14 @@ function NotificationRow ({
   const id = `notification-${title.toLowerCase().replace(/[^a-z0-9]+/gu, '-')}`
 
   return (
-    <div
-      className=' flex items-center justify-between gap-4 min-h-14.5 border-b border-b-border'
-      data-testid='ms-lib-account-notification-row'
-    >
+    <div className='flex items-center gap-4 min-h-14 py-3 first:pt-0 border-b border-b-border'>
       <label
         htmlFor={id}
-        className=' flex flex-col gap-0.75 min-w-0 cursor-pointer'
+        className='flex flex-col gap-1 min-w-0 w-full cursor-pointer'
         data-testid='ms-lib-account-notification-copy'
       >
-        <strong className='text-[0.8125rem] font-medium'>{title}</strong>
-        <span className='text-(--muted-foreground) text-xs leading-[1.4]'>
-          {description}
-        </span>
+        <div className='text-sm font-medium'>{title}</div>
+        <div className='text-sm text-muted-foreground'>{description}</div>
       </label>
       <Switch
         id={id}

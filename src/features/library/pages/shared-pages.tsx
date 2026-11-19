@@ -1,7 +1,8 @@
 import { Fragment } from "react";
 import { ArrowLeftIcon } from "@phosphor-icons/react";
 import { Badge } from "skytrack-ui/badge";
-import { LibraryPageHeader, LibraryPageLayout } from "@/features/library/cards/library-presentation.tsx";
+import { PageHeader } from "skytrack-ui/page-header";
+import { LibraryPageLayout } from "@/features/library/cards/library-presentation.tsx";
 import type { SharedMission, SharedProject } from "@/features/library/library-cards";
 
 export function SharedAccountsPage({
@@ -17,20 +18,29 @@ export function SharedAccountsPage({
     <LibraryPageLayout
       titleId="ms-lib-shared-title"
       header={
-        <LibraryPageHeader
-          titleId="ms-lib-shared-title"
-          title="Shared accounts"
-          description={
-            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
-              {missionName} · {projectName}
-            </p>
-          }
-          context={
+        <div
+          className="sticky top-0 z-20 border-b border-border bg-card"
+          data-testid="ms-lib-page-header-row"
+        >
+          <div className="min-w-0 bg-card px-6 pt-5" data-testid="ms-lib-page-header-context">
             <button type="button" className="ms-lib-back inline-flex items-center gap-1.5 mb-0 py-1 px-0 [border:0] bg-transparent text-(--muted-foreground) text-[0.8125rem] cursor-pointer hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1" onClick={onBack}>
               <ArrowLeftIcon aria-hidden="true" /> Back
             </button>
-          }
-        />
+          </div>
+          <PageHeader
+            className="ms-lib-page-header flex flex-col gap-2 px-6 pb-0 pt-0 border-b-0"
+            title={
+              <span id="ms-lib-shared-title" data-testid="ms-lib-page-header-copy">
+                Shared accounts
+              </span>
+            }
+          />
+          <div className="px-6 pb-4" data-testid="ms-lib-page-header-description">
+            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
+              {missionName} · {projectName}
+            </p>
+          </div>
+        </div>
       }
     >
       <ul
@@ -74,22 +84,34 @@ export function SharedProjectPage({
     <LibraryPageLayout
       titleId="ms-lib-shared-project-title"
       header={
-        <LibraryPageHeader
-          titleId="ms-lib-shared-project-title"
-          title={project.name}
-          description={
-            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
-              Owned by {project.owner} · {project.workspace} ·{" "}
-              {project.sharedAgo}
-            </p>
-          }
-          context={
+        <div
+          className="sticky top-0 z-20 border-b border-border bg-card"
+          data-testid="ms-lib-page-header-row"
+        >
+          <div className="min-w-0 bg-card px-6 pt-5" data-testid="ms-lib-page-header-context">
             <button type="button" className="ms-lib-back inline-flex items-center gap-1.5 mb-0 py-1 px-0 [border:0] bg-transparent text-(--muted-foreground) text-[0.8125rem] cursor-pointer hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1" onClick={onBack}>
               <ArrowLeftIcon aria-hidden="true" /> Shared with me
             </button>
-          }
-          actions={<Badge className="rounded-(--radius)" count="View only" />}
-        />
+          </div>
+          <PageHeader
+            className="ms-lib-page-header flex flex-col gap-2 px-6 pb-0 pt-0 border-b-0"
+            title={
+              <span id="ms-lib-shared-project-title" data-testid="ms-lib-page-header-copy">
+                {project.name}
+              </span>
+            }
+            toolbar={
+              <div className="inline-flex items-center justify-end gap-2 shrink-0" data-testid="ms-lib-page-header-actions">
+                <Badge className="rounded-(--radius)" count="View only" />
+              </div>
+            }
+          />
+          <div className="px-6 pb-4" data-testid="ms-lib-page-header-description">
+            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
+              Owned by {project.owner} · {project.workspace} · {project.sharedAgo}
+            </p>
+          </div>
+        </div>
       }
     >
       <div
@@ -117,9 +139,14 @@ export function SharedWithMePage({
     <LibraryPageLayout
       titleId="ms-lib-sharedme-title"
       header={
-        <LibraryPageHeader
-          titleId="ms-lib-sharedme-title"
-          title="Shared with me"
+        <PageHeader
+          className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-4 pt-5"
+          data-testid="ms-lib-page-header-row"
+          title={
+            <span id="ms-lib-sharedme-title" data-testid="ms-lib-page-header-copy">
+              Shared with me
+            </span>
+          }
         />
       }
     >

@@ -1,12 +1,12 @@
-import { PlusIcon } from "@phosphor-icons/react";
+import { FolderOpenIcon, PlusIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
+import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "skytrack-ui/empty";
+import { PageHeader } from "skytrack-ui/page-header";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "skytrack-ui/tabs";
 import type { WorkspaceAIModelRecord } from "@/features/library/database/workspace-resources-store";
 import { AIModelCardContent } from "@/ui/components/ai-model-card";
 import {
   LibraryCardFrame,
-  LibraryEmptyState,
-  LibraryPageHeader,
   LibraryPageLayout,
 } from "@/features/library/cards/library-presentation.tsx";
 import type { AIModelCategory } from "@/features/library/library-types";
@@ -70,31 +70,38 @@ export function AIModelsPage({
       <LibraryPageLayout
         titleId="ms-lib-aimodels-title"
         header={
-          <LibraryPageHeader
-            titleId="ms-lib-aimodels-title"
-            title="AI models"
-            actions={
+          <PageHeader
+            className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-0 pt-5 has-tabs border-b-0"
+            data-testid="ms-lib-page-header-row"
+            title={
+              <span id="ms-lib-aimodels-title" data-testid="ms-lib-page-header-copy">
+                AI models
+              </span>
+            }
+            toolbar={
               <div
-                className=" inline-flex items-center gap-2"
-                data-testid="ms-ai-model-header-actions"
+                className="inline-flex items-center justify-end gap-2 shrink-0"
+                data-testid="ms-lib-page-header-actions"
               >
-                <Button size="default" variant="default" onClick={onImport}>
-                  <PlusIcon aria-hidden="true" /> Import model
-                </Button>
+                <div
+                  className="inline-flex items-center gap-2"
+                  data-testid="ms-ai-model-header-actions"
+                >
+                  <Button size="default" variant="default" onClick={onImport}>
+                    <PlusIcon aria-hidden="true" /> Import model
+                  </Button>
+                </div>
               </div>
             }
-            footerVariant="tabs"
-            stickyHeader
-            footer={
-              <TabsList aria-label="AI model categories">
-                <TabsTab value="all">All ({allModels.length})</TabsTab>
-                <TabsTab value="members">
-                  Members ({workspaceModels.length})
-                </TabsTab>
-                <TabsTab value="me">Me ({uploadedModels.length})</TabsTab>
-              </TabsList>
-            }
-          />
+          >
+            <TabsList aria-label="AI model categories">
+              <TabsTab value="all">All ({allModels.length})</TabsTab>
+              <TabsTab value="members">
+                Members ({workspaceModels.length})
+              </TabsTab>
+              <TabsTab value="me">Me ({uploadedModels.length})</TabsTab>
+            </TabsList>
+          </PageHeader>
         }
       >
         <TabsPanel
@@ -102,10 +109,17 @@ export function AIModelsPage({
           value={category}
         >
           {visibleModels.length === 0 ? (
-            <LibraryEmptyState
-              title={emptyState.title}
-              description={emptyState.description}
-            />
+            <Empty>
+              <EmptyMedia icon={FolderOpenIcon} />
+              <EmptyTitle
+                data-testid="ms-lib-empty-title"
+                role="heading"
+                aria-level={2}
+              >
+                {emptyState.title}
+              </EmptyTitle>
+              <EmptyDescription>{emptyState.description}</EmptyDescription>
+            </Empty>
           ) : (
             <div
               className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"

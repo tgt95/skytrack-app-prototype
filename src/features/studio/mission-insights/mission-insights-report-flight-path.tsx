@@ -21,6 +21,12 @@ import { DetailSection } from './mission-insights-page-sections'
 import { Badge } from 'skytrack-ui/badge'
 import { type MissionInsightsReportTab } from '@/features/studio/mission-report-url'
 import { Button } from 'skytrack-ui/button'
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyTitle
+} from 'skytrack-ui/empty'
 import { Switch, SwitchThumb } from 'skytrack-ui/switch'
 import {
   Popover,
@@ -1375,18 +1381,32 @@ function FlightPathReportDetails ({
           </figcaption>
         </figure>
       ) : (
-        <p className='m-0 text-muted-foreground'>
-          No flight path data available.
-        </p>
+        <Empty>
+          <EmptyTitle>No flight path data</EmptyTitle>
+          <EmptyDescription>
+            No flight path data is available for this run.
+          </EmptyDescription>
+          <EmptyContent>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => onNavigate('timeline')}
+            >
+              Open actions and report event metadata
+            </Button>
+          </EmptyContent>
+        </Empty>
       )}
-      <Button
-        variant='outline'
-        size='sm'
-        className='self-start'
-        onClick={() => onNavigate('timeline')}
-      >
-        Open actions and report event metadata
-      </Button>
+      {coords.length ? (
+        <Button
+          variant='outline'
+          size='sm'
+          className='self-start'
+          onClick={() => onNavigate('timeline')}
+        >
+          Open actions and report event metadata
+        </Button>
+      ) : null}
     </DetailSection>
   )
 }

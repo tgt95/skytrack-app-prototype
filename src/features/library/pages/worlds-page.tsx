@@ -1,14 +1,14 @@
-import { PlusIcon } from "@phosphor-icons/react";
+import { FolderOpenIcon, PlusIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Badge } from "skytrack-ui/badge";
 import { Button } from "skytrack-ui/button";
+import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "skytrack-ui/empty";
+import { PageHeader } from "skytrack-ui/page-header";
 import { WorldPreviewDialog } from "@/features/library/cards/world-preview-dialog";
 import { WorldThumbnail } from "@/features/library/cards/world-thumbnail";
 import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
 import {
   LibraryCardFrame,
-  LibraryEmptyState,
-  LibraryPageHeader,
   LibraryPageLayout,
 } from "@/features/library/cards/library-presentation.tsx";
 
@@ -52,13 +52,20 @@ export function WorldsPage({
     <LibraryPageLayout
       titleId="ms-lib-worlds-title"
       header={
-        <LibraryPageHeader
-          titleId="ms-lib-worlds-title"
-          title="Worlds"
-          actions={
-            <Button size="default" variant="default" onClick={onCreate}>
-              <PlusIcon aria-hidden="true" /> Add World
-            </Button>
+        <PageHeader
+          className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-4 pt-5"
+          data-testid="ms-lib-page-header-row"
+          title={
+            <span id="ms-lib-worlds-title" data-testid="ms-lib-page-header-copy">
+              Worlds
+            </span>
+          }
+          toolbar={
+            <div className="inline-flex items-center justify-end gap-2 shrink-0" data-testid="ms-lib-page-header-actions">
+              <Button size="default" variant="default" onClick={onCreate}>
+                <PlusIcon aria-hidden="true" /> Add World
+              </Button>
+            </div>
           }
         />
       }
@@ -134,10 +141,17 @@ export function WorldsPage({
         ))}
       </div>
       {worlds.length === 0 ? (
-        <LibraryEmptyState
-          title="No Worlds yet"
-          description="Add a 3D reconstruction to this Workspace."
-        />
+        <Empty>
+          <EmptyMedia icon={FolderOpenIcon} />
+          <EmptyTitle
+            data-testid="ms-lib-empty-title"
+            role="heading"
+            aria-level={2}
+          >
+            No Worlds yet
+          </EmptyTitle>
+          <EmptyDescription>Add a 3D reconstruction to this Workspace.</EmptyDescription>
+        </Empty>
       ) : null}
       <WorldPreviewDialog
         world={selectedWorld}

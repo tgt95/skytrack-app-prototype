@@ -2,6 +2,7 @@ import {
   CaretDownIcon,
   CheckIcon,
   DotsSixVerticalIcon,
+  InfoIcon,
   PlusIcon,
   SparkleIcon,
   TrashIcon,
@@ -10,6 +11,7 @@ import {
 import { useState, type DragEvent } from 'react'
 import { Badge } from 'skytrack-ui/badge'
 import { Button } from 'skytrack-ui/button'
+import { Alert, AlertAction, AlertDescription, AlertTitle } from 'skytrack-ui/alert'
 import { FieldLabel, FieldRoot } from 'skytrack-ui/field'
 import { SkyTooltip } from '@/ui/components/sky-tooltip'
 import {
@@ -187,7 +189,7 @@ export function AIWorkflowCard ({
   models,
   sequenceId,
   onChange,
-  onImportModel,
+  onManageAIModels,
   onDeleteModel,
   onDelete
 }: {
@@ -196,7 +198,7 @@ export function AIWorkflowCard ({
   models: AIModelCardModel[]
   sequenceId: string
   onChange: (next: MissionAIWorkflow) => void
-  onImportModel: () => void
+  onManageAIModels: () => void
   onDeleteModel: (modelId: string) => boolean
   onDelete: () => void
 }) {
@@ -441,60 +443,84 @@ export function AIWorkflowCard ({
                 Detection starts
               </h4>
               <div className='flex flex-col p-3'>
-                <FieldRoot name={`ai-model-${workflow.id}`}>
-                  <div className='flex flex-row items-center justify-between gap-3 w-full'>
-                    <FieldLabel className='min-w-0'>AI model</FieldLabel>
-                    <Button
-                      className='shrink-0 p-0! h-auto!'
-                      size='sm'
-                      variant='link'
-                      onClick={onImportModel}
-                    >
-                      Import model
-                    </Button>
-                  </div>
-                  <Select
-                    items={models.map(model => ({
-                      value: model.id,
-                      label: model.name
-                    }))}
-                    value={workflow.modelId ?? ''}
-                    onValueChange={(value: unknown) => {
-                      if (typeof value === 'string')
-                        update({ modelId: value || null })
-                    }}
-                  >
-                    <SelectTrigger aria-label='AI model' className='w-full'>
-                      <SelectValue placeholder='Choose AI model' />
-                      <SelectIcon />
-                    </SelectTrigger>
-                    <SelectPortal>
-                      <SelectPositioner
-                        side='bottom'
-                        align='start'
-                        sideOffset={4}
+                {models.length === 0 ? (
+                  <Alert role='status' className='p-3'>
+                    <InfoIcon
+                      aria-hidden='true'
+                      className='mt-0.5 size-5 shrink-0'
+                    />
+                    <div className='grid min-w-0 flex-1 gap-1'>
+                      <AlertTitle>No AI models selected</AlertTitle>
+                      <AlertDescription>
+                        Select models to use in this AI flow.
+                      </AlertDescription>
+                      <AlertAction className='ml-0 mt-2 self-start'>
+                        <Button
+                          size='sm'
+                          variant='outline'
+                          onClick={onManageAIModels}
+                        >
+                          Manage models
+                        </Button>
+                      </AlertAction>
+                    </div>
+                  </Alert>
+                ) : (
+                  <FieldRoot name={`ai-model-${workflow.id}`}>
+                    <div className='flex flex-row items-center justify-between gap-3 w-full'>
+                      <FieldLabel className='min-w-0'>AI model</FieldLabel>
+                      <Button
+                        className='shrink-0 p-0! h-auto!'
+                        size='sm'
+                        variant='link'
+                        onClick={onManageAIModels}
                       >
-                        <SelectPopup>
-                          <SelectList>
-                            {models.map(model => (
-                              <SelectItem key={model.id} value={model.id}>
-                                <SelectItemIndicator />
-                                <SelectItemText>
-                                  {model.name}
-                                  {model.origin === 'skytrack'
-                                    ? ' · SkyTrack'
-                                    : model.origin === 'user-upload'
-                                    ? ' · You'
-                                    : ''}
-                                </SelectItemText>
-                              </SelectItem>
-                            ))}
-                          </SelectList>
-                        </SelectPopup>
-                      </SelectPositioner>
-                    </SelectPortal>
-                  </Select>
-                </FieldRoot>
+                        Manage models
+                      </Button>
+                    </div>
+                    <Select
+                      items={models.map(model => ({
+                        value: model.id,
+                        label: model.name
+                      }))}
+                      value={workflow.modelId ?? ''}
+                      onValueChange={(value: unknown) => {
+                        if (typeof value === 'string')
+                          update({ modelId: value || null })
+                      }}
+                    >
+                      <SelectTrigger aria-label='AI model' className='w-full'>
+                        <SelectValue placeholder='Choose AI model' />
+                        <SelectIcon />
+                      </SelectTrigger>
+                      <SelectPortal>
+                        <SelectPositioner
+                          side='bottom'
+                          align='start'
+                          sideOffset={4}
+                        >
+                          <SelectPopup>
+                            <SelectList>
+                              {models.map(model => (
+                                <SelectItem key={model.id} value={model.id}>
+                                  <SelectItemIndicator />
+                                  <SelectItemText>
+                                    {model.name}
+                                    {model.origin === 'skytrack'
+                                      ? ' · SkyTrack'
+                                      : model.origin === 'user-upload'
+                                      ? ' · You'
+                                      : ''}
+                                  </SelectItemText>
+                                </SelectItem>
+                              ))}
+                            </SelectList>
+                          </SelectPopup>
+                        </SelectPositioner>
+                      </SelectPortal>
+                    </Select>
+                  </FieldRoot>
+                )}
                 {selectedModel?.origin === 'user-upload' ? (
                   <div className='mt-2 flex items-center justify-between gap-2 text-xs text-muted-foreground'>
                     {confirmModelDeleteId === selectedModel.id ? (

@@ -6,9 +6,13 @@ import {
   WarningIcon,
   XIcon,
 } from "@phosphor-icons/react";
-import { Alert, AlertDescription } from "skytrack-ui/alert";
 import { Badge } from "skytrack-ui/badge";
 import { Button } from "skytrack-ui/button";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyTitle,
+} from "skytrack-ui/empty";
 import {
   Drawer,
   DrawerBackdrop,
@@ -175,13 +179,14 @@ export function MissionInsightsOutputs({
     <DetailSection title="Outputs">
       <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-2">
         {sample.outputs.length === 0 ? (
-          <Alert className="col-span-full">
-            <AlertDescription>
+          <Empty>
+            <EmptyTitle>No outputs available</EmptyTitle>
+            <EmptyDescription>
               {sample.demoCase
                 ? "No outputs were produced before the run stopped."
                 : "No outputs are available for this run."}
-            </AlertDescription>
-          </Alert>
+            </EmptyDescription>
+          </Empty>
         ) : null}
         {sample.outputs.map((output) => (
           <section

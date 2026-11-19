@@ -56,9 +56,7 @@ export function useStudioUiState() {
   }, []);
   const [codeDraft, setCodeDraft] = useState(PYTHON_SAMPLE);
   const [aiModelsOpen, setAIModelsOpen] = useState(false);
-  const [selectedAIModelId, setSelectedAIModelId] = useState<string | null>(
-    null,
-  );
+  const [selectedAIModelIds, setSelectedAIModelIds] = useState<string[]>([]);
   const [codeLang, setCodeLang] = useState<"python" | "json">("python");
   const [jsonDraft, setJsonDraft] = useState("");
   const [jsonError, setJsonError] = useState<string | null>(null);
@@ -116,8 +114,8 @@ export function useStudioUiState() {
     setJsonError,
     aiModelsOpen,
     setAIModelsOpen,
-    selectedAIModelId,
-    setSelectedAIModelId,
+    selectedAIModelIds,
+    setSelectedAIModelIds,
     rightOpen,
     setRightOpen,
     inspectorWidth,

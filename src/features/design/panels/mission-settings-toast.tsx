@@ -44,3 +44,9 @@ export function notifyMissionSettingsApplied() {
     type: "success",
   });
 }
+
+export function notifyAIModelsAlreadyOpen() {
+  missionSettingsToastManager.add({
+    title: "AI models are already open.",
+  });
+}

@@ -7,6 +7,11 @@ import {
 } from "@phosphor-icons/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "skytrack-ui/button";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyTitle,
+} from "skytrack-ui/empty";
 import { CheckboxIndicator, CheckboxRoot } from "skytrack-ui/checkbox";
 import { Input } from "skytrack-ui/input";
 import {
@@ -49,16 +54,16 @@ const SOURCE_ITEMS = [
 export function AIModelPickerPanel({
   panelWidth = 400,
   models,
-  selectedModelId,
-  onSelectModel,
+  selectedModelIds,
+  onSelectedModelIdsChange,
   onImport,
   onClose,
   onAnnounce,
 }: {
   panelWidth?: number;
   models: AIModelCardModel[];
-  selectedModelId: string | null;
-  onSelectModel: (modelId: string | null) => void;
+  selectedModelIds: string[];
+  onSelectedModelIdsChange: (modelIds: string[]) => void;
   onImport: () => void;
   onClose: () => void;
   onAnnounce: (message: string) => void;
@@ -66,6 +71,7 @@ export function AIModelPickerPanel({
   const [query, setQuery] = useState("");
   const [source, setSource] = useState<SourceFilter>("all");
   const [copiedModelId, setCopiedModelId] = useState<string | null>(null);
+  const [draggingModelId, setDraggingModelId] = useState<string | null>(null);
   const copiedTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const visibleModels = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase();
@@ -124,7 +130,7 @@ export function AIModelPickerPanel({
         <h2 className="h6">AI models</h2>
         <div className="flex items-center gap-1.5">
           <Button size="sm" variant="outline" onClick={onImport}>
-            <PlusIcon aria-hidden="true" /> Model
+            <PlusIcon aria-hidden="true" /> Import
           </Button>
           <Button
             size="icon-sm"
@@ -193,44 +199,64 @@ export function AIModelPickerPanel({
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-3 pt-0">
         {visibleModels.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">
-            {models.length === 0
-              ? "No AI models available. Import a model to add one."
-              : "No AI models match this search and source."}
-          </p>
+          <Empty>
+            <EmptyTitle>
+              {models.length === 0
+                ? "No AI models available"
+                : "No matching AI models"}
+            </EmptyTitle>
+            <EmptyDescription>
+              {models.length === 0
+                ? "Import a model to add one."
+                : "No AI models match this search and source."}
+            </EmptyDescription>
+          </Empty>
         ) : (
           <div className="grid grid-cols-1 gap-3">
             {visibleModels.map((model) => {
               const path = getAIModelPath(model);
-              const selected = selectedModelId === model.id;
+              const selected = selectedModelIds.includes(model.id);
+              const canChangeSelection = !model.isReadOnly;
+              const updateSelection = (checked: boolean) => {
+                onSelectedModelIdsChange(
+                  checked
+                    ? [...new Set([...selectedModelIds, model.id])]
+                    : selectedModelIds.filter((id) => id !== model.id),
+                );
+              };
               return (
                 <article
                   key={model.id}
-                  className={`group ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-(--card) text-foreground text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default relative cursor-pointer ${
-                    selected ? "border-(--primary) ring-1 ring-(--primary)" : ""
-                  }`}
+                  className={`group ms-lib-card relative flex w-full flex-col overflow-hidden rounded-(--radius) border border-border bg-(--card) p-0 text-left text-foreground focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 ${
+                    selected ? "border-primary" : ""
+                  } ${canChangeSelection ? "cursor-pointer hover:border-primary" : "cursor-default"} ${draggingModelId === model.id ? "cursor-grabbing opacity-60" : ""}`}
+                  aria-disabled={!canChangeSelection}
                   onClick={(event) => {
+                    if (!canChangeSelection) return;
                     if (
                       event.target instanceof Element &&
                       event.target.closest('button, [role="checkbox"]')
                     ) {
                       return;
                     }
-                    onSelectModel(selected ? null : model.id);
+                    updateSelection(!selected);
                   }}
                   draggable
                   onDragStart={(event) => {
+                    setDraggingModelId(model.id);
                     event.dataTransfer.effectAllowed = "copy";
                     event.dataTransfer.setData(
                       "application/x-skytrack-ai-model-path",
                       path,
                     );
                   }}
+                  onDragEnd={() => setDraggingModelId(null)}
+                  data-dragging={draggingModelId === model.id || undefined}
                   data-testid={`ms-code-ai-model-${model.id}`}
                 >
                   <AIModelCardContent
                     model={model}
-                    showThumbnail={false}
+                    layout="picker"
                     titleTrailing={
                       <span className="flex shrink-0 items-center gap-1">
                         <TooltipProvider>
@@ -262,10 +288,11 @@ export function AIModelPickerPanel({
                         </TooltipProvider>
                         <CheckboxRoot
                           checked={selected}
+                          disabled={!canChangeSelection}
                           onCheckedChange={(checked) =>
-                            onSelectModel(checked ? model.id : null)
+                            updateSelection(checked)
                           }
-                          aria-label={`${selected ? "Using" : "Use"} ${model.name} in this mission`}
+                          aria-label={`${selected ? "Selected" : "Select"} ${model.name}`}
                         >
                           <CheckboxIndicator aria-hidden="true">
                             <CheckIcon />

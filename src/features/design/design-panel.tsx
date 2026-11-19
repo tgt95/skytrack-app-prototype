@@ -2,6 +2,8 @@
    waypoint/END sequence, zones, validation, mission props, code view. */
 
 import { memo, useState } from "react";
+import { PackageIcon } from "@phosphor-icons/react";
+import { Button } from "skytrack-ui/button";
 import { Tabs, TabsList, TabsTab } from "skytrack-ui/tabs";
 import {
   type CameraActionKind,
@@ -16,7 +18,10 @@ import { DesignSequenceBlocks } from "./sequence/design-sequence-blocks";
 import MissionSettingsCard, {
   MissionChecksCard,
 } from "./panels/mission-settings-card";
-import { MissionSettingsToastHost } from "./panels/mission-settings-toast";
+import {
+  MissionSettingsToastHost,
+  notifyAIModelsAlreadyOpen,
+} from "./panels/mission-settings-toast";
 import CodeInspectorPanel from "./panels/code-inspector-panel";
 import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 import AvoidInspectorCard from "./panels/avoid-inspector-card";
@@ -38,9 +43,9 @@ export interface DesignPanelProps {
   codeLang: "python" | "json";
   aiModels: AIModelCardModel[];
   aiModelsOpen: boolean;
-  selectedAIModelId: string | null;
+  selectedAIModelIds: string[];
   onAIModelsOpenChange: (open: boolean) => void;
-  onSelectAIModel: (modelId: string | null) => void;
+  onSelectedAIModelIdsChange: (modelIds: string[]) => void;
   onImportAIModel: () => void;
   onDeleteAIModel: (modelId: string) => boolean;
   jsonDraft: string;
@@ -174,6 +179,16 @@ function DesignPanel(props: DesignPanelProps) {
   });
 
   const openWindSettings = () => setWindSettingsOpen(true);
+  const openAIModelManager = () => {
+    if (aiModelsOpen) {
+      notifyAIModelsAlreadyOpen();
+      return;
+    }
+    onAIModelsOpenChange(true);
+  };
+  const availableAIModels = props.aiModels.filter((model) =>
+    props.selectedAIModelIds.includes(model.id),
+  );
 
   if (reconTarget !== null) {
     return (
@@ -242,6 +257,18 @@ function DesignPanel(props: DesignPanelProps) {
                 </TabsTab>
               </TabsList>
             </Tabs>
+            {!previewView ? (
+              <Button
+                size="icon-sm"
+                variant="ghost"
+                aria-label={aiModelsOpen ? "Close AI models" : "Manage AI models"}
+                title={aiModelsOpen ? "Close AI models" : "Manage AI models"}
+                aria-pressed={aiModelsOpen}
+                onClick={() => onAIModelsOpenChange(!aiModelsOpen)}
+              >
+                <PackageIcon aria-hidden="true" className="size-5" />
+              </Button>
+            ) : null}
           </div>
           {!codeView &&
             !previewView &&
@@ -263,12 +290,10 @@ function DesignPanel(props: DesignPanelProps) {
           {codeView ? (
             <CodeInspectorPanel
               codeLang={codeLang}
-              aiModelsOpen={aiModelsOpen}
               codeDraft={codeDraft}
               jsonDraft={jsonDraft}
               jsonError={jsonError}
               onCodeLangChange={onCodeLangChange}
-              onAIModelsOpenChange={onAIModelsOpenChange}
               onCodeDraftChange={onCodeDraftChange}
               onJsonDraftChange={onJsonDraftChange}
               onApplyJson={onApplyJson}
@@ -309,8 +334,8 @@ function DesignPanel(props: DesignPanelProps) {
                 onReorderWaypoint={onReorderWaypoint}
                 onMoveAction={onMoveAction}
                 onInsertActionAt={onInsertActionAt}
-                aiModels={props.aiModels}
-                onImportAIModel={props.onImportAIModel}
+                aiModels={availableAIModels}
+                onManageAIModels={openAIModelManager}
                 onDeleteAIModel={props.onDeleteAIModel}
                 onDeleteAction={onDeleteAction}
                 onDeleteZone={onDeleteZone}

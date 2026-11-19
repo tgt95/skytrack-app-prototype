@@ -52,7 +52,7 @@ export interface RouteSequenceCardProps {
     kind: CameraActionKind,
   ) => void;
   aiModels: AIModelCardModel[];
-  onImportAIModel: () => void;
+  onManageAIModels: () => void;
   onDeleteAIModel: (modelId: string) => boolean;
   onSelect: (selection: SceneSelection | null) => void;
   onPickUpWaypoint: (id: string) => void;
@@ -92,7 +92,7 @@ export default function RouteSequenceCard({
   onDeleteRoute,
   onInsertActionAt,
   aiModels,
-  onImportAIModel,
+  onManageAIModels,
   onDeleteAIModel,
   onSelect,
   onPickUpWaypoint,
@@ -270,7 +270,7 @@ export default function RouteSequenceCard({
             onUpdateMission={onUpdateMission}
             onInsertActionAt={onInsertActionAt}
             aiModels={aiModels}
-            onImportAIModel={onImportAIModel}
+            onManageAIModels={onManageAIModels}
             onDeleteAIModel={onDeleteAIModel}
             onPickUpWaypoint={onPickUpWaypoint}
             onPreviewMoveWaypoint={onPreviewMoveWaypoint}

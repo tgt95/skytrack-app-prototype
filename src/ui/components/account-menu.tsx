@@ -24,6 +24,7 @@ import {
   MenuTrigger,
 } from "skytrack-ui/menu";
 import type { ThemePreference } from "@/shared/theme-preference";
+import { getNameInitials } from "@/shared/name-initials";
 
 export type AccountMenuPanel =
   | "profile"
@@ -44,11 +45,6 @@ interface AccountMenuProps {
   onOpenPanel: (panel: AccountMenuPanel) => void;
   onUpdateThemePreference: (preference: ThemePreference) => void;
   variant?: "library" | "studio";
-}
-
-function getUserInitial(name: string): string {
-  const firstWord = name.trim().split(/\s+/u)[0];
-  return firstWord?.[0]?.toLocaleUpperCase() ?? "?";
 }
 
 export function AccountMenu({
@@ -74,7 +70,7 @@ export function AccountMenu({
         data-testid={`${testPrefix}-trigger`}
       >
         <Avatar aria-hidden="true" data-testid={`${testPrefix}-profile-avatar`}>
-          <AvatarFallback>{getUserInitial(profile.name)}</AvatarFallback>
+          <AvatarFallback>{getNameInitials(profile.name)}</AvatarFallback>
         </Avatar>
         {compact ? null : (
           <>
@@ -99,7 +95,7 @@ export function AccountMenu({
               data-testid={`${testPrefix}-summary`}
             >
               <Avatar aria-hidden="true" data-testid={`${testPrefix}-avatar`}>
-                <AvatarFallback>{getUserInitial(profile.name)}</AvatarFallback>
+                <AvatarFallback>{getNameInitials(profile.name)}</AvatarFallback>
               </Avatar>
               <span
                 className="flex min-w-0 flex-col gap-0.5"

@@ -1,10 +1,8 @@
 import {
-  cloneElement,
-  isValidElement,
   type MouseEvent,
   type ReactNode,
 } from "react";
-import { DotsThreeIcon, FolderOpenIcon, StarIcon } from "@phosphor-icons/react";
+import { DotsThreeIcon, StarIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
 import {
   ContextMenu,
@@ -25,7 +23,6 @@ import {
   MenuTrigger,
 } from "skytrack-ui/menu";
 import { SkyTooltip } from "@/ui/components/sky-tooltip";
-import { PageHeader } from "skytrack-ui/page-header";
 
 export type LibraryCardAction = {
   id: string;
@@ -90,7 +87,7 @@ export function LibraryCardFrame({
   onOpen?: () => void;
 }) {
   const cardClassName = [
-    "ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-(--card) text-foreground text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default",
+    "ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-card text-foreground text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default",
     className,
   ]
     .filter(Boolean)
@@ -178,46 +175,6 @@ export function LibraryCardFrame({
   );
 }
 
-export function LibraryEmptyState({
-  title,
-  description,
-  icon,
-}: {
-  title: ReactNode;
-  description: ReactNode;
-  icon?: ReactNode;
-}) {
-  const iconNode = icon ?? <FolderOpenIcon />;
-  const sizedIcon = isValidElement<{ className?: string }>(iconNode)
-    ? cloneElement(iconNode, {
-        className: [iconNode.props.className, "w-10 h-10"]
-          .filter(Boolean)
-          .join(" "),
-      })
-    : iconNode;
-
-  return (
-    <div className="flex flex-col items-center gap-0 py-12 px-6 text-center bg-[oklch(from_var(--muted)_calc(l*1.01)_c_h)]">
-      <span
-        data-testid="ms-lib-empty-icon"
-        className="inline-flex text-(--muted-foreground) w-10 h-10 mb-3"
-        aria-hidden="true"
-      >
-        {sizedIcon}
-      </span>
-      <p
-        className="heading mb-1 text-lg font-semibold"
-        data-testid="ms-lib-empty-title"
-      >
-        {title}
-      </p>
-      <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5] m-0 text-sm">
-        {description}
-      </p>
-    </div>
-  );
-}
-
 export function LibraryPageLayout({
   titleId,
   header,
@@ -241,92 +198,5 @@ export function LibraryPageLayout({
         {children}
       </section>
     </>
-  );
-}
-
-export function LibraryPageHeader({
-  titleId,
-  title,
-  description,
-  context,
-  actions,
-  footer,
-  footerVariant,
-  variant,
-  stickyHeader = true,
-}: {
-  titleId: string;
-  title: ReactNode;
-  description?: ReactNode;
-  context?: ReactNode;
-  actions?: ReactNode;
-  footer?: ReactNode;
-  footerVariant?: "tabs";
-  variant?: "default" | "plain";
-  stickyHeader?: boolean;
-}) {
-  const tabsContent =
-    footerVariant === "tabs" && footer != null ? footer : undefined;
-
-  return (
-    <div
-      className={[
-        stickyHeader ? "sticky top-0 z-20 bg-(--card)" : "",
-        description != null && variant !== "plain"
-          ? "border-b border-border"
-          : "",
-      ]
-        .filter(Boolean)
-        .join(" ")}
-      data-testid="ms-lib-page-header-row"
-    >
-      {context ? (
-        <div
-          className="min-w-0 bg-(--card) px-6 pt-5"
-          data-testid="ms-lib-page-header-context"
-        >
-          {context}
-        </div>
-      ) : null}
-      <PageHeader
-        className={[
-          "ms-lib-page-header flex flex-col gap-2 px-6 pb-4",
-          context ? "pt-0" : "pt-5",
-          description != null ? "border-b-0 pb-0" : "",
-          footerVariant === "tabs" ? "has-tabs pb-0" : "",
-          variant === "plain" ? "is-plain border-0 bg-(--background)" : "",
-        ]
-          .filter(Boolean)
-          .join(" ")}
-        title={
-          <span
-            id={titleId}
-            className="block"
-            data-testid="ms-lib-page-header-copy"
-          >
-            {title}
-          </span>
-        }
-        toolbar={
-          actions ? (
-            <div
-              className="inline-flex items-center justify-end gap-2 shrink-0"
-              data-testid="ms-lib-page-header-actions"
-            >
-              {actions}
-            </div>
-          ) : undefined
-        }
-        children={tabsContent}
-      />
-      {description != null ? (
-        <div className="px-6 pb-4" data-testid="ms-lib-page-header-description">
-          {description}
-        </div>
-      ) : null}
-      {footer != null && footerVariant !== "tabs" ? (
-        <div className="ms-lib-page-header-footer min-w-0">{footer}</div>
-      ) : null}
-    </div>
   );
 }

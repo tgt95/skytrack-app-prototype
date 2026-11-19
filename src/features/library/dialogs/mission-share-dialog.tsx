@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "skytrack-ui/dialog";
 import { FieldControl, FieldError, FieldRoot } from "skytrack-ui/field";
+import { getNameInitials } from "@/shared/name-initials";
 import {
   Menu,
   MenuItem,
@@ -77,13 +78,7 @@ export function ShareDialog({
     if (!valid || !onSubmit(email.trim())) return;
     setEmail("");
   };
-  const ownerInitials = profile.name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toLocaleUpperCase();
+  const ownerInitials = getNameInitials(profile.name, 2);
   const copyMissionLink = async () => {
     if (!dlg) return;
     const missionPath = missionStudioRoutePath(

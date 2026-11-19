@@ -1,6 +1,7 @@
 import { Fragment, type ReactNode } from "react";
 import { DotsThreeVerticalIcon, PlusIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
+import { PageHeader } from "skytrack-ui/page-header";
 import {
   Menu,
   MenuItem,
@@ -10,7 +11,7 @@ import {
   MenuTrigger,
 } from "skytrack-ui/menu";
 import { SkyTooltip } from "@/ui/components/sky-tooltip";
-import { LibraryPageHeader, LibraryPageLayout } from "./cards/library-presentation.tsx";
+import { LibraryPageLayout } from "./cards/library-presentation.tsx";
 import type { LibMission, LibProject } from "./database/store";
 
 export function ProjectsPage({
@@ -28,13 +29,20 @@ export function ProjectsPage({
     <LibraryPageLayout
       titleId="ms-lib-projects-title"
       header={
-        <LibraryPageHeader
-          titleId="ms-lib-projects-title"
-          title="Projects"
-          actions={
-            <Button size="default" variant="default" onClick={onCreateProject}>
-              <PlusIcon aria-hidden="true" /> New Project
-            </Button>
+        <PageHeader
+          className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-4 pt-5"
+          data-testid="ms-lib-page-header-row"
+          title={
+            <span id="ms-lib-projects-title" data-testid="ms-lib-page-header-copy">
+              Projects
+            </span>
+          }
+          toolbar={
+            <div className="inline-flex items-center justify-end gap-2 shrink-0" data-testid="ms-lib-page-header-actions">
+              <Button size="default" variant="default" onClick={onCreateProject}>
+                <PlusIcon aria-hidden="true" /> New Project
+              </Button>
+            </div>
           }
         />
       }
@@ -73,14 +81,20 @@ export function ProjectDetailPage({
     <LibraryPageLayout
       titleId="ms-lib-project-title"
       header={
-        <LibraryPageHeader
-          titleId="ms-lib-project-title"
-          title={project.name}
-          actions={
-            <span
+        <PageHeader
+          className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-4 pt-5"
+          data-testid="ms-lib-page-header-row"
+          title={
+            <span id="ms-lib-project-title" data-testid="ms-lib-page-header-copy">
+              {project.name}
+            </span>
+          }
+          toolbar={
+            <div className="inline-flex items-center justify-end gap-2 shrink-0" data-testid="ms-lib-page-header-actions">
+              <span
               className=" inline-flex items-center gap-1.5 flex-[0_0_auto]"
               data-testid="ms-lib-row-actions"
-            >
+              >
               <Button
                 size="default"
                 variant="default"
@@ -116,7 +130,8 @@ export function ProjectDetailPage({
                   </MenuPositioner>
                 </MenuPortal>
               </Menu>
-            </span>
+              </span>
+            </div>
           }
         />
       }

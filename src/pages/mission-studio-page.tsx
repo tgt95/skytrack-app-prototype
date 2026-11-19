@@ -62,9 +62,26 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
   });
   const { skytrackAIModels, workspaceAIModels, uploadedAIModels } =
     modelResources;
+  const canEditSharedAIModels = activeWorkspace.role === "Admin";
   const aiModels = useMemo(
-    () => [...skytrackAIModels, ...workspaceAIModels, ...uploadedAIModels],
-    [skytrackAIModels, workspaceAIModels, uploadedAIModels],
+    () =>
+      [...skytrackAIModels, ...workspaceAIModels, ...uploadedAIModels].map(
+        (model) => ({
+          ...model,
+          isReadOnly:
+            (model.origin === "workspace" || model.origin === undefined) &&
+            (!canEditSharedAIModels ||
+              (model.uploadedBy !== undefined &&
+                model.uploadedBy !== accountSettings.accountProfile.name)),
+        }),
+      ),
+    [
+      canEditSharedAIModels,
+      accountSettings.accountProfile.name,
+      skytrackAIModels,
+      workspaceAIModels,
+      uploadedAIModels,
+    ],
   );
   const {
     stage,
