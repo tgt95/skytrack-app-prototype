@@ -309,6 +309,11 @@ function normalizeProjects(projects: LibProject[]): LibProject[] {
       );
       return {
         ...mission,
+        editedAgo:
+          mission.id === SATORINI_SAMPLE_MISSION_ID &&
+          mission.editedAgo === "Sample mission"
+            ? ""
+            : mission.editedAgo,
         shared:
           mission.sharedWith === undefined
             ? mission.shared || sharedWith.length > 0

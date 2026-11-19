@@ -219,7 +219,7 @@ export function LibraryMissionActionDialogs({
               />
             </div>
             <DialogFooter className="flex-row flex-wrap items-center justify-end">
-              <DialogClose className="w-auto flex-[0_0_auto]">
+              <DialogClose className="w-auto flex-[0_0_auto]" size="default">
                 Cancel
               </DialogClose>
             </DialogFooter>
@@ -248,11 +248,11 @@ export function LibraryMissionActionDialogs({
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="flex-row flex-wrap items-center justify-end">
-              <DialogClose className="w-auto flex-[0_0_auto]">
+              <DialogClose className="w-auto flex-[0_0_auto]" size="default">
                 Cancel
               </DialogClose>
               <Button
-                size="sm"
+                size="default"
                 variant="destructive"
                 onClick={confirmDeleteMission}
                 className="w-auto flex-[0_0_auto]"
@@ -289,11 +289,11 @@ export function LibraryMissionActionDialogs({
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="flex-row flex-wrap items-center justify-end">
-              <DialogClose className="w-auto flex-[0_0_auto]">
+              <DialogClose className="w-auto flex-[0_0_auto]" size="default">
                 Cancel
               </DialogClose>
               <Button
-                size="sm"
+                size="default"
                 variant="destructive"
                 onClick={confirmDeleteProject}
                 className="w-auto flex-[0_0_auto]"

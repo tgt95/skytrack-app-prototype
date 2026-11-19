@@ -19,3 +19,16 @@ export function useAIModelAccess(
     [models, canEditSharedModels, currentUserName],
   );
 }
+
+export function canManageAIModel(
+  model: AIModelCardModel,
+  canEditSharedModels: boolean,
+  currentUserName: string,
+) {
+  if (model.origin === "skytrack") return false;
+  if (model.origin === "user-upload") return true;
+  return (
+    canEditSharedModels &&
+    (model.uploadedBy === undefined || model.uploadedBy === currentUserName)
+  );
+}

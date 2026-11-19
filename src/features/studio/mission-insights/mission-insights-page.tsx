@@ -363,7 +363,7 @@ export function MissionInsightsPage({
               ) : null}
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogClose render={<Button variant="outline" />}>
+              <AlertDialogClose render={<Button variant="outline"  size="default"/>}>
                 Cancel
               </AlertDialogClose>
               <Button
@@ -371,7 +371,7 @@ export function MissionInsightsPage({
                   setApplyOpen(false);
                   onOpenMissionDesign();
                 }}
-              >
+                size="default">
                 Open Mission Design
               </Button>
             </AlertDialogFooter>

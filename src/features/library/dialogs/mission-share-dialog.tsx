@@ -286,11 +286,11 @@ export function ShareDialog({
             </section>
           </div>
           <DialogFooter className="flex-row flex-wrap items-center justify-between">
-            <Button type="button" variant="outline" onClick={copyMissionLink}>
+            <Button type="button" variant="outline" onClick={copyMissionLink} size="default">
               <LinkIcon aria-hidden="true" />
               Copy link
             </Button>
-            <DialogClose className="w-auto flex-[0_0_auto]">Done</DialogClose>
+            <DialogClose className="w-auto flex-[0_0_auto]" size="default">Done</DialogClose>
           </DialogFooter>
         </DialogPopup>
       </DialogPortal>

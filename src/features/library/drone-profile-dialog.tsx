@@ -201,7 +201,7 @@ export default function DroneProfileDialog({
               variant="secondary"
               onClick={onClose}
               className="w-auto flex-[0_0_auto]"
-            >
+              size="default">
               <XIcon aria-hidden="true" /> Cancel
             </Button>
             <Button
@@ -209,7 +209,7 @@ export default function DroneProfileDialog({
               disabled={!draft.name.trim()}
               onClick={() => onSave({ ...draft, name: draft.name.trim() })}
               className="w-auto flex-[0_0_auto]"
-            >
+              size="default">
               Save drone
             </Button>
           </DialogFooter>

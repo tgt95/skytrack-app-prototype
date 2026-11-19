@@ -307,9 +307,9 @@ export function ImportAIModelDialog({
             ) : null}
           </FieldRoot>
           <DialogFooter className="flex-row flex-wrap items-center justify-end">
-            <DialogClose className="w-auto flex-[0_0_auto]">Cancel</DialogClose>
+            <DialogClose className="w-auto flex-[0_0_auto]" size="default">Cancel</DialogClose>
             <Button
-              size="sm"
+              size="default"
               variant="default"
               disabled={!file || hasDuplicate || isSubmitting}
               onClick={() => void submit()}

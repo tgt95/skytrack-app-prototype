@@ -120,7 +120,7 @@ export function ShortcutsDialog({
             ))}
           </div>
           <DialogFooter className="flex-row flex-wrap items-center justify-end">
-            <DialogClose className="w-auto flex-[0_0_auto]">Close</DialogClose>
+            <DialogClose className="w-auto flex-[0_0_auto]" size="default">Close</DialogClose>
           </DialogFooter>
         </DialogPopup>
       </DialogPortal>

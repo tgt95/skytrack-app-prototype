@@ -1,4 +1,6 @@
-import { Button } from "skytrack-ui/button";
+import { WarningCircleIcon } from '@phosphor-icons/react'
+import { Button } from 'skytrack-ui/button'
+import { Alert, AlertDescription } from 'skytrack-ui/alert'
 import {
   Dialog,
   DialogBackdrop,
@@ -8,52 +10,52 @@ import {
   DialogHeader,
   DialogPopup,
   DialogPortal,
-  DialogTitle,
-} from "skytrack-ui/dialog";
-import DroneProfileDialog from "@/features/library/drone-profile-dialog";
-import { WorldProfileDialog } from "./workspace-resource-dialogs.tsx";
-import { ImportAIModelDialog } from "./import-ai-model-dialog.tsx";
+  DialogTitle
+} from 'skytrack-ui/dialog'
+import DroneProfileDialog from '@/features/library/drone-profile-dialog'
+import { WorldProfileDialog } from './workspace-resource-dialogs.tsx'
+import { ImportAIModelDialog } from './import-ai-model-dialog.tsx'
 import {
   useWorldGlbImport,
-  type ImportedWorldDetails,
-} from "@/features/library/use-world-glb-import";
-import type { WorkspaceDroneProfile } from "@/features/library/database/drone-store";
+  type ImportedWorldDetails
+} from '@/features/library/use-world-glb-import'
+import type { WorkspaceDroneProfile } from '@/features/library/database/drone-store'
 import type {
   WorkspaceAIModelRecord,
-  WorkspaceWorldRecord,
-} from "@/features/library/database/workspace-resources-store";
+  WorkspaceWorldRecord
+} from '@/features/library/database/workspace-resources-store'
 
-type ProfileEditor<T> = { mode: "create" | "edit"; profile: T } | null;
-type MissionReference = { project: string; mission: string };
+type ProfileEditor<T> = { mode: 'create' | 'edit'; profile: T } | null
+type MissionReference = { project: string; mission: string }
 
 export interface LibraryResourceEditorDialogsProps {
-  droneEditor: ProfileEditor<WorkspaceDroneProfile>;
-  setDroneEditor: (next: ProfileEditor<WorkspaceDroneProfile>) => void;
-  saveDroneProfile: (profile: WorkspaceDroneProfile) => void;
-  worldEditor: ProfileEditor<WorkspaceWorldRecord>;
-  setWorldEditor: (next: ProfileEditor<WorkspaceWorldRecord>) => void;
-  sourceMissions: { id: string; projectName: string; missionName: string }[];
-  saveWorldProfile: (profile: WorkspaceWorldRecord) => void;
+  droneEditor: ProfileEditor<WorkspaceDroneProfile>
+  setDroneEditor: (next: ProfileEditor<WorkspaceDroneProfile>) => void
+  saveDroneProfile: (profile: WorkspaceDroneProfile) => void
+  worldEditor: ProfileEditor<WorkspaceWorldRecord>
+  setWorldEditor: (next: ProfileEditor<WorkspaceWorldRecord>) => void
+  sourceMissions: { id: string; projectName: string; missionName: string }[]
+  saveWorldProfile: (profile: WorkspaceWorldRecord) => void
   worldImport: {
-    workspaceId: string;
+    workspaceId: string
     persistWorldProfile: (
       profile: WorkspaceWorldRecord,
-      mode: "create" | "edit",
-    ) => boolean;
-    onAnnounce: (message: string) => void;
-  };
-  importModelOpen: boolean;
-  setImportModelOpen: (open: boolean) => void;
-  existingAIModelNames: string[];
+      mode: 'create' | 'edit'
+    ) => boolean
+    onAnnounce: (message: string) => void
+  }
+  importModelOpen: boolean
+  setImportModelOpen: (open: boolean) => void
+  existingAIModelNames: string[]
   importAIModel: (file: {
-    name: string;
-    description: string;
-    fileName: string;
-    fileSize: number;
-  }) => boolean;
+    name: string
+    description: string
+    fileName: string
+    fileSize: number
+  }) => boolean
 }
 
-export function LibraryResourceEditorDialogs({
+export function LibraryResourceEditorDialogs ({
   droneEditor,
   setDroneEditor,
   saveDroneProfile,
@@ -65,24 +67,24 @@ export function LibraryResourceEditorDialogs({
   importModelOpen,
   setImportModelOpen,
   existingAIModelNames,
-  importAIModel,
+  importAIModel
 }: LibraryResourceEditorDialogsProps) {
   const { importWorld, replaceWorldFile } = useWorldGlbImport({
     workspaceId: worldImport.workspaceId,
     persistWorld: (profile, mode) =>
-      worldImport.persistWorldProfile(profile, mode),
-  });
+      worldImport.persistWorldProfile(profile, mode)
+  })
 
   const importWorldProfile = async (
     profile: WorkspaceWorldRecord,
     file: File,
-    mode: "create" | "edit",
+    mode: 'create' | 'edit'
   ) => {
-    if (mode === "edit") {
-      const { cleanupWarning } = await replaceWorldFile(profile, file);
-      setWorldEditor(null);
-      if (cleanupWarning) worldImport.onAnnounce(cleanupWarning);
-      return;
+    if (mode === 'edit') {
+      const { cleanupWarning } = await replaceWorldFile(profile, file)
+      setWorldEditor(null)
+      if (cleanupWarning) worldImport.onAnnounce(cleanupWarning)
+      return
     }
 
     const details: ImportedWorldDetails = {
@@ -93,24 +95,24 @@ export function LibraryResourceEditorDialogs({
       sourceMissionLabel: profile.sourceMissionLabel,
       sourceFlightReference: profile.sourceFlightReference,
       reconstructionReference: profile.reconstructionReference,
-      note: profile.note,
-    };
-    await importWorld(file, profile.name, details);
-    setWorldEditor(null);
-  };
+      note: profile.note
+    }
+    await importWorld(file, profile.name, details)
+    setWorldEditor(null)
+  }
 
   return (
     <>
       <DroneProfileDialog
         open={droneEditor !== null}
-        mode={droneEditor?.mode ?? "create"}
+        mode={droneEditor?.mode ?? 'create'}
         profile={droneEditor?.profile ?? null}
         onClose={() => setDroneEditor(null)}
         onSave={saveDroneProfile}
       />
       <WorldProfileDialog
         open={worldEditor !== null}
-        mode={worldEditor?.mode ?? "create"}
+        mode={worldEditor?.mode ?? 'create'}
         profile={worldEditor?.profile ?? null}
         sourceMissions={sourceMissions}
         onClose={() => setWorldEditor(null)}
@@ -126,28 +128,29 @@ export function LibraryResourceEditorDialogs({
         onImport={importAIModel}
       />
     </>
-  );
+  )
 }
 
 export interface LibraryResourceDeleteDialogsProps {
-  deleteDroneId: string | null;
-  setDeleteDroneId: (id: string | null) => void;
-  workspaceName: string;
-  droneToDelete: WorkspaceDroneProfile | null;
-  deleteDroneReferences: MissionReference[];
-  deleteDrone: () => void;
-  deleteWorldId: string | null;
-  setDeleteWorldId: (id: string | null) => void;
-  worldToDelete: WorkspaceWorldRecord | null;
-  deleteWorldReferences: MissionReference[];
-  deleteWorld: () => void;
-  deleteModelId: string | null;
-  setDeleteModelId: (id: string | null) => void;
-  modelToDelete: WorkspaceAIModelRecord | null;
-  deleteAIModel: () => void;
+  deleteDroneId: string | null
+  setDeleteDroneId: (id: string | null) => void
+  workspaceName: string
+  droneToDelete: WorkspaceDroneProfile | null
+  deleteDroneReferences: MissionReference[]
+  deleteDrone: () => void
+  deleteWorldId: string | null
+  setDeleteWorldId: (id: string | null) => void
+  worldToDelete: WorkspaceWorldRecord | null
+  deleteWorldReferences: MissionReference[]
+  deleteWorld: () => void
+  deleteModelId: string | null
+  setDeleteModelId: (id: string | null) => void
+  modelToDelete: WorkspaceAIModelRecord | null
+  deleteModelReferences: MissionReference[]
+  deleteAIModel: () => void
 }
 
-export function LibraryResourceDeleteDialogs({
+export function LibraryResourceDeleteDialogs ({
   deleteDroneId,
   setDeleteDroneId,
   workspaceName,
@@ -162,21 +165,22 @@ export function LibraryResourceDeleteDialogs({
   deleteModelId,
   setDeleteModelId,
   modelToDelete,
-  deleteAIModel,
+  deleteModelReferences,
+  deleteAIModel
 }: LibraryResourceDeleteDialogsProps) {
   return (
     <>
       <Dialog
         open={deleteDroneId !== null}
         onOpenChange={(v: boolean) => {
-          if (!v) setDeleteDroneId(null);
+          if (!v) setDeleteDroneId(null)
         }}
       >
         <DialogPortal>
           <DialogBackdrop />
-          <DialogPopup aria-label="Delete drone profile">
+          <DialogPopup aria-label='Delete drone profile'>
             <DialogHeader>
-              <DialogTitle className="heading">
+              <DialogTitle className='heading'>
                 Delete drone profile?
               </DialogTitle>
               <DialogDescription>
@@ -186,17 +190,20 @@ export function LibraryResourceDeleteDialogs({
               </DialogDescription>
             </DialogHeader>
             {deleteDroneReferences.length > 0 ? (
-              <div className="ms-drone-reference-warning mt-0 mx-5 mb-4.5 p-3 border border-border rounded-(--radius) bg-(--muted) text-foreground text-xs leading-[1.5]" role="alert">
-                <p className="mt-0 mx-0 mb-2">
-                  This Drone is selected by {deleteDroneReferences.length}{" "}
-                  mission{deleteDroneReferences.length === 1 ? "" : "s"}. Change
+              <div
+                className='ms-drone-reference-warning mt-0 mx-5 mb-4.5 p-3 border border-border rounded-(--radius) bg-(--muted) text-foreground text-xs leading-[1.5]'
+                role='alert'
+              >
+                <p className='mt-0 mx-0 mb-2'>
+                  This Drone is selected by {deleteDroneReferences.length}{' '}
+                  mission{deleteDroneReferences.length === 1 ? '' : 's'}. Change
                   those missions to another Drone before deleting this profile.
                 </p>
-                <ul className="flex flex-col gap-1.25 m-0 pl-4.5">
-                  {deleteDroneReferences.map((reference) => (
+                <ul className='flex flex-col gap-1.25 m-0 pl-4.5'>
+                  {deleteDroneReferences.map(reference => (
                     <li key={`${reference.project}-${reference.mission}`}>
                       <strong>{reference.mission}</strong>
-                      <span className="ml-1.5 text-(--muted-foreground)">
+                      <span className='ml-1.5 text-(--muted-foreground)'>
                         {reference.project}
                       </span>
                     </li>
@@ -204,16 +211,16 @@ export function LibraryResourceDeleteDialogs({
                 </ul>
               </div>
             ) : null}
-            <DialogFooter className="flex-row flex-wrap items-center justify-end">
-              <DialogClose className="w-auto flex-[0_0_auto]">
+            <DialogFooter className='flex-row flex-wrap items-center justify-end'>
+              <DialogClose className='w-auto flex-[0_0_auto]' size="default">
                 Cancel
               </DialogClose>
               <Button
-                size="sm"
-                variant="destructive"
+                size="default"
+                variant='destructive'
                 disabled={deleteDroneReferences.length > 0}
                 onClick={deleteDrone}
-                className="w-auto flex-[0_0_auto]"
+                className='w-auto flex-[0_0_auto]'
               >
                 Delete Drone
               </Button>
@@ -224,17 +231,17 @@ export function LibraryResourceDeleteDialogs({
       <Dialog
         open={deleteWorldId !== null}
         onOpenChange={(v: boolean) => {
-          if (!v) setDeleteWorldId(null);
+          if (!v) setDeleteWorldId(null)
         }}
       >
         <DialogPortal>
           <DialogBackdrop />
-          <DialogPopup aria-label="Delete World">
+          <DialogPopup aria-label='Delete World'>
             <DialogHeader>
-              <DialogTitle className="heading">
+              <DialogTitle className='heading'>
                 {deleteWorldReferences.length > 0
-                  ? "World is in use"
-                  : "Delete World?"}
+                  ? 'World is in use'
+                  : 'Delete World?'}
               </DialogTitle>
               <DialogDescription>
                 {worldToDelete
@@ -243,18 +250,21 @@ export function LibraryResourceDeleteDialogs({
               </DialogDescription>
             </DialogHeader>
             {deleteWorldReferences.length > 0 ? (
-              <div className="ms-drone-reference-warning mt-0 mx-5 mb-4.5 p-3 border border-border rounded-(--radius) bg-(--muted) text-foreground text-xs leading-[1.5]" role="alert">
-                <p className="mt-0 mx-0 mb-2">
-                  This World is selected by {deleteWorldReferences.length}{" "}
-                  mission{deleteWorldReferences.length === 1 ? "" : "s"}.
+              <div
+                className='ms-drone-reference-warning mt-0 mx-5 mb-4.5 p-3 border border-border rounded-(--radius) bg-(--muted) text-foreground text-xs leading-[1.5]'
+                role='alert'
+              >
+                <p className='mt-0 mx-0 mb-2'>
+                  This World is selected by {deleteWorldReferences.length}{' '}
+                  mission{deleteWorldReferences.length === 1 ? '' : 's'}.
                   Reassign those missions before deleting it, or archive the
                   World.
                 </p>
-                <ul className="flex flex-col gap-1.25 m-0 pl-4.5">
-                  {deleteWorldReferences.map((reference) => (
+                <ul className='flex flex-col gap-1.25 m-0 pl-4.5'>
+                  {deleteWorldReferences.map(reference => (
                     <li key={`${reference.project}-${reference.mission}`}>
                       <strong>{reference.mission}</strong>
-                      <span className="ml-1.5 text-(--muted-foreground)">
+                      <span className='ml-1.5 text-(--muted-foreground)'>
                         {reference.project}
                       </span>
                     </li>
@@ -262,21 +272,21 @@ export function LibraryResourceDeleteDialogs({
                 </ul>
               </div>
             ) : (
-              <p className="ms-resource-note m-0 text-(--muted-foreground) text-xs leading-[1.5] col-span-full py-2.5 px-3 border border-border rounded-(--radius) bg-(--muted)">
+              <p className='ms-resource-note m-0 text-(--muted-foreground) text-xs leading-[1.5] col-span-full py-2.5 px-3 border border-border rounded-(--radius) bg-(--muted)'>
                 This removes the World record. Any source and reconstruction
                 references stored here will also be removed.
               </p>
             )}
-            <DialogFooter className="flex-row flex-wrap items-center justify-end">
-              <DialogClose className="w-auto flex-[0_0_auto]">
+            <DialogFooter className='flex-row flex-wrap items-center justify-end'>
+              <DialogClose className='w-auto flex-[0_0_auto]' size="default">
                 Cancel
               </DialogClose>
               <Button
-                size="sm"
-                variant="destructive"
+                size="default"
+                variant='destructive'
                 disabled={deleteWorldReferences.length > 0}
                 onClick={deleteWorld}
-                className="w-auto flex-[0_0_auto]"
+                className='w-auto flex-[0_0_auto]'
               >
                 Delete World
               </Button>
@@ -287,15 +297,17 @@ export function LibraryResourceDeleteDialogs({
       <Dialog
         open={deleteModelId !== null}
         onOpenChange={(v: boolean) => {
-          if (!v) setDeleteModelId(null);
+          if (!v) setDeleteModelId(null)
         }}
       >
         <DialogPortal>
           <DialogBackdrop />
-          <DialogPopup aria-label="Remove uploaded AI model">
+          <DialogPopup aria-label='Remove AI model'>
             <DialogHeader>
-              <DialogTitle className="heading">
-                Remove uploaded model?
+              <DialogTitle className='heading'>
+                {deleteModelReferences.length > 0
+                  ? 'Model is used in missions'
+                  : 'Remove AI model?'}
               </DialogTitle>
               <DialogDescription>
                 {modelToDelete
@@ -303,19 +315,45 @@ export function LibraryResourceDeleteDialogs({
                   : null}
               </DialogDescription>
             </DialogHeader>
-            <p className="ms-resource-note m-0 text-(--muted-foreground) text-xs leading-[1.5] col-span-full py-2.5 px-3 border border-border rounded-(--radius) bg-(--muted)">
-              This removes the model details from this browser. The ZIP file was
-              not stored here.
-            </p>
-            <DialogFooter className="flex-row flex-wrap items-center justify-end">
-              <DialogClose className="w-auto flex-[0_0_auto]">
+            {deleteModelReferences.length > 0 ? (
+              <div
+                className='ms-drone-reference-warning mt-0 mx-5 mb-4.5 p-3 border border-border rounded-(--radius) bg-(--muted) text-foreground text-xs leading-[1.5]'
+                role='alert'
+              >
+                <p className='mt-0 mx-0 mb-2'>
+                  This model is used by {deleteModelReferences.length} mission
+                  {deleteModelReferences.length === 1 ? '' : 's'}. Removing it
+                  deletes the model record; saved mission settings will still
+                  reference its ID.
+                </p>
+                <ul className='flex flex-col gap-1.25 m-0 pl-4.5'>
+                  {deleteModelReferences.map(reference => (
+                    <li key={`${reference.project}-${reference.mission}`}>
+                      <strong>{reference.mission}</strong>
+                      <span className='ml-1.5 text-(--muted-foreground)'>
+                        {reference.project}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <Alert variant='destructive'>
+            <WarningCircleIcon className='size-5 shrink-0' aria-hidden='true' />
+                <AlertDescription>
+                  This removes the model from the Workspace model list.
+                </AlertDescription>
+              </Alert>
+            )}
+            <DialogFooter className='flex-row flex-wrap items-center justify-end'>
+              <DialogClose size="default" className='w-auto flex-[0_0_auto]'>
                 Cancel
               </DialogClose>
               <Button
-                size="sm"
-                variant="destructive"
+                size="default"
+                variant='destructive'
                 onClick={deleteAIModel}
-                className="w-auto flex-[0_0_auto]"
+                className='w-auto flex-[0_0_auto]'
               >
                 Remove model
               </Button>
@@ -324,5 +362,5 @@ export function LibraryResourceDeleteDialogs({
         </DialogPortal>
       </Dialog>
     </>
-  );
+  )
 }

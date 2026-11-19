@@ -86,8 +86,12 @@ export function LibraryCardFrame({
   onToggleStar?: () => void;
   onOpen?: () => void;
 }) {
+  const isInteractive = Boolean(onOpen || onToggleStar || actions.length > 0);
   const cardClassName = [
-    "ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-card text-foreground text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default",
+    "ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-card text-foreground text-left overflow-hidden",
+    isInteractive
+      ? "cursor-pointer hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1"
+      : "cursor-default",
     className,
   ]
     .filter(Boolean)
@@ -99,6 +103,14 @@ export function LibraryCardFrame({
       return;
     onOpen();
   };
+
+  if (!isInteractive) {
+    return (
+      <article className={cardClassName} aria-label={label}>
+        {children}
+      </article>
+    );
+  }
 
   return (
     <ContextMenu>

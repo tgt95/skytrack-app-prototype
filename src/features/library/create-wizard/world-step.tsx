@@ -343,7 +343,7 @@ export function WorldStep({
                 variant="secondary"
                 disabled={submitting}
                 onClick={() => setImportOpen(false)}
-              >
+                size="default">
                 Cancel
               </Button>
               <Button
@@ -352,7 +352,7 @@ export function WorldStep({
                 disabled={submitting}
                 onClick={() => void submitImport()}
                 data-testid="ms-wizard-import-world-submit"
-              >
+                size="default">
                 {submitting ? "Importing…" : "Import world"}
               </Button>
             </DialogFooter>

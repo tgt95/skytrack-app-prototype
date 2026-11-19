@@ -213,7 +213,7 @@ export function MissionWorldPickerDialog ({
             </Tabs>
           </FieldRoot>
           <DialogFooter className="flex-row flex-wrap items-center justify-end">
-            <DialogClose className='w-auto flex-[0_0_auto]'>Done</DialogClose>
+            <DialogClose className='w-auto flex-[0_0_auto]' size="default">Done</DialogClose>
           </DialogFooter>
         </DialogPopup>
       </DialogPortal>

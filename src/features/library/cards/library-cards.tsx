@@ -1,11 +1,12 @@
 import { FolderIcon } from "@phosphor-icons/react";
-import { Avatar, AvatarFallback } from "skytrack-ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "skytrack-ui/avatar";
 import { Badge } from "skytrack-ui/badge";
 import {
   LibraryCardFrame,
   type LibraryCardAction,
 } from "./library-presentation.tsx";
 import { getTemplateThumbnail } from "./template-thumbnails.ts";
+import skytrackLogo from "@/assets/skytrack-logo.svg";
 import type { LibProject, LibTemplate } from "@/features/library/database/store";
 import { SHARED_PROJECTS } from "@/features/library/workspace/workspace-data.ts";
 import { getNameInitials } from "@/shared/name-initials";
@@ -35,7 +36,7 @@ export function ProjectCard({
     >
       <button
         type="button"
-        className="ms-lib-thumb relative flex items-center justify-center aspect-4/3 overflow-hidden text-(--muted-foreground) bg-(--background) bg-[repeating-linear-gradient(to_right,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem),repeating-linear-gradient(to_bottom,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem)] border-b border-b-border [&.is-template]:bg-none [&.is-project]:bg-none [&.is-project]:bg-(--muted) [&.tint-0]:bg-[color-mix(in_srgb,var(--primary)_26%,var(--card))] [&.tint-2]:bg-(--muted) [&.tint-4]:bg-[color-mix(in_srgb,var(--primary)_10%,var(--card))] [&.tint-5]:bg-[color-mix(in_srgb,var(--primary)_32%,var(--muted))] [&.is-learn]:bg-none [&.is-learn]:text-(--primary) is-project"
+        className="ms-lib-thumb relative flex items-center justify-center aspect-4/3 overflow-hidden text-muted-foreground bg-background bg-[repeating-linear-gradient(to_right,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem),repeating-linear-gradient(to_bottom,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem)] border-b border-b-border [&.is-template]:bg-none [&.is-project]:bg-none [&.is-project]:bg-(--muted) [&.tint-0]:bg-[color-mix(in_srgb,var(--primary)_26%,var(--card))] [&.tint-2]:bg-(--muted) [&.tint-4]:bg-[color-mix(in_srgb,var(--primary)_10%,var(--card))] [&.tint-5]:bg-[color-mix(in_srgb,var(--primary)_32%,var(--muted))] [&.is-learn]:bg-none [&.is-learn]:text-(--primary) is-project"
         data-testid={`ms-lib-project-${project.id}-open`}
         aria-label={`Open ${project.name}`}
         onClick={onOpen}
@@ -43,7 +44,7 @@ export function ProjectCard({
         <FolderIcon aria-hidden="true" className="w-9 h-9" />
       </button>
       <div className="ms-lib-card-body flex flex-col gap-1 p-3">
-        <span className="text-base font-medium">{project.name}</span>
+        <span className="text-sm font-medium">{project.name}</span>
         <span className="text-sm text-muted-foreground">
           {project.missions.length} mission
           {project.missions.length === 1 ? "" : "s"}
@@ -104,17 +105,37 @@ export function TemplateCard({
         )}
       </button>
       <span className="ms-lib-card-body flex flex-col gap-1 p-3">
-        <span className="text-base font-medium">{template.title}</span>
+        <span className="text-sm font-medium">{template.title}</span>
         <span className="text-sm text-muted-foreground leading-[1.5]">
           {template.desc}
         </span>
         {hideMeta ? null : (
-          <span className="text-sm text-muted-foreground">
-            {template.byline}
-          </span>
+          <TemplateAttribution byline={template.byline} />
         )}
       </span>
     </LibraryCardFrame>
+  );
+}
+
+export function TemplateAttribution({ byline }: { byline: string }) {
+  const author = byline.replace(/^By\s+/iu, "").trim();
+  const isSkyTrack = author === "SkyTrack Team" || author === "SkyTrack";
+  const label = isSkyTrack ? "SkyTrack" : author;
+  const initial = label.trim().split(/\s+/u)[0]?.[0]?.toUpperCase() ?? "?";
+
+  return (
+    <span className="inline-flex min-w-0 items-center gap-1.5 text-sm text-muted-foreground">
+      <Avatar aria-hidden="true" className="size-6">
+        {isSkyTrack ? (
+          <AvatarImage src={skytrackLogo} alt="" />
+        ) : (
+          <AvatarFallback className="text-[0.625rem] font-bold">
+            {initial}
+          </AvatarFallback>
+        )}
+      </Avatar>
+      <span className="truncate">{label}</span>
+    </span>
   );
 }
 
@@ -149,7 +170,7 @@ export function SharedProjectCard({
       <div className="ms-lib-card-body flex flex-col gap-1 p-3 flex-1 justify-between">
         <div className="flex flex-col gap-2">
           <div className="flex items-start justify-between gap-2">
-            <span className="text-base font-medium">{project.name}</span>
+            <span className="text-sm font-medium">{project.name}</span>
             <Badge className="rounded-(--radius)" count="View only" />
           </div>
           <span className="text-sm text-muted-foreground">

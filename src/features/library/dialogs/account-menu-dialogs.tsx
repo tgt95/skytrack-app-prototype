@@ -345,7 +345,7 @@ export function AccountMenuDialogs ({
             <DialogFooter className='flex-row flex-wrap items-center justify-end'>
               {panel === 'profile' ? (
                 <>
-                  <DialogClose className='w-auto flex-[0_0_auto]'>
+                  <DialogClose className='w-auto flex-[0_0_auto]' size="default">
                     Cancel
                   </DialogClose>
                   <Button
@@ -354,24 +354,24 @@ export function AccountMenuDialogs ({
                       if (onSaveProfile(name)) onClose()
                     }}
                     className='w-auto flex-[0_0_auto]'
-                  >
+                    size="default">
                     Save changes
                   </Button>
                 </>
               ) : panel === 'logout' ? (
                 <>
-                  <DialogClose className='w-auto flex-[0_0_auto]'>
+                  <DialogClose className='w-auto flex-[0_0_auto]' size="default">
                     Cancel
                   </DialogClose>
                   <Button
                     onClick={onLogout}
                     className='w-auto flex-[0_0_auto]'
-                  >
+                    size="default">
                     Log out
                   </Button>
                 </>
               ) : (
-                <DialogClose className='w-auto flex-[0_0_auto]'>
+                <DialogClose className='w-auto flex-[0_0_auto]' size="default">
                   Close
                 </DialogClose>
               )}

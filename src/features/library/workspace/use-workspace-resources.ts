@@ -14,8 +14,12 @@ import {
   type WorkspaceWorldRecord,
 } from "@/features/library/database/workspace-resources-store";
 import { DEFAULT_WORKSPACE_ID } from "./workspace-data.ts";
-
-type MissionReference = { project: string; mission: string };
+import { canManageAIModel } from "./use-ai-model-access";
+import {
+  findAIModelMissionReferences,
+  findDroneMissionReferences,
+  findWorldMissionReferences,
+} from "./resource-mission-references";
 
 export function useWorkspaceResources({
   workspaceId,
@@ -24,6 +28,8 @@ export function useWorkspaceResources({
   deleteDroneId,
   deleteWorldId,
   deleteModelId,
+  canEditSharedModels = false,
+  currentUserName = "",
   createId,
   onAnnounce,
 }: {
@@ -33,6 +39,8 @@ export function useWorkspaceResources({
   deleteDroneId: string | null;
   deleteWorldId: string | null;
   deleteModelId: string | null;
+  canEditSharedModels?: boolean;
+  currentUserName?: string;
   createId: (prefix: string) => string;
   onAnnounce: (text: string) => void;
 }) {
@@ -107,80 +115,23 @@ export function useWorkspaceResources({
 
   const droneToDelete =
     droneProfiles.find((profile) => profile.id === deleteDroneId) ?? null;
-  const deleteDroneReferences: MissionReference[] = droneToDelete
-    ? projects.flatMap((project) => {
-        if (
-          (project.workspaceId ?? DEFAULT_WORKSPACE_ID) !==
-          droneToDelete.workspaceId
-        )
-          return [];
-        return project.missions.flatMap((mission) => {
-          let snapshot: Record<string, unknown> | null = null;
-          try {
-            snapshot = mission.missionData
-              ? (JSON.parse(mission.missionData) as Record<string, unknown>)
-              : null;
-          } catch {
-            snapshot = null;
-          }
-          const referencedId =
-            mission.droneId ??
-            (typeof snapshot?.droneId === "string"
-              ? snapshot.droneId
-              : undefined);
-          const referencedName =
-            mission.vehicle ??
-            (typeof snapshot?.vehicle === "string"
-              ? snapshot.vehicle
-              : undefined);
-          const matches =
-            referencedId === droneToDelete.id ||
-            (!referencedId &&
-              Boolean(referencedName) &&
-              [droneToDelete.name, ...droneToDelete.legacyLabels].includes(
-                referencedName as string,
-              ));
-          return matches
-            ? [{ project: project.name, mission: mission.name }]
-            : [];
-        });
-      })
-    : [];
+  const deleteDroneReferences = findDroneMissionReferences(projects, droneToDelete);
 
   const worldToDelete =
     workspaceWorlds.find((world) => world.id === deleteWorldId) ?? null;
-  const deleteWorldReferences: MissionReference[] = worldToDelete
-    ? projects.flatMap((project) => {
-        if (
-          (project.workspaceId ?? DEFAULT_WORKSPACE_ID) !==
-          worldToDelete.workspaceId
-        )
-          return [];
-        return project.missions.flatMap((mission) => {
-          let snapshot: Record<string, unknown> | null = null;
-          try {
-            snapshot = mission.missionData
-              ? (JSON.parse(mission.missionData) as Record<string, unknown>)
-              : null;
-          } catch {
-            snapshot = null;
-          }
-          const referencedId =
-            mission.worldId ??
-            (typeof snapshot?.worldId === "string"
-              ? snapshot.worldId
-              : undefined);
-          const matches = referencedId
-            ? referencedId === worldToDelete.id
-            : mission.world === worldToDelete.name;
-          return matches
-            ? [{ project: project.name, mission: mission.name }]
-            : [];
-        });
-      })
-    : [];
+  const deleteWorldReferences = findWorldMissionReferences(projects, worldToDelete);
   const modelToDelete =
-    uploadedAIModels.find((model) => model.id === deleteModelId) ?? null;
+    resourceState.aiModels.find(
+      (model) =>
+        model.workspaceId === workspaceId &&
+        model.id === deleteModelId &&
+        canManageAIModel(model, canEditSharedModels, currentUserName),
+    ) ?? null;
+  const deleteModelReferences = findAIModelMissionReferences(
+    projects,
+    modelToDelete,
+    workspaceId,
+  );
   const existingAIModelNames = resourceState.aiModels
     .filter((model) => model.workspaceId === workspaceId)
     .map((model) => model.name);
@@ -341,7 +292,11 @@ export function useWorkspaceResources({
 
   const deleteAIModel = (id: string) => {
     const target = resourceStateRef.current.aiModels.find((model) => model.id === id);
-    if (!target || target.origin !== "user-upload") return false;
+    if (
+      !target ||
+      target.workspaceId !== workspaceId ||
+      !canManageAIModel(target, canEditSharedModels, currentUserName)
+    ) return false;
     const nextModels = resourceStateRef.current.aiModels.filter(
       (model) => model.id !== id,
     );
@@ -352,7 +307,39 @@ export function useWorkspaceResources({
       })
     )
       return false;
-    onAnnounce("Imported AI model removed from this browser.");
+    onAnnounce(`${target.name} removed from ${workspaceName}.`);
+    return true;
+  };
+
+  const saveAIModelDetails = (
+    id: string,
+    details: { name: string; description: string },
+  ) => {
+    const target = resourceStateRef.current.aiModels.find(
+      (model) => model.id === id && model.workspaceId === workspaceId,
+    );
+    if (!target || !canManageAIModel(target, canEditSharedModels, currentUserName))
+      return false;
+    const normalizedName = details.name.trim();
+    if (!normalizedName) return false;
+    const hasDuplicate = resourceStateRef.current.aiModels.some(
+      (model) =>
+        model.workspaceId === workspaceId &&
+        model.id !== id &&
+        model.name.trim().toLowerCase() === normalizedName.toLowerCase(),
+    );
+    if (hasDuplicate) {
+      onAnnounce("An AI model with this name already exists in the Workspace.");
+      return false;
+    }
+    const nextModels = resourceStateRef.current.aiModels.map((model) =>
+      model.id === id
+        ? { ...model, name: normalizedName, description: details.description.trim() }
+        : model,
+    );
+    if (!commitResourceState({ ...resourceStateRef.current, aiModels: nextModels }))
+      return false;
+    onAnnounce(`${normalizedName} updated.`);
     return true;
   };
 
@@ -368,6 +355,7 @@ export function useWorkspaceResources({
     worldToDelete,
     deleteWorldReferences,
     modelToDelete,
+    deleteModelReferences,
     existingAIModelNames,
     saveDroneProfile,
     deleteDroneProfile,
@@ -375,5 +363,6 @@ export function useWorkspaceResources({
     deleteWorldProfile,
     importAIModel,
     deleteAIModel,
+    saveAIModelDetails,
   };
 }

@@ -1,6 +1,17 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { FolderOpenIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogClose,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPopup,
+  DialogPortal,
+  DialogTitle,
+} from "skytrack-ui/dialog";
 import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "skytrack-ui/empty";
 import { PageHeader } from "skytrack-ui/page-header";
 import type { LibMission, LibProject, LibTemplate } from "./database/store";
@@ -12,7 +23,12 @@ import type {
 import {
   LibraryPageLayout,
 } from "./cards/library-presentation.tsx";
-import type { SharedProject, SharedMission } from "./library-cards";
+import {
+  TemplateAttribution,
+  type SharedProject,
+  type SharedMission,
+} from "./library-cards";
+import { getTemplateThumbnail } from "./cards/template-thumbnails.ts";
 import { HomePage } from "./pages/home-page";
 import RecentPage from "./pages/recent-page";
 import StarredPage from "./pages/starred-page";
@@ -41,6 +57,8 @@ interface LibraryMainContentProps {
   activeSharedProject: SharedProject | null;
   activeProject: LibProject | null;
   workspaceName: string;
+  canEditSharedModels: boolean;
+  currentUserName: string;
   workspaceProjects: LibProject[];
   workspaceWorlds: WorkspaceWorldRecord[];
   workspaceDrones: WorkspaceDroneProfile[];
@@ -81,7 +99,6 @@ interface LibraryMainContentProps {
   onDeleteProject: (project: LibProject) => void;
   onOpenSharedAccounts: (missionId: string | null) => void;
   onOpenSharedProject: (projectId: string | null) => void;
-  onOpenTemplateDetail: (templateId: string) => void;
   onUseTemplate: (template: LibTemplate) => void;
   onCreateWorld: () => void;
   onEditWorld: (world: WorkspaceWorldRecord) => void;
@@ -91,6 +108,10 @@ interface LibraryMainContentProps {
   onDeleteDrone: (droneId: string) => void;
   onImportAIModel: () => void;
   onDeleteAIModel: (modelId: string) => void;
+  onSaveAIModel: (
+    modelId: string,
+    details: { name: string; description: string },
+  ) => boolean;
   onGoHome: () => void;
 }
 
@@ -100,6 +121,8 @@ export default function LibraryMainContent({
   activeSharedProject,
   activeProject,
   workspaceName,
+  canEditSharedModels,
+  currentUserName,
   workspaceProjects,
   workspaceWorlds,
   workspaceDrones,
@@ -130,7 +153,6 @@ export default function LibraryMainContent({
   onDeleteProject,
   onOpenSharedAccounts,
   onOpenSharedProject,
-  onOpenTemplateDetail,
   onUseTemplate,
   onCreateWorld,
   onEditWorld,
@@ -140,8 +162,13 @@ export default function LibraryMainContent({
   onDeleteDrone,
   onImportAIModel,
   onDeleteAIModel,
+  onSaveAIModel,
   onGoHome,
 }: LibraryMainContentProps) {
+  const [previewTemplateId, setPreviewTemplateId] = useState<string | null>(null);
+  const previewTemplate = templates.find(
+    (template) => template.id === previewTemplateId,
+  ) ?? null;
   const label = sharedView
     ? "Shared accounts"
     : activeSharedProject
@@ -187,10 +214,7 @@ export default function LibraryMainContent({
           renderRecent={renderRecent}
           renderTemplate={renderTemplate}
           onViewAll={() => onNavigate("templates", null)}
-          onOpenTemplate={(id) => {
-            onNavigate("templates", null);
-            onOpenTemplateDetail(id);
-          }}
+          onOpenTemplate={setPreviewTemplateId}
         />
       ) : section === "download" ? (
         <DownloadPage />
@@ -244,13 +268,15 @@ export default function LibraryMainContent({
           renderTemplate={renderTemplate}
           onQueryChange={onQueryChange}
           onUseTemplate={onUseTemplate}
-          onOpenTemplate={onOpenTemplateDetail}
+          onOpenTemplate={setPreviewTemplateId}
         />
       ) : section === "learn" ? (
         <LearnPage />
       ) : section === "aimodels" ? (
         <AIModelsPage
           workspaceName={workspaceName}
+          canEditSharedModels={canEditSharedModels}
+          currentUserName={currentUserName}
           skytrackModels={skytrackAIModels}
           workspaceModels={workspaceAIModels}
           uploadedModels={uploadedAIModels}
@@ -258,6 +284,7 @@ export default function LibraryMainContent({
           onCategoryChange={onCategoryChange}
           onImport={onImportAIModel}
           onDelete={onDeleteAIModel}
+          onSave={onSaveAIModel}
         />
       ) : section === "logs" ? (
         <LibraryPageLayout
@@ -314,6 +341,50 @@ export default function LibraryMainContent({
           </Button>
         </LibraryPageLayout>
       )}
+      <Dialog
+        open={previewTemplate !== null}
+        onOpenChange={(open) => {
+          if (!open) setPreviewTemplateId(null);
+        }}
+      >
+        <DialogPortal>
+          <DialogBackdrop />
+          <DialogPopup
+            aria-label="Mission template preview"
+            className="max-h-[min(90dvh,100%)] overflow-y-auto sm:max-w-3xl"
+            data-testid="ms-lib-template-preview-dialog"
+          >
+            {previewTemplate ? (
+              <>
+                <DialogHeader>
+                  <DialogTitle>{previewTemplate.title}</DialogTitle>
+                  <DialogDescription>{previewTemplate.desc}</DialogDescription>
+                </DialogHeader>
+                <div className="relative aspect-video overflow-hidden rounded-(--radius) border border-border bg-(--muted)">
+                  <img
+                    src={getTemplateThumbnail(previewTemplate.id)}
+                    alt=""
+                    className="absolute inset-0 size-full object-cover"
+                  />
+                </div>
+                <TemplateAttribution byline={previewTemplate.byline} />
+                <DialogFooter>
+                  <DialogClose size="default">Close</DialogClose>
+                  <Button
+                    size="default"
+                    onClick={() => {
+                      onUseTemplate(previewTemplate);
+                      setPreviewTemplateId(null);
+                    }}
+                  >
+                    Use template
+                  </Button>
+                </DialogFooter>
+              </>
+            ) : null}
+          </DialogPopup>
+        </DialogPortal>
+      </Dialog>
     </section>
   );
 }

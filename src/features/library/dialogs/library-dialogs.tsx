@@ -77,9 +77,9 @@ export function MissionDialog({
             />
           ) : null}
           <DialogFooter className="flex-row flex-wrap items-center justify-end">
-            <DialogClose className="w-auto flex-[0_0_auto]">Cancel</DialogClose>
+            <DialogClose className="w-auto flex-[0_0_auto]" size="default">Cancel</DialogClose>
             <Button
-              size="sm"
+              size="default"
               variant="default"
               disabled={!canSubmit}
               onClick={doSubmit}
@@ -202,9 +202,9 @@ export function ProjectDialog({
             </FieldRoot>
           </div>
           <DialogFooter className="flex-row flex-wrap items-center justify-end">
-            <DialogClose className="w-auto flex-[0_0_auto]">Cancel</DialogClose>
+            <DialogClose className="w-auto flex-[0_0_auto]" size="default">Cancel</DialogClose>
             <Button
-              size="sm"
+              size="default"
               variant="default"
               disabled={!canSubmit}
               onClick={doSubmit}

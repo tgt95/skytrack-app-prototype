@@ -194,13 +194,15 @@ function MissionCardFooter({
   return (
     <div className="mt-auto flex items-center justify-between gap-2 pt-3">
       <MissionCardOwner username={username} />
-      <time
-        aria-label={editedAgo}
-        title={editedAgo}
-        className="whitespace-nowrap text-right text-sm text-muted-foreground"
-      >
-        {formatCompactEditedAgo(editedAgo)}
-      </time>
+      {editedAgo ? (
+        <time
+          aria-label={editedAgo}
+          title={editedAgo}
+          className="whitespace-nowrap text-right text-sm text-muted-foreground"
+        >
+          {formatCompactEditedAgo(editedAgo)}
+        </time>
+      ) : null}
     </div>
   );
 }
@@ -260,7 +262,7 @@ function MissionCardCore({
     <div className="ms-lib-card-body flex flex-col gap-1 p-3 flex-1 justify-between">
       <div className="flex flex-col gap-2">
         <div className="flex items-start justify-between gap-2">
-          <span className="text-base font-medium">{title}</span>
+          <div className="text-sm font-medium">{title}</div>
           {variant === "shared" || mission.viewOnly ? (
             <Badge className="rounded-(--radius)" count="View only" />
           ) : null}
@@ -275,10 +277,10 @@ function MissionCardCore({
     return (
       <article
         key={mission.id}
-        className="ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-(--card) text-foreground text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default is-readonly"
+        className="ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-card text-foreground text-left cursor-pointer overflow-hidden hover:border-primary focus-visible:outline-2 focus-visible:outline-sidebar-ring focus-visible:outline-offset-1 [&.is-readonly]:cursor-default is-readonly"
         aria-label={mission.name}
       >
-        <span className="ms-lib-thumb relative flex items-center justify-center aspect-4/3 overflow-hidden text-(--muted-foreground) bg-(--background) bg-[repeating-linear-gradient(to_right,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem),repeating-linear-gradient(to_bottom,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem)] border-b border-b-border [&.is-template]:bg-none [&.is-project]:bg-none [&.is-project]:bg-(--muted) [&.tint-0]:bg-[color-mix(in_srgb,var(--primary)_26%,var(--card))] [&.tint-2]:bg-(--muted) [&.tint-4]:bg-[color-mix(in_srgb,var(--primary)_10%,var(--card))] [&.tint-5]:bg-[color-mix(in_srgb,var(--primary)_32%,var(--muted))] [&.is-learn]:bg-none [&.is-learn]:text-(--primary) is-mission" aria-hidden="true">
+        <span className="ms-lib-thumb relative flex items-center justify-center aspect-4/3 overflow-hidden text-muted-foreground bg-background bg-[repeating-linear-gradient(to_right,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem),repeating-linear-gradient(to_bottom,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem)] border-b border-b-border [&.is-template]:bg-none [&.is-project]:bg-none [&.is-project]:bg-(--muted) [&.tint-0]:bg-[color-mix(in_srgb,var(--primary)_26%,var(--card))] [&.tint-2]:bg-(--muted) [&.tint-4]:bg-[color-mix(in_srgb,var(--primary)_10%,var(--card))] [&.tint-5]:bg-[color-mix(in_srgb,var(--primary)_32%,var(--muted))] [&.is-learn]:bg-none [&.is-learn]:text-(--primary) is-mission" aria-hidden="true">
           {thumbnail}
           {worldBadge}
         </span>

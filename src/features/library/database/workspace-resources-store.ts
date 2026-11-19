@@ -1,6 +1,9 @@
 import { DEFAULT_WORKSPACE_ID, WORKSPACES } from "@/features/library/workspace/workspace-data.ts";
 import { STORAGE_KEYS, STORAGE_VERSIONS } from "@/shared/storage-keys";
-import { BUNDLED_WORLD_ASSETS } from "./bundled-world-assets";
+import {
+  bundledSampleWorlds,
+  migrateLegacySampleWorlds,
+} from "./workspace-world-seeds";
 
 export type ResourceStatus = "Sample" | "Draft" | "Registered" | "Archived";
 export type AIModelStatus = ResourceStatus | "Ready";
@@ -48,6 +51,7 @@ export interface WorkspaceResourceState {
   version: 1;
   worlds: WorkspaceWorldRecord[];
   aiModels: WorkspaceAIModelRecord[];
+  personalAIModelSampleSeeded?: boolean;
 }
 
 export const WORKSPACE_RESOURCES_STORAGE_KEY = STORAGE_KEYS.workspaceResources;
@@ -64,98 +68,6 @@ function slug(value: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
-}
-
-function makeBundledSampleWorld(
-  workspaceId: string,
-  asset: (typeof BUNDLED_WORLD_ASSETS)[number],
-): WorkspaceWorldRecord {
-  return {
-    id: `sample-world-${workspaceId}-${slug(asset.name)}`,
-    workspaceId,
-    name: asset.name,
-    location: asset.location,
-    status: "Sample",
-    sourceType: "none",
-    sourceMissionId: "",
-    sourceMissionLabel: "",
-    sourceFlightReference: "",
-    reconstructionReference: "",
-    note: "Bundled sample GLB World",
-    glbAssetId: asset.id,
-    glbFileName: asset.fileName,
-    glbFileSize: asset.fileSize,
-  };
-}
-
-const LEGACY_SAMPLE_WORLD_FIXTURES = [
-  {
-    workspaceId: DEFAULT_WORKSPACE_ID,
-    name: "Field terrain",
-    location: "Redlands, CA",
-  },
-  {
-    workspaceId: "survey-operations",
-    name: "Quarry terrain",
-    location: "Benton County",
-  },
-  {
-    workspaceId: "survey-operations",
-    name: "Coastal world",
-    location: "Portland, ME",
-  },
-  ...["Courtyard block", "Rooftop pad", "Rolling hills", "Mountain ridge"].map(
-    (name) => ({
-      workspaceId: DEFAULT_WORKSPACE_ID,
-      name,
-      location: "Sample terrain",
-    }),
-  ),
-];
-
-function migrateLegacySampleWorlds(
-  state: WorkspaceResourceState,
-): WorkspaceResourceState | null {
-  const replacedWorkspaceIds = new Set<string>();
-  const retainedWorlds = state.worlds.filter((world) => {
-    const fixture = LEGACY_SAMPLE_WORLD_FIXTURES.find(
-      (candidate) =>
-        candidate.workspaceId === world.workspaceId &&
-        world.id === `sample-world-${candidate.workspaceId}-${slug(candidate.name)}`,
-    );
-    if (
-      !fixture ||
-      world.status !== "Sample" ||
-      world.name !== fixture.name ||
-      world.location !== fixture.location ||
-      world.sourceType !== "none" ||
-      world.sourceMissionId !== "" ||
-      world.sourceMissionLabel !== "" ||
-      world.sourceFlightReference !== "" ||
-      world.reconstructionReference !== "" ||
-      world.note !== "" ||
-      world.glbAssetId !== undefined ||
-      world.glbFileName !== undefined ||
-      world.glbFileSize !== undefined
-    ) {
-      return true;
-    }
-    replacedWorkspaceIds.add(world.workspaceId);
-    return false;
-  });
-
-  if (replacedWorkspaceIds.size === 0) return null;
-
-  const nextWorlds = [...retainedWorlds];
-  for (const workspaceId of replacedWorkspaceIds) {
-    for (const asset of BUNDLED_WORLD_ASSETS) {
-      const world = makeBundledSampleWorld(workspaceId, asset);
-      if (!nextWorlds.some((item) => item.id === world.id)) {
-        nextWorlds.push(world);
-      }
-    }
-  }
-  return { ...state, worlds: nextWorlds };
 }
 
 function makeSampleModel(
@@ -232,6 +144,25 @@ const BUNDLED_AI_MODEL_SAMPLES: Array<
   },
 ];
 
+const PERSONAL_AI_MODEL_SAMPLE: Pick<
+  WorkspaceAIModelRecord,
+  | "name"
+  | "description"
+  | "version"
+  | "task"
+  | "inputModality"
+  | "compatibility"
+  | "packageFileName"
+> = {
+  name: "Bridge inspection v1",
+  description: "Detects visible surface defects in bridge inspection imagery.",
+  version: "v1.0",
+  task: "Object detection",
+  inputModality: "Aerial image",
+  compatibility: "ONNX",
+  packageFileName: "bridge-inspection-v1.onnx",
+};
+
 function appendBundledAIModelSamples(
   state: WorkspaceResourceState,
 ): WorkspaceResourceState {
@@ -278,15 +209,49 @@ function appendBundledAIModelSamples(
     }
   }
 
-  return changed ? { ...state, aiModels } : state;
+  if (!state.personalAIModelSampleSeeded) {
+    const id = `sample-model-${DEFAULT_WORKSPACE_ID}-${slug(PERSONAL_AI_MODEL_SAMPLE.name)}`;
+    const existing = aiModels.find((model) => model.id === id);
+    if (!existing) {
+      aiModels.push(
+        makeSampleModel(
+          DEFAULT_WORKSPACE_ID,
+          PERSONAL_AI_MODEL_SAMPLE.name,
+          "user-upload",
+          "You",
+          {
+            ...PERSONAL_AI_MODEL_SAMPLE,
+            status: "Sample",
+            assetReference: PERSONAL_AI_MODEL_SAMPLE.packageFileName,
+          },
+        ),
+      );
+    } else if (existing.packageFileSize !== undefined) {
+      const index = aiModels.findIndex((model) => model.id === id);
+      const sample = { ...existing };
+      delete sample.packageFileSize;
+      aiModels[index] = sample;
+      changed = true;
+    }
+    changed = true;
+  } else {
+    const id = `sample-model-${DEFAULT_WORKSPACE_ID}-${slug(PERSONAL_AI_MODEL_SAMPLE.name)}`;
+    const index = aiModels.findIndex((model) => model.id === id);
+    if (index >= 0 && aiModels[index].packageFileSize !== undefined) {
+      const sample = { ...aiModels[index] };
+      delete sample.packageFileSize;
+      aiModels[index] = sample;
+      changed = true;
+    }
+  }
+
+  return changed
+    ? { ...state, aiModels, personalAIModelSampleSeeded: true }
+    : state;
 }
 
 function seedState(): WorkspaceResourceState {
-  const worlds = WORKSPACES.flatMap((workspace) =>
-    BUNDLED_WORLD_ASSETS.map((asset) =>
-      makeBundledSampleWorld(workspace.id, asset),
-    ),
-  );
+  const worlds = bundledSampleWorlds();
   const aiModels = WORKSPACES.flatMap((workspace) => [
     ...workspace.aiModels.map((name, index) =>
       makeSampleModel(
@@ -300,7 +265,20 @@ function seedState(): WorkspaceResourceState {
       makeSampleModel(workspace.id, sample.name, "skytrack", undefined, sample),
     ),
   ]);
-  return { version: 1, worlds, aiModels };
+  aiModels.push(
+    makeSampleModel(
+      DEFAULT_WORKSPACE_ID,
+      PERSONAL_AI_MODEL_SAMPLE.name,
+      "user-upload",
+      "You",
+      {
+        ...PERSONAL_AI_MODEL_SAMPLE,
+        status: "Sample",
+        assetReference: PERSONAL_AI_MODEL_SAMPLE.packageFileName,
+      },
+    ),
+  );
+  return { version: 1, worlds, aiModels, personalAIModelSampleSeeded: true };
 }
 
 function isWorld(value: unknown): value is WorkspaceWorldRecord {
@@ -367,7 +345,9 @@ export function loadWorkspaceResources(): WorkspaceResourceState {
         Array.isArray(parsed.worlds) &&
         parsed.worlds.every(isWorld) &&
         Array.isArray(parsed.aiModels) &&
-        parsed.aiModels.every(isAIModel)
+        parsed.aiModels.every(isAIModel) &&
+        (parsed.personalAIModelSampleSeeded === undefined ||
+          typeof parsed.personalAIModelSampleSeeded === "boolean")
       ) {
         const legacySkyTrackAssignments = new Set<string>();
         const aiModels = parsed.aiModels.map((model) => {
@@ -385,6 +365,8 @@ export function loadWorkspaceResources(): WorkspaceResourceState {
           version: STORAGE_VERSIONS.workspaceResources,
           worlds: parsed.worlds,
           aiModels,
+          personalAIModelSampleSeeded:
+            parsed.personalAIModelSampleSeeded === true,
         };
         const migratedWorlds = migrateLegacySampleWorlds(state) ?? state;
         const migrated = appendBundledAIModelSamples(migratedWorlds);

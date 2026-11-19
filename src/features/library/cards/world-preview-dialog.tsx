@@ -88,7 +88,7 @@ export function WorldPreviewDialog({
             </aside>
           </div>
           <DialogFooter className="flex-row flex-wrap items-center justify-end">
-            <DialogClose className="w-auto flex-[0_0_auto]">
+            <DialogClose className="w-auto flex-[0_0_auto]" size="default">
               Close preview
             </DialogClose>
           </DialogFooter>

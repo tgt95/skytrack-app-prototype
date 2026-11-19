@@ -1,10 +1,24 @@
+import { useState } from "react";
 import { FolderOpenIcon, PlusIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
 import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "skytrack-ui/empty";
 import { PageHeader } from "skytrack-ui/page-header";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "skytrack-ui/tabs";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogClose,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPopup,
+  DialogPortal,
+  DialogTitle,
+} from "skytrack-ui/dialog";
+import { FieldControl, FieldLabel, FieldRoot } from "skytrack-ui/field";
 import type { WorkspaceAIModelRecord } from "@/features/library/database/workspace-resources-store";
 import { AIModelCardContent } from "@/ui/components/ai-model-card";
+import { canManageAIModel } from "../workspace/use-ai-model-access";
 import {
   LibraryCardFrame,
   LibraryPageLayout,
@@ -20,6 +34,9 @@ export function AIModelsPage({
   onCategoryChange,
   onImport,
   onDelete,
+  onSave,
+  canEditSharedModels,
+  currentUserName,
 }: {
   workspaceName: string;
   skytrackModels: WorkspaceAIModelRecord[];
@@ -29,7 +46,45 @@ export function AIModelsPage({
   onCategoryChange: (category: AIModelCategory) => void;
   onImport: () => void;
   onDelete: (modelId: string) => void;
+  onSave: (modelId: string, details: { name: string; description: string }) => boolean;
+  canEditSharedModels: boolean;
+  currentUserName: string;
 }) {
+  const [activeModel, setActiveModel] = useState<WorkspaceAIModelRecord | null>(null);
+  const [modelName, setModelName] = useState("");
+  const [modelDescription, setModelDescription] = useState("");
+  const [saveError, setSaveError] = useState("");
+  const [editing, setEditing] = useState(false);
+  const openModel = (model: WorkspaceAIModelRecord, canEdit: boolean) => {
+    setActiveModel(model);
+    setModelName(model.name);
+    setModelDescription(model.description ?? "");
+    setEditing(canEdit);
+    setSaveError("");
+  };
+  const closeModel = () => {
+    setActiveModel(null);
+    setSaveError("");
+  };
+  const saveModel = () => {
+    if (!activeModel) return;
+    const normalizedName = modelName.trim().toLowerCase();
+    const duplicate = [...skytrackModels, ...workspaceModels, ...uploadedModels].some(
+      (model) =>
+        model.id !== activeModel.id &&
+        model.name.trim().toLowerCase() === normalizedName,
+    );
+    if (duplicate) {
+      setSaveError("An AI model with this name already exists in the Workspace.");
+      return;
+    }
+    const saved = onSave(activeModel.id, {
+      name: modelName,
+      description: modelDescription,
+    });
+    if (saved) closeModel();
+    else setSaveError("The model could not be saved. Check the name and try again.");
+  };
   const allModels = [...skytrackModels, ...workspaceModels, ...uploadedModels];
   const visibleModels =
     category === "members"
@@ -99,7 +154,7 @@ export function AIModelsPage({
               <TabsTab value="members">
                 Members ({workspaceModels.length})
               </TabsTab>
-              <TabsTab value="me">Me ({uploadedModels.length})</TabsTab>
+              <TabsTab value="me">My models ({uploadedModels.length})</TabsTab>
             </TabsList>
           </PageHeader>
         }
@@ -126,41 +181,117 @@ export function AIModelsPage({
               aria-label={`${workspaceName} AI models ${category}`}
             >
               {visibleModels.map((model) => {
-                const isUploadedByMe = model.origin === "user-upload";
+                const canEdit = canManageAIModel(
+                  model,
+                  canEditSharedModels,
+                  currentUserName,
+                );
                 const modelContent = <AIModelCardContent model={model} />;
 
-                return isUploadedByMe ? (
+                return (
                   <LibraryCardFrame
                     key={model.id}
                     label={model.name}
-                    className="ms-lib-resource-card min-h-39"
+                    className={`ms-lib-resource-card min-h-39 ${canEdit ? "" : "is-readonly"}`}
                     testId={`ms-lib-ai-model-${model.id}`}
-                    actions={[
-                      {
-                        id: "remove",
-                        label: "Remove",
-                        group: "destructive",
-                        destructive: true,
-                        onSelect: () => onDelete(model.id),
-                      },
-                    ]}
+                    actions={
+                      canEdit
+                        ? [
+                            {
+                              id: "edit",
+                              label: "Edit",
+                              group: "primary",
+                              onSelect: () => openModel(model, true),
+                            },
+                            {
+                              id: "remove",
+                              label: "Remove",
+                              group: "destructive",
+                              destructive: true,
+                              onSelect: () => onDelete(model.id),
+                            },
+                          ]
+                        : []
+                    }
+                    onOpen={canEdit ? () => openModel(model, true) : undefined}
                   >
                     {modelContent}
                   </LibraryCardFrame>
-                ) : (
-                  <article
-                    key={model.id}
-                    className="ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-(--card) text-foreground text-left cursor-pointer overflow-hidden hover:border-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1 [&.is-readonly]:cursor-default ms-lib-resource-card min-h-39"
-                    data-testid={`ms-lib-ai-model-${model.id}`}
-                  >
-                    {modelContent}
-                  </article>
                 );
               })}
             </div>
           )}
         </TabsPanel>
       </LibraryPageLayout>
+      <Dialog
+        open={activeModel !== null}
+        onOpenChange={(open: boolean) => {
+          if (!open) closeModel();
+        }}
+      >
+        <DialogPortal>
+          <DialogBackdrop />
+          <DialogPopup aria-label={editing ? "Edit AI model" : "AI model details"}>
+            <DialogHeader>
+              <DialogTitle className="heading">
+                {editing ? "Edit AI model" : "AI model details"}
+              </DialogTitle>
+              <DialogDescription>
+                {activeModel?.origin === "skytrack"
+                  ? "SkyTrack models are managed by SkyTrack."
+                  : editing
+                    ? "Update the model name and description."
+                    : "This model is managed by a Workspace administrator."}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-4">
+              <FieldRoot>
+                <FieldLabel>Name</FieldLabel>
+                <FieldControl
+                  value={modelName}
+                  onChange={(event) => setModelName(event.currentTarget.value)}
+                  disabled={!editing}
+                  autoFocus={editing}
+                />
+              </FieldRoot>
+              <FieldRoot>
+                <FieldLabel htmlFor="ai-model-description">Description</FieldLabel>
+                <textarea
+                  id="ai-model-description"
+                  value={modelDescription}
+                  onChange={(event) => setModelDescription(event.currentTarget.value)}
+                  disabled={!editing}
+                  rows={4}
+                  className="flex w-full min-w-0 rounded-(--radius) border border-input bg-background px-3 py-2 text-sm text-foreground shadow-xs placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-(--ring) disabled:cursor-not-allowed disabled:opacity-50"
+                />
+              </FieldRoot>
+              {saveError ? (
+                <p className="m-0 text-sm text-destructive" role="alert">
+                  {saveError}
+                </p>
+              ) : null}
+            </div>
+            <DialogFooter className="flex-row flex-wrap items-center justify-end">
+              <DialogClose
+                size="default"
+                className="w-auto flex-[0_0_auto]"
+              >
+                {editing ? "Cancel" : "Close"}
+              </DialogClose>
+              {editing ? (
+                <Button
+                  size="default"
+                  onClick={saveModel}
+                  disabled={!modelName.trim()}
+                  className="w-auto flex-[0_0_auto]"
+                >
+                  Save changes
+                </Button>
+              ) : null}
+            </DialogFooter>
+          </DialogPopup>
+        </DialogPortal>
+      </Dialog>
     </Tabs>
   );
 }

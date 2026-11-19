@@ -457,11 +457,11 @@ export function WorldProfileDialog({
             <DialogClose
               disabled={submitting}
               className="w-auto flex-[0_0_auto]"
-            >
+              size="default">
               Cancel
             </DialogClose>
             <Button
-              size="sm"
+              size="default"
               variant="default"
               onClick={save}
               disabled={submitting}

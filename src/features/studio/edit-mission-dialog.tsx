@@ -180,8 +180,8 @@ export function EditMissionDialog({
             </Select>
           </FieldRoot>
           <DialogFooter className="flex-row flex-wrap items-center justify-end">
-            <DialogClose className="w-auto flex-[0_0_auto]">Cancel</DialogClose>
-            <Button onClick={onSave} className="w-auto flex-[0_0_auto]">
+            <DialogClose className="w-auto flex-[0_0_auto]" size="default">Cancel</DialogClose>
+            <Button onClick={onSave} className="w-auto flex-[0_0_auto]" size="default">
               Save
             </Button>
           </DialogFooter>

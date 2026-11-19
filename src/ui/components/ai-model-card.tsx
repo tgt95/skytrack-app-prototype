@@ -51,14 +51,15 @@ export function AIModelCardContent({
     model.origin === "skytrack"
       ? "SkyTrack"
       : isUploadedByMe
-        ? "You"
+        ? "Uploaded by you"
         : model.uploadedBy || "Workspace member";
-  const initial =
-    attribution.trim().split(/\s+/u)[0]?.[0]?.toUpperCase() ?? "?";
+  const initial = isUploadedByMe
+    ? "Y"
+    : (attribution.trim().split(/\s+/u)[0]?.[0]?.toUpperCase() ?? "?");
   const isSkyTrack = attribution === "SkyTrack";
   const thumbnail = model.thumbnailDataUrl || sampleModelImages[model.name];
   const description = model.description ?? (isUploadedByMe ? model.task : "");
-  const placeholderIconSize = layout === "picker" ? "w-10 h-10" : "w-5 h-5";
+  const placeholderIconSize = layout === "picker" ? "w-5 h-5" : "w-10 h-10";
 
   const thumbnailContent = thumbnail ? (
     <img src={thumbnail} alt="" className="size-full object-cover" />
@@ -140,12 +141,14 @@ export function AIModelCardContent({
         {description ? (
           <span className="text-sm text-muted-foreground">{description}</span>
         ) : null}
-        {isUploadedByMe ? (
+        {isUploadedByMe && model.status !== "Sample" ? (
           <span className="text-sm text-muted-foreground">
-            {`${model.packageFileSize ? `${(model.packageFileSize / (1024 * 1024)).toFixed(1)} MB` : "Package size unavailable"} · ${model.status}`}
+            {model.packageFileSize === undefined
+              ? model.status
+              : `${(model.packageFileSize / (1024 * 1024)).toFixed(1)} MB · ${model.status}`}
           </span>
         ) : null}
-        <span className="mt-1">{attributionContent}</span>
+        <span className="mt-auto pt-1">{attributionContent}</span>
       </span>
     </>
   );

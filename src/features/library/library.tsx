@@ -245,6 +245,7 @@ export default function StudioLibrary({
     worldToDelete,
     deleteWorldReferences,
     modelToDelete,
+    deleteModelReferences,
     existingAIModelNames,
     saveDroneProfile: persistDroneProfile,
     deleteDroneProfile,
@@ -252,6 +253,7 @@ export default function StudioLibrary({
     deleteWorldProfile,
     importAIModel: persistAIModel,
     deleteAIModel: persistAIModelRemoval,
+    saveAIModelDetails,
   } = useWorkspaceResources({
     workspaceId: activeWorkspace.id,
     workspaceName: activeWorkspace.name,
@@ -259,10 +261,11 @@ export default function StudioLibrary({
     deleteDroneId,
     deleteWorldId,
     deleteModelId,
+    canEditSharedModels: activeWorkspace.role === "Admin",
+    currentUserName: accountProfile.name,
     createId: nextId,
     onAnnounce,
   });
-
   const activeProject = projectId
     ? (workspaceProjects.find((p) => p.id === projectId) ?? null)
     : null;
@@ -349,12 +352,6 @@ export default function StudioLibrary({
     setCloneTarget,
     onOpenSharedProject,
   });
-  const openTemplateDetail = (id: string) => {
-    onOpenTemplate(id);
-    const t = TEMPLATES.find((item) => item.id === id);
-    onAnnounce(`Template ${t?.title ?? ""} opened.`);
-  };
-
   const useTemplate = (t: LibTemplate) => {
     const target = workspaceProjects[0];
     if (!target) {
@@ -412,6 +409,8 @@ export default function StudioLibrary({
             activeSharedProject={activeSharedProject}
             activeProject={activeProject}
             workspaceName={activeWorkspace.name}
+            canEditSharedModels={activeWorkspace.role === "Admin"}
+            currentUserName={accountProfile.name}
             workspaceProjects={workspaceProjects}
             workspaceWorlds={workspaceWorlds}
             workspaceDrones={workspaceDrones}
@@ -458,7 +457,6 @@ export default function StudioLibrary({
             }
             onOpenSharedAccounts={onOpenSharedAccounts}
             onOpenSharedProject={onOpenSharedProject}
-            onOpenTemplateDetail={openTemplateDetail}
             onUseTemplate={useTemplate}
             onCreateWorld={() =>
               setWorldEditor({
@@ -482,6 +480,7 @@ export default function StudioLibrary({
             onDeleteDrone={setDeleteDroneId}
             onImportAIModel={() => setImportModelOpen(true)}
             onDeleteAIModel={setDeleteModelId}
+            onSaveAIModel={saveAIModelDetails}
             onGoHome={() => goto("home")}
           />
         </div>
@@ -558,6 +557,7 @@ export default function StudioLibrary({
           deleteModelId,
           setDeleteModelId,
           modelToDelete,
+          deleteModelReferences,
           deleteAIModel,
         }}
         account={{

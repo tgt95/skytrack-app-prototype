@@ -243,7 +243,7 @@ export default function CreateMissionWizard({
                   variant="secondary"
                   onClick={goBack}
                   aria-label={`Back to step ${step - 1}`}
-                >
+                  size="default">
                   <ArrowLeftIcon aria-hidden="true" /> Back
                 </Button>
               ) : null}
@@ -252,13 +252,13 @@ export default function CreateMissionWizard({
               className="flex items-center gap-2"
               data-testid="ms-wizard-footer-end"
             >
-              <DialogClose variant="secondary">Cancel</DialogClose>
+              <DialogClose variant="secondary" size="default">Cancel</DialogClose>
               {step < 3 ? (
                 <Button
                   variant="default"
                   disabled={step === 1 ? !canNext : !canLeaveWorld}
                   onClick={goNext}
-                >
+                  size="default">
                   Next
                 </Button>
               ) : (
@@ -266,7 +266,7 @@ export default function CreateMissionWizard({
                   variant="default"
                   disabled={!canNext || !selectedDrone}
                   onClick={doCreate}
-                >
+                  size="default">
                   Create mission
                 </Button>
               )}

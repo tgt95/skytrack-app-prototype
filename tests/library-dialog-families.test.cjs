@@ -79,6 +79,7 @@ test("dialog families keep their own dialogs and do not import the host", () => 
   assert.match(resources, /ImportAIModelDialog/);
   assert.match(resources, /Delete drone profile\?/);
   assert.match(resources, /Delete World\?/);
-  assert.match(resources, /Remove uploaded model\?/);
+  assert.match(resources, /Remove AI model\?/);
+  assert.match(resources, /Model is used in missions/);
   assert.doesNotMatch(resources, /library-dialogs-host/);
 });

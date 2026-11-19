@@ -94,7 +94,8 @@ test('versioned stores and preference/workspace records round-trip through their
       'sample-model-tuan-workspace-objects-detection-by-drones',
       'sample-model-survey-operations-common-objects-detection',
       'sample-model-survey-operations-fire-and-explosion-detection',
-      'sample-model-survey-operations-objects-detection-by-drones'
+      'sample-model-survey-operations-objects-detection-by-drones',
+      'sample-model-tuan-workspace-bridge-inspection-v1'
     ])
 
     assert.equal(theme.saveThemePreference('dark'), true)
