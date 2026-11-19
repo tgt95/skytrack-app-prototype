@@ -4,6 +4,9 @@ import type { SimPlan } from '@/features/simulation/simulation'
 
 export interface MissionSceneHandle {
   getCameraHeading: () => number
+  /** Return the local ENU wind vector's screen projection in CSS pixels per meter. */
+  getWindScreenVector: (azimuthDeg: number, elevationDeg: number) => { x: number; y: number } | null
+  subscribeCameraChanged: (listener: () => void) => () => void
   downloadMapImage: () => boolean
   resetCamera: () => void
   focusVehicle: () => void

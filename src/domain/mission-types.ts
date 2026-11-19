@@ -223,7 +223,9 @@ export interface WindEnvironmentSettings {
   controlBy: WindControlMode;
   forceN: number;
   speedMS: number;
+  /** Persisted ENU Push TO angle. UI adapts this to meteorological FROM bearing. */
   azimuthDeg: number;
+  /** Vertical particle-flow angle; positive means upward flow. */
   elevationDeg: number;
 }
 

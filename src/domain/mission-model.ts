@@ -21,6 +21,10 @@ export {
   vehicleSpecOf
 } from './mission-types'
 export {
+  enuPushToAzimuthToMeteorologicalFrom,
+  meteorologicalFromAzimuthToEnuPushTo,
+} from './wind-direction'
+export {
   appendMissionSequenceItem,
   getMissionRouteWaypoints,
   getMissionRoutes,

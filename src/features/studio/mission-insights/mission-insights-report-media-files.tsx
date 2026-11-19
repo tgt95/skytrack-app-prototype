@@ -30,6 +30,7 @@ import {
   type MetadataRow,
 } from "./mission-insights-report-media-metadata";
 import { statusLabel } from "./mission-insights-report-shared";
+import { MissionInsightsEmptyState } from "./mission-insights-empty-state";
 
 type FileEntry = {
   artifact: JsonRecord;
@@ -281,9 +282,10 @@ export function MediaFilesSection({
                 ))}
               </ul>
             ) : (
-              <p className="m-0 px-2 py-3 text-sm text-muted-foreground">
-                No file names match this search.
-              </p>
+              <MissionInsightsEmptyState
+                title="No matching files"
+                description="No file names match this search."
+              />
             )
           ) : entries.length ? (
             <LocalFileTree
@@ -301,9 +303,10 @@ export function MediaFilesSection({
               onInspect={onInspect}
             />
           ) : (
-            <p className="m-0 px-2 py-3 text-sm text-muted-foreground">
-              No files are available in this report.
-            </p>
+            <MissionInsightsEmptyState
+              title="No files available"
+              description="This report does not include any other files."
+            />
           )}
         </div>
       </div>
@@ -429,18 +432,11 @@ export function FileDetailsPanel({
           </div>
         </div>
       ) : (
-        <div className="flex min-h-0 flex-1 items-center justify-center p-6">
-          <div
-            className="flex max-w-sm flex-col items-center gap-3 text-center"
-            role="status"
-          >
-            <FileIcon
-              className="size-8 text-muted-foreground"
-              aria-hidden="true"
-            />
-            <p className="m-0 text-sm text-muted-foreground">{emptyMessage}</p>
-          </div>
-        </div>
+        <MissionInsightsEmptyState
+          role="status"
+          icon={FileIcon}
+          description={emptyMessage}
+        />
       )}
     </section>
   );

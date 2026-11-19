@@ -1,7 +1,7 @@
 import { ArrowSquareOutIcon, BookOpenIcon } from "@phosphor-icons/react";
+import { PageHeader } from "skytrack-ui/page-header";
 import {
   LibraryCardFrame,
-  LibraryPageHeader,
   LibraryPageLayout,
 } from "@/features/library/cards/library-presentation.tsx";
 
@@ -17,15 +17,24 @@ export default function LearnPage() {
     <LibraryPageLayout
       titleId="ms-lib-learn-page-title"
       header={
-        <LibraryPageHeader
-          titleId="ms-lib-learn-page-title"
-          title="Learn"
-          description={
+        <div
+          className="sticky top-0 z-20 border-b border-border bg-card"
+          data-testid="ms-lib-page-header-row"
+        >
+          <PageHeader
+            className="ms-lib-page-header flex flex-col gap-2 px-6 pb-0 pt-5 border-b-0"
+            title={
+              <span id="ms-lib-learn-page-title" data-testid="ms-lib-page-header-copy">
+                Learn
+              </span>
+            }
+          />
+          <div className="px-6 pb-4" data-testid="ms-lib-page-header-description">
             <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
               Guides from the SkyTrack help center open in a new tab.
             </p>
-          }
-        />
+          </div>
+        </div>
       }
     >
       <div

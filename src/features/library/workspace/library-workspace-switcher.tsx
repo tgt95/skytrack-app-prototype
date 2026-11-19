@@ -107,9 +107,10 @@ export function LibraryWorkspaceSwitcher({
       <SkyTooltip>
         <Button
           type="button"
-          size="icon-xs"
+          size="icon"
           variant="ghost"
-          className=" mt-1 text-(--sidebar-foreground) [&:hover]:bg-(--sidebar-accent) [&:hover]:text-(--sidebar-accent-foreground) [@media_(max-width:_61.25rem)]:hidden"
+          className="[@media_(max-width:_61.25rem)]:hidden"
+          // className="text-(--sidebar-foreground) [&:hover]:bg-(--sidebar-accent) [&:hover]:text-(--sidebar-accent-foreground) [@media_(max-width:_61.25rem)]:hidden"
           aria-label="Workspace settings"
           title="Workspace settings"
           onClick={() => onAnnounce(`${activeWorkspace.name} settings`)}

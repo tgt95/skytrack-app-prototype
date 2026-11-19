@@ -1,10 +1,10 @@
 import { Fragment } from "react";
-import { MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
+import { FolderOpenIcon, MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
+import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "skytrack-ui/empty";
 import { Input } from "skytrack-ui/input";
+import { PageHeader } from "skytrack-ui/page-header";
 import {
-  LibraryEmptyState,
-  LibraryPageHeader,
   LibraryPageLayout,
 } from "@/features/library/cards/library-presentation.tsx";
 import { getTemplateThumbnail } from "@/features/library/cards/template-thumbnails.ts";
@@ -39,25 +39,36 @@ export default function TemplatesPage({
       <LibraryPageLayout
         titleId="ms-lib-template-title"
         header={
-          <LibraryPageHeader
-            titleId="ms-lib-template-title"
-            title={activeTemplate.title}
-            description={
+          <div
+            className="sticky top-0 z-20 border-b border-border bg-card"
+            data-testid="ms-lib-page-header-row"
+          >
+            <PageHeader
+              className="ms-lib-page-header flex flex-col gap-2 px-6 pb-0 pt-5 border-b-0"
+              title={
+                <span id="ms-lib-template-title" data-testid="ms-lib-page-header-copy">
+                  {activeTemplate.title}
+                </span>
+              }
+              toolbar={
+                <div className="inline-flex items-center justify-end gap-2 shrink-0" data-testid="ms-lib-page-header-actions">
+                  <Button
+                    size="default"
+                    variant="default"
+                    onClick={() => onUseTemplate(activeTemplate)}
+                  >
+                    Use template
+                  </Button>
+                </div>
+              }
+            />
+            <div className="px-6 pb-4" data-testid="ms-lib-page-header-description">
               <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
                 {activeTemplate.byline} · full template content arrives with
                 backend templates
               </p>
-            }
-            actions={
-              <Button
-                size="default"
-                variant="default"
-                onClick={() => onUseTemplate(activeTemplate)}
-              >
-                Use template
-              </Button>
-            }
-          />
+            </div>
+          </div>
         }
       >
         <div
@@ -98,41 +109,52 @@ export default function TemplatesPage({
     <LibraryPageLayout
       titleId="ms-lib-templates-page-title"
       header={
-        <LibraryPageHeader
-          titleId="ms-lib-templates-page-title"
-          title="Mission templates"
-          description={
+        <div
+          className="sticky top-0 z-20 border-b border-border bg-card"
+          data-testid="ms-lib-page-header-row"
+        >
+          <PageHeader
+            className="ms-lib-page-header flex flex-col gap-2 px-6 pb-0 pt-5 border-b-0"
+            title={
+              <span id="ms-lib-templates-page-title" data-testid="ms-lib-page-header-copy">
+                Mission templates
+              </span>
+            }
+            toolbar={
+              <div className="inline-flex items-center justify-end gap-2 shrink-0" data-testid="ms-lib-page-header-actions">
+                <Input
+                  startAdornment={<MagnifyingGlassIcon aria-hidden="true" />}
+                  endAdornment={
+                    <>
+                      {query !== "" ? (
+                        <Button
+                          type="button"
+                          size="icon-xs"
+                          variant="ghost"
+                          aria-label="Clear filter"
+                          onClick={() => onQueryChange("")}
+                        >
+                          <XIcon aria-hidden="true" />
+                        </Button>
+                      ) : null}
+                    </>
+                  }
+                  value={query}
+                  onChange={(event) => onQueryChange(event.currentTarget.value)}
+                  placeholder="Search"
+                  aria-label="Search"
+                  className="w-full min-w-0 max-w-120"
+                  data-testid="ms-lib-search"
+                />
+              </div>
+            }
+          />
+          <div className="px-6 pb-4" data-testid="ms-lib-page-header-description">
             <p className="mt-1 mx-0 text-sm text-muted-foreground">
               Learn SkyTrack with Mission templates
             </p>
-          }
-          actions={
-            <Input
-              startAdornment={<MagnifyingGlassIcon aria-hidden="true" />}
-              endAdornment={
-                <>
-                  {query !== "" ? (
-                    <Button
-                      type="button"
-                      size="icon-xs"
-                      variant="ghost"
-                      aria-label="Clear filter"
-                      onClick={() => onQueryChange("")}
-                    >
-                      <XIcon aria-hidden="true" />
-                    </Button>
-                  ) : null}
-                </>
-              }
-              value={query}
-              onChange={(event) => onQueryChange(event.currentTarget.value)}
-              placeholder="Search"
-              aria-label="Search"
-              className="w-full min-w-0 max-w-120"
-              data-testid="ms-lib-search"
-            />
-          }
-        />
+          </div>
+        </div>
       }
     >
       {debouncedQuery.trim() ? (
@@ -142,10 +164,19 @@ export default function TemplatesPage({
         </p>
       ) : null}
       {templates.length === 0 ? (
-        <LibraryEmptyState
-          title="No templates found"
-          description={`No templates match "${debouncedQuery.trim()}".`}
-        />
+        <Empty>
+          <EmptyMedia icon={FolderOpenIcon} />
+          <EmptyTitle
+            data-testid="ms-lib-empty-title"
+            role="heading"
+            aria-level={2}
+          >
+            No templates found
+          </EmptyTitle>
+          <EmptyDescription>
+            No templates match "{debouncedQuery.trim()}".
+          </EmptyDescription>
+        </Empty>
       ) : (
         <div
           className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"

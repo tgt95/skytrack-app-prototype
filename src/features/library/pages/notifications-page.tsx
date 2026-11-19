@@ -8,7 +8,14 @@ import {
 } from "@phosphor-icons/react";
 import { Badge } from "skytrack-ui/badge";
 import { Button } from "skytrack-ui/button";
-import { LibraryPageHeader, LibraryPageLayout } from "@/features/library/cards/library-presentation.tsx";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyTitle,
+} from "skytrack-ui/empty";
+import { PageHeader } from "skytrack-ui/page-header";
+import { LibraryPageLayout } from "@/features/library/cards/library-presentation.tsx";
 
 type NotificationCategory = "mission" | "shared" | "workspace";
 type NotificationFilter = "all" | "unread" | NotificationCategory;
@@ -136,22 +143,35 @@ export function NotificationsPage() {
     <LibraryPageLayout
       titleId="ms-lib-notifications-title"
       header={
-        <LibraryPageHeader
-          titleId="ms-lib-notifications-title"
-          title="Notifications"
-          description="Mission activity, shared projects, and workspace updates."
-          actions={
-            <Button
-              size="default"
-              variant="outline"
-              onClick={markAllRead}
-              disabled={unreadCount === 0}
-              data-testid="ms-lib-notifications-mark-all-read"
-            >
-              <CheckIcon aria-hidden="true" /> Mark all as read
-            </Button>
-          }
-        />
+        <div
+          className="sticky top-0 z-20 border-b border-border bg-card"
+          data-testid="ms-lib-page-header-row"
+        >
+          <PageHeader
+            className="ms-lib-page-header flex flex-col gap-2 px-6 pb-0 pt-5 border-b-0"
+            title={
+              <span id="ms-lib-notifications-title" data-testid="ms-lib-page-header-copy">
+                Notifications
+              </span>
+            }
+            toolbar={
+              <div className="inline-flex items-center justify-end gap-2 shrink-0" data-testid="ms-lib-page-header-actions">
+                <Button
+                  size="default"
+                  variant="outline"
+                  onClick={markAllRead}
+                  disabled={unreadCount === 0}
+                  data-testid="ms-lib-notifications-mark-all-read"
+                >
+                  <CheckIcon aria-hidden="true" /> Mark all as read
+                </Button>
+              </div>
+            }
+          />
+          <div className="px-6 pb-4" data-testid="ms-lib-page-header-description">
+            Mission activity, shared projects, and workspace updates.
+          </div>
+        </div>
       }
     >
       <div
@@ -180,21 +200,18 @@ export function NotificationsPage() {
         </div>
 
         {visibleNotifications.length === 0 ? (
-          <div
-            className="flex flex-col items-center gap-2 py-14 text-center"
-            data-testid="ms-lib-notifications-empty"
-          >
-            <BellIcon
-              aria-hidden="true"
-              className="size-7 text-(--muted-foreground)"
-            />
-            <h2 className="heading m-0 text-base font-semibold">
+          <Empty data-testid="ms-lib-notifications-empty">
+            <EmptyMedia icon={BellIcon} />
+            <EmptyTitle
+              role="heading"
+              aria-level={2}
+            >
               You're all caught up
-            </h2>
-            <p className="m-0 text-sm text-(--muted-foreground)">
+            </EmptyTitle>
+            <EmptyDescription>
               New updates will appear here.
-            </p>
-          </div>
+            </EmptyDescription>
+          </Empty>
         ) : (
           <div className="flex flex-col gap-6">
             {groups.map((period) => {

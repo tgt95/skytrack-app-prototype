@@ -12,6 +12,11 @@ import {
   StopIcon,
 } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyTitle,
+} from "skytrack-ui/empty";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "skytrack-ui/tabs";
 import SimulationDetails from "./simulation-details";
 import { SimulationSettingsForm } from "./simulation-settings-form";
@@ -208,13 +213,15 @@ export default function SimulationPanel(props: SimulationPanelProps) {
           <TabsPanel value="events">
             {fired.length === 0 ? (
               <div className="p-3">
-                <section className="ms-card border border-border rounded-(--radius) bg-(--background) p-3 flex flex-col gap-2" role="status">
-                  <h3 className="heading ms-card-title m-0 text-sm font-semibold">No events yet</h3>
-                  <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">
+                <Empty role="status">
+                  <EmptyTitle role="heading" aria-level={3}>
+                    No events yet
+                  </EmptyTitle>
+                  <EmptyDescription>
                     Events appear here during a run — waypoint arrivals,
                     actions, and return home.
-                  </p>
-                </section>
+                  </EmptyDescription>
+                </Empty>
               </div>
             ) : (
               <ol
@@ -243,21 +250,24 @@ export default function SimulationPanel(props: SimulationPanelProps) {
 
           {showConsole ? (
             <TabsPanel value="console">
-              <ol
-                className=" [list-style:none] m-0 p-2 flex flex-col gap-0.75 max-h-80 overflow-y-auto font-[ui-monospace,SFMono-Regular,Menlo,monospace] text-sm bg-(--background) border border-border rounded-(--radius)"
-                aria-label="Simulation console"
-              >
-                {log.length === 0 ? (
-                  <li className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">Console is empty — start a run.</li>
-                ) : (
-                  log.map((line, i) => (
+              {log.length === 0 ? (
+                <Empty role="status" aria-label="Simulation console">
+                  <EmptyTitle>Console is empty</EmptyTitle>
+                  <EmptyDescription>Start a run to view console output.</EmptyDescription>
+                </Empty>
+              ) : (
+                <ol
+                  className="[list-style:none] m-0 p-2 flex flex-col gap-0.75 max-h-80 overflow-y-auto font-[ui-monospace,SFMono-Regular,Menlo,monospace] text-sm bg-(--background) border border-border rounded-(--radius)"
+                  aria-label="Simulation console"
+                >
+                  {log.map((line, i) => (
                     <li key={i} data-testid="ms-console-line">
                       <span className="ms-event-t flex-[0_0_auto] [font-variant-numeric:tabular-nums] text-(--muted-foreground)">[{line.t.toFixed(1)}s]</span>{" "}
                       {line.text}
                     </li>
-                  ))
-                )}
-              </ol>
+                  ))}
+                </ol>
+              )}
             </TabsPanel>
           ) : null}
         </Tabs>

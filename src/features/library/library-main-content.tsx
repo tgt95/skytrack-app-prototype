@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
+import { FolderOpenIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
+import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "skytrack-ui/empty";
+import { PageHeader } from "skytrack-ui/page-header";
 import type { LibMission, LibProject, LibTemplate } from "./database/store";
 import type { WorkspaceDroneProfile } from "./database/drone-store";
 import type {
@@ -7,8 +10,6 @@ import type {
   WorkspaceWorldRecord,
 } from "./database/workspace-resources-store";
 import {
-  LibraryEmptyState,
-  LibraryPageHeader,
   LibraryPageLayout,
 } from "./cards/library-presentation.tsx";
 import type { SharedProject, SharedMission } from "./library-cards";
@@ -262,13 +263,30 @@ export default function LibraryMainContent({
         <LibraryPageLayout
           titleId="ms-lib-logs-title"
           header={
-            <LibraryPageHeader titleId="ms-lib-logs-title" title="Logs" />
+            <PageHeader
+              className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-4 pt-5"
+              data-testid="ms-lib-page-header-row"
+              title={
+                <span id="ms-lib-logs-title" data-testid="ms-lib-page-header-copy">
+                  Logs
+                </span>
+              }
+            />
           }
         >
-          <LibraryEmptyState
-            title="No logs yet"
-            description="Flight and build activity will appear here."
-          />
+          <Empty>
+            <EmptyMedia icon={FolderOpenIcon} />
+            <EmptyTitle
+              data-testid="ms-lib-empty-title"
+              role="heading"
+              aria-level={2}
+            >
+              No logs yet
+            </EmptyTitle>
+            <EmptyDescription>
+              Flight and build activity will appear here.
+            </EmptyDescription>
+          </Empty>
         </LibraryPageLayout>
       ) : section === "notifications" ? (
         <NotificationsPage />
@@ -277,9 +295,14 @@ export default function LibraryMainContent({
           titleId="ms-lib-placeholder-title"
           sectionClassName="ms-placeholder max-w-130 border border-border rounded-(--radius) bg-(--card) py-5 px-5.5 flex flex-col gap-2"
           header={
-            <LibraryPageHeader
-              titleId="ms-lib-placeholder-title"
-              title={section}
+            <PageHeader
+              className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-4 pt-5"
+              data-testid="ms-lib-page-header-row"
+              title={
+                <span id="ms-lib-placeholder-title" data-testid="ms-lib-page-header-copy">
+                  {section}
+                </span>
+              }
             />
           }
         >

@@ -47,8 +47,8 @@ for (const extension of [".svg", ".jpg", ".png", ".webp", ".glb"]) {
 
 const missionCards = require("../src/features/library/cards/mission-cards.tsx");
 const libraryCards = require("../src/features/library/library-cards.tsx");
-const libraryAvatar = require("../src/features/library/cards/library-avatar.tsx");
 const { emptyMission, snapshotOf } = require("../src/domain/mission-model.ts");
+const { getNameInitials } = require("../src/shared/name-initials.ts");
 
 function missionCard(missionData, worldType = "2D") {
   return {
@@ -68,26 +68,11 @@ test("library card families retain compatibility exports without a cycle", () =>
   assert.equal(libraryCards.MissionCard, missionCards.MissionCard);
   assert.equal(libraryCards.RecentMissionCard, missionCards.RecentMissionCard);
   assert.equal(libraryCards.SharedMissionCard, missionCards.SharedMissionCard);
-  assert.equal(libraryCards.LibraryAvatar, libraryAvatar.LibraryAvatar);
 });
 
-test("LibraryAvatar keeps the existing initial rendering", () => {
-  const markup = renderToStaticMarkup(
-    React.createElement(libraryAvatar.LibraryAvatar, {
-      name: "  Maya Nguyen ",
-      testId: "avatar",
-    }),
-  );
-  assert.match(markup, />M</);
-  assert.match(markup, /data-testid="avatar"/);
-
-  const initials = renderToStaticMarkup(
-    React.createElement(libraryAvatar.LibraryAvatar, {
-      name: "Maya Nguyen",
-      initials: "MN",
-    }),
-  );
-  assert.match(initials, />MN</);
+test("shared owner initials handle names and blank values", () => {
+  assert.equal(getNameInitials("  Maya Nguyen "), "M");
+  assert.equal(getNameInitials(""), "?");
 });
 
 test("mission cards keep Star, More, and context-menu action wiring", () => {

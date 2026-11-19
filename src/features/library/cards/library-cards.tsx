@@ -1,4 +1,5 @@
 import { FolderIcon } from "@phosphor-icons/react";
+import { Avatar, AvatarFallback } from "skytrack-ui/avatar";
 import { Badge } from "skytrack-ui/badge";
 import {
   LibraryCardFrame,
@@ -7,7 +8,7 @@ import {
 import { getTemplateThumbnail } from "./template-thumbnails.ts";
 import type { LibProject, LibTemplate } from "@/features/library/database/store";
 import { SHARED_PROJECTS } from "@/features/library/workspace/workspace-data.ts";
-import { LibraryAvatar } from "./library-avatar.tsx";
+import { getNameInitials } from "@/shared/name-initials";
 
 export {
   MissionCard,
@@ -15,8 +16,6 @@ export {
   SharedMissionCard,
   type SharedMission,
 } from "./mission-cards.tsx";
-export { LibraryAvatar } from "./library-avatar.tsx";
-
 export function ProjectCard({
   project,
   actions,
@@ -171,11 +170,14 @@ export function SharedProjectCard({
             className="inline-flex min-w-0 items-center gap-1.5 text-sm text-muted-foreground"
             data-testid="ms-lib-shared-owner"
           >
-            <LibraryAvatar
-              name={project.owner}
-              initials={project.ownerInitials}
+            <Avatar
+              aria-hidden="true"
               className="size-6 shrink-0"
-            />
+            >
+              <AvatarFallback>
+                {project.ownerInitials ?? getNameInitials(project.owner)}
+              </AvatarFallback>
+            </Avatar>
             <span className="truncate">
               {project.owner} · {project.workspace}
             </span>

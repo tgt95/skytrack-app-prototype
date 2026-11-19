@@ -109,6 +109,7 @@ export default function LibrarySidebar({
       collapsible="none"
       aria-label="Workspace navigation"
       data-testid="ms-lib-sidebar"
+      className="bg-card"
     >
       <SidebarContent>
         <SidebarGroup aria-label="Main">

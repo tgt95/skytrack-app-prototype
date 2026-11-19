@@ -10,6 +10,12 @@ import type { MissionInsightsReportTab } from "@/features/studio/mission-report-
 import { Badge } from "skytrack-ui/badge";
 import { Button } from "skytrack-ui/button";
 import {
+  Empty,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyTitle,
+} from "skytrack-ui/empty";
+import {
   Menu,
   MenuGroup,
   MenuGroupLabel,
@@ -621,23 +627,17 @@ export function MediaFilesTab({
                 </div>
               </>
             ) : (
-              <div
-                className="flex min-h-0 flex-1 flex-col items-center justify-center gap-2 p-6 text-center"
-                role="status"
-              >
-                <FileImageIcon
-                  className="size-8 text-muted-foreground"
-                  aria-hidden="true"
-                />
-                <p className="m-0 font-medium text-foreground">
+              <Empty role="status">
+                <EmptyMedia icon={FileImageIcon} />
+                <EmptyTitle>
                   {media.length === 0
                     ? "No media available"
                     : "No matching media"}
-                </p>
-                <p className="m-0 max-w-sm text-sm text-muted-foreground">
+                </EmptyTitle>
+                <EmptyDescription>
                   {mediaEmptyMessage}
-                </p>
-              </div>
+                </EmptyDescription>
+              </Empty>
             )}
           </section>
         </div>
