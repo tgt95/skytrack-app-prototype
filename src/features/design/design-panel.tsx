@@ -2,9 +2,11 @@
    waypoint/END sequence, zones, validation, mission props, code view. */
 
 import { memo, useState } from "react";
-import { PackageIcon } from "@phosphor-icons/react";
-import { Button } from "skytrack-ui/button";
-import { Tabs, TabsList, TabsTab } from "skytrack-ui/tabs";
+import {
+  getSelectedAIModels,
+  openAIModelManager as requestAIModelManager,
+} from "./panels/ai-model-manager-toast";
+import { DesignPanelTabs } from "./panels/design-panel-tabs";
 import {
   type CameraActionKind,
   type SceneSelection,
@@ -18,10 +20,7 @@ import { DesignSequenceBlocks } from "./sequence/design-sequence-blocks";
 import MissionSettingsCard, {
   MissionChecksCard,
 } from "./panels/mission-settings-card";
-import {
-  MissionSettingsToastHost,
-  notifyAIModelsAlreadyOpen,
-} from "./panels/mission-settings-toast";
+import { MissionSettingsToastHost } from "./panels/mission-settings-toast";
 import CodeInspectorPanel from "./panels/code-inspector-panel";
 import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 import AvoidInspectorCard from "./panels/avoid-inspector-card";
@@ -128,6 +127,12 @@ function DesignPanel(props: DesignPanelProps) {
     previewPositionRef,
     previewCaptureRef,
   } = props;
+  const openAIModelManager = () =>
+    requestAIModelManager(aiModelsOpen, onAIModelsOpenChange);
+  const availableAIModels = getSelectedAIModels(
+    props.aiModels,
+    props.selectedAIModelIds,
+  );
   const missionSettingsTooltip =
     "These settings are packaged into the mission file and sent to the drone. They govern how the drone executes the route autonomously in the field.";
 
@@ -179,16 +184,6 @@ function DesignPanel(props: DesignPanelProps) {
   });
 
   const openWindSettings = () => setWindSettingsOpen(true);
-  const openAIModelManager = () => {
-    if (aiModelsOpen) {
-      notifyAIModelsAlreadyOpen();
-      return;
-    }
-    onAIModelsOpenChange(true);
-  };
-  const availableAIModels = props.aiModels.filter((model) =>
-    props.selectedAIModelIds.includes(model.id),
-  );
 
   if (reconTarget !== null) {
     return (
@@ -227,49 +222,15 @@ function DesignPanel(props: DesignPanelProps) {
       <div className="ms-inspector-main flex min-h-0 flex-1 flex-col">
         {/* Pane tabs: Design, Code and the photogrammetry route Preview. */}
         <div className="ms-pane-head sticky top-0 bg-(--card) z-2 in-[.ms-inspector]:bg-(--card)">
-          <div
-            className="ms-pane-tabs flex items-center justify-between gap-2 p-3 min-h-16 border-b border-border"
-            data-testid="ms-pane-tabs"
-          >
-            <Tabs
-              value={codeView ? "code" : previewView ? "preview" : "visual"}
-              onValueChange={(v: unknown) => {
-                const value = String(v);
-                onPreviewViewChange(value === "preview");
-                onCodeViewChange(value === "code");
-              }}
-              aria-label="Mission panel view"
-              className=" text-xs"
-            >
-              <TabsList variant="filled">
-                <TabsTab value="visual">Design</TabsTab>
-                <TabsTab
-                  value="code"
-                  disabled={editingAreaId !== null || editingAvoidId !== null}
-                >
-                  Code
-                </TabsTab>
-                <TabsTab
-                  value="preview"
-                  disabled={editingAreaId !== null || editingAvoidId !== null}
-                >
-                  Preview
-                </TabsTab>
-              </TabsList>
-            </Tabs>
-            {!previewView ? (
-              <Button
-                size="icon-sm"
-                variant="ghost"
-                aria-label={aiModelsOpen ? "Close AI models" : "Manage AI models"}
-                title={aiModelsOpen ? "Close AI models" : "Manage AI models"}
-                aria-pressed={aiModelsOpen}
-                onClick={() => onAIModelsOpenChange(!aiModelsOpen)}
-              >
-                <PackageIcon aria-hidden="true" className="size-5" />
-              </Button>
-            ) : null}
-          </div>
+          <DesignPanelTabs
+            codeView={codeView}
+            previewView={previewView}
+            canChangeView={editingAreaId === null && editingAvoidId === null}
+            aiModelsOpen={aiModelsOpen}
+            onCodeViewChange={onCodeViewChange}
+            onPreviewViewChange={onPreviewViewChange}
+            onAIModelsOpenChange={onAIModelsOpenChange}
+          />
           {!codeView &&
             !previewView &&
             editingAreaId === null &&

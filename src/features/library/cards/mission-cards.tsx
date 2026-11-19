@@ -159,11 +159,7 @@ function MissionCardSummary({
 function MissionCardOwner({ username }: { username: string }) {
   return (
     <div className="inline-flex items-center gap-1.5">
-      <Avatar
-        aria-hidden="true"
-        className="size-6"
-        data-testid="ms-lib-card-owner"
-      >
+      <Avatar aria-hidden="true" className="size-6" data-testid="ms-lib-card-owner">
         <AvatarFallback>{getNameInitials(username)}</AvatarFallback>
       </Avatar>
       <span className="text-sm text-muted-foreground">{username}</span>

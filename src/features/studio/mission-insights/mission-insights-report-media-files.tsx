@@ -7,12 +7,6 @@ import {
 } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
 import {
-  Empty,
-  EmptyDescription,
-  EmptyMedia,
-  EmptyTitle,
-} from "skytrack-ui/empty";
-import {
   CodeBlock,
   CodeBlockContent,
   CodeBlockCopyButton,
@@ -36,6 +30,7 @@ import {
   type MetadataRow,
 } from "./mission-insights-report-media-metadata";
 import { statusLabel } from "./mission-insights-report-shared";
+import { MissionInsightsEmptyState } from "./mission-insights-empty-state";
 
 type FileEntry = {
   artifact: JsonRecord;
@@ -287,12 +282,10 @@ export function MediaFilesSection({
                 ))}
               </ul>
             ) : (
-              <Empty>
-                <EmptyTitle>No matching files</EmptyTitle>
-                <EmptyDescription>
-                  No file names match this search.
-                </EmptyDescription>
-              </Empty>
+              <MissionInsightsEmptyState
+                title="No matching files"
+                description="No file names match this search."
+              />
             )
           ) : entries.length ? (
             <LocalFileTree
@@ -310,12 +303,10 @@ export function MediaFilesSection({
               onInspect={onInspect}
             />
           ) : (
-            <Empty>
-              <EmptyTitle>No files available</EmptyTitle>
-              <EmptyDescription>
-                This report does not include any other files.
-              </EmptyDescription>
-            </Empty>
+            <MissionInsightsEmptyState
+              title="No files available"
+              description="This report does not include any other files."
+            />
           )}
         </div>
       </div>
@@ -441,12 +432,11 @@ export function FileDetailsPanel({
           </div>
         </div>
       ) : (
-        <Empty role="status">
-          <EmptyMedia icon={FileIcon} />
-          <EmptyDescription>
-            {emptyMessage}
-          </EmptyDescription>
-        </Empty>
+        <MissionInsightsEmptyState
+          role="status"
+          icon={FileIcon}
+          description={emptyMessage}
+        />
       )}
     </section>
   );

@@ -1,9 +1,6 @@
-/* index.tsx — SkyTrack Mission Studio standalone route and page coordinator.
-   Full-height desktop shell: top bar + stage switch, left rail, center 3D scene,
-   right inspector, bottom status strip. Design + deterministic mock Simulation. */
+/* Standalone Mission Studio composition: shell, stage, scene, and inspector. */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAddressSearch } from "@/features/search/use-address-search";
 import { PYTHON_SAMPLE } from "@/features/design/panels/python-editor";
 import {
@@ -32,6 +29,7 @@ import { ImportAIModelDialog } from "@/features/library/dialogs/import-ai-model-
 import { AccountMenuDialogs } from "@/features/library/dialogs/account-menu-dialogs.tsx";
 import { useLibraryAccountSettings } from "@/features/library/account/use-library-account-settings.ts";
 import { useWorkspaceResources } from "@/features/library/workspace/use-workspace-resources.ts";
+import { useAIModelAccess } from "@/features/library/workspace/use-ai-model-access";
 import {
   getWorkspace,
   readActiveWorkspaceId,
@@ -62,26 +60,10 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
   });
   const { skytrackAIModels, workspaceAIModels, uploadedAIModels } =
     modelResources;
-  const canEditSharedAIModels = activeWorkspace.role === "Admin";
-  const aiModels = useMemo(
-    () =>
-      [...skytrackAIModels, ...workspaceAIModels, ...uploadedAIModels].map(
-        (model) => ({
-          ...model,
-          isReadOnly:
-            (model.origin === "workspace" || model.origin === undefined) &&
-            (!canEditSharedAIModels ||
-              (model.uploadedBy !== undefined &&
-                model.uploadedBy !== accountSettings.accountProfile.name)),
-        }),
-      ),
-    [
-      canEditSharedAIModels,
-      accountSettings.accountProfile.name,
-      skytrackAIModels,
-      workspaceAIModels,
-      uploadedAIModels,
-    ],
+  const aiModels = useAIModelAccess(
+    [...skytrackAIModels, ...workspaceAIModels, ...uploadedAIModels],
+    activeWorkspace.role === "Admin",
+    accountSettings.accountProfile.name,
   );
   const {
     stage,
