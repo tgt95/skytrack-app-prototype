@@ -38,6 +38,10 @@ import type {
   WorldSourceType,
 } from "@/features/library/database/workspace-resources-store";
 import { RequiredMarker } from "@/ui/components/required-marker";
+import {
+  SourceMissionField,
+  type SourceMissionOption,
+} from "./source-mission-field";
 
 const RESOURCE_STATUSES: ResourceStatus[] = [
   "Sample",
@@ -129,12 +133,6 @@ function StatusField({
       </Select>
     </FieldRoot>
   );
-}
-
-export interface SourceMissionOption {
-  id: string;
-  projectName: string;
-  missionName: string;
 }
 
 export function WorldProfileDialog({
@@ -320,59 +318,13 @@ export function WorldProfileDialog({
                   </Select>
                 </FieldRoot>
                 {draft.sourceType === "mission" ? (
-                  <FieldRoot className="ms-field flex flex-col gap-1 ms-drone-form-wide col-span-full [@media_(max-width:_45rem)]:col-auto">
-                    <FieldLabel>Source 2D mission</FieldLabel>
-                    <Select<string>
-                      items={sourceMissions.map((mission) => ({
-                        value: mission.id,
-                        label: `${mission.projectName} · ${mission.missionName}`,
-                      }))}
-                      value={draft.sourceMissionId}
-                      onValueChange={(next: unknown) => {
-                        const selected = sourceMissions.find(
-                          (mission) => mission.id === String(next),
-                        );
-                        patch({
-                          sourceMissionId: String(next),
-                          sourceMissionLabel: selected
-                            ? `${selected.projectName} · ${selected.missionName}`
-                            : "",
-                        });
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue
-                          placeholder={
-                            sourceMissions.length
-                              ? "Select a saved 2D mission"
-                              : "No saved 2D missions in this Workspace"
-                          }
-                        />
-                        <SelectIcon />
-                      </SelectTrigger>
-                      <SelectPortal>
-                        <SelectPositioner
-                          side="bottom"
-                          align="start"
-                          sideOffset={4}
-                        >
-                          <SelectPopup>
-                            <SelectList>
-                              {sourceMissions.map((mission) => (
-                                <SelectItem key={mission.id} value={mission.id}>
-                                  <SelectItemIndicator />
-                                  <SelectItemText>
-                                    {mission.projectName} ·{" "}
-                                    {mission.missionName}
-                                  </SelectItemText>
-                                </SelectItem>
-                              ))}
-                            </SelectList>
-                          </SelectPopup>
-                        </SelectPositioner>
-                      </SelectPortal>
-                    </Select>
-                  </FieldRoot>
+                  <SourceMissionField
+                    missions={sourceMissions}
+                    value={draft.sourceMissionId}
+                    onChange={(sourceMissionId, sourceMissionLabel) =>
+                      patch({ sourceMissionId, sourceMissionLabel })
+                    }
+                  />
                 ) : null}
                 {draft.sourceType === "flight-reference" ? (
                   <TextField
