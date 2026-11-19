@@ -31,6 +31,7 @@ export interface WorkspaceAIModelRecord {
   origin?: AIModelOrigin;
   uploadedBy?: string;
   name: string;
+  description?: string;
   version: string;
   task: string;
   inputModality: string;
@@ -181,14 +182,33 @@ function makeSampleModel(
   };
 }
 
+const AI_MODEL_DESCRIPTIONS: Record<string, string> = {
+  "Roof inspection v1":
+    "Inspects roofs for visible damage and maintenance needs.",
+  "Solar panel detector": "Detects solar panels in rooftop imagery.",
+  "Coastal building segmentation":
+    "Segments buildings in coastal survey imagery.",
+  "Common Objects Detection": "Detects common objects in aerial imagery.",
+  "Fire and Explosion Detection":
+    "Identifies fire and smoke in aerial imagery.",
+  "Objects Detection by Drones":
+    "Detects objects in imagery captured by drones.",
+};
+
 const BUNDLED_AI_MODEL_SAMPLES: Array<
   Pick<
     WorkspaceAIModelRecord,
-    "name" | "version" | "task" | "inputModality" | "compatibility"
+    | "name"
+    | "description"
+    | "version"
+    | "task"
+    | "inputModality"
+    | "compatibility"
   >
 > = [
   {
     name: "Common Objects Detection",
+    description: AI_MODEL_DESCRIPTIONS["Common Objects Detection"],
     version: "v26n",
     task: "det-coco-v26n-b-quantized-fp16.onnx",
     inputModality: "",
@@ -196,6 +216,7 @@ const BUNDLED_AI_MODEL_SAMPLES: Array<
   },
   {
     name: "Fire and Explosion Detection",
+    description: AI_MODEL_DESCRIPTIONS["Fire and Explosion Detection"],
     version: "v26n",
     task: "det-firesmoke-v26n-b-quantized-fp16.onnx",
     inputModality: "",
@@ -203,6 +224,7 @@ const BUNDLED_AI_MODEL_SAMPLES: Array<
   },
   {
     name: "Objects Detection by Drones",
+    description: AI_MODEL_DESCRIPTIONS["Objects Detection by Drones"],
     version: "v26n",
     task: "det-visdrone-v26n-b-quantized-fp16.onnx",
     inputModality: "",
@@ -215,6 +237,13 @@ function appendBundledAIModelSamples(
 ): WorkspaceResourceState {
   const aiModels = [...state.aiModels];
   let changed = false;
+  for (const [index, existing] of aiModels.entries()) {
+    const description = AI_MODEL_DESCRIPTIONS[existing.name];
+    if (description && existing.description !== description) {
+      aiModels[index] = { ...existing, description };
+      changed = true;
+    }
+  }
   for (const workspace of WORKSPACES) {
     for (const sample of BUNDLED_AI_MODEL_SAMPLES) {
       const id = `sample-model-${workspace.id}-${slug(sample.name)}`;
@@ -233,9 +262,14 @@ function appendBundledAIModelSamples(
         continue;
       }
       const existing = aiModels[index];
-      if (existing.inputModality !== "" || existing.compatibility !== "") {
+      if (
+        existing.inputModality !== "" ||
+        existing.compatibility !== "" ||
+        existing.description !== sample.description
+      ) {
         aiModels[index] = {
           ...existing,
+          description: sample.description,
           inputModality: "",
           compatibility: "",
         };
@@ -297,6 +331,8 @@ function isAIModel(value: unknown): value is WorkspaceAIModelRecord {
     typeof model.id === "string" &&
     typeof model.workspaceId === "string" &&
     typeof model.name === "string" &&
+    (model.description === undefined ||
+      typeof model.description === "string") &&
     typeof model.version === "string" &&
     typeof model.task === "string" &&
     typeof model.inputModality === "string" &&

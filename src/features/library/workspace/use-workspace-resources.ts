@@ -298,11 +298,13 @@ export function useWorkspaceResources({
 
   const importAIModel = ({
     name,
+    description,
     fileName,
     fileSize,
     thumbnailDataUrl,
   }: {
     name: string;
+    description: string;
     fileName: string;
     fileSize: number;
     thumbnailDataUrl?: string;
@@ -313,6 +315,7 @@ export function useWorkspaceResources({
       origin: "user-upload",
       uploadedBy: "You",
       name,
+      description,
       version: "",
       task: "Object detection",
       inputModality: "",

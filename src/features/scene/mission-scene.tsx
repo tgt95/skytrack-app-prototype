@@ -27,7 +27,7 @@ import { syncCommittedMissionEntities } from "./sync-committed-layer";
 import { syncCaptureEntities } from "./sync-capture-layer";
 import { createMissionSceneHandle } from "./mission-scene-handle";
 import { startMissionSceneRuntime } from "./scene-viewer-runtime";
-import { fitMission } from "./scene-camera-gestures";
+import { fitMission } from "./scene-fit-mission";
 import { MissionSceneStatus } from "./mission-scene-status";
 import { useMissionSceneWorldLayers } from "./use-mission-scene-world-layers";
 import { MissionSceneWorldModelStatus } from "./mission-scene-world-model-status";
@@ -183,6 +183,8 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
           expandedBase: import("cesium").Cartesian3[];
           compactRays: import("cesium").Cartesian3[];
           expandedRays: import("cesium").Cartesian3[];
+          compactFaces: import("cesium").Cartesian3[][];
+          expandedFaces: import("cesium").Cartesian3[][];
         }
       >(),
     );

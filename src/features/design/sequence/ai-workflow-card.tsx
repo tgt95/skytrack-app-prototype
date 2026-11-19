@@ -82,7 +82,7 @@ const SPRAY_MODES = [
   { value: 'start', label: 'Start' },
   { value: 'stop', label: 'Stop' }
 ] as const
-const WORKFLOW_BOUNDARY_ROW_CLASS = `${SEQUENCE_LIST_ITEM_CLASS} flex min-w-0 items-center gap-2 border-b border-border bg-(--card) text-xs [list-style:none]`
+const WORKFLOW_BOUNDARY_ROW_CLASS = `${SEQUENCE_LIST_ITEM_CLASS} flex min-w-0 items-center gap-2 border-b border-border bg-card text-xs [list-style:none]`
 
 export function AIWorkflowStopRow ({
   workflow,
@@ -170,11 +170,15 @@ export function AIWorkflowStopRow ({
       >
         <DotsSixVerticalIcon aria-hidden='true' />
       </Button>
-      <Badge className="rounded-(--radius)" count={<SparkleIcon aria-hidden='true' />} status='outline' />
+      <Badge
+        className='rounded-(--radius)'
+        count={<SparkleIcon aria-hidden='true' />}
+        status='outline'
+      />
       <span className='flex-[1_1_auto] min-w-0 truncate font-medium text-foreground'>
         {workflow.label}
       </span>
-      <Badge className="rounded-(--radius)" count='STOP' status='outline' />
+      <Badge className='rounded-(--radius)' count='STOP' status='outline' />
       <span className='sr-only'>
         Drop a drone action here to add it to waypoint {currentWaypoint?.seq}.
       </span>
@@ -238,7 +242,11 @@ export function AIWorkflowCard ({
         aria-label={`${branch.toUpperCase()} drone actions`}
       >
         <div className='flex items-center gap-2 px-3 py-2'>
-          <Badge className="rounded-(--radius)" count={branch.toUpperCase()} status='outline' />
+          <Badge
+            className='rounded-(--radius)'
+            count={branch.toUpperCase()}
+            status='outline'
+          />
           <span className='text-sm text-muted-foreground'>
             {branch === 'if' ? 'Target detected' : 'Target not detected'}
           </span>
@@ -256,8 +264,7 @@ export function AIWorkflowCard ({
                   items={[...ACTION_TYPES]}
                   value={action.kind}
                   onValueChange={(value: unknown) => {
-                    if (value !== 'camera-trigger' && value !== 'spray')
-                      return
+                    if (value !== 'camera-trigger' && value !== 'spray') return
                     replaceAction(action.id, {
                       kind: value,
                       mode: value === 'spray' ? 'start' : 'snapshot'
@@ -396,7 +403,8 @@ export function AIWorkflowCard ({
             />
           </Button>
           <SkyTooltip side='left'>
-            <Badge className="rounded-(--radius)"
+            <Badge
+              className='rounded-(--radius)'
               aria-label='AI workflow'
               count={<SparkleIcon aria-hidden='true' />}
               status='outline'
@@ -414,7 +422,11 @@ export function AIWorkflowCard ({
                 className='shrink-0 transition-transform duration-150 group-data-panel-open:rotate-180'
               />
             </div>
-            <Badge className="rounded-(--radius)" count='START' status='outline' />
+            <Badge
+              className='rounded-(--radius)'
+              count='START'
+              status='outline'
+            />
           </CollapsibleTrigger>
           <Button
             type='button'
@@ -428,167 +440,164 @@ export function AIWorkflowCard ({
           </Button>
         </div>
         <CollapsiblePanel className='min-w-0 relative flex flex-col gap-3 p-3 bg-muted/80 border-t border-border'>
-            <span
-              className='pointer-events-none absolute bottom-5 left-1/2 top-5 w-px -translate-x-1/2 bg-border'
-              aria-hidden='true'
-              data-testid='ms-ai-workflow-connector'
-            />
+          <span
+            className='pointer-events-none absolute bottom-5 left-1/2 top-5 w-px -translate-x-1/2 bg-border'
+            aria-hidden='true'
+            data-testid='ms-ai-workflow-connector'
+          />
 
-            <section
-              className='relative rounded-(--radius) border border-border bg-(--card) shadow-xs flex min-w-0 flex-col'
-              aria-label='AI detection settings'
-            >
-              <h4 className='m-0 p-3 text-sm font-semibold border-b border-border'>
-                Detection starts
-              </h4>
-              <div className='flex flex-col p-3'>
-                <AIWorkflowModelSelection
-                  workflowId={workflow.id}
-                  modelId={workflow.modelId}
-                  models={models}
-                  onModelChange={modelId => update({ modelId })}
-                  onManageAIModels={onManageAIModels}
-                />
-                {selectedModel?.origin === 'user-upload' ? (
-                  <div className='mt-2 flex items-center justify-between gap-2 text-xs text-muted-foreground'>
-                    {confirmModelDeleteId === selectedModel.id ? (
-                      <>
-                        <span>
-                          Remove {selectedModel.name} from this browser?
-                        </span>
-                        <span className='flex shrink-0 gap-1'>
-                          <Button
-                            size='icon-xs'
-                            variant='ghost'
-                            aria-label='Cancel model removal'
-                            onClick={() => setConfirmModelDeleteId(null)}
-                          >
-                            <XIcon />
-                          </Button>
-                          <Button
-                            size='icon-xs'
-                            variant='destructive'
-                            aria-label={`Confirm removal of ${selectedModel.name}`}
-                            onClick={() => {
-                              if (onDeleteModel(selectedModel.id))
-                                setConfirmModelDeleteId(null)
-                            }}
-                          >
-                            <CheckIcon />
-                          </Button>
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Uploaded by you</span>
+          <section
+            className='relative rounded-(--radius) border border-border bg-card shadow-xs flex min-w-0 flex-col'
+            aria-label='AI detection settings'
+          >
+            <h4 className='m-0 p-3 text-sm font-semibold border-b border-border'>
+              Detection starts
+            </h4>
+            <div className='flex flex-col p-3'>
+              <AIWorkflowModelSelection
+                workflowId={workflow.id}
+                modelId={workflow.modelId}
+                models={models}
+                onModelChange={modelId => update({ modelId })}
+                onManageAIModels={onManageAIModels}
+              />
+              {selectedModel?.origin === 'user-upload' ? (
+                <div className='mt-2 flex items-center justify-between gap-2 text-xs text-muted-foreground'>
+                  {confirmModelDeleteId === selectedModel.id ? (
+                    <>
+                      <span>
+                        Remove {selectedModel.name} from this browser?
+                      </span>
+                      <span className='flex shrink-0 gap-1'>
                         <Button
-                          size='sm'
+                          size='icon-xs'
                           variant='ghost'
-                          onClick={() =>
-                            setConfirmModelDeleteId(selectedModel.id)
-                          }
+                          aria-label='Cancel model removal'
+                          onClick={() => setConfirmModelDeleteId(null)}
                         >
-                          <TrashIcon aria-hidden='true' /> Remove model
+                          <XIcon />
                         </Button>
-                      </>
-                    )}
-                  </div>
-                ) : selectedModel ? (
-                  <p className='mb-0 mt-2 text-xs text-muted-foreground'>
-                    SkyTrack and Workspace models are managed by their owners.
-                  </p>
-                ) : null}
-                <div className='mt-3 grid grid-cols-[minmax(0,1fr)_7rem] gap-3'>
-                  <FieldRoot name={`object-class-${workflow.id}`}>
-                    <FieldLabel>What to detect</FieldLabel>
-                    <Select
-                      items={detectionTargets}
-                      value={workflow.objectClass}
-                      onValueChange={(value: unknown) => {
-                        if (typeof value === 'string')
-                          update({ objectClass: value })
-                      }}
-                    >
-                      <SelectTrigger
-                        size='default'
-                        aria-label='What to detect'
-                        className='w-full'
-                      >
-                        <SelectValue placeholder='Choose object to detect' />
-                        <SelectIcon />
-                      </SelectTrigger>
-                      <SelectPortal>
-                        <SelectPositioner
-                          side='bottom'
-                          align='start'
-                          sideOffset={4}
+                        <Button
+                          size='icon-xs'
+                          variant='destructive'
+                          aria-label={`Confirm removal of ${selectedModel.name}`}
+                          onClick={() => {
+                            if (onDeleteModel(selectedModel.id))
+                              setConfirmModelDeleteId(null)
+                          }}
                         >
-                          <SelectPopup>
-                            <SelectList>
-                              {detectionTargets.map(target => (
-                                <SelectItem
-                                  key={target.value}
-                                  value={target.value}
-                                >
-                                  <SelectItemIndicator />
-                                  <SelectItemText>
-                                    {target.label}
-                                  </SelectItemText>
-                                </SelectItem>
-                              ))}
-                            </SelectList>
-                          </SelectPopup>
-                        </SelectPositioner>
-                      </SelectPortal>
-                    </Select>
-                  </FieldRoot>
-                  <FieldRoot name={`confidence-score-${workflow.id}`}>
-                    <FieldLabel>Confidence score</FieldLabel>
-                    <NumberField
-                      value={workflow.confidenceScore}
-                      min={0}
-                      max={1}
-                      step={0.05}
-                      onValueChange={value => {
-                        if (typeof value === 'number' && Number.isFinite(value))
-                          update({
-                            confidenceScore: Math.max(0, Math.min(1, value))
-                          })
-                      }}
+                          <CheckIcon />
+                        </Button>
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Uploaded by you</span>
+                      <Button
+                        size='sm'
+                        variant='ghost'
+                        onClick={() =>
+                          setConfirmModelDeleteId(selectedModel.id)
+                        }
+                      >
+                        <TrashIcon aria-hidden='true' /> Remove model
+                      </Button>
+                    </>
+                  )}
+                </div>
+              ) : selectedModel ? (
+                <p className='mb-0 mt-2 text-xs text-muted-foreground'>
+                  SkyTrack and Workspace models are managed by their owners.
+                </p>
+              ) : null}
+              <div className='mt-3 grid grid-cols-[minmax(0,1fr)_7rem] gap-3'>
+                <FieldRoot name={`object-class-${workflow.id}`}>
+                  <FieldLabel>What to detect</FieldLabel>
+                  <Select
+                    items={detectionTargets}
+                    value={workflow.objectClass}
+                    onValueChange={(value: unknown) => {
+                      if (typeof value === 'string')
+                        update({ objectClass: value })
+                    }}
+                  >
+                    <SelectTrigger
+                      size='default'
+                      aria-label='What to detect'
+                      className='w-full'
                     >
-                      <NumberFieldInput className='w-full' />
-                    </NumberField>
-                  </FieldRoot>
-                </div>
+                      <SelectValue placeholder='Choose object to detect' />
+                      <SelectIcon />
+                    </SelectTrigger>
+                    <SelectPortal>
+                      <SelectPositioner
+                        side='bottom'
+                        align='start'
+                        sideOffset={4}
+                      >
+                        <SelectPopup>
+                          <SelectList>
+                            {detectionTargets.map(target => (
+                              <SelectItem
+                                key={target.value}
+                                value={target.value}
+                              >
+                                <SelectItemIndicator />
+                                <SelectItemText>{target.label}</SelectItemText>
+                              </SelectItem>
+                            ))}
+                          </SelectList>
+                        </SelectPopup>
+                      </SelectPositioner>
+                    </SelectPortal>
+                  </Select>
+                </FieldRoot>
+                <FieldRoot name={`confidence-score-${workflow.id}`}>
+                  <FieldLabel>Confidence score</FieldLabel>
+                  <NumberField
+                    value={workflow.confidenceScore}
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    onValueChange={value => {
+                      if (typeof value === 'number' && Number.isFinite(value))
+                        update({
+                          confidenceScore: Math.max(0, Math.min(1, value))
+                        })
+                    }}
+                  >
+                    <NumberFieldInput className='w-full text-right' />
+                  </NumberField>
+                </FieldRoot>
               </div>
-            </section>
-            <section
-              className='relative rounded-(--radius) border border-border bg-(--card) shadow-xs'
-              aria-label='Drone actions'
-            >
-              <h4 className='m-0 px-3 py-3 text-sm font-semibold'>
-                Drone actions
-              </h4>
-              {renderBranch('if', workflow.ifActions)}
-              {renderBranch('else', workflow.elseActions)}
-            </section>
+            </div>
+          </section>
+          <section
+            className='relative rounded-(--radius) border border-border bg-card shadow-xs'
+            aria-label='Drone actions'
+          >
+            <h4 className='m-0 px-3 py-3 text-sm font-semibold'>
+              Drone actions
+            </h4>
+            {renderBranch('if', workflow.ifActions)}
+            {renderBranch('else', workflow.elseActions)}
+          </section>
 
-            <footer className='relative rounded-(--radius) border border-border bg-(--card) p-3 shadow-xs'>
-              <div className='flex items-start gap-2'>
-                <span className='mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full text-(--success)'>
-                  <CheckIcon aria-hidden='true' />
-                </span>
-                <div className='min-w-0'>
-                  <p className='m-0 text-sm font-medium'>
-                    All resolved or no detection
-                  </p>
-                  <p className='mb-0 mt-1 text-xs text-muted-foreground'>
-                    The drone exits the AI flow and resumes your planned
-                    mission.
-                  </p>
-                </div>
+          <footer className='relative rounded-(--radius) border border-border bg-card p-3 shadow-xs'>
+            <div className='flex items-start gap-2'>
+              <span className='mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full text-success'>
+                <CheckIcon aria-hidden='true' />
+              </span>
+              <div className='min-w-0'>
+                <p className='m-0 text-sm font-medium'>
+                  All resolved or no detection
+                </p>
+                <p className='mb-0 mt-1 text-xs text-muted-foreground'>
+                  The drone exits the AI flow and resumes your planned mission.
+                </p>
               </div>
-            </footer>
+            </div>
+          </footer>
         </CollapsiblePanel>
       </Collapsible>
 

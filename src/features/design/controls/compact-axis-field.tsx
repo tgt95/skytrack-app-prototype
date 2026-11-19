@@ -71,7 +71,7 @@ export function CompactAxisField({
       >
         <NumberFieldInput
           disabled={disabled}
-          className="w-full min-w-0"
+          className="w-full min-w-0 px-2"
           size={inputSize}
           aria-label={label}
           value={display}

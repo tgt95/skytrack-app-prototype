@@ -3,7 +3,7 @@ import type { Viewer } from "cesium";
 import type { StudioMission } from "@/domain/mission-model";
 import { safeColor, themeColor } from "./mission-scene-helpers";
 import type { MissionWorldModelSource } from "./mission-scene-types";
-import { fitMission } from "./scene-camera-gestures";
+import { fitMission } from "./scene-fit-mission";
 import { useMissionWorldModelScene } from "./use-mission-world-model-scene";
 import { useSceneBasemap } from "./use-scene-basemap";
 import type { MissionBasemapStyle } from "./basemaps";

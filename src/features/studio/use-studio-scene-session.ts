@@ -27,6 +27,7 @@ export function useStudioSceneSession({
 }: UseStudioSceneSessionArgs) {
   const sceneRef = useRef<MissionSceneHandle>(null)
   const synchronizedOriginRef = useRef(missionOrigin(mission))
+  const fittedMissionIdRef = useRef(mission.id)
   const previewPositionRef = useRef<{ x: number; y: number; z: number } | null>(null)
   const previewCaptureRef = useRef<string | null>(null)
   const sceneReadinessRef = useRef<SceneReadiness>('loading')
@@ -43,6 +44,12 @@ export function useStudioSceneSession({
     synchronizedOriginRef.current = nextOrigin
     sceneRef.current?.flyToLocation({ latitude: nextOrigin.lat, longitude: nextOrigin.lng })
   }, [mission, sceneReadiness])
+
+  useEffect(() => {
+    if (sceneReadiness !== 'ready' || mission.id === fittedMissionIdRef.current) return
+    fittedMissionIdRef.current = mission.id
+    sceneRef.current?.resetCamera()
+  }, [mission.id, sceneReadiness])
 
   useEffect(() => {
     if (stage !== 'simulation' || sceneReadiness === 'loading' || gate.ok) return

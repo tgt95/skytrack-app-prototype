@@ -47,6 +47,7 @@ export interface LibraryResourceEditorDialogsProps {
   existingAIModelNames: string[];
   importAIModel: (file: {
     name: string;
+    description: string;
     fileName: string;
     fileSize: number;
   }) => boolean;

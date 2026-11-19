@@ -120,56 +120,56 @@ export function ReconCaptureSummary({
 
   return (
     <div
-      className="grid grid-cols-3 gap-y-3 gap-x-2 py-3 px-3.5 bg-[color-mix(in_srgb,var(--muted)_25%,transparent)] border-b border-b-border"
+      className="grid grid-cols-2 gap-y-3 gap-x-2 py-3 px-3.5 bg-[color-mix(in_srgb,var(--muted)_25%,transparent)] border-b border-b-border"
       aria-label="Capture summary"
       data-testid="ms-recon-summary"
     >
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-(--muted-foreground) text-xs">GSD estimate*</span>
-        <strong className="overflow-hidden text-foreground text-xs font-semibold text-ellipsis whitespace-nowrap">
+        <span className="text-sm text-muted-foreground">GSD estimate*</span>
+        <div className="overflow-hidden text-foreground text-base tabular-nums font-medium text-ellipsis whitespace-nowrap">
           {formatResolution(gsd, unitSystem)}
-        </strong>
+        </div>
       </div>
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-(--muted-foreground) text-xs">
+        <span className="text-sm text-muted-foreground">
           {altitudeAgl ? "Altitude AGL" : "Altitude"}
         </span>
-        <strong className="overflow-hidden text-foreground text-xs font-semibold text-ellipsis whitespace-nowrap">
+        <div className="overflow-hidden text-foreground text-base tabular-nums font-medium text-ellipsis whitespace-nowrap">
           {distanceToDisplay(settings.altitudeM, unitSystem)}{" "}
           {distanceUnit(unitSystem)}
-        </strong>
+        </div>
       </div>
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-(--muted-foreground) text-xs">
+        <span className="text-sm text-muted-foreground">
           Front / Side overlap
         </span>
-        <strong className="overflow-hidden text-foreground text-xs font-semibold text-ellipsis whitespace-nowrap">
+        <div className="overflow-hidden text-foreground text-base tabular-nums font-medium text-ellipsis whitespace-nowrap">
           {settings.frontOverlapPct}% / {settings.sideOverlapPct}%
-        </strong>
+        </div>
       </div>
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-(--muted-foreground) text-xs">Gimbal pitch</span>
-        <strong className="overflow-hidden text-foreground text-xs font-semibold text-ellipsis whitespace-nowrap">
+        <span className="text-sm text-muted-foreground">Gimbal pitch</span>
+        <div className="overflow-hidden text-foreground text-base tabular-nums font-medium text-ellipsis whitespace-nowrap">
           {pitchSummary}
-        </strong>
+        </div>
       </div>
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-(--muted-foreground) text-xs">
+        <span className="text-sm text-muted-foreground">
           Segment estimate
         </span>
-        <strong className="overflow-hidden text-foreground text-xs font-semibold text-ellipsis whitespace-nowrap">
+        <div className="overflow-hidden text-foreground text-base tabular-nums font-medium text-ellipsis whitespace-nowrap">
           {Math.ceil(minutes)} min
-        </strong>
+        </div>
       </div>
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-(--muted-foreground) text-xs">
+        <span className="text-sm text-muted-foreground">
           Battery segment*
         </span>
-        <strong className="overflow-hidden text-foreground text-xs font-semibold text-ellipsis whitespace-nowrap">
+        <div className="overflow-hidden text-foreground text-base tabular-nums font-medium text-ellipsis whitespace-nowrap">
           Spend {batteryPct}%
-        </strong>
+        </div>
       </div>
-      <small className="col-span-full text-(--muted-foreground) text-xs leading-[1.4]">
+      <small className="col-span-full text-sm text-muted-foreground leading-[1.4]">
         {estimateNote}
       </small>
     </div>

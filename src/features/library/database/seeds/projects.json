@@ -31,5 +31,24 @@
         "droneId": "mini-pro-v6"
       }
     ]
+  },
+  {
+    "id": "p-sample-satorini-recon",
+    "name": "Satorini Island",
+    "workspaceId": "tuan-workspace",
+    "missions": [
+      {
+        "id": "m-local-mv909q3g-101",
+        "name": "Satorini Island Reconnaissance flight",
+        "editedAgo": "Sample mission",
+        "starred": false,
+        "shared": false,
+        "viewOnly": false,
+        "sharedWith": [],
+        "world": "Blank space",
+        "worldType": "2D",
+        "vehicle": "Drone x500 Livox Mid 360"
+      }
+    ]
   }
 ]

@@ -1,5 +1,6 @@
 import { PackageIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import {
   ToastClose,
   ToastContent,
@@ -61,16 +62,17 @@ export function AIModelManagerControl({
 }) {
   return (
     <>
-      <Button
-        size="icon"
-        variant="ghost"
-        aria-label={open ? "Close AI models" : "Manage AI models"}
-        title={open ? "Close AI models" : "Manage AI models"}
-        aria-pressed={open}
-        onClick={() => onOpenChange(!open)}
-      >
-        <PackageIcon aria-hidden="true" className="size-5" />
-      </Button>
+      <SkyTooltip>
+        <Button
+          size="icon"
+          variant="ghost"
+          aria-label={open ? "Close AI models" : "Manage AI models"}
+          aria-pressed={open}
+          onClick={() => onOpenChange(!open)}
+        >
+          <PackageIcon aria-hidden="true" className="size-5" />
+        </Button>
+      </SkyTooltip>
       <AIModelManagerToastHost />
     </>
   );

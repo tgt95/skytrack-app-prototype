@@ -31,6 +31,8 @@ export interface SceneFrustumGeometry {
   expandedBase: Cartesian3[];
   compactRays: Cartesian3[];
   expandedRays: Cartesian3[];
+  compactFaces: Cartesian3[][];
+  expandedFaces: Cartesian3[][];
 }
 
 export interface HoverGuideDeps {
@@ -69,23 +71,44 @@ export function createHoverGuide(deps: HoverGuideDeps): HoverGuide {
      touched, so long-lived canvas handlers stay fresh. */
   const setPhotoEmphasis = (wpid: string | null, emphasized: boolean) => {
     if (!wpid || viewer.isDestroyed()) return;
+    const hoverFootprint = viewer.entities.getById(
+      `ms-photo-hover-footprint-${wpid}`,
+    );
+    if (hoverFootprint) {
+      hoverFootprint.show = emphasized || selectedPhotoRef.current === wpid;
+    }
     const geom = frustumGeomRef.current.get(wpid);
     const base = viewer.entities.getById(`ms-photo-base-${wpid}`);
     const rays = viewer.entities.getById(`ms-photo-rays-${wpid}`);
-    if (!geom || !base?.polyline || !rays?.polyline) return;
+    if (!geom || !base?.polyline || !rays?.polyline) {
+      viewer.scene.requestRender();
+      return;
+    }
     const highlighted = emphasized || selectedPhotoRef.current === wpid;
     const depth = highlighted
-      ? { base: geom.expandedBase, rays: geom.expandedRays }
-      : { base: geom.compactBase, rays: geom.compactRays };
+      ? { base: geom.expandedBase, rays: geom.expandedRays, faces: geom.expandedFaces }
+      : { base: geom.compactBase, rays: geom.compactRays, faces: geom.compactFaces };
     const color = Cesium.Color.fromCssColorString(
       highlighted ? "#ea4335" : "#68d7e2",
     ).withAlpha(0.92);
     base.polyline.positions = new Cesium.ConstantProperty(depth.base);
+    base.polyline.show = new Cesium.ConstantProperty(true);
     base.polyline.material = new Cesium.ColorMaterialProperty(color);
     base.polyline.width = new Cesium.ConstantProperty(highlighted ? 2.4 : 1.8);
     rays.polyline.positions = new Cesium.ConstantProperty(depth.rays);
     rays.polyline.material = new Cesium.ColorMaterialProperty(color);
     rays.polyline.width = new Cesium.ConstantProperty(highlighted ? 2.4 : 1.8);
+    for (let index = 0; index < depth.faces.length; index += 1) {
+      const face = viewer.entities.getById(`ms-photo-face-${wpid}-${index}`);
+      if (!face?.polygon) continue;
+      face.polygon.hierarchy = new Cesium.ConstantProperty(
+        new Cesium.PolygonHierarchy(depth.faces[index]),
+      );
+      face.polygon.material = new Cesium.ColorMaterialProperty(
+        color.withAlpha(highlighted ? 0.1 : 0.16),
+      );
+    }
+    viewer.scene.requestRender();
   };
 
   const clearPhotoHover = () => {

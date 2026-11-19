@@ -1,0 +1,797 @@
+{
+  "id": "m-local-mv909q3g-101",
+  "name": "Satorini Island Reconnaissance flight",
+  "world": "Blank space",
+  "worldType": "2D",
+  "vehicle": "Drone x500 Livox Mid 360",
+  "spawn": {
+    "x": 1999.6,
+    "y": 165.9
+  },
+  "takeoffAltM": 12,
+  "targetSpeedMS": 2,
+  "returnHomeOnEnd": true,
+  "cameraSafetyCheck": true,
+  "routes": [],
+  "waypoints": [
+    {
+      "id": "wp-mwncauvg-540",
+      "seq": 1,
+      "x": 1482.02,
+      "y": -622.84,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8040",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-541",
+      "seq": 2,
+      "x": 1588.01,
+      "y": -622.84,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8041",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-542",
+      "seq": 3,
+      "x": 1694,
+      "y": -622.84,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8042",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-543",
+      "seq": 4,
+      "x": 1799.99,
+      "y": -622.84,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8043",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-544",
+      "seq": 5,
+      "x": 1905.98,
+      "y": -622.84,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8044",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-545",
+      "seq": 6,
+      "x": 2029.14,
+      "y": -496.25,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8045",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-546",
+      "seq": 7,
+      "x": 1895.08,
+      "y": -496.25,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8046",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-547",
+      "seq": 8,
+      "x": 1761.03,
+      "y": -496.25,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8047",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-548",
+      "seq": 9,
+      "x": 1626.97,
+      "y": -496.25,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8048",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-549",
+      "seq": 10,
+      "x": 1492.92,
+      "y": -496.25,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8049",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-550",
+      "seq": 11,
+      "x": 1358.86,
+      "y": -496.25,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8050",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-551",
+      "seq": 12,
+      "x": 1310.59,
+      "y": -369.67,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8051",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-552",
+      "seq": 13,
+      "x": 1438.39,
+      "y": -369.67,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8052",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-553",
+      "seq": 14,
+      "x": 1566.2,
+      "y": -369.67,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8053",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-554",
+      "seq": 15,
+      "x": 1694,
+      "y": -369.67,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8054",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-555",
+      "seq": 16,
+      "x": 1821.8,
+      "y": -369.67,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8055",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-556",
+      "seq": 17,
+      "x": 1949.61,
+      "y": -369.67,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8056",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvg-557",
+      "seq": 18,
+      "x": 2077.41,
+      "y": -369.67,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8057",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-558",
+      "seq": 19,
+      "x": 2082.1,
+      "y": -243.08,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8058",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-559",
+      "seq": 20,
+      "x": 1952.73,
+      "y": -243.08,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8059",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-560",
+      "seq": 21,
+      "x": 1823.37,
+      "y": -243.08,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8060",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-561",
+      "seq": 22,
+      "x": 1694,
+      "y": -243.08,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8061",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-562",
+      "seq": 23,
+      "x": 1564.63,
+      "y": -243.08,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8062",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-590",
+      "seq": 24,
+      "x": 1435.27,
+      "y": -243.08,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8063",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-564",
+      "seq": 25,
+      "x": 1305.9,
+      "y": -243.08,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8064",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-565",
+      "seq": 26,
+      "x": 1346.22,
+      "y": -116.5,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8065",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-586",
+      "seq": 27,
+      "x": 1485.33,
+      "y": -116.5,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8066",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-567",
+      "seq": 28,
+      "x": 1624.44,
+      "y": -116.5,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8067",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-568",
+      "seq": 29,
+      "x": 1763.56,
+      "y": -116.5,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8068",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-582",
+      "seq": 30,
+      "x": 1902.67,
+      "y": -116.5,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8069",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-570",
+      "seq": 31,
+      "x": 2041.78,
+      "y": -116.5,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8070",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-571",
+      "seq": 32,
+      "x": 1939.11,
+      "y": 10.09,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8071",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-578",
+      "seq": 33,
+      "x": 1816.56,
+      "y": 10.09,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8072",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncauvh-573",
+      "seq": 34,
+      "x": 1694,
+      "y": 10.09,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8073",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncb663-7967",
+      "seq": 35,
+      "x": 1571.44,
+      "y": 10.09,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8074",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    },
+    {
+      "id": "wp-mwncb69n-8039",
+      "seq": 36,
+      "x": 1448.89,
+      "y": 10.09,
+      "z": 200,
+      "actions": [
+        {
+          "id": "act-mwncb70i-8075",
+          "kind": "photo",
+          "label": "Photo capture"
+        }
+      ],
+      "generatedByArea": "area-mwncauvg-539"
+    }
+  ],
+  "areas": [
+    {
+      "id": "area-mwncauvg-539",
+      "label": "Area 1",
+      "points": [
+        {
+          "x": 2085.53,
+          "y": -294.6
+        },
+        {
+          "x": 2082.18,
+          "y": -243.495
+        },
+        {
+          "x": 2072.189,
+          "y": -193.265
+        },
+        {
+          "x": 2055.726,
+          "y": -144.768
+        },
+        {
+          "x": 2033.075,
+          "y": -98.835
+        },
+        {
+          "x": 2004.621,
+          "y": -56.252
+        },
+        {
+          "x": 1970.853,
+          "y": -17.747
+        },
+        {
+          "x": 1932.348,
+          "y": 16.021
+        },
+        {
+          "x": 1889.765,
+          "y": 44.475
+        },
+        {
+          "x": 1843.832,
+          "y": 67.126
+        },
+        {
+          "x": 1795.335,
+          "y": 83.589
+        },
+        {
+          "x": 1745.105,
+          "y": 93.58
+        },
+        {
+          "x": 1694,
+          "y": 96.93
+        },
+        {
+          "x": 1642.895,
+          "y": 93.58
+        },
+        {
+          "x": 1592.665,
+          "y": 83.589
+        },
+        {
+          "x": 1544.168,
+          "y": 67.126
+        },
+        {
+          "x": 1498.235,
+          "y": 44.475
+        },
+        {
+          "x": 1455.652,
+          "y": 16.021
+        },
+        {
+          "x": 1417.147,
+          "y": -17.747
+        },
+        {
+          "x": 1383.379,
+          "y": -56.252
+        },
+        {
+          "x": 1354.925,
+          "y": -98.835
+        },
+        {
+          "x": 1332.274,
+          "y": -144.768
+        },
+        {
+          "x": 1315.811,
+          "y": -193.265
+        },
+        {
+          "x": 1305.82,
+          "y": -243.495
+        },
+        {
+          "x": 1302.47,
+          "y": -294.6
+        },
+        {
+          "x": 1305.82,
+          "y": -345.705
+        },
+        {
+          "x": 1315.811,
+          "y": -395.935
+        },
+        {
+          "x": 1332.274,
+          "y": -444.432
+        },
+        {
+          "x": 1354.925,
+          "y": -490.365
+        },
+        {
+          "x": 1383.379,
+          "y": -532.948
+        },
+        {
+          "x": 1417.147,
+          "y": -571.453
+        },
+        {
+          "x": 1455.652,
+          "y": -605.221
+        },
+        {
+          "x": 1498.235,
+          "y": -633.675
+        },
+        {
+          "x": 1544.168,
+          "y": -656.326
+        },
+        {
+          "x": 1592.665,
+          "y": -672.789
+        },
+        {
+          "x": 1642.895,
+          "y": -682.78
+        },
+        {
+          "x": 1694,
+          "y": -686.13
+        },
+        {
+          "x": 1745.105,
+          "y": -682.78
+        },
+        {
+          "x": 1795.335,
+          "y": -672.789
+        },
+        {
+          "x": 1843.832,
+          "y": -656.326
+        },
+        {
+          "x": 1889.765,
+          "y": -633.675
+        },
+        {
+          "x": 1932.348,
+          "y": -605.221
+        },
+        {
+          "x": 1970.853,
+          "y": -571.453
+        },
+        {
+          "x": 2004.621,
+          "y": -532.948
+        },
+        {
+          "x": 2033.075,
+          "y": -490.365
+        },
+        {
+          "x": 2055.726,
+          "y": -444.432
+        },
+        {
+          "x": 2072.189,
+          "y": -395.935
+        },
+        {
+          "x": 2082.18,
+          "y": -345.705
+        }
+      ],
+      "shape": "cylinder",
+      "center": {
+        "x": 1694,
+        "y": -294.6
+      },
+      "radiusM": 391.5297434423086,
+      "reconnaissance": {
+        "enabled": true,
+        "altitudeM": 200,
+        "frontOverlapPct": 50,
+        "sideOverlapPct": 55,
+        "gimbalPitchDeg": -90,
+        "flightSpeedMS": 8,
+        "flightPattern": "single",
+        "terrainAwareness": false
+      }
+    }
+  ],
+  "avoids": [],
+  "origin": {
+    "lat": 36.4071112,
+    "lng": 25.4566637,
+    "attribution": {
+      "label": "� OpenStreetMap contributors � Photon",
+      "href": "https://www.openstreetmap.org/copyright"
+    }
+  },
+  "sequenceOrder": [
+    {
+      "type": "area",
+      "id": "area-mwncauvg-539"
+    }
+  ],
+  "windEnvironment": {
+    "enabled": true,
+    "controlBy": "equivalent-speed",
+    "forceN": 0.5,
+    "speedMS": 6,
+    "azimuthDeg": 235,
+    "elevationDeg": 35
+  }
+}

@@ -57,6 +57,7 @@ function RangeControl ({
   step,
   label,
   unit,
+  marks = [],
   onChange
 }: {
   value: number
@@ -65,12 +66,13 @@ function RangeControl ({
   step: number
   label: string
   unit: string
+  marks?: number[]
   onChange: (value: number) => void
 }) {
   return (
-    <div className='flex w-full min-w-0 items-center gap-2'>
+    <div className='grid w-full min-w-0 grid-cols-[minmax(0,1fr)_6rem] items-center gap-x-2 gap-y-1'>
       <Slider
-        className='min-w-0 flex-1'
+        className='col-start-1 row-start-1 w-full min-w-0'
         value={value}
         min={min}
         max={max}
@@ -81,14 +83,35 @@ function RangeControl ({
         }}
       >
         <SliderControl>
-          <SliderTrack>
+          <SliderTrack className='relative'>
             <SliderIndicator />
-            <SliderThumb aria-label={label} />
+            {marks.map(mark => (
+              <span
+                key={`tick-${mark}`}
+                aria-hidden='true'
+                className='pointer-events-none absolute top-1/2 z-0 h-2 w-px -translate-x-1/2 -translate-y-1/2 bg-foreground/50'
+                style={{ left: `${((mark - min) / (max - min)) * 100}%` }}
+              />
+            ))}
+            <SliderThumb className='relative z-10' aria-label={label} />
           </SliderTrack>
         </SliderControl>
       </Slider>
+      {marks.length > 0 ? (
+        <div className='relative col-start-1 row-start-2 h-4 w-full select-none' aria-hidden='true'>
+          {marks.map(mark => (
+            <span
+              key={`label-${mark}`}
+              className='absolute -translate-x-1/2 text-xs leading-none whitespace-nowrap text-muted-foreground'
+              style={{ left: `${((mark - min) / (max - min)) * 100}%` }}
+            >
+              {mark}
+            </span>
+          ))}
+        </div>
+      ) : null}
       <NumberField
-        className='w-24 shrink-0'
+        className='col-start-2 row-start-1 w-full shrink-0'
         value={value}
         min={min}
         max={max}
@@ -238,6 +261,7 @@ export function WindEnvironmentSettingsPage ({
             step={5}
             label='Wind direction from true North, clockwise'
             unit='°'
+            marks={[0, 90, 180, 270, 360]}
             onChange={next =>
               onChange({
                 ...value,
@@ -260,6 +284,7 @@ export function WindEnvironmentSettingsPage ({
             step={1}
             label='Flow elevation'
             unit='°'
+            marks={[-90, -45, 0, 45, 90]}
             onChange={next => onChange({ ...value, elevationDeg: next })}
           />
         </InspectorField>

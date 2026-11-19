@@ -19,6 +19,7 @@ import { useStudioActions } from "@/features/studio/use-studio-actions";
 import { useStudioSimulationModel } from "@/features/studio/use-studio-simulation-model";
 import { useStudioSceneSession } from "@/features/studio/use-studio-scene-session";
 import { useStudioUiState } from "@/features/studio/use-studio-ui-state";
+import { useStudioBasemapState } from "@/features/studio/use-studio-basemap-state";
 import { useStudioStageActions } from "@/features/studio/use-studio-stage-actions";
 import { useMissionStudioTestBridge } from "@/features/studio/use-mission-studio-test-bridge";
 import StudioLibraryRoute from "@/features/studio/studio-library-route";
@@ -137,6 +138,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
     setSelection,
     setPending,
     setTool,
+    setBasemapStyle: uiState.setBasemapStyle,
     setAppTab,
     setStage,
     setCodeView,
@@ -160,22 +162,14 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
     missionWorldOptions,
   } = routing;
 
-  useEffect(() => {
-    if (section === "library") return;
-
-    const syncBasemapToTheme = (isDark: boolean) => {
-      uiState.setBasemapStyle(isDark ? "dark" : "light");
-    };
-    syncBasemapToTheme(document.documentElement.classList.contains("dark"));
-
-    if (accountSettings.themePreference !== "system") return;
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleSystemThemeChange = (event: MediaQueryListEvent) => {
-      syncBasemapToTheme(event.matches);
-    };
-    media.addEventListener("change", handleSystemThemeChange);
-    return () => media.removeEventListener("change", handleSystemThemeChange);
-  }, [section, accountSettings.themePreference, uiState.setBasemapStyle]);
+  const basemapDirty = useStudioBasemapState({
+    active: section !== "library",
+    hasSavedMission: libraryEntry !== null,
+    themePreference: accountSettings.themePreference,
+    savedBasemapStyle: libraryEntry?.basemapStyle,
+    basemapStyle: uiState.basemapStyle,
+    setBasemapStyle: uiState.setBasemapStyle,
+  });
 
   useMissionViewUrlSync({
     appTab,
@@ -300,6 +294,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
 
   const studioActions = useStudioActions({
     mission,
+    basemapStyle: uiState.basemapStyle,
     libraryEntry,
     setLibraryEntry,
     missionWorldOptions,
@@ -393,6 +388,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
   const showDevScenarioTool =
     import.meta.env.DEV || import.meta.env.BASE_URL !== "/";
   const devScenarioTool = showDevScenarioTool ? <DevScenarioTool /> : null;
+  const saveDirty = dirty || basemapDirty;
 
   if (route.kind === "not-found") {
     return (
@@ -447,7 +443,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
         }}
         mission={mission}
         sceneDrawingAltitudeM={sceneDrawingAltitudeM}
-        document={{ dirty, past, future }}
+        document={{ dirty: saveDirty, past, future }}
         ui={uiState}
         drawing={drawingSession}
         routing={routing}

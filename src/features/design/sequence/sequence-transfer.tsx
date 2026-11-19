@@ -40,7 +40,7 @@ export function TransferRow({
       aria-label={`Generated transfer from ${transfer.fromLabel} to ${transfer.toLabel}, ${distance}`}
     >
       <Badge className="rounded-(--radius)" count="TRANS" status="outline" />
-      <span className="flex-[1_1_auto] min-w-0 text-sm text-(--muted-foreground)">
+      <span className="flex-[1_1_auto] min-w-0 text-sm text-muted-foreground">
         Go to the next {transfer.toType}
       </span>
       <span
@@ -71,7 +71,7 @@ export function EndMissionControl({
   const Tag = as;
   return (
     <Tag
-      className={`flex flex-row items-center gap-2 min-w-0 py-1.5 px-3 flex-nowrap bg-(--accent) ${as === "li" ? SEQUENCE_LIST_ITEM_CLASS : "rounded-(--radius)"}`}
+      className={`flex flex-row items-center gap-2 min-w-0 py-2 px-3 flex-nowrap bg-(--accent) ${as === "li" ? SEQUENCE_LIST_ITEM_CLASS : "rounded-(--radius)"}`}
     >
       <Badge className="rounded-(--radius)" count="END" status="outline" />
       <Select<string>

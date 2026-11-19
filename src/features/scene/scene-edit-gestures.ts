@@ -254,6 +254,10 @@ export function createEditGestures(deps: {
         } else {
           pickRef.current.onPickZone(group.kind, group.id)
         }
+        // Area and Route geometry remains selectable, but its outline must
+        // never start a whole-group move. Claim the press so native camera
+        // gestures stay frozen; the existing LEFT_CLICK selection still runs.
+        if (group.kind === 'area' || group.kind === 'route') return 'hold'
         const start = surfacePick.wpXyFromScreen(e.clientX, e.clientY, 0)
         if (start) {
           groupDrag = { group, base: missionRef.current, startX: start.x, startY: start.y, startClientX: e.clientX, startClientY: e.clientY, moved: false }

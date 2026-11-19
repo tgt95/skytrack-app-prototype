@@ -18,9 +18,11 @@ import type { StudioMissionDocumentAction } from "./mission-document";
 import type { PendingMissionPoint } from "./use-drawing-session";
 import type { Stage } from "./studio-map-overlays";
 import type { SimApi } from "@/features/simulation/simulation";
+import type { MissionBasemapStyle } from "@/shared/map-tiles";
 
 interface UseStudioActionsArgs {
   mission: StudioMission;
+  basemapStyle: MissionBasemapStyle;
   libraryEntry: LibraryEntry | null;
   setLibraryEntry: Dispatch<SetStateAction<LibraryEntry | null>>;
   missionWorldOptions: MissionWorldOption[];
@@ -47,6 +49,7 @@ interface UseStudioActionsArgs {
 
 export function useStudioActions({
   mission,
+  basemapStyle,
   libraryEntry,
   setLibraryEntry,
   missionWorldOptions,
@@ -134,6 +137,7 @@ export function useStudioActions({
         worldId: savedMission.worldId,
         vehicle: savedMission.vehicle,
         droneId: savedMission.droneId,
+        basemapStyle,
       },
     );
     if (!stored) {
@@ -149,9 +153,10 @@ export function useStudioActions({
       worldId: savedMission.worldId,
       vehicle: savedMission.vehicle,
       droneId: savedMission.droneId,
+      basemapStyle,
     });
     say(`Saved ${savedMission.name} in this browser.`);
-  }, [dispatchDocument, libraryEntry, mission, say, setLibraryEntry]);
+  }, [basemapStyle, dispatchDocument, libraryEntry, mission, say, setLibraryEntry]);
 
   const resetToSeed = useCallback(() => {
     const seed = seedMission();

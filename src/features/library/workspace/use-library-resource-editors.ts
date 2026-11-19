@@ -14,6 +14,7 @@ type MissionReference = { project: string; mission: string };
 
 type AIModelPackageInput = {
   name: string;
+  description: string;
   fileName: string;
   fileSize: number;
 };

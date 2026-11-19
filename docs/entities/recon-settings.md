@@ -9,6 +9,8 @@ claim_status: prototype_behavior
 
 For 2D photogrammetry, altitude and overlap drive Area scan/capture spacing; double pattern adds crosshatch. 3D uses base/take-off altitude rules and manual line spacing.
 
+See [Front and Side overlap](../front-side-overlap.md) for the current spacing formula, defaults, bounds, and Area Recon behavior.
+
 **Relations:** [[area|Area]], [[mission-type|Mission type]], [[waypoint|Waypoint]], [[mission-action|Waypoint action]], [[simulation-plan|Simulation plan]]
 
 **Evidence:**

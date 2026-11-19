@@ -1,5 +1,17 @@
 import { useEffect, useState } from 'react'
 import { meteorologicalFromAzimuthToEnuPushTo } from '@/domain/mission-model'
+import {
+  CENTER,
+  pointAlongPolyline,
+  pointAtCompassBearing,
+  pointAtElevation,
+  project,
+  RADIUS,
+  sectorPath,
+  SHOW_COORDINATE_AXES,
+  SPHERE_RADIUS,
+  WIND_ARROW_COUNT
+} from './wind-direction-preview-geometry'
 
 interface WindDirectionPreviewProps {
   windFromDeg: number
@@ -7,37 +19,12 @@ interface WindDirectionPreviewProps {
   speedMS: number
 }
 
-const CENTER = { x: 160, y: 104 }
-const RADIUS = 78
-const SPHERE_RADIUS = 86
-const PARTICLE_LANES = [
-  { offset: -0.72, depth: -0.75 },
-  { offset: -0.48, depth: 0.75 },
-  { offset: -0.24, depth: -0.45 },
-  { offset: 0, depth: 0.45 },
-  { offset: 0.24, depth: -0.15 },
-  { offset: 0.48, depth: 0.72 },
-  { offset: 0.72, depth: -0.65 }
-]
-
-function project (east: number, north: number, up: number) {
-  return {
-    x: CENTER.x + RADIUS * (east * 0.9 - north * 0.42),
-    y: CENTER.y - RADIUS * (up * 0.9 + (east + north) * 0.2)
-  }
-}
-
-function pointAtEnuAzimuth (azimuthDeg: number) {
-  const azimuth = (azimuthDeg * Math.PI) / 180
-  return project(Math.cos(azimuth), Math.sin(azimuth), 0)
-}
-
 export function WindDirectionPreview ({
   windFromDeg,
   elevationDeg,
   speedMS
 }: WindDirectionPreviewProps) {
-  const [motionAllowed, setMotionAllowed] = useState(false)
+  const [motionAllowed, setMotionAllowed] = useState(true)
   useEffect(() => {
     const preference = window.matchMedia(
       '(prefers-reduced-motion: no-preference)'
@@ -49,90 +36,50 @@ export function WindDirectionPreview ({
   }, [])
 
   const pushToAzimuthDeg = meteorologicalFromAzimuthToEnuPushTo(windFromDeg)
-  const azimuth = (pushToAzimuthDeg * Math.PI) / 180
+  const pushToBearingDeg = (90 - pushToAzimuthDeg + 360) % 360
   const elevation = (elevationDeg * Math.PI) / 180
-  const horizontal = Math.cos(elevation)
-  const east = horizontal * Math.cos(azimuth)
-  const north = horizontal * Math.sin(azimuth)
-  const up = Math.sin(elevation)
-  const target = project(east, north, up)
-  const horizonTarget = pointAtEnuAzimuth(pushToAzimuthDeg)
-  const sourceTarget = pointAtEnuAzimuth((pushToAzimuthDeg + 180) % 360)
-  const flow = project(east, north, up)
-  const flowX = flow.x - CENTER.x
-  const flowY = flow.y - CENTER.y
-  const flowLength = Math.hypot(flowX, flowY) || 1
-  const dx = flowX / flowLength
-  const dy = flowY / flowLength
+  const horizonTarget = pointAtCompassBearing(pushToBearingDeg)
+  const target = pointAtElevation(horizonTarget, elevation)
+  const sourceTarget = pointAtElevation(
+    pointAtCompassBearing(windFromDeg),
+    -elevation
+  )
+  const windPathPoints = [sourceTarget, CENTER, target]
+  const windPath = windPathPoints
+    .map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x},${point.y}`)
+    .join(' ')
+  const xAxisTarget = pointAtCompassBearing(90)
+  const yAxisTarget = pointAtCompassBearing(0)
+  const zAxisTarget = project(0, 0, 1, SPHERE_RADIUS / (RADIUS * 0.9))
+  const bearingArcSteps = Math.max(24, Math.ceil(windFromDeg / 5))
+  const bearingArc = Array.from({ length: bearingArcSteps + 1 }, (_, index) => {
+    const angle = (windFromDeg * index) / bearingArcSteps
+    return pointAtCompassBearing(angle)
+  })
+  const bearingSector = sectorPath(bearingArc)
+  const bearingLabel = pointAtCompassBearing(windFromDeg / 2, 0.74)
+  const elevationArc = Array.from({ length: 17 }, (_, index) =>
+    pointAtElevation(horizonTarget, (elevation * index) / 16)
+  )
+  const elevationSector = sectorPath(elevationArc)
+  const elevationLabelAngle = elevation * 0.5
+  const elevationLabel = pointAtElevation(
+    horizonTarget,
+    elevationLabelAngle,
+    0.58
+  )
+  const elevationLabelText = `${elevationDeg > 0 ? '+' : ''}${elevationDeg}°`
   const durationSeconds = Math.min(
     6,
     Math.max(0.45, 1.4 * (6 / Math.max(speedMS, 0.1)))
   )
-  const particles = PARTICLE_LANES.map(({ offset, depth }) => {
-    const distance = SPHERE_RADIUS * Math.sqrt(1 - offset * offset)
-    const perpendicularX = -dy
-    const perpendicularY = dx
-    const perspectiveScale = 1 + depth * 0.14
-    const start = {
-      x:
-        CENTER.x +
-        (-dx * distance + perpendicularX * SPHERE_RADIUS * offset) *
-          perspectiveScale,
-      y:
-        CENTER.y +
-        (-dy * distance + perpendicularY * SPHERE_RADIUS * offset) *
-          perspectiveScale
-    }
-    const end = {
-      x:
-        CENTER.x +
-        (dx * distance + perpendicularX * SPHERE_RADIUS * offset) *
-          perspectiveScale,
-      y:
-        CENTER.y +
-        (dy * distance + perpendicularY * SPHERE_RADIUS * offset) *
-          perspectiveScale
-    }
-    return { start, end, depth }
-  })
-  const azimuthArc = Array.from({ length: 25 }, (_, index) =>
-    pointAtEnuAzimuth(90 - (windFromDeg * index) / 24)
-  )
-  const arcPath = azimuthArc
-    .map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x},${point.y}`)
-    .join(' ')
-  const renderParticles = (layer: 'back' | 'front') =>
-    particles
-      .filter(({ depth }) => (layer === 'back' ? depth < 0 : depth >= 0))
-      .map(({ start, end, depth }, index) => {
-        const front = layer === 'front'
-        const particleIndex = PARTICLE_LANES.findIndex(
-          lane => lane.depth === depth
-        )
-        const depthSpeedScale = 1 + depth * 0.2
-        return (
-          <circle
-            key={`${layer}-${index}`}
-            cx={motionAllowed ? 0 : (start.x + end.x) / 2}
-            cy={motionAllowed ? 0 : (start.y + end.y) / 2}
-            r={front ? 2.8 : 1.7}
-            fill='var(--primary)'
-            opacity={front ? 0.9 : 0.32}
-          >
-            {motionAllowed ? (
-              <animateMotion
-                path={`M${start.x},${start.y} L${end.x},${end.y}`}
-                dur={`${durationSeconds / depthSpeedScale}s`}
-                begin={`${
-                  -(durationSeconds * particleIndex) / particles.length
-                }s`}
-                repeatCount='indefinite'
-              />
-            ) : null}
-          </circle>
-        )
-      })
-
+  const windArrows = Array.from({ length: WIND_ARROW_COUNT }, (_, index) => ({
+    index,
+    point: pointAlongPolyline(
+      windPathPoints,
+      (index + 0.5) / WIND_ARROW_COUNT
+    )
+  }))
   return (
     <div className='flex flex-col gap-1'>
       <div className='flex min-w-0 items-center justify-between gap-3'>
@@ -152,8 +99,8 @@ export function WindDirectionPreview ({
         data-testid='ms-wind-direction-preview'
       >
         <svg
-          viewBox='0 0 320 208'
-          className='mx-auto block h-auto max-h-52 w-full max-w-80 text-muted-foreground'
+          viewBox='0 0 320 250'
+          className='mx-auto block h-auto max-h-64 w-full max-w-80 text-muted-foreground'
           role='img'
           aria-label={`Wind comes from ${windFromDeg} degrees clockwise from true North and flows toward ${(windFromDeg + 180) % 360} degrees. Flow elevation is ${elevationDeg} degrees.`}
         >
@@ -161,47 +108,29 @@ export function WindDirectionPreview ({
             <clipPath id='ms-wind-sphere-clip'>
               <circle cx={CENTER.x} cy={CENTER.y} r={SPHERE_RADIUS} />
             </clipPath>
-            <radialGradient id='ms-wind-sphere-fill' cx='35%' cy='28%' r='76%'>
-              <stop
-                offset='0%'
-                className='text-card'
-                stopColor='currentColor'
-                stopOpacity='0.96'
-              />
-              <stop
-                offset='100%'
-                className='text-muted'
-                stopColor='currentColor'
-                stopOpacity='0.48'
-              />
-            </radialGradient>
             <marker
-              id='ms-wind-direction-arrow'
-              markerWidth='8'
-              markerHeight='8'
-              refX='7'
-              refY='4'
+              id='ms-wind-axis-arrow'
+              markerWidth='5'
+              markerHeight='5'
+              refX='4.5'
+              refY='2.5'
               orient='auto'
               markerUnits='userSpaceOnUse'
             >
-              <path d='M0,0 L8,4 L0,8 Z' fill='var(--primary)' />
+              <path d='M0,0 L5,2.5 L0,5 Z' fill='var(--foreground)' />
             </marker>
           </defs>
 
+          <g transform='translate(160 125) scale(1.35) translate(-160 -104)'>
           <circle
             cx={CENTER.x}
             cy={CENTER.y}
             r={SPHERE_RADIUS}
-            fill='url(#ms-wind-sphere-fill)'
+            fill='none'
             stroke='currentColor'
-            strokeWidth='1.5'
+            strokeWidth='0.75'
             strokeOpacity='0.25'
           />
-          {speedMS > 0 ? (
-            <g clipPath='url(#ms-wind-sphere-clip)' aria-hidden='true'>
-              {renderParticles('back')}
-            </g>
-          ) : null}
           <ellipse
             cx={CENTER.x}
             cy={CENTER.y}
@@ -209,49 +138,94 @@ export function WindDirectionPreview ({
             ry='29'
             fill='none'
             stroke='currentColor'
-            strokeWidth='1.5'
+            strokeWidth='0.75'
             strokeOpacity='0.25'
           />
-          <ellipse
-            cx={CENTER.x}
-            cy={CENTER.y}
-            rx='39'
-            ry={SPHERE_RADIUS}
+          {SHOW_COORDINATE_AXES ? (
+            <g
+              aria-hidden='true'
+              fill='none'
+              stroke='var(--foreground)'
+              strokeWidth='1'
+              strokeOpacity='0.62'
+            >
+              <line
+                x1={CENTER.x}
+                y1={CENTER.y}
+                x2={xAxisTarget.x}
+                y2={xAxisTarget.y}
+                markerEnd='url(#ms-wind-axis-arrow)'
+              />
+              <line
+                x1={CENTER.x}
+                y1={CENTER.y}
+                x2={yAxisTarget.x}
+                y2={yAxisTarget.y}
+                markerEnd='url(#ms-wind-axis-arrow)'
+              />
+              <line
+                x1={CENTER.x}
+                y1={CENTER.y}
+                x2={zAxisTarget.x}
+                y2={zAxisTarget.y}
+                markerEnd='url(#ms-wind-axis-arrow)'
+              />
+            </g>
+          ) : null}
+          <path d={bearingSector} fill='var(--primary)' fillOpacity='0.12' />
+          <path
+            d={elevationSector}
+            fill='var(--chart-2)'
+            fillOpacity='0.12'
+          />
+          <polyline
+            points={bearingArc.map(({ x, y }) => `${x},${y}`).join(' ')}
             fill='none'
-            stroke='currentColor'
+            stroke='var(--border)'
             strokeDasharray='3 4'
+            strokeWidth='0.75'
+            strokeOpacity='1'
+          />
+          <polyline
+            points={elevationArc.map(({ x, y }) => `${x},${y}`).join(' ')}
+            fill='none'
+            stroke='var(--border)'
+            strokeDasharray='3 4'
+            strokeWidth='0.75'
+            strokeOpacity='1'
+          />
+          <path
+            d={windPath}
+            fill='none'
+            stroke='var(--primary)'
             strokeWidth='1.5'
-            strokeOpacity='0.25'
           />
           {speedMS > 0 ? (
             <g clipPath='url(#ms-wind-sphere-clip)' aria-hidden='true'>
-              {renderParticles('front')}
+              {windArrows.map(({ index, point }) => (
+                <g
+                  key={`wind-arrow-${index}`}
+                  opacity={0.82}
+                  transform={
+                    motionAllowed
+                      ? undefined
+                      : `translate(${point.x} ${point.y}) rotate(${point.angle})`
+                  }
+                >
+                  <path d='M-3,-2.5 L3,0 L-3,2.5 Z' fill='var(--primary)' />
+                  {motionAllowed ? (
+                    <animateMotion
+                      path={windPath}
+                      rotate='auto'
+                      dur={`${durationSeconds}s`}
+                      begin={`${-(durationSeconds * index) / WIND_ARROW_COUNT}s`}
+                      repeatCount='indefinite'
+                    />
+                  ) : null}
+                </g>
+              ))}
             </g>
           ) : null}
-          <path
-            d={arcPath}
-            fill='none'
-            className='stroke-primary/50'
-            strokeWidth='2'
-          />
-          <line
-            x1={horizonTarget.x}
-            y1={horizonTarget.y}
-            x2={target.x}
-            y2={target.y}
-            stroke='var(--foreground)'
-            strokeDasharray='3 4'
-            strokeOpacity='0.62'
-          />
-          <line
-            x1={CENTER.x}
-            y1={CENTER.y}
-            x2={target.x}
-            y2={target.y}
-            stroke='var(--primary)'
-            strokeWidth='2'
-            markerEnd='url(#ms-wind-direction-arrow)'
-          />
           <circle
             cx={sourceTarget.x}
             cy={sourceTarget.y}
@@ -261,43 +235,83 @@ export function WindDirectionPreview ({
             strokeWidth='2'
           />
           <text
-            x={sourceTarget.x + (sourceTarget.x > CENTER.x ? 7 : -7)}
-            y={sourceTarget.y - 6}
-            textAnchor={sourceTarget.x > CENTER.x ? 'start' : 'end'}
-            className='fill-muted-foreground text-xs font-medium'
+            x={bearingLabel.x}
+            y={bearingLabel.y}
+            textAnchor='middle'
+            className='fill-primary text-[9px] font-semibold'
           >
-            FROM
+            {windFromDeg}°
+          </text>
+          <text
+            x={elevationLabel.x + (elevationLabel.x > CENTER.x ? 8 : -8)}
+            y={elevationLabel.y - 5}
+            textAnchor={elevationLabel.x > CENTER.x ? 'start' : 'end'}
+            fill='var(--chart-2)'
+            className='text-[9px] font-semibold'
+          >
+            {elevationLabelText}
           </text>
           <circle cx={CENTER.x} cy={CENTER.y} r='4' fill='currentColor' />
+          {SHOW_COORDINATE_AXES ? (
+            <>
+              <text
+                x={xAxisTarget.x + 5}
+                y={xAxisTarget.y - 8}
+                className='fill-muted-foreground text-[9px] font-medium'
+              >
+                X
+              </text>
+              <text
+                x={yAxisTarget.x - 18}
+                y={yAxisTarget.y - 10}
+                textAnchor='end'
+                className='fill-muted-foreground text-[9px] font-medium'
+              >
+                Y
+              </text>
+              <text
+                x={zAxisTarget.x + 5}
+                y={zAxisTarget.y + 18}
+                textAnchor='middle'
+                className='fill-muted-foreground text-[9px] font-medium'
+              >
+                Z
+              </text>
+            </>
+          ) : null}
           <text
-            x='270'
-            y='91'
+            x={CENTER.x}
+            y={CENTER.y - 29 - 5}
+            textAnchor='middle'
             className='fill-muted-foreground text-xs sub-heading'
           >
-            E
+            W
           </text>
           <text
-            x='80'
-            y='91'
+            x={CENTER.x + SPHERE_RADIUS + 7}
+            y={CENTER.y + 4}
+            textAnchor='start'
             className='fill-muted-foreground text-xs sub-heading'
           >
             N
           </text>
           <text
-            x='164'
-            y='10'
-            className='fill-muted-foreground text-xs sub-heading'
-          >
-            UP
-          </text>
-          <text
-            x='160'
-            y='208'
+            x={CENTER.x}
+            y={CENTER.y + 29 + 14}
             textAnchor='middle'
             className='fill-muted-foreground text-xs sub-heading'
           >
-            FROM · TRUE NORTH
+            E
           </text>
+          <text
+            x={CENTER.x - SPHERE_RADIUS - 7}
+            y={CENTER.y + 4}
+            textAnchor='end'
+            className='fill-muted-foreground text-xs sub-heading'
+          >
+            S
+          </text>
+          </g>
         </svg>
       </section>
     </div>

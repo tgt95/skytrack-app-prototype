@@ -4,9 +4,8 @@ import {
   SATELLITE_TILE_ATTRIBUTION,
   SATELLITE_TILE_TEMPLATE,
 } from "@/shared/map-tiles";
-
-export type MissionBasemapStyle =
-  "satellite" | "basic" | "light" | "dark" | "daybreak" | "overcast";
+import type { MissionBasemapStyle } from "@/shared/map-tiles";
+export type { MissionBasemapStyle } from "@/shared/map-tiles";
 
 export const BASEMAPS: Record<
   MissionBasemapStyle,

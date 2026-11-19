@@ -8,7 +8,8 @@ import { mapRenderResolutionScale } from './map-render-quality'
 import { MOCK_FOOTPRINT_RENDER_LIFT_M, enuToLngLat, safeColor, themeColor } from './mission-scene-helpers'
 import { removeSceneEntitiesInLayer } from './scene-entity-ownership'
 import { createEditGestures, type EditGestureHooks } from './scene-edit-gestures'
-import { fitMission, installCameraGestures } from './scene-camera-gestures'
+import { installCameraGestures } from './scene-camera-gestures'
+import { fitMission } from './scene-fit-mission'
 import type { SceneReadiness } from './mission-scene-types'
 
 type CesiumNS = typeof import('cesium')

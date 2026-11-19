@@ -71,7 +71,7 @@ export function AIModelsPage({
         titleId="ms-lib-aimodels-title"
         header={
           <PageHeader
-            className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-0 pt-5 has-tabs border-b-0"
+            className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-0 pt-5 has-tabs border-b"
             data-testid="ms-lib-page-header-row"
             title={
               <span id="ms-lib-aimodels-title" data-testid="ms-lib-page-header-copy">
@@ -94,7 +94,7 @@ export function AIModelsPage({
               </div>
             }
           >
-            <TabsList aria-label="AI model categories">
+            <TabsList aria-label="AI model categories" className="border-b-0">
               <TabsTab value="all">All ({allModels.length})</TabsTab>
               <TabsTab value="members">
                 Members ({workspaceModels.length})

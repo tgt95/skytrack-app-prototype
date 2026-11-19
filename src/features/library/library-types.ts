@@ -1,3 +1,5 @@
+import type { MissionBasemapStyle } from "@/shared/map-tiles";
+
 export interface LibraryEntry {
   missionId: string;
   projectId: string;
@@ -8,6 +10,7 @@ export interface LibraryEntry {
   worldId?: string;
   vehicle?: string;
   droneId?: string;
+  basemapStyle?: MissionBasemapStyle;
   workspaceId?: string;
 }
 

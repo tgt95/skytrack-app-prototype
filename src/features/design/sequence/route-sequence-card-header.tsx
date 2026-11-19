@@ -85,7 +85,7 @@ export function RouteSequenceCardHeader({
       <span className="block flex-[1_1_0] ml-auto min-w-0 overflow-hidden text-right text-ellipsis whitespace-nowrap text-xs text-(--muted-foreground) max-sm:ml-0 max-sm:text-left">
         <SkyTooltip>
           <span
-            className="inline-flex items-center gap-1 text-xs text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
+            className="inline-flex items-center gap-1 text-sm text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
             title="Waypoint-to-waypoint route length; excludes Home launch and return, transfers, and Area scan legs."
             aria-label={`Waypoint-to-waypoint route length ${formatDistance(routeLength, unitSystem)}; excludes Home launch and return, transfers, and Area scan legs`}
           >
@@ -96,7 +96,7 @@ export function RouteSequenceCardHeader({
         <span aria-hidden="true">·</span>
         <SkyTooltip>
           <span
-            className="inline-flex items-center gap-1 text-xs text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
+            className="inline-flex items-center gap-1 text-sm text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
             aria-label={`${totalWaypoints} waypoints in ${route.label}`}
           >
             <GitMergeIcon aria-hidden="true" className="w-3.5 h-3.5" />
@@ -106,7 +106,7 @@ export function RouteSequenceCardHeader({
         <span aria-hidden="true">·</span>
         <SkyTooltip>
           <span
-            className="inline-flex items-center gap-1 text-xs text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
+            className="inline-flex items-center gap-1 text-sm text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
             aria-label={`${totalActions} drone actions in ${route.label}`}
           >
             <HandIcon aria-hidden="true" className="w-3.5 h-3.5" />

@@ -21,8 +21,6 @@ interface Particle {
 }
 
 const PARTICLE_COUNT = 64;
-const MIN_PARTICLE_SPEED_PX = 1;
-const MAX_PARTICLE_SPEED_PX = 120;
 
 export function WindParticleOverlay({
   mission,
@@ -90,20 +88,12 @@ export function WindParticleOverlay({
       const directionLength = Math.hypot(screenX, screenY) || 1;
       const dx = screenX / directionLength;
       const dy = screenY / directionLength;
-      const speedPxPerSecond = projected
-        ? Math.max(MIN_PARTICLE_SPEED_PX, Math.min(MAX_PARTICLE_SPEED_PX, speedMS * projectedLength))
-        : speedMS * 4.5;
-      const trail = Math.max(3, Math.min(28, speedPxPerSecond * 0.18));
-      const speedDensity = Math.max(
+      const speedPxPerSecond = speedMS * 4.5;
+      const trail = Math.min(32, 5 + speedMS * 1.2);
+      const visibleCount = Math.max(
         1,
         Math.min(PARTICLE_COUNT, Math.round((speedMS / 20) * PARTICLE_COUNT)),
       );
-      const zoomDensity = projected
-        ? Math.max(0.65, Math.min(1.5, 1 / Math.sqrt(Math.max(0.05, projectedLength))))
-        : 1;
-      const visibleCount = Math.max(1, Math.min(PARTICLE_COUNT, speedDensity * zoomDensity));
-      const wholeParticleCount = Math.floor(visibleCount);
-      const partialParticleOpacity = visibleCount - wholeParticleCount;
 
       if (animate && !reducedMotion) {
         for (const particle of particlesRef.current) {
@@ -119,7 +109,7 @@ export function WindParticleOverlay({
       context.clearRect(0, 0, width, height);
       const primary = getComputedStyle(canvas).getPropertyValue("--primary").trim();
       context.strokeStyle = primary || "#a78bfa";
-      context.lineWidth = 1.5;
+      context.lineWidth = 2.5;
       const drawParticle = (particle: Particle, opacityMultiplier = 1) => {
         const x = particle.u * width;
         const y = particle.v * height;
@@ -129,11 +119,8 @@ export function WindParticleOverlay({
         context.lineTo(x - dx * trail, y - dy * trail);
         context.stroke();
       };
-      for (let index = 0; index < wholeParticleCount; index += 1) {
-        drawParticle(particlesRef.current[index]);
-      }
-      if (partialParticleOpacity > 0 && wholeParticleCount < PARTICLE_COUNT) {
-        drawParticle(particlesRef.current[wholeParticleCount], partialParticleOpacity);
+      for (const particle of particlesRef.current.slice(0, visibleCount)) {
+        drawParticle(particle);
       }
       context.globalAlpha = 1;
 

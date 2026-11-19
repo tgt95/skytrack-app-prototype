@@ -277,11 +277,11 @@ export function RouteWaypointList({
   return (
     <ol className="list-none m-0 p-0 flex flex-col gap-0">
       <li
-        className={`${SEQUENCE_LIST_ITEM_CLASS} flex flex-wrap items-center gap-2 bg-(--accent) min-w-0 py-1.5 px-3 flex-nowrap [list-style:none] border-b border-border last:border-b-0`}
+        className={`${SEQUENCE_LIST_ITEM_CLASS} flex flex-wrap items-center gap-2 bg-(--accent) min-w-0 py-2 px-3 flex-nowrap [list-style:none] border-b border-border last:border-b-0`}
         aria-label={`Sequence start for ${sequenceLabel}`}
       >
         <Badge className="rounded-(--radius)" count="START" status="outline" />
-        <span className="flex-[1_1_auto] min-w-0 text-sm text-(--muted-foreground)">
+        <span className="flex-[1_1_auto] min-w-0 text-sm text-muted-foreground">
           Drone active
         </span>
       </li>

@@ -97,7 +97,7 @@ export function isWaypointGroundGuideEntity(raw: unknown): boolean {
 
 export function photoWaypointId(raw: unknown): string | null {
   if (typeof raw !== 'string') return null
-  for (const prefix of ['ms-photo-base-', 'ms-photo-rays-']) {
+  for (const prefix of ['ms-photo-base-', 'ms-photo-rays-', 'ms-photo-hover-footprint-']) {
     if (raw.startsWith(prefix)) return raw.slice(prefix.length)
   }
   const indexedEntity = /^ms-photo-(?:face|focus-ray|focus-face)-(.+)-\d+$/.exec(raw)

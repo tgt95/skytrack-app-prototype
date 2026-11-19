@@ -22,6 +22,7 @@ import { Dropzone } from "skytrack-ui/dropzone";
 
 export interface ImportedAIModelPackage {
   name: string;
+  description: string;
   fileName: string;
   fileSize: number;
   thumbnailDataUrl?: string;
@@ -82,6 +83,7 @@ export function ImportAIModelDialog({
   onImport: (model: ImportedAIModelPackage) => boolean;
 }) {
   const [modelName, setModelName] = useState("");
+  const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState("");
   const [nameError, setNameError] = useState("");
@@ -92,6 +94,7 @@ export function ImportAIModelDialog({
   useEffect(() => {
     if (!open) return;
     setModelName("");
+    setDescription("");
     setFile(null);
     setFileError("");
     setNameError("");
@@ -163,6 +166,7 @@ export function ImportAIModelDialog({
       if (
         onImport({
           name: cleanName,
+          description: description.trim(),
           fileName: file.name,
           fileSize: file.size,
           thumbnailDataUrl,
@@ -215,6 +219,15 @@ export function ImportAIModelDialog({
                   "A model with this name already exists in this Workspace."}
               </FieldError>
             ) : null}
+          </FieldRoot>
+          <FieldRoot>
+            <FieldLabel>Description (optional)</FieldLabel>
+            <FieldControl
+              value={description}
+              onValueChange={(value: unknown) => setDescription(String(value))}
+              placeholder="Describe what this model detects"
+              data-testid="ms-ai-model-description"
+            />
           </FieldRoot>
           <FieldRoot invalid={Boolean(fileError)}>
             <FieldLabel id="ms-ai-model-file-label">Model file *</FieldLabel>

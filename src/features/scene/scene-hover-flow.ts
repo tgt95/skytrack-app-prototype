@@ -102,17 +102,15 @@ export function createHoverFlow(deps: HoverFlowDeps): (movement: { endPosition: 
       }
     }
     /* Capture-frustum hover emphasis (Planner setCaptureFrustumEmphasis
-       pattern): the hovered frustum expands to its emphasis size and
-       tints selected red; side faces stay static. Picking priority and
-       click flows are untouched. */
+       pattern): the hovered frustum expands along its camera FOV and
+       tints selected red. Picking priority and click flows are untouched. */
     let hoveredPhoto: string | null = null
     if (showPhotoMarkersRef.current) {
       for (const candidate of picked) {
         const raw = (candidate as { id?: { id?: unknown } })?.id?.id
         if (typeof raw !== 'string') continue
-        for (const wpid of frustumGeomRef.current.keys()) {
-          if (raw === `ms-photo-base-${wpid}` || raw === `ms-photo-rays-${wpid}` || raw.startsWith(`ms-photo-face-${wpid}-`)) { hoveredPhoto = wpid; break }
-        }
+        const pickedWaypointId = waypointId(raw) ?? photoWaypointId(raw)
+        if (pickedWaypointId && frustumGeomRef.current.has(pickedWaypointId)) hoveredPhoto = pickedWaypointId
         if (hoveredPhoto) break
       }
     }

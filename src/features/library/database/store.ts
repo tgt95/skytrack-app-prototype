@@ -12,9 +12,12 @@
 import projectsSeed from "./seeds/projects.json";
 import leevilleMissionSeed from "./seeds/missions/leeville-pike-flight.json";
 import leevilleFlight2MissionSeed from "./seeds/missions/leeville-pike-flight-2.json";
+import satoriniMissionSeed from "./seeds/missions/satorini-island-reconnaissance.json";
+import { ensureSeededMission } from "./ensure-seeded-mission";
 import templatesSeed from "./seeds/templates.json";
 import { getWorkspace } from "@/features/library/workspace/workspace-data.ts";
 import { STORAGE_KEYS, STORAGE_VERSIONS } from "@/shared/storage-keys";
+import type { MissionBasemapStyle } from "@/shared/map-tiles";
 
 export interface LibMission {
   id: string;
@@ -30,6 +33,8 @@ export interface LibMission {
   worldId?: string;
   vehicle?: string;
   droneId?: string;
+  /** Saved with the mission so reopening restores its map presentation. */
+  basemapStyle?: MissionBasemapStyle;
   /** Canonical Studio mission snapshot saved locally by the Design Save action. */
   missionData?: string;
 }
@@ -53,6 +58,7 @@ export interface LibTemplate {
 export const DB_KEY = STORAGE_KEYS.libraryDatabase;
 export const DB_VERSION = STORAGE_VERSIONS.libraryDatabase;
 export const STAKEHOLDER_DEMO_MISSION_ID = "m-local-mvrqcly0-101";
+export const SATORINI_SAMPLE_MISSION_ID = "m-local-mv909q3g-101";
 const SAMPLE_SHARED_USERS = ["alex.chen@example.com", "sam.rivera@example.com"];
 
 interface DatabaseShape {
@@ -88,6 +94,10 @@ function isMission(value: unknown): value is LibMission {
       (typeof m.droneId === "string" && m.droneId.length <= 128)) &&
     (m.worldId === undefined ||
       (typeof m.worldId === "string" && m.worldId.length <= 128)) &&
+    (m.basemapStyle === undefined ||
+      ["satellite", "basic", "light", "dark", "daybreak", "overcast"].includes(
+        m.basemapStyle,
+      )) &&
     (m.missionData === undefined || typeof m.missionData === "string")
   );
 }
@@ -143,57 +153,11 @@ function seedProjects(): LibProject[] {
               ...mission,
               missionData: JSON.stringify(leevilleFlight2MissionSeed),
             }
-          : mission,
+          : mission.id === SATORINI_SAMPLE_MISSION_ID
+            ? { ...mission, missionData: JSON.stringify(satoriniMissionSeed) }
+            : mission,
     ),
   }));
-}
-
-function ensureStakeholderDemoMission(projects: LibProject[]): LibProject[] {
-  const demoProject = seedProjects().find((project) =>
-    project.missions.some(
-      (mission) => mission.id === STAKEHOLDER_DEMO_MISSION_ID,
-    ),
-  );
-  const demoMission = demoProject?.missions.find(
-    (mission) => mission.id === STAKEHOLDER_DEMO_MISSION_ID,
-  );
-  if (!demoProject || !demoMission) return projects;
-
-  const existingMission = projects
-    .flatMap((project) => project.missions)
-    .find((mission) => mission.id === STAKEHOLDER_DEMO_MISSION_ID);
-  if (existingMission) {
-    return projects.map((project) => ({
-      ...project,
-      missions: project.missions.map((mission) =>
-        mission.id === STAKEHOLDER_DEMO_MISSION_ID
-          ? {
-              ...demoMission,
-              ...mission,
-              missionData: mission.missionData ?? demoMission.missionData,
-            }
-          : mission,
-      ),
-    }));
-  }
-
-  const existingProject = projects.find(
-    (project) => project.id === demoProject.id,
-  );
-  if (!existingProject) return [...projects, demoProject];
-
-  return projects.map((project) =>
-    project.id === existingProject.id
-      ? {
-          ...project,
-          name:
-            project.name === "Default project"
-              ? demoProject.name
-              : project.name,
-          missions: [...project.missions, demoMission],
-        }
-      : project,
-  );
 }
 
 function ensureLeevilleFlight2Mission(projects: LibProject[]): LibProject[] {
@@ -373,7 +337,15 @@ export function loadProjects(): LibProject[] {
       const parsed: unknown = JSON.parse(raw) as unknown;
       if (isDatabase(parsed)) {
         return ensureLeevilleFlight2Mission(
-          ensureStakeholderDemoMission(normalizeProjects(parsed.projects)),
+          ensureSeededMission(
+            ensureSeededMission(
+              normalizeProjects(parsed.projects),
+              seedProjects(),
+              STAKEHOLDER_DEMO_MISSION_ID,
+            ),
+            seedProjects(),
+            SATORINI_SAMPLE_MISSION_ID,
+          ),
         );
       }
     }
@@ -415,7 +387,13 @@ export function saveMissionSnapshot(
   missionData: string,
   metadata: Pick<
     LibMission,
-    "name" | "world" | "worldType" | "worldId" | "vehicle" | "droneId"
+    | "name"
+    | "world"
+    | "worldType"
+    | "worldId"
+    | "vehicle"
+    | "droneId"
+    | "basemapStyle"
   >,
 ): boolean {
   const projects = loadProjects();

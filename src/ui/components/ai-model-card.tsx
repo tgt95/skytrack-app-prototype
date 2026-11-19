@@ -19,6 +19,7 @@ export interface AIModelCardModel {
   origin?: "skytrack" | "workspace" | "user-upload";
   uploadedBy?: string;
   isReadOnly?: boolean;
+  description?: string;
   version: string;
   task: string;
   inputModality: string;
@@ -56,14 +57,13 @@ export function AIModelCardContent({
     attribution.trim().split(/\s+/u)[0]?.[0]?.toUpperCase() ?? "?";
   const isSkyTrack = attribution === "SkyTrack";
   const thumbnail = model.thumbnailDataUrl || sampleModelImages[model.name];
-  const secondaryInfo = isUploadedByMe
-    ? model.packageFileName || model.assetReference
-    : model.task;
+  const description = model.description ?? (isUploadedByMe ? model.task : "");
+  const placeholderIconSize = layout === "picker" ? "w-10 h-10" : "w-5 h-5";
 
   const thumbnailContent = thumbnail ? (
     <img src={thumbnail} alt="" className="size-full object-cover" />
   ) : (
-    <PackageIcon aria-hidden="true" className="w-5 h-5" />
+    <PackageIcon aria-hidden="true" className={placeholderIconSize} />
   );
   const attributionContent = (
     <span className="inline-flex min-w-0 items-center gap-1.5 text-sm text-muted-foreground">
@@ -85,23 +85,25 @@ export function AIModelCardContent({
       <div className="flex min-w-0 flex-col">
         <div className="flex min-w-0 items-center gap-3 p-3">
           {showThumbnail ? (
-            <span className="flex aspect-video h-12 flex-none items-center justify-center overflow-hidden rounded-(--radius) bg-(--muted) text-(--muted-foreground)">
+            <span className="flex aspect-video h-11.5 flex-none items-center justify-center overflow-hidden rounded-(--radius) bg-(--muted) text-(--muted-foreground)">
               {thumbnailContent}
             </span>
           ) : null}
           <span className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
-            <span
-              className={`truncate text-sm font-medium ${model.isReadOnly ? "text-muted-foreground" : "text-foreground"}`}
-            >
-              {model.name}
+            <span className="flex min-w-0 items-center gap-1">
+              <span
+                className={`min-w-0 flex-1 truncate text-sm font-medium ${model.isReadOnly ? "text-muted-foreground" : "text-foreground"}`}
+              >
+                {model.name}
+              </span>
+              {titleTrailing}
             </span>
-            <span className="truncate text-sm text-muted-foreground">
-              {secondaryInfo ||
-                model.inputModality ||
-                "Input modality not specified"}
-            </span>
+            {description ? (
+              <span className="truncate text-sm text-muted-foreground">
+                {description}
+              </span>
+            ) : null}
           </span>
-          {titleTrailing}
         </div>
         <div className="flex min-w-0 items-center justify-between gap-3 border-t border-border px-3 py-2">
           {attributionContent}
@@ -135,16 +137,14 @@ export function AIModelCardContent({
           </span>
           {titleTrailing}
         </span>
-        {secondaryInfo ? (
-          <span className="text-xs text-muted-foreground leading-[1.5]">
-            {secondaryInfo}
+        {description ? (
+          <span className="text-sm text-muted-foreground">{description}</span>
+        ) : null}
+        {isUploadedByMe ? (
+          <span className="text-sm text-muted-foreground">
+            {`${model.packageFileSize ? `${(model.packageFileSize / (1024 * 1024)).toFixed(1)} MB` : "Package size unavailable"} · ${model.status}`}
           </span>
         ) : null}
-        <span className="text-sm text-muted-foreground">
-          {isUploadedByMe
-            ? `${model.packageFileSize ? `${(model.packageFileSize / (1024 * 1024)).toFixed(1)} MB` : "Package size unavailable"} · ${model.status}`
-            : `${model.inputModality || "Input modality not specified"}${model.compatibility ? ` · ${model.compatibility}` : ""}`}
-        </span>
         <span className="mt-1">{attributionContent}</span>
       </span>
     </>

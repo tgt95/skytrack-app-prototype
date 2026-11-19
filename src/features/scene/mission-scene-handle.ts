@@ -3,7 +3,7 @@ import { getMissionStart, missionOrigin, type StudioMission } from '@/domain/mis
 import { samplePlan, type SimPlan } from '@/features/simulation/simulation'
 import { enuToLngLat } from './mission-scene-helpers'
 import type { MissionSceneHandle } from './mission-scene-types'
-import { fitMission } from './scene-camera-gestures'
+import { fitMission } from './scene-fit-mission'
 
 type CesiumNS = typeof import('cesium')
 type MutableRef<T> = { current: T }

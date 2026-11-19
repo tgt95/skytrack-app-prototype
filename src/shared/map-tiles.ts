@@ -3,6 +3,14 @@ export interface MapTileOrigin {
   lng: number;
 }
 
+export type MissionBasemapStyle =
+  | "satellite"
+  | "basic"
+  | "light"
+  | "dark"
+  | "daybreak"
+  | "overcast";
+
 export const SATELLITE_TILE_TEMPLATE =
   "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
 export const SATELLITE_TILE_ATTRIBUTION = "Tiles © Esri and its contributors";

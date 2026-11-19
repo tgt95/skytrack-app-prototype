@@ -199,7 +199,7 @@ export default function AreaInspectorCard({
         <span className="block flex-[1_1_0] ml-auto min-w-0 overflow-hidden text-right text-ellipsis whitespace-nowrap text-xs text-(--muted-foreground) max-sm:ml-0 max-sm:text-left">
           <SkyTooltip>
             <span
-              className="inline-flex items-center gap-1 text-xs text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
+              className="inline-flex items-center gap-1 text-sm text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
               aria-label={
                 areaM2 > 0
                   ? formatArea(areaM2, unitSystem)
@@ -215,7 +215,7 @@ export default function AreaInspectorCard({
           <span aria-hidden="true">·</span>
           <SkyTooltip>
             <span
-              className="inline-flex items-center gap-1 text-xs text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
+              className="inline-flex items-center gap-1 text-sm text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
               aria-label={`${waypoints.length} generated waypoints in ${area.label}`}
             >
               <GitMergeIcon aria-hidden="true" className="w-3.5 h-3.5" />
@@ -225,7 +225,7 @@ export default function AreaInspectorCard({
           <span aria-hidden="true">·</span>
           <SkyTooltip>
             <span
-              className="inline-flex items-center gap-1 text-xs text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
+              className="inline-flex items-center gap-1 text-sm text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
               aria-label={`${actionCount} generated drone actions in ${area.label}`}
             >
               <HandIcon aria-hidden="true" className="w-3.5 h-3.5" />
@@ -317,7 +317,8 @@ export default function AreaInspectorCard({
         <div className="border-b border-b-border">
           <InspectorField
             label="Reconnaissance flight"
-            className="flex-row items-center gap-3 min-h-10.5 pb-2 px-3 text-(--muted-foreground) text-xs font-semibold"
+            labelClassName="w-100/2 text-sm leading-normal font-medium text-(--muted-foreground)"
+            className="flex-row items-center gap-3 min-h-10.5 pb-2 px-3"
           >
             <Switch
               className="flex-[0_0_auto]"
@@ -444,11 +445,11 @@ export default function AreaInspectorCard({
               </div>
             </form>
           ) : (
-            <p className="m-0 text-xs text-(--muted-foreground) leading-[1.5] p-3 pt-0!">
+            <div className="text-sm text-muted-foreground p-3">
               {area.scanLines?.length ?? 0} scan lanes · {spacingLabel}{" "}
               {distanceUnit(unitSystem)}
               spacing · {area.orientationDeg ?? 0}°
-            </p>
+            </div>
           )}
           {!editing ? (
             <>

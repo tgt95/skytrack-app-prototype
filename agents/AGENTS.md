@@ -18,6 +18,7 @@ Read this file before changing this standalone project. Also read
 
 - Keep user-visible behavior and UI stable unless the Owner approves a feature change.
 - Keep mission calculations in `../src/domain/`, Viewer lifecycle and picking in `../src/features/scene/mission-scene.tsx`, coordinate/entity helpers in `../src/features/scene/mission-scene-helpers.ts`, inspector and leaf controls in `../src/features/design/`, library flow in `../src/features/library/`, and playback in `../src/features/simulation/`.
+- Before implementing or changing Front/Side overlap behavior, Area lane spacing, or photo capture spacing, read the [Front and Side overlap knowledge](../docs/front-side-overlap.md) and follow its links to the current domain/UI source.
 - Use `skytrack-ui` components and semantic tokens for controls.
 - For actionable library cards, show supported Star and More (`DotsThreeIcon`) actions in an overlay on hover and keyboard focus; keep actions visible on touch devices. Use `skytrack-ui` Button variants and sizes without card-specific visual overrides.
 - Use the `skytrack-ui` semantic `--favorite` token for the active Star icon; do not reuse the warning color for favorite state.

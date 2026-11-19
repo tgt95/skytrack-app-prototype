@@ -37,6 +37,7 @@ import {
 } from "@/features/library/router";
 import { parseMissionViewSearch } from "./mission-view-url";
 import type { AppTab } from "./studio-left-rail";
+import type { MissionBasemapStyle } from "@/shared/map-tiles";
 
 const PAGE_TITLES: Record<LibrarySection, string> = {
   home: "Home",
@@ -69,6 +70,7 @@ interface UseStudioRoutingArgs {
   setSelection: Dispatch<SetStateAction<SceneSelection | null>>;
   setPending: Dispatch<SetStateAction<PendingMissionPoint[]>>;
   setTool: Dispatch<SetStateAction<SceneTool>>;
+  setBasemapStyle: Dispatch<SetStateAction<MissionBasemapStyle>>;
   setAppTab: Dispatch<SetStateAction<AppTab>>;
   setStage: Dispatch<SetStateAction<Stage>>;
   setCodeView: Dispatch<SetStateAction<boolean>>;
@@ -88,6 +90,7 @@ export function useStudioRouting({
   setSelection,
   setPending,
   setTool,
+  setBasemapStyle,
   setAppTab,
   setStage,
   setCodeView,
@@ -205,6 +208,7 @@ export function useStudioRouting({
       worldId: record.mission.worldId,
       vehicle: record.mission.vehicle,
       droneId: record.mission.droneId,
+      basemapStyle: record.mission.basemapStyle,
       workspaceId: record.project.workspaceId ?? "tuan-workspace",
     };
     let restored: StudioMission;
@@ -232,6 +236,9 @@ export function useStudioRouting({
     };
 
     setLibraryEntry(entry);
+    if (record.mission.basemapStyle) {
+      setBasemapStyle(record.mission.basemapStyle);
+    }
     setWorkspaceDroneProfiles(
       loadDroneProfiles().filter(
         (profile) => profile.workspaceId === entry.workspaceId,
@@ -261,6 +268,7 @@ export function useStudioRouting({
     route,
     say,
     setAppTab,
+    setBasemapStyle,
     setCodeDraft,
     setCodeView,
     setJsonError,

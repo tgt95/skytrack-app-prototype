@@ -234,7 +234,7 @@ export const DEFAULT_WIND_ENVIRONMENT: WindEnvironmentSettings = {
   controlBy: "equivalent-speed",
   forceN: 0.5,
   speedMS: 6,
-  azimuthDeg: 120,
+  azimuthDeg: 270,
   elevationDeg: 0,
 };
 
