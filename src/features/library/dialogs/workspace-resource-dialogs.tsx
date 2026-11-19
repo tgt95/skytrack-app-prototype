@@ -37,6 +37,7 @@ import type {
   WorkspaceWorldRecord,
   WorldSourceType,
 } from "@/features/library/database/workspace-resources-store";
+import { RequiredMarker } from "@/ui/components/required-marker";
 
 const RESOURCE_STATUSES: ResourceStatus[] = [
   "Sample",
@@ -67,7 +68,15 @@ function TextField({
 }) {
   return (
     <FieldRoot className="ms-field flex flex-col gap-1" invalid={Boolean(error)}>
-      <FieldLabel>{label}</FieldLabel>
+      <FieldLabel>
+        {label}
+        {required ? (
+          <>
+            {" "}
+            <RequiredMarker />
+          </>
+        ) : null}
+      </FieldLabel>
       <FieldControl
         value={value}
         onValueChange={(next: unknown) => onChange(String(next))}
@@ -249,7 +258,7 @@ export function WorldProfileDialog({
               </div>
               <div className="ms-drone-form-grid grid grid-cols-2 gap-3 [@media_(max-width:_45rem)]:grid-cols-[minmax(0,1fr)]">
                 <TextField
-                  label="World name *"
+                  label="World name"
                   value={draft.name}
                   onChange={(name) => {
                     patch({ name });
@@ -388,7 +397,13 @@ export function WorldProfileDialog({
                   invalid={Boolean(fileError)}
                 >
                   <FieldLabel id="ms-world-glb-file-label">
-                    {mode === "create" ? "World file *" : "World file"}
+                    {mode === "create" ? (
+                      <>
+                        World file <RequiredMarker />
+                      </>
+                    ) : (
+                      "World file"
+                    )}
                   </FieldLabel>
                   {mode === "edit" && draft.glbFileName ? (
                     <FieldDescription>

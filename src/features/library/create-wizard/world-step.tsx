@@ -19,6 +19,7 @@ import {
 } from "skytrack-ui/dialog";
 import { Dropzone } from "skytrack-ui/dropzone";
 import { RadioGroup, RadioRoot } from "skytrack-ui/radio";
+import { RequiredMarker } from "@/ui/components/required-marker";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "skytrack-ui/tabs";
 import {
   FieldControl,
@@ -272,7 +273,9 @@ export function WorldStep({
             </DialogHeader>
             <div className="ms-lib-form flex flex-col gap-3 py-1 px-0">
               <FieldRoot name="world-name" invalid={Boolean(nameError)}>
-                <FieldLabel>World name *</FieldLabel>
+                <FieldLabel>
+                  World name <RequiredMarker />
+                </FieldLabel>
                 <FieldControl
                   autoFocus
                   required
@@ -294,7 +297,7 @@ export function WorldStep({
                 data-testid="ms-wizard-world-file-field"
               >
                 <FieldLabel id="ms-wizard-world-file-label">
-                  World file *
+                  World file <RequiredMarker />
                 </FieldLabel>
                 <Dropzone
                   className="w-full"

@@ -19,6 +19,7 @@ import {
   FieldRoot,
 } from "skytrack-ui/field";
 import { Dropzone } from "skytrack-ui/dropzone";
+import { RequiredMarker } from "@/ui/components/required-marker";
 
 export interface ImportedAIModelPackage {
   name: string;
@@ -201,7 +202,9 @@ export function ImportAIModelDialog({
             </DialogDescription>
           </DialogHeader>
           <FieldRoot invalid={Boolean(nameError) || hasDuplicate}>
-            <FieldLabel>Model name *</FieldLabel>
+            <FieldLabel>
+              Model name <RequiredMarker />
+            </FieldLabel>
             <FieldControl
               autoFocus
               required
@@ -230,7 +233,9 @@ export function ImportAIModelDialog({
             />
           </FieldRoot>
           <FieldRoot invalid={Boolean(fileError)}>
-            <FieldLabel id="ms-ai-model-file-label">Model file *</FieldLabel>
+            <FieldLabel id="ms-ai-model-file-label">
+              Model file <RequiredMarker />
+            </FieldLabel>
             <Dropzone
               className="w-full"
               accept=".zip,application/zip"

@@ -40,11 +40,8 @@ export function WindDirectionPreview ({
   const elevation = (elevationDeg * Math.PI) / 180
   const horizonTarget = pointAtCompassBearing(pushToBearingDeg)
   const target = pointAtElevation(horizonTarget, elevation)
-  const sourceTarget = pointAtElevation(
-    pointAtCompassBearing(windFromDeg),
-    -elevation
-  )
-  const windPathPoints = [sourceTarget, CENTER, target]
+  const fromHorizonTarget = pointAtCompassBearing(windFromDeg)
+  const windPathPoints = [fromHorizonTarget, CENTER, target]
   const windPath = windPathPoints
     .map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x},${point.y}`)
     .join(' ')
@@ -108,6 +105,17 @@ export function WindDirectionPreview ({
             <clipPath id='ms-wind-sphere-clip'>
               <circle cx={CENTER.x} cy={CENTER.y} r={SPHERE_RADIUS} />
             </clipPath>
+            <marker
+              id='ms-wind-direction-arrow'
+              markerWidth='12'
+              markerHeight='12'
+              refX='12'
+              refY='6'
+              orient='auto'
+              markerUnits='userSpaceOnUse'
+            >
+              <path d='M0,0 L12,6 L0,12 Z' fill='var(--primary)' />
+            </marker>
             <marker
               id='ms-wind-axis-arrow'
               markerWidth='5'
@@ -199,6 +207,7 @@ export function WindDirectionPreview ({
             fill='none'
             stroke='var(--primary)'
             strokeWidth='1.5'
+            markerEnd='url(#ms-wind-direction-arrow)'
           />
           {speedMS > 0 ? (
             <g clipPath='url(#ms-wind-sphere-clip)' aria-hidden='true'>
@@ -227,8 +236,8 @@ export function WindDirectionPreview ({
             </g>
           ) : null}
           <circle
-            cx={sourceTarget.x}
-            cy={sourceTarget.y}
+            cx={fromHorizonTarget.x}
+            cy={fromHorizonTarget.y}
             r='4'
             fill='var(--card)'
             stroke='var(--primary)'
