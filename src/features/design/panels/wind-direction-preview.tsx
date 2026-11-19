@@ -6,9 +6,11 @@ import {
   pointAtCompassBearing,
   pointAtElevation,
   project,
+  projectWindAngleFace,
   RADIUS,
   sectorPath,
   SHOW_COORDINATE_AXES,
+  SHOW_WIND_ANGLE_FACE,
   SPHERE_RADIUS,
   WIND_ARROW_COUNT
 } from './wind-direction-preview-geometry'
@@ -41,11 +43,12 @@ export function WindDirectionPreview ({
   const horizonTarget = pointAtCompassBearing(pushToBearingDeg)
   const target = pointAtElevation(horizonTarget, elevation)
   const fromHorizonTarget = pointAtCompassBearing(windFromDeg)
+  const windAngleFace = projectWindAngleFace(windFromDeg)
   const windPathPoints = [fromHorizonTarget, CENTER, target]
   const windPath = windPathPoints
     .map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x},${point.y}`)
     .join(' ')
-  const xAxisTarget = pointAtCompassBearing(90)
+  const xAxisTarget = project(-1, 0, 0, SPHERE_RADIUS / (RADIUS * 0.9))
   const yAxisTarget = pointAtCompassBearing(0)
   const zAxisTarget = project(0, 0, 1, SPHERE_RADIUS / (RADIUS * 0.9))
   const bearingArcSteps = Math.max(24, Math.ceil(windFromDeg / 5))
@@ -114,7 +117,10 @@ export function WindDirectionPreview ({
               orient='auto'
               markerUnits='userSpaceOnUse'
             >
-              <path d='M0,0 L12,6 L0,12 Z' fill='var(--primary)' />
+              <path
+                d='M0,0 L12,6 L0,12 Z'
+                fill='var(--primary)'
+              />
             </marker>
             <marker
               id='ms-wind-axis-arrow'
@@ -130,6 +136,18 @@ export function WindDirectionPreview ({
           </defs>
 
           <g transform='translate(160 125) scale(1.35) translate(-160 -104)'>
+          {SHOW_WIND_ANGLE_FACE ? (
+            <polyline
+              points={windAngleFace
+                .map(({ x, y }) => `${x},${y}`)
+                .join(' ')}
+              fill='none'
+              stroke='currentColor'
+              strokeDasharray='3 4'
+              strokeWidth='0.75'
+              strokeOpacity='0.25'
+            />
+          ) : null}
           <circle
             cx={CENTER.x}
             cy={CENTER.y}
@@ -154,8 +172,8 @@ export function WindDirectionPreview ({
               aria-hidden='true'
               fill='none'
               stroke='var(--foreground)'
-              strokeWidth='1'
-              strokeOpacity='0.62'
+              strokeWidth='0.75'
+              strokeOpacity='0.25'
             >
               <line
                 x1={CENTER.x}
@@ -221,7 +239,10 @@ export function WindDirectionPreview ({
                       : `translate(${point.x} ${point.y}) rotate(${point.angle})`
                   }
                 >
-                  <path d='M-3,-2.5 L3,0 L-3,2.5 Z' fill='var(--primary)' />
+                  <path
+                    d='M-3,-2.5 L3,0 L-3,2.5 Z'
+                    fill='var(--primary)'
+                  />
                   {motionAllowed ? (
                     <animateMotion
                       path={windPath}

@@ -2,7 +2,24 @@ export const CENTER = { x: 160, y: 104 };
 export const RADIUS = 78;
 export const SPHERE_RADIUS = 86;
 export const SHOW_COORDINATE_AXES = false;
+export const SHOW_WIND_ANGLE_FACE = true;
 export const WIND_ARROW_COUNT = 3;
+
+export function projectWindAngleFace(bearingDeg: number) {
+  const bearing = (bearingDeg * Math.PI) / 180;
+
+  return Array.from({ length: 65 }, (_, index) => {
+    const angle = (index / 64) * Math.PI * 2;
+    const horizontal = Math.cos(angle);
+    return {
+      x: CENTER.x + SPHERE_RADIUS * horizontal * Math.cos(bearing),
+      y:
+        CENTER.y +
+        29 * horizontal * Math.sin(bearing) -
+        SPHERE_RADIUS * Math.sin(angle),
+    };
+  });
+}
 
 export function project(east: number, north: number, up: number, scale = 1) {
   return {
