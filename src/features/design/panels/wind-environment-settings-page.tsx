@@ -37,12 +37,15 @@ import {
   type WindEnvironmentSettings
 } from '@/domain/mission-model'
 import { WindDirectionPreview } from './wind-direction-preview'
+import { WIND_VISUALIZATION_MODES, type WindVisualizationMode } from '@/features/simulation/wind-visualization'
 
 interface WindEnvironmentSettingsPageProps {
   value: WindEnvironmentSettings
   onChange: (value: WindEnvironmentSettings) => void
   onCancel: () => void
   onApply: () => void
+  visualizationMode: WindVisualizationMode
+  onVisualizationModeChange: (mode: WindVisualizationMode) => void
 }
 
 const CONTROL_MODES: { value: WindControlMode; label: string }[] = [
@@ -142,7 +145,9 @@ export function WindEnvironmentSettingsPage ({
   value,
   onChange,
   onCancel,
-  onApply
+  onApply,
+  visualizationMode,
+  onVisualizationModeChange,
 }: WindEnvironmentSettingsPageProps) {
   const forceMode = value.controlBy === 'force'
   const particleSpeedMS = forceMode
@@ -160,6 +165,48 @@ export function WindEnvironmentSettingsPage ({
         <h2 className='m-0 text-lg font-semibold'>Wind environment settings</h2>
       </header>
       <div className='flex min-h-0 w-full min-w-0 flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto p-4'>
+        <InspectorField
+          label='Wind visualization'
+          labelId='ms-wind-visualization-label'
+          className='flex w-full min-w-0 flex-col items-stretch gap-2'
+          labelClassName='w-full'
+        >
+          <Select<WindVisualizationMode>
+            items={WIND_VISUALIZATION_MODES}
+            value={visualizationMode}
+            onValueChange={(next: unknown) => {
+              if (next === 'particle-stream' || next === 'flow-field') {
+                onVisualizationModeChange(next)
+              }
+            }}
+          >
+            <SelectTrigger
+              className='w-full'
+              aria-labelledby='ms-wind-visualization-label'
+              data-testid='ms-wind-visualization-select'
+            >
+              <SelectValue />
+              <SelectIcon>
+                <CaretDownIcon aria-hidden='true' />
+              </SelectIcon>
+            </SelectTrigger>
+            <SelectPortal>
+              <SelectPositioner side='bottom' align='end' sideOffset={4}>
+                <SelectPopup>
+                  <SelectList>
+                    {WIND_VISUALIZATION_MODES.map(mode => (
+                      <SelectItem key={mode.value} value={mode.value}>
+                        <SelectItemIndicator />
+                        <SelectItemText>{mode.label}</SelectItemText>
+                      </SelectItem>
+                    ))}
+                  </SelectList>
+                </SelectPopup>
+              </SelectPositioner>
+            </SelectPortal>
+          </Select>
+        </InspectorField>
+
         <InspectorField
           label='Control by'
           labelId='ms-wind-control-label'
@@ -296,10 +343,10 @@ export function WindEnvironmentSettingsPage ({
         />
       </div>
       <footer className='sticky bottom-0 flex w-full min-w-0 justify-end gap-2 border-t border-border bg-card p-3'>
-        <Button variant='outline' onClick={onCancel}>
+        <Button size='sm' variant='outline' onClick={onCancel}>
           Cancel
         </Button>
-        <Button onClick={onApply}>Apply</Button>
+        <Button size='sm' onClick={onApply}>Apply</Button>
       </footer>
     </section>
   )

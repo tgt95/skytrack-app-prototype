@@ -1,6 +1,7 @@
 import type { useAddressSearch } from "@/features/search/use-address-search";
 import type { StudioMission } from "@/domain/mission-model";
 import type { WindEnvironmentSettings } from "@/domain/mission-model";
+import type { WindVisualizationMode } from "@/features/simulation/wind-visualization";
 import type { MissionWorldModelSource } from "@/features/scene/mission-scene-types";
 import type { useMissionCommands } from "./use-mission-commands";
 import type { useStudioRouting } from "./use-studio-routing";
@@ -15,6 +16,7 @@ import StudioSceneViewport from "./studio-scene-viewport";
 interface StudioShellSceneViewportProps {
   mission: StudioMission;
   windPreview: WindEnvironmentSettings | null;
+  windVisualization: WindVisualizationMode;
   ui: ReturnType<typeof useStudioUiState>;
   drawing: ReturnType<typeof useDrawingSession>;
   routing: ReturnType<typeof useStudioRouting>;
@@ -30,6 +32,7 @@ interface StudioShellSceneViewportProps {
 export function StudioShellSceneViewport({
   mission,
   windPreview,
+  windVisualization,
   ui,
   drawing,
   routing,
@@ -42,7 +45,7 @@ export function StudioShellSceneViewport({
   dialogFocus,
 }: StudioShellSceneViewportProps) {
   const { stage, selection, settings, basemapStyle, showPhotoMarkers,
-    showCameraFootprint, footprintOpacity } = ui;
+    showCameraFootprint, showWindVisualization, footprintOpacity } = ui;
   const { tool, pending, pendingShape, draftCursor, closeDraftAtStart,
     drawingAltM, draftAreaSettings, draftAvoidSettings } = drawing;
   const { missionDroneValue, missionDroneChoices } = routing;
@@ -58,6 +61,7 @@ export function StudioShellSceneViewport({
     <StudioSceneViewport
       mission={mission}
       windPreview={windPreview}
+      windVisualization={windVisualization}
       hideContextCards={ui.aiModelsOpen}
       sceneRef={sceneRef}
       sceneProps={{
@@ -139,6 +143,8 @@ export function StudioShellSceneViewport({
       onShowPhotoMarkersChange={ui.setShowPhotoMarkers}
       showCameraFootprint={showCameraFootprint}
       onShowCameraFootprintChange={ui.setShowCameraFootprint}
+      showWindVisualization={showWindVisualization}
+      onShowWindVisualizationChange={ui.setShowWindVisualization}
       footprintOpacity={footprintOpacity}
       onFootprintOpacityChange={ui.setFootprintOpacity}
       basemapStyle={basemapStyle}

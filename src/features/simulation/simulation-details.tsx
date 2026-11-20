@@ -37,11 +37,11 @@ function Stat ({
 }) {
   return (
     <div className='ms-stat'>
-      <dt className='text-xs text-(--muted-foreground)'>{label}</dt>
+      <dt className='text-sm text-muted-foreground'>{label}</dt>
       <dd
         className={`${
           size == 'lg' ? 'text-lg' : 'text-base'
-        } font-medium m-0 overflow-hidden text-ellipsis`}
+        } font-medium m-0 overflow-hidden text-ellipsis truncate`}
       >
         {value}
       </dd>
@@ -97,7 +97,7 @@ export default function SimulationDetails ({
             {telemetry ? (
               <div data-testid='ms-telemetry'>
                 <dl
-                  className='m-0 grid grid-cols-[2.1fr_1fr] gap-3 px-3 pb-3'
+                  className='m-0 grid grid-cols-2 gap-3 px-3 pb-3'
                   data-testid='ms-telemetry-1'
                 >
                   <Stat label='Vehicle' value={mission.vehicle} />

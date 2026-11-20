@@ -7,6 +7,7 @@ import type { useStudioActions } from "./use-studio-actions";
 import type { useStudioSceneSession } from "./use-studio-scene-session";
 import type { useStudioSimulationModel } from "./use-studio-simulation-model";
 import type { useStudioUiState } from "./use-studio-ui-state";
+import type { WindVisualizationMode } from "@/features/simulation/wind-visualization";
 import StudioInspector from "./studio-inspector";
 import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 
@@ -105,6 +106,8 @@ type InspectorActions = Pick<
 interface StudioInspectorContainerProps {
   mission: StudioMission;
   onWindPreviewChange: (value: WindEnvironmentSettings | null) => void;
+  windVisualization: WindVisualizationMode;
+  onWindVisualizationChange: (mode: WindVisualizationMode) => void;
   ui: InspectorUiState;
   drawing: InspectorDrawingState;
   simulation: InspectorSimulationState;
@@ -122,6 +125,8 @@ interface StudioInspectorContainerProps {
 export default function StudioInspectorContainer({
   mission,
   onWindPreviewChange,
+  windVisualization,
+  onWindVisualizationChange,
   ui,
   drawing,
   simulation,
@@ -183,7 +188,6 @@ export default function StudioInspectorContainer({
               ) >= 0.5,
         area: drawing.draftAreaSettings,
         avoid: drawing.draftAvoidSettings,
-        className: "m-3",
         onAreaChange: drawing.setDraftAreaSettings,
         onAvoidChange: drawing.setDraftAvoidSettings,
         onCommit: commands.closePendingShape,
@@ -192,6 +196,8 @@ export default function StudioInspectorContainer({
       design={{
         mission,
         onWindPreviewChange,
+        windVisualization,
+        onWindVisualizationChange,
         previewPositionRef: scene.previewPositionRef,
         previewCaptureRef: scene.previewCaptureRef,
         worldType: mission.worldType ?? "3D",

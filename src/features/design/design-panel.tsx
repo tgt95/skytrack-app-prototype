@@ -16,6 +16,7 @@ import {
   type WindEnvironmentSettings,
 } from "@/domain/mission-model";
 import type { DerivedTransfer } from "@/domain/transfer-planner";
+import type { WindVisualizationMode } from "@/features/simulation/wind-visualization";
 import MissionPreview from "@/features/simulation/mission-preview";
 import { ReconSettingsPage } from "./panels/reconnaissance-inspector";
 import { DesignSequenceBlocks } from "./sequence/design-sequence-blocks";
@@ -29,6 +30,7 @@ import AvoidInspectorCard from "./panels/avoid-inspector-card";
 import type { SequenceDropPosition } from "./sequence/sequence-drag";
 import useDesignPanelState from "./use-design-panel-state";
 import { WindEnvironmentSettingsSubpage } from "./panels/wind-environment-settings-subpage";
+import { AreaEditPanel } from "./panels/area-edit-panel";
 import { useAreaEditActions } from "./use-area-edit-actions";
 export { ZoneDraftPanel } from "./drawing/zone-draft-panel";
 
@@ -61,6 +63,8 @@ export interface DesignPanelProps {
   onSelect: (sel: SceneSelection | null) => void;
   onUpdateMission: (next: StudioMission, label?: string) => void;
   onWindPreviewChange: (value: WindEnvironmentSettings | null) => void;
+  windVisualization: WindVisualizationMode;
+  onWindVisualizationChange: (mode: WindVisualizationMode) => void;
   onPreviewMission: (next: StudioMission) => void;
   onCommitPreview: (next: StudioMission, label?: string) => void;
   onCancelPreview: () => void;
@@ -116,6 +120,8 @@ function DesignPanel(props: DesignPanelProps) {
     onSelect,
     onUpdateMission,
     onWindPreviewChange,
+    windVisualization,
+    onWindVisualizationChange,
     onPreviewMission,
     onCommitPreview,
     onCancelPreview,
@@ -215,11 +221,29 @@ function DesignPanel(props: DesignPanelProps) {
         mission={mission}
         onUpdateMission={onUpdateMission}
         onWindPreviewChange={onWindPreviewChange}
+        windVisualization={windVisualization}
+        onWindVisualizationChange={onWindVisualizationChange}
         onClose={() => {
           onWindPreviewChange(null);
           setWindSettingsOpen(false);
         }}
       />
+    );
+  }
+
+  if (editingAreaId !== null && areaDraft !== null) {
+    return (
+      <>
+        <MissionSettingsToastHost />
+        <AreaEditPanel
+          draft={areaDraft}
+          onDraftChange={(nextDraft) =>
+            previewAreaDraft(areaDraft.id, nextDraft)
+          }
+          onCancel={cancelAreaEdit}
+          onCommit={() => commitAreaEdit(areaDraft.id, areaDraft)}
+        />
+      </>
     );
   }
 

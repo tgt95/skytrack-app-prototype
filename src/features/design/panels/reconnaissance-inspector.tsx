@@ -1,5 +1,14 @@
-import { ArrowLeftIcon } from "@phosphor-icons/react";
+import {
+  ArrowLeftIcon,
+  CaretRightIcon,
+  InfoIcon,
+} from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
+import {
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
+} from "skytrack-ui/collapsible";
 import {
   type ReconFlightSettings,
   type Waypoint,
@@ -35,12 +44,13 @@ export function ReconSettingsPage({
   onSave: () => void;
 }) {
   return (
-    <div
-      className={`ms-inspector flex flex-col gap-3${codeView ? " ms-inspector-code h-full min-h-0 box-border" : ""}`}
+    <section
+      className={`ms-inspector box-border flex h-full min-h-0 w-full min-w-0 flex-col gap-0 overflow-hidden${codeView ? " ms-inspector-code" : ""}`}
+      aria-label="Reconnaissance flight settings"
       data-testid="ms-design-panel"
     >
-      <section className="p-3" aria-label="Reconnaissance flight settings">
-        <div className="flex items-center gap-1 mb-1">
+      <header className="sticky top-0 z-2 w-full min-w-0 border-b border-border bg-(--card) p-4">
+        <div className="flex min-w-0 items-center gap-2">
           <SkyTooltip>
             <Button
               size="icon-sm"
@@ -51,29 +61,33 @@ export function ReconSettingsPage({
               <ArrowLeftIcon aria-hidden="true" />
             </Button>
           </SkyTooltip>
-          <span className="h6">
+          <h2 className="m-0 min-w-0 text-lg font-semibold">
             {target.kind === "area"
               ? "Area reconnaissance settings"
               : "Route reconnaissance settings"}
-          </span>
+          </h2>
         </div>
-        <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">Configure capture settings for this mission.</p>
+      </header>
+      <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto p-4">
+        <p className="ms-hint m-0 text-sm text-(--muted-foreground) leading-[1.5]">
+          Configure capture settings for this mission.
+        </p>
         <ReconnaissanceSettingsForm
           value={value}
           onChange={onChange}
           showFlightPattern={target.kind === "area"}
           altitudeReference={target.kind === "area" ? "AGL" : undefined}
         />
-        <div className="ms-btnrow flex justify-end flex-row gap-1.5 mt-8">
-          <Button size="sm" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button size="sm" variant="default" onClick={onSave}>
-            Save settings
-          </Button>
-        </div>
-      </section>
-    </div>
+      </div>
+      <footer className="sticky bottom-0 flex w-full min-w-0 justify-end gap-2 border-t border-border bg-card p-3">
+        <Button size="sm" variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button size="sm" variant="default" onClick={onSave}>
+          Save settings
+        </Button>
+      </footer>
+    </section>
   );
 }
 
@@ -169,9 +183,19 @@ export function ReconCaptureSummary({
           Spend {batteryPct}%
         </div>
       </div>
-      <small className="col-span-full text-sm text-muted-foreground leading-[1.4]">
-        {estimateNote}
-      </small>
+      <Collapsible className="col-span-full w-full min-w-0 text-sm text-muted-foreground">
+        <CollapsibleTrigger className="group flex w-fit cursor-pointer items-center gap-1.5 select-none">
+          <InfoIcon aria-hidden="true" className="size-3.5" />
+          <span>About these estimates</span>
+          <CaretRightIcon
+            aria-hidden="true"
+            className="size-3 transition-transform group-data-panel-open:rotate-90"
+          />
+        </CollapsibleTrigger>
+        <CollapsiblePanel className="pt-1">
+          <p className="m-0 leading-[1.4]">{estimateNote}</p>
+        </CollapsiblePanel>
+      </Collapsible>
     </div>
   );
 }

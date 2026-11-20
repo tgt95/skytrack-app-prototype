@@ -49,6 +49,8 @@ interface StudioMapControlsProps {
   onShowPhotoMarkersChange: (show: boolean) => void
   showCameraFootprint: boolean
   onShowCameraFootprintChange: (show: boolean) => void
+  showWindVisualization: boolean
+  onShowWindVisualizationChange: (show: boolean) => void
   footprintOpacity: number
   onFootprintOpacityChange: (opacity: number) => void
   basemapStyle: MissionBasemapStyle
@@ -66,6 +68,8 @@ export function StudioMapControls ({
   onShowPhotoMarkersChange,
   showCameraFootprint,
   onShowCameraFootprintChange,
+  showWindVisualization,
+  onShowWindVisualizationChange,
   footprintOpacity,
   onFootprintOpacityChange,
   basemapStyle,
@@ -207,6 +211,22 @@ export function StudioMapControls ({
                         </CheckboxRoot>
                       </span>
                       <span className='text-sm'>Photo capture markers</span>
+                    </label>
+                    <label className='flex flex-row gap-2'>
+                      <span className='py-0.5'>
+                        <CheckboxRoot
+                          checked={showWindVisualization}
+                          onCheckedChange={checked =>
+                            onShowWindVisualizationChange(checked === true)
+                          }
+                          data-testid='ms-wind-visualization-toggle'
+                        >
+                          <CheckboxIndicator aria-hidden='true'>
+                            ✓
+                          </CheckboxIndicator>
+                        </CheckboxRoot>
+                      </span>
+                      <span className='text-sm'>Wind visualization</span>
                     </label>
                     <div className='flex flex-col gap-2'>
                       <label className='flex flex-row gap-2'>

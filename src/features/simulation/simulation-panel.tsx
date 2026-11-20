@@ -125,19 +125,18 @@ export default function SimulationPanel(props: SimulationPanelProps) {
     status === "completed" || status === "aborted" || status === "failed";
 
   return (
-    <div className="ms-inspector flex flex-col gap-3 gap-0!" data-testid="ms-sim-panel">
+    <div className="ms-inspector flex flex-col gap-0" data-testid="ms-sim-panel">
       {!plan ? (
-        <section className="ms-card border border-border rounded-(--radius) bg-(--background) p-3 flex flex-col gap-2" role="status">
-          <h3 className="heading ms-card-title m-0 text-sm font-semibold">Simulation locked</h3>
-          <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">{gateReason ?? "Add mission logic first."}</p>
+        <section className="ms-card border border-border rounded-(--radius) bg-background p-3 flex flex-col gap-2" role="status">
+          <div className="text-sm font-semibold">Simulation locked</div>
+          <p className="ms-hint m-0 text-xs text-muted-foreground">{gateReason ?? "Add mission logic first."}</p>
         </section>
       ) : (
         <Tabs
           value={activeTab}
           onValueChange={(v: unknown) => onTabChange(String(v))}
-          className="gap-0!"
         >
-          <div className="ms-pane-head sticky top-0 bg-(--card) z-2 in-[.ms-inspector]:bg-(--card)">
+          <div className="ms-pane-head sticky top-0 bg-card z-2 in-[.ms-inspector]:bg-card">
             <div className="ms-pane-tabs flex items-center justify-between gap-2 p-3 min-h-16 border-b border-border">
               <TabsList variant="filled" aria-label="Simulation views">
                 <TabsTab value="details">Mission details</TabsTab>
@@ -349,11 +348,11 @@ export default function SimulationPanel(props: SimulationPanelProps) {
             </Button>
             <Button
               size="sm"
-              variant="outline"
+              variant="destructive"
               onClick={onAbort}
               aria-label="Abort simulation"
             >
-              <StopIcon aria-hidden="true" /> Abort
+              <StopIcon aria-hidden="true" weight="fill" /> Abort
             </Button>
           </>
         ) : null}
@@ -369,11 +368,11 @@ export default function SimulationPanel(props: SimulationPanelProps) {
             </Button>
             <Button
               size="sm"
-              variant="outline"
+              variant="destructive"
               onClick={onAbort}
               aria-label="Abort simulation"
             >
-              <StopIcon aria-hidden="true" /> Abort
+              <StopIcon aria-hidden="true" weight="fill" /> Abort
             </Button>
             <Button
               size="sm"

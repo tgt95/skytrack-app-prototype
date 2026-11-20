@@ -84,6 +84,7 @@ export function useStudioUiState() {
   );
   const [showPhotoMarkers, setShowPhotoMarkers] = useState(true);
   const [showCameraFootprint, setShowCameraFootprint] = useState(false);
+  const [showWindVisualization, setShowWindVisualization] = useState(true);
   const [footprintOpacity, setFootprintOpacity] = useState(2);
   const [worldPickerOpen, setWorldPickerOpen] = useState(false);
 
@@ -140,6 +141,8 @@ export function useStudioUiState() {
     setShowPhotoMarkers,
     showCameraFootprint,
     setShowCameraFootprint,
+    showWindVisualization,
+    setShowWindVisualization,
     footprintOpacity,
     setFootprintOpacity,
     worldPickerOpen,

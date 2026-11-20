@@ -3,16 +3,21 @@ import type { StudioMission, WindEnvironmentSettings } from "@/domain/mission-mo
 import { windEnvironmentOf } from "@/domain/mission-model";
 import { WindEnvironmentSettingsPage } from "./wind-environment-settings-page";
 import { MissionSettingsToastHost, notifyMissionSettingsApplied } from "./mission-settings-toast";
+import type { WindVisualizationMode } from "@/features/simulation/wind-visualization";
 
 export function WindEnvironmentSettingsSubpage({
   mission,
   onUpdateMission,
   onWindPreviewChange,
+  windVisualization,
+  onWindVisualizationChange,
   onClose,
 }: {
   mission: StudioMission;
   onUpdateMission: (next: StudioMission, label?: string) => void;
   onWindPreviewChange: (value: WindEnvironmentSettings | null) => void;
+  windVisualization: WindVisualizationMode;
+  onWindVisualizationChange: (mode: WindVisualizationMode) => void;
   onClose: () => void;
 }) {
   const [draft, setDraft] = useState(() => ({ ...windEnvironmentOf(mission) }));
@@ -32,6 +37,8 @@ export function WindEnvironmentSettingsSubpage({
           setDraft(next);
           onWindPreviewChange(next);
         }}
+        visualizationMode={windVisualization}
+        onVisualizationModeChange={onWindVisualizationChange}
         onCancel={onClose}
         onApply={apply}
       />

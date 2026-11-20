@@ -37,19 +37,20 @@ export function useStudioSceneSession({
   }, [setSceneReadiness])
 
   useEffect(() => {
-    if (mission.worldType !== '2D' || sceneReadiness !== 'ready') return
+    if (sceneReadiness !== 'ready') return
     const nextOrigin = missionOrigin(mission)
+    if (mission.id !== fittedMissionIdRef.current) {
+      fittedMissionIdRef.current = mission.id
+      synchronizedOriginRef.current = nextOrigin
+      sceneRef.current?.resetCamera()
+      return
+    }
+    if (mission.worldType !== '2D') return
     const previousOrigin = synchronizedOriginRef.current
     if (nextOrigin.lat === previousOrigin.lat && nextOrigin.lng === previousOrigin.lng) return
     synchronizedOriginRef.current = nextOrigin
     sceneRef.current?.flyToLocation({ latitude: nextOrigin.lat, longitude: nextOrigin.lng })
   }, [mission, sceneReadiness])
-
-  useEffect(() => {
-    if (sceneReadiness !== 'ready' || mission.id === fittedMissionIdRef.current) return
-    fittedMissionIdRef.current = mission.id
-    sceneRef.current?.resetCamera()
-  }, [mission.id, sceneReadiness])
 
   useEffect(() => {
     if (stage !== 'simulation' || sceneReadiness === 'loading' || gate.ok) return

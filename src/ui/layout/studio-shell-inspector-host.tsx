@@ -7,11 +7,14 @@ import type { useStudioSimulationModel } from "@/features/studio/use-studio-simu
 import type { useStudioUiState } from "@/features/studio/use-studio-ui-state";
 import type { SimEventItem } from "@/features/simulation/simulation";
 import type { StudioMission, WindEnvironmentSettings } from "@/domain/mission-model";
+import type { WindVisualizationMode } from "@/features/simulation/wind-visualization";
 import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 
 export function StudioShellInspectorHost({
   mission,
   onWindPreviewChange,
+  windVisualization,
+  onWindVisualizationChange,
   aiModels,
   onImportAIModel,
   onDeleteAIModel,
@@ -25,6 +28,8 @@ export function StudioShellInspectorHost({
 }: {
   mission: StudioMission;
   onWindPreviewChange: (value: WindEnvironmentSettings | null) => void;
+  windVisualization: WindVisualizationMode;
+  onWindVisualizationChange: (mode: WindVisualizationMode) => void;
   aiModels: AIModelCardModel[];
   onImportAIModel: () => void;
   onDeleteAIModel: (modelId: string) => boolean;
@@ -40,6 +45,8 @@ export function StudioShellInspectorHost({
     <StudioInspectorContainer
       mission={mission}
       onWindPreviewChange={onWindPreviewChange}
+      windVisualization={windVisualization}
+      onWindVisualizationChange={onWindVisualizationChange}
       aiModels={aiModels}
       onImportAIModel={onImportAIModel}
       onDeleteAIModel={onDeleteAIModel}

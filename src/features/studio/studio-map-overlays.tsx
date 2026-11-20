@@ -231,7 +231,7 @@ export default function StudioMapOverlays({
           )}
         </ToggleGroup>
       </div>
-      {drawing && stage === "design" && tool !== "route" ? (
+      {drawing && stage === "design" && tool === "avoid" ? (
         <div
           className=" flex-[0_0_auto] flex items-center justify-between gap-2.5 py-1.5 px-3 border-b border-b-border bg-(--card) text-xs"
           role="status"
@@ -285,26 +285,18 @@ export default function StudioMapOverlays({
               </Toolbar>
             ) : null}
             <span>
-              {tool === "area"
-                ? `Area — ${pendingCount} point${
+              {pendingShape === "cylinder"
+                ? pendingCount === 0
+                  ? "Click the scene to place the center; move and click the check to set radius."
+                  : "Move the pointer to set the radius, then click the check to finish."
+                : `Avoid-zone — ${pendingCount} point${
                     pendingCount === 1 ? "" : "s"
-                  } placed. Choose Polygon or Cylinder in Area draft settings.${
-                    pendingCount > 0
-                      ? " Finish or cancel this draft to change shape."
-                      : ""
-                  }`
-                : pendingShape === "cylinder"
-                  ? pendingCount === 0
-                    ? "Click the scene to place the center; move and click the check to set radius."
-                    : "Move the pointer to set the radius, then click the check to finish."
-                  : `Avoid-zone — ${pendingCount} point${
-                      pendingCount === 1 ? "" : "s"
-                    } placed. Close the outline at point 1.`}
+                  } placed. Close the outline at point 1.`}
             </span>
           </div>
         </div>
       ) : null}
-      {simActive ? (
+      {/* {simActive ? (
         <div
           className=" flex-[0_0_auto] flex items-center justify-between gap-2.5 py-1.5 px-3 border-b border-b-border bg-(--card) text-xs [@media_(max-width:_61.25rem)]:flex-wrap"
           role="status"
@@ -372,7 +364,7 @@ export default function StudioMapOverlays({
             )}
           </span>
         </div>
-      ) : null}
+      ) : null} */}
       {children}
     </section>
   );

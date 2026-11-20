@@ -5,6 +5,7 @@ import { DrawingAltitudeRuler } from "@/features/design/drawing/drawing-altitude
 import type { MissionBasemapStyle } from "@/features/scene/basemaps";
 import type { StudioMission } from "@/domain/mission-model";
 import type { WindEnvironmentSettings } from "@/domain/mission-model";
+import type { WindVisualizationMode } from "@/features/simulation/wind-visualization";
 import type { SimPlan } from "@/features/simulation/simulation";
 import type { SimStatus } from "@/features/simulation/simulation";
 import { WindParticleOverlay } from "@/features/simulation/wind-particle-overlay";
@@ -17,6 +18,7 @@ type SceneProps = Omit<ComponentProps<typeof MissionScene>, "ref">;
 interface StudioSceneViewportProps {
   mission: StudioMission;
   windPreview: WindEnvironmentSettings | null;
+  windVisualization: WindVisualizationMode;
   hideContextCards?: boolean;
   sceneRef: RefObject<MissionSceneHandle | null>;
   sceneProps: SceneProps;
@@ -43,6 +45,8 @@ interface StudioSceneViewportProps {
   onShowPhotoMarkersChange: (show: boolean) => void;
   showCameraFootprint: boolean;
   onShowCameraFootprintChange: (show: boolean) => void;
+  showWindVisualization: boolean;
+  onShowWindVisualizationChange: (show: boolean) => void;
   footprintOpacity: number;
   onFootprintOpacityChange: (opacity: number) => void;
   basemapStyle: MissionBasemapStyle;
@@ -52,6 +56,7 @@ interface StudioSceneViewportProps {
 export default function StudioSceneViewport({
   mission,
   windPreview,
+  windVisualization,
   hideContextCards = false,
   sceneRef,
   sceneProps,
@@ -78,6 +83,8 @@ export default function StudioSceneViewport({
   onShowPhotoMarkersChange,
   showCameraFootprint,
   onShowCameraFootprintChange,
+  showWindVisualization,
+  onShowWindVisualizationChange,
   footprintOpacity,
   onFootprintOpacityChange,
   basemapStyle,
@@ -123,14 +130,17 @@ export default function StudioSceneViewport({
         ) : null}
         <MissionScene ref={sceneRef} {...sceneProps} />
       </div>
-      <WindParticleOverlay
-        mission={mission}
-        windPreview={windPreview}
-        sceneRef={sceneRef}
-        status={simulationStatus}
-        reducedMotion={reducedMotion}
-        designMode={stage === "design"}
-      />
+      {showWindVisualization ? (
+        <WindParticleOverlay
+          mission={mission}
+          windPreview={windPreview}
+          visualizationMode={windVisualization}
+          sceneRef={sceneRef}
+          status={simulationStatus}
+          reducedMotion={reducedMotion}
+          designMode={stage === "design"}
+        />
+      ) : null}
       {simActive && lidarOn && plan ? (
         <LidarPreview
           plan={plan}
@@ -156,6 +166,8 @@ export default function StudioSceneViewport({
         onShowPhotoMarkersChange={onShowPhotoMarkersChange}
         showCameraFootprint={showCameraFootprint}
         onShowCameraFootprintChange={onShowCameraFootprintChange}
+        showWindVisualization={showWindVisualization}
+        onShowWindVisualizationChange={onShowWindVisualizationChange}
         footprintOpacity={footprintOpacity}
         onFootprintOpacityChange={onFootprintOpacityChange}
         basemapStyle={basemapStyle}

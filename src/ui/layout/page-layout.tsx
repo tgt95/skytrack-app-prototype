@@ -8,6 +8,7 @@ import {
 import type { ReactNode } from "react";
 import { Tabs, TabsPanel } from "skytrack-ui/tabs";
 import type { StudioMission, WindEnvironmentSettings } from "@/domain/mission-model";
+import type { WindVisualizationMode } from "@/features/simulation/wind-visualization";
 import type { useAddressSearch } from "@/features/search/use-address-search";
 import StudioDialogs from "@/features/studio/studio-dialogs";
 import StudioLeftRail from "@/features/studio/studio-left-rail";
@@ -125,6 +126,7 @@ export default function StudioShell({
   account,
 }: StudioShellProps) {
   const [windPreview, setWindPreview] = useState<WindEnvironmentSettings | null>(null);
+  const [windVisualization, setWindVisualization] = useState<WindVisualizationMode>("particle-stream");
   const [reportSubpageOpen, setReportSubpageOpen] = useState(
     () => parseMissionInsightsRoute(window.location.search) !== null,
   );
@@ -317,6 +319,7 @@ export default function StudioShell({
             <StudioShellSceneViewport
               mission={mission}
               windPreview={windPreview}
+              windVisualization={windVisualization}
               ui={ui}
               drawing={drawing}
               routing={routing}
@@ -332,6 +335,8 @@ export default function StudioShell({
           <StudioShellInspectorHost
             mission={mission}
             onWindPreviewChange={setWindPreview}
+            windVisualization={windVisualization}
+            onWindVisualizationChange={setWindVisualization}
             aiModels={aiModels}
             onImportAIModel={onImportAIModel}
             onDeleteAIModel={onDeleteAIModel}
