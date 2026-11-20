@@ -167,7 +167,6 @@ export default function StudioShell({
     setRightOpen,
     setEditOpen,
     setShortcutsOpen,
-    setSimSettingsOpen,
     setWorldPickerOpen,
     say,
   } = ui;
@@ -199,7 +198,6 @@ export default function StudioShell({
   } = handlers;
 
   const drawingActive = tool === "route" || tool === "area" || tool === "avoid";
-  const simActive = stage === "simulation";
   const hideStudioChrome = false;
 
   const openMissionDesignFromReport = useCallback(() => {
@@ -304,16 +302,8 @@ export default function StudioShell({
             tool={tool}
             pendingCount={pending.length}
             pendingShape={pendingShape}
-            simActive={simActive}
-            sim={sim}
-            totalT={totalT}
-            plan={plan}
             onStageChange={gotoStage}
             onPendingShapeChange={setPendingShape}
-            onOpenSimulationSettings={() => {
-              setSimSettingsOpen(true);
-              say("Simulation settings.");
-            }}
             onAnnounce={say}
           >
             <StudioShellSceneViewport

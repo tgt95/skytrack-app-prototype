@@ -204,11 +204,13 @@ export function createHoverFlow(deps: HoverFlowDeps): (movement: { endPosition: 
       }
     }
     hoverRef.current = { insert: hoverInsert, pendingInsert: hoverPendingInsert }
-    viewer.canvas.style.cursor = hoveredId
-      ? 'ns-resize'
-      : hoveredAuthoredWp || hoveredPhoto !== null || hoverInsert !== null || hoveredPendingPoint || hoverPendingInsert !== null
-      ? 'pointer'
-      : ''
+    viewer.canvas.style.cursor = drawTool === 'home'
+      ? 'none'
+      : hoveredId
+        ? 'ns-resize'
+        : hoveredAuthoredWp || hoveredPhoto !== null || hoverInsert !== null || hoveredPendingPoint || hoverPendingInsert !== null
+          ? 'pointer'
+          : ''
     viewer.scene.requestRender()
   }
 }

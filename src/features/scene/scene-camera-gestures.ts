@@ -18,8 +18,9 @@
    as explicit refs owned by MissionScene. */
 
 import type { Viewer } from 'cesium'
-import { missionOrigin, type StudioMission } from '@/domain/mission-model'
+import { missionOrigin, type SceneTool, type StudioMission } from '@/domain/mission-model'
 import { enuToLngLat } from './mission-scene-helpers'
+import { SCENE_POINTER_DRAG_THRESHOLD_PX } from './scene-gesture-thresholds'
 import type { MissionCubeSnap } from './mission-compass-model'
 import type { EditGestureHooks, SceneDragPressRecord } from './scene-edit-gestures'
 
@@ -32,6 +33,7 @@ export function installCameraGestures(deps: {
   isMounted: () => boolean
   dragState: SceneDragPressRecord
   canvasPositionFromClient: (clientX: number, clientY: number) => import('cesium').Cartesian2
+  toolRef: { current: SceneTool }
   missionRef: { current: StudioMission }
   reducedRef: { current: boolean }
   /* 'none' | 'orbit' | 'pan' | 'pitch' | 'edit' | 'snap' — consumed by
@@ -45,7 +47,7 @@ export function installCameraGestures(deps: {
   edit: EditGestureHooks
 }): { install: () => void; dispose: () => void; abortGestures: () => void; pushOrientation: () => void } {
   const {
-    viewer, Cesium, isMounted, dragState, canvasPositionFromClient,
+    viewer, Cesium, isMounted, dragState, canvasPositionFromClient, toolRef,
     missionRef, reducedRef, gestureModeRef, setOrientation,
     snapFnRef, orbitByRef, orbitEndRef, topDownRef, edit
   } = deps
@@ -223,6 +225,13 @@ export function installCameraGestures(deps: {
     if (!e.isPrimary || e.button !== 0) return false
     if (cam.pointerId !== null) return false
     if (edit.isZPressActive()) return false
+    if (toolRef.current === 'home') {
+      cancelSnap()
+      cam.pointerId = e.pointerId
+      cam.mode = 'edit'
+      freezeCamInputs()
+      return false
+    }
     const pos = canvasPositionFromClient(e.clientX, e.clientY)
     let picked: unknown[] = []
     try {
@@ -288,7 +297,7 @@ export function installCameraGestures(deps: {
     const totalDx = e.clientX - cam.downX
     const totalDy = e.clientY - cam.downY
     if (!cam.thresh) {
-      if (totalDx * totalDx + totalDy * totalDy < 16) return
+      if (totalDx * totalDx + totalDy * totalDy < SCENE_POINTER_DRAG_THRESHOLD_PX ** 2) return
       cam.thresh = true
       // Suppress the release LEFT_CLICK so a camera drag never edits.
       dragState.dragged = true
@@ -363,7 +372,11 @@ export function installCameraGestures(deps: {
     if (dragState.activePointerId === e.pointerId) dragState.activePointerId = null
   }
   const onPointerMove = (e: PointerEvent) => {
-    if (e.buttons !== 0 && Math.hypot(e.clientX - dragState.downX, e.clientY - dragState.downY) > 6) {
+    if (
+      e.buttons !== 0 &&
+      Math.hypot(e.clientX - dragState.downX, e.clientY - dragState.downY) >
+        SCENE_POINTER_DRAG_THRESHOLD_PX
+    ) {
       dragState.dragged = true
     }
   }

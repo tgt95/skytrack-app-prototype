@@ -1,6 +1,4 @@
 import type { ReactNode } from "react";
-import { PauseIcon, PlayIcon, SquareIcon } from "@phosphor-icons/react";
-import { Button } from "skytrack-ui/button";
 import { Toggle } from "skytrack-ui/toggle";
 import { ToggleGroup } from "skytrack-ui/toggle-group";
 import { Toolbar, ToolbarButton, ToolbarGroup } from "skytrack-ui/toolbar";
@@ -16,7 +14,6 @@ import {
 import { AreaIcon } from "@/ui/components/icons";
 import type { SceneTool } from "@/domain/mission-model";
 import SimulationReportTable from "./report-table";
-import type { SimApi, SimPlan } from "@/features/simulation/simulation";
 import type { AppTab } from "./studio-left-rail";
 import type { PendingMissionShape } from "./use-drawing-session";
 
@@ -46,13 +43,8 @@ interface StudioMapOverlaysProps {
   tool: SceneTool;
   pendingCount: number;
   pendingShape: PendingMissionShape;
-  simActive: boolean;
-  sim: SimApi;
-  totalT: number;
-  plan: SimPlan | null;
   onStageChange: (stage: Stage) => void;
   onPendingShapeChange: (shape: PendingMissionShape) => void;
-  onOpenSimulationSettings: () => void;
   onAnnounce: (message: string) => void;
   children: ReactNode;
 }
@@ -68,13 +60,8 @@ export default function StudioMapOverlays({
   tool,
   pendingCount,
   pendingShape,
-  simActive,
-  sim,
-  totalT,
-  plan,
   onStageChange,
   onPendingShapeChange,
-  onOpenSimulationSettings,
   onAnnounce,
   children,
 }: StudioMapOverlaysProps) {

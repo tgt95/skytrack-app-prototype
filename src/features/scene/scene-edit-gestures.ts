@@ -29,6 +29,7 @@ import {
 } from './scene-point-drag'
 import { createSurfacePick } from './scene-surface-pick'
 import { translateMissionGroup, type MissionGroupRef } from '@/domain/mission-model'
+import { SCENE_POINTER_DRAG_THRESHOLD_PX } from './scene-gesture-thresholds'
 
 type CesiumNS = typeof import('cesium')
 
@@ -421,6 +422,12 @@ export function createEditGestures(deps: {
      related). Camera arbitration stays with scene-camera-gestures.ts. */
   const install = () => {
     screenHandler = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
+    /* Cesium defaults to a 5 px click tolerance. Match click recognition to
+       the camera drag threshold so trackpad jitter does not drop map points. */
+    const clickTolerance = screenHandler as import('cesium').ScreenSpaceEventHandler & {
+      _clickPixelTolerance: number
+    }
+    clickTolerance._clickPixelTolerance = SCENE_POINTER_DRAG_THRESHOLD_PX
 
     screenHandler.setInputAction(hoverFlow, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 

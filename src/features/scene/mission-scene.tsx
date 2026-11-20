@@ -8,6 +8,8 @@ import {
   useRef,
   useState,
 } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
+import { AirplaneTakeoffIcon } from "@phosphor-icons/react";
 import type {
   MissionSceneHandle,
   MissionSceneProps,
@@ -99,6 +101,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
       ? selectedPhotoWaypointId
       : null;
     const hostRef = useRef<HTMLDivElement>(null);
+    const homeCursorRef = useRef<HTMLDivElement>(null);
     const viewerRef = useRef<Viewer | null>(null);
     const cesiumRef = useRef<CesiumNS | null>(null);
     const editControlsRef = useRef<{
@@ -107,6 +110,22 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
     } | null>(null);
     const toolRef = useRef(tool);
     toolRef.current = tool;
+    const handleHomeCursorMove = useCallback(
+      (event: ReactPointerEvent<HTMLDivElement>) => {
+        const marker = homeCursorRef.current;
+        if (!marker || toolRef.current !== "home") return;
+        const bounds = event.currentTarget.getBoundingClientRect();
+        marker.style.left = `${event.clientX - bounds.left}px`;
+        marker.style.top = `${event.clientY - bounds.top}px`;
+        marker.style.visibility = "visible";
+      },
+      [],
+    );
+    const hideHomeCursor = useCallback(() => {
+      if (homeCursorRef.current) {
+        homeCursorRef.current.style.visibility = "hidden";
+      }
+    }, []);
     const missionRef = useRef(mission);
     missionRef.current = mission;
     const selectionRef = useRef(selection);
@@ -393,6 +412,18 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
     const [status, setStatus] = useState<"loading" | "ready" | "error">(
       "loading",
     );
+    useEffect(() => {
+      if (tool === "home" && status === "ready") {
+        if (viewerRef.current && !viewerRef.current.isDestroyed()) {
+          viewerRef.current.canvas.style.cursor = "none";
+        }
+        return;
+      }
+      hideHomeCursor();
+      if (viewerRef.current && !viewerRef.current.isDestroyed()) {
+        viewerRef.current.canvas.style.cursor = "";
+      }
+    }, [hideHomeCursor, status, tool]);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [retryCount, setRetryCount] = useState(0);
     const [without3d, setWithout3d] = useState(false);
@@ -726,7 +757,24 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
           className=" absolute inset-0 [&_canvas]:block [&_canvas]:w-full [&_canvas]:h-full [&_.cesium-credit-wrapper]:hidden"
           aria-hidden={status !== "ready"}
           data-testid="ms-scene-host"
+          onPointerMove={handleHomeCursorMove}
+          onPointerLeave={hideHomeCursor}
         />
+        {tool === "home" && status === "ready" ? (
+          <div
+            ref={homeCursorRef}
+            aria-hidden="true"
+            className="pointer-events-none absolute z-50 -translate-x-1/2 -translate-y-full"
+            style={{ visibility: "hidden", pointerEvents: "none" }}
+          >
+            <div className="relative flex flex-col items-center">
+              <div className="relative z-10 grid size-9 place-items-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-lg ring-2 ring-primary/30">
+                <AirplaneTakeoffIcon size={18} weight="fill" />
+              </div>
+              <div className="-mt-1.5 size-3 rotate-45 rounded-br-sm border-r-2 border-b-2 border-background bg-primary" />
+            </div>
+          </div>
+        ) : null}
         {status === "ready" ? (
           <MissionScaleIndicator
             viewer={viewerRef.current}

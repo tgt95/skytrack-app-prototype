@@ -163,6 +163,7 @@ export function startMissionSceneRuntime(args: SceneRuntimeArgs): (() => void) |
           isMounted: () => mounted,
           dragState,
           canvasPositionFromClient,
+          toolRef: editState.toolRef,
           missionRef,
           reducedRef,
           gestureModeRef,
