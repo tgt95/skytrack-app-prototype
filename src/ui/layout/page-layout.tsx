@@ -7,7 +7,7 @@ import {
 } from "react";
 import type { ReactNode } from "react";
 import { Tabs, TabsPanel } from "skytrack-ui/tabs";
-import type { StudioMission } from "@/domain/mission-model";
+import type { StudioMission, WindEnvironmentSettings } from "@/domain/mission-model";
 import type { useAddressSearch } from "@/features/search/use-address-search";
 import StudioDialogs from "@/features/studio/studio-dialogs";
 import StudioLeftRail from "@/features/studio/studio-left-rail";
@@ -124,6 +124,7 @@ export default function StudioShell({
   onDeleteAIModel,
   account,
 }: StudioShellProps) {
+  const [windPreview, setWindPreview] = useState<WindEnvironmentSettings | null>(null);
   const [reportSubpageOpen, setReportSubpageOpen] = useState(
     () => parseMissionInsightsRoute(window.location.search) !== null,
   );
@@ -168,6 +169,11 @@ export default function StudioShell({
     setWorldPickerOpen,
     say,
   } = ui;
+  useEffect(() => {
+    if (stage !== "design" || appTab !== "plan" || !rightOpen) {
+      setWindPreview(null);
+    }
+  }, [appTab, rightOpen, stage]);
   const { tool, pending, pendingShape, setPendingShape } = drawing;
   const draftActions = drawing.draftActions;
   const { libraryEntry, missionWorldOptions, availableDrones } = routing;
@@ -310,6 +316,7 @@ export default function StudioShell({
           >
             <StudioShellSceneViewport
               mission={mission}
+              windPreview={windPreview}
               ui={ui}
               drawing={drawing}
               routing={routing}
@@ -324,6 +331,7 @@ export default function StudioShell({
           </StudioMapOverlays>
           <StudioShellInspectorHost
             mission={mission}
+            onWindPreviewChange={setWindPreview}
             aiModels={aiModels}
             onImportAIModel={onImportAIModel}
             onDeleteAIModel={onDeleteAIModel}

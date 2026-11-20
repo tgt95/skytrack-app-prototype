@@ -4,6 +4,7 @@ import LidarPreview from "@/features/scene/lidar-preview";
 import { DrawingAltitudeRuler } from "@/features/design/drawing/drawing-altitude-ruler";
 import type { MissionBasemapStyle } from "@/features/scene/basemaps";
 import type { StudioMission } from "@/domain/mission-model";
+import type { WindEnvironmentSettings } from "@/domain/mission-model";
 import type { SimPlan } from "@/features/simulation/simulation";
 import type { SimStatus } from "@/features/simulation/simulation";
 import { WindParticleOverlay } from "@/features/simulation/wind-particle-overlay";
@@ -15,6 +16,7 @@ type SceneProps = Omit<ComponentProps<typeof MissionScene>, "ref">;
 
 interface StudioSceneViewportProps {
   mission: StudioMission;
+  windPreview: WindEnvironmentSettings | null;
   hideContextCards?: boolean;
   sceneRef: RefObject<MissionSceneHandle | null>;
   sceneProps: SceneProps;
@@ -49,6 +51,7 @@ interface StudioSceneViewportProps {
 
 export default function StudioSceneViewport({
   mission,
+  windPreview,
   hideContextCards = false,
   sceneRef,
   sceneProps,
@@ -120,14 +123,14 @@ export default function StudioSceneViewport({
         ) : null}
         <MissionScene ref={sceneRef} {...sceneProps} />
       </div>
-      {stage === "simulation" ? (
-        <WindParticleOverlay
-          mission={mission}
-          sceneRef={sceneRef}
-          status={simulationStatus}
-          reducedMotion={reducedMotion}
-        />
-      ) : null}
+      <WindParticleOverlay
+        mission={mission}
+        windPreview={windPreview}
+        sceneRef={sceneRef}
+        status={simulationStatus}
+        reducedMotion={reducedMotion}
+        designMode={stage === "design"}
+      />
       {simActive && lidarOn && plan ? (
         <LidarPreview
           plan={plan}

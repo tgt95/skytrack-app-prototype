@@ -6,11 +6,12 @@ import type { useStudioSceneSession } from "@/features/studio/use-studio-scene-s
 import type { useStudioSimulationModel } from "@/features/studio/use-studio-simulation-model";
 import type { useStudioUiState } from "@/features/studio/use-studio-ui-state";
 import type { SimEventItem } from "@/features/simulation/simulation";
-import type { StudioMission } from "@/domain/mission-model";
+import type { StudioMission, WindEnvironmentSettings } from "@/domain/mission-model";
 import type { AIModelCardModel } from "@/ui/components/ai-model-card";
 
 export function StudioShellInspectorHost({
   mission,
+  onWindPreviewChange,
   aiModels,
   onImportAIModel,
   onDeleteAIModel,
@@ -23,6 +24,7 @@ export function StudioShellInspectorHost({
   onSelectEvent,
 }: {
   mission: StudioMission;
+  onWindPreviewChange: (value: WindEnvironmentSettings | null) => void;
   aiModels: AIModelCardModel[];
   onImportAIModel: () => void;
   onDeleteAIModel: (modelId: string) => boolean;
@@ -37,6 +39,7 @@ export function StudioShellInspectorHost({
   return (
     <StudioInspectorContainer
       mission={mission}
+      onWindPreviewChange={onWindPreviewChange}
       aiModels={aiModels}
       onImportAIModel={onImportAIModel}
       onDeleteAIModel={onDeleteAIModel}

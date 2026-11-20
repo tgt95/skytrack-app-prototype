@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { StudioMission } from "@/domain/mission-model";
+import type { StudioMission, WindEnvironmentSettings } from "@/domain/mission-model";
 import { windEnvironmentOf } from "@/domain/mission-model";
 import { WindEnvironmentSettingsPage } from "./wind-environment-settings-page";
 import { MissionSettingsToastHost, notifyMissionSettingsApplied } from "./mission-settings-toast";
@@ -7,15 +7,18 @@ import { MissionSettingsToastHost, notifyMissionSettingsApplied } from "./missio
 export function WindEnvironmentSettingsSubpage({
   mission,
   onUpdateMission,
+  onWindPreviewChange,
   onClose,
 }: {
   mission: StudioMission;
   onUpdateMission: (next: StudioMission, label?: string) => void;
+  onWindPreviewChange: (value: WindEnvironmentSettings | null) => void;
   onClose: () => void;
 }) {
   const [draft, setDraft] = useState(() => ({ ...windEnvironmentOf(mission) }));
   const apply = () => {
     onUpdateMission({ ...mission, windEnvironment: { ...draft } }, "Wind environment settings updated.");
+    onWindPreviewChange(null);
     notifyMissionSettingsApplied();
     onClose();
   };
@@ -25,7 +28,10 @@ export function WindEnvironmentSettingsSubpage({
       <MissionSettingsToastHost />
       <WindEnvironmentSettingsPage
         value={draft}
-        onChange={setDraft}
+        onChange={(next) => {
+          setDraft(next);
+          onWindPreviewChange(next);
+        }}
         onCancel={onClose}
         onApply={apply}
       />

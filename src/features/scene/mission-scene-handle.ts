@@ -28,48 +28,47 @@ interface MissionSceneHandleArgs {
 
 export function createMissionSceneHandle({ viewerRef, cesiumRef, fitRef, missionRef, planRef, reducedRef, clockRef, topDownRef, zdragRef, wpDragRef, pendingDragRef, editControlsRef, abortPendingDrag, abortWpDrag, abortZdrag }: MissionSceneHandleArgs): MissionSceneHandle {
   return {
-    getCameraHeading: () => {
-      const viewer = viewerRef.current
-      return viewer && !viewer.isDestroyed() ? viewer.camera.heading : 0
-    },
-    getWindScreenVector: (azimuthDeg, elevationDeg) => {
+    getMissionScreenBounds: () => {
       const viewer = viewerRef.current
       const Cesium = cesiumRef.current
       if (!viewer || !Cesium || viewer.isDestroyed()) return null
 
-      const { scene, camera, canvas } = viewer
-      const center = new Cesium.Cartesian2(canvas.clientWidth / 2, canvas.clientHeight / 2)
-      const ray = camera.getPickRay(center)
-      const anchor = ray ? scene.globe.pick(ray, scene) : undefined
-      const ground = anchor ?? camera.pickEllipsoid(center, scene.globe.ellipsoid)
-      if (!ground) return null
-
-      const azimuth = Cesium.Math.toRadians(azimuthDeg)
-      const elevation = Cesium.Math.toRadians(elevationDeg)
-      const horizontal = Math.cos(elevation)
-      const localWind = Cesium.Cartesian3.fromElements(
-        horizontal * Math.cos(azimuth),
-        horizontal * Math.sin(azimuth),
-        Math.sin(elevation),
-      )
-      const sampleDistanceM = 25
-      Cesium.Cartesian3.multiplyByScalar(localWind, sampleDistanceM, localWind)
-
-      const enuFrame = Cesium.Transforms.eastNorthUpToFixedFrame(ground, scene.globe.ellipsoid)
-      const worldWind = Cesium.Matrix4.multiplyByPointAsVector(
-        enuFrame,
-        localWind,
-        new Cesium.Cartesian3(),
-      )
-      const windPoint = Cesium.Cartesian3.add(ground, worldWind, new Cesium.Cartesian3())
-      const start = scene.cartesianToCanvasCoordinates(ground)
-      const end = scene.cartesianToCanvasCoordinates(windPoint)
-      if (!start || !end || !Number.isFinite(start.x) || !Number.isFinite(start.y) || !Number.isFinite(end.x) || !Number.isFinite(end.y)) return null
+      const mission = missionRef.current
+      const origin = missionOrigin(mission)
+      const points = mission.waypoints.length > 0 ? mission.waypoints : [mission.spawn]
+      const projected = points.flatMap((point) => {
+        const geo = enuToLngLat(point.x, point.y, origin)
+        const world = Cesium.Cartesian3.fromDegrees(geo.lng, geo.lat, 0)
+        const screen = viewer.scene.cartesianToCanvasCoordinates(world)
+        return screen && Number.isFinite(screen.x) && Number.isFinite(screen.y)
+          && screen.x >= 0 && screen.x <= viewer.canvas.clientWidth
+          && screen.y >= 0 && screen.y <= viewer.canvas.clientHeight
+          ? [screen]
+          : []
+      })
+      if (projected.length === 0) return null
 
       return {
-        x: (end.x - start.x) / sampleDistanceM,
-        y: (end.y - start.y) / sampleDistanceM,
+        left: Math.min(...projected.map((point) => point.x)),
+        top: Math.min(...projected.map((point) => point.y)),
+        right: Math.max(...projected.map((point) => point.x)),
+        bottom: Math.max(...projected.map((point) => point.y)),
       }
+    },
+    projectWindEnuPoints: (points) => {
+      const viewer = viewerRef.current
+      const Cesium = cesiumRef.current
+      if (!viewer || !Cesium || viewer.isDestroyed()) return points.map(() => null)
+
+      const origin = missionOrigin(missionRef.current)
+      return points.map((point) => {
+        const geo = enuToLngLat(point.x, point.y, origin)
+        const world = Cesium.Cartesian3.fromDegrees(geo.lng, geo.lat, point.z)
+        const screen = viewer.scene.cartesianToCanvasCoordinates(world)
+        return screen && Number.isFinite(screen.x) && Number.isFinite(screen.y)
+          ? { x: screen.x, y: screen.y }
+          : null
+      })
     },
     subscribeCameraChanged: (listener) => {
       const viewer = viewerRef.current

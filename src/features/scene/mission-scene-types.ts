@@ -3,9 +3,10 @@ import type { MissionBasemapStyle } from './basemaps'
 import type { SimPlan } from '@/features/simulation/simulation'
 
 export interface MissionSceneHandle {
-  getCameraHeading: () => number
-  /** Return the local ENU wind vector's screen projection in CSS pixels per meter. */
-  getWindScreenVector: (azimuthDeg: number, elevationDeg: number) => { x: number; y: number } | null
+  /** Return the screen-space bounds of the mission waypoint field. */
+  getMissionScreenBounds: () => { left: number; top: number; right: number; bottom: number } | null
+  /** Project mission-relative ENU positions through the current Cesium camera. */
+  projectWindEnuPoints: (points: readonly { x: number; y: number; z: number }[]) => ({ x: number; y: number } | null)[]
   subscribeCameraChanged: (listener: () => void) => () => void
   downloadMapImage: () => boolean
   resetCamera: () => void
@@ -89,4 +90,3 @@ declare global {
     __missionStudio?: Record<string, unknown>
   }
 }
-

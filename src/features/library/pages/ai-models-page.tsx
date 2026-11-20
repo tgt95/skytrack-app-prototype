@@ -236,13 +236,13 @@ export function AIModelsPage({
               <DialogTitle className="heading">
                 {editing ? "Edit AI model" : "AI model details"}
               </DialogTitle>
-              <DialogDescription>
+              {/* <DialogDescription>
                 {activeModel?.origin === "skytrack"
                   ? "SkyTrack models are managed by SkyTrack."
                   : editing
                     ? "Update the model name and description."
                     : "This model is managed by a Workspace administrator."}
-              </DialogDescription>
+              </DialogDescription> */}
             </DialogHeader>
             <div className="flex flex-col gap-4">
               <FieldRoot>

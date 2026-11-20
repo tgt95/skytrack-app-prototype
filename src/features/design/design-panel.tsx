@@ -8,10 +8,12 @@ import {
 } from "./panels/ai-model-manager-toast";
 import { DesignPanelTabs } from "./panels/design-panel-tabs";
 import {
+  windEnvironmentOf,
   type CameraActionKind,
   type SceneSelection,
   type StudioMission,
   type ValidationIssue,
+  type WindEnvironmentSettings,
 } from "@/domain/mission-model";
 import type { DerivedTransfer } from "@/domain/transfer-planner";
 import MissionPreview from "@/features/simulation/mission-preview";
@@ -58,6 +60,7 @@ export interface DesignPanelProps {
   onExportJson: () => void;
   onSelect: (sel: SceneSelection | null) => void;
   onUpdateMission: (next: StudioMission, label?: string) => void;
+  onWindPreviewChange: (value: WindEnvironmentSettings | null) => void;
   onPreviewMission: (next: StudioMission) => void;
   onCommitPreview: (next: StudioMission, label?: string) => void;
   onCancelPreview: () => void;
@@ -112,6 +115,7 @@ function DesignPanel(props: DesignPanelProps) {
     onExportJson,
     onSelect,
     onUpdateMission,
+    onWindPreviewChange,
     onPreviewMission,
     onCommitPreview,
     onCancelPreview,
@@ -183,7 +187,10 @@ function DesignPanel(props: DesignPanelProps) {
     setAvoidDraft,
   });
 
-  const openWindSettings = () => setWindSettingsOpen(true);
+  const openWindSettings = () => {
+    onWindPreviewChange(windEnvironmentOf(mission));
+    setWindSettingsOpen(true);
+  };
 
   if (reconTarget !== null) {
     return (
@@ -207,7 +214,11 @@ function DesignPanel(props: DesignPanelProps) {
       <WindEnvironmentSettingsSubpage
         mission={mission}
         onUpdateMission={onUpdateMission}
-        onClose={() => setWindSettingsOpen(false)}
+        onWindPreviewChange={onWindPreviewChange}
+        onClose={() => {
+          onWindPreviewChange(null);
+          setWindSettingsOpen(false);
+        }}
       />
     );
   }

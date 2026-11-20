@@ -1,5 +1,6 @@
 import type { useAddressSearch } from "@/features/search/use-address-search";
 import type { StudioMission } from "@/domain/mission-model";
+import type { WindEnvironmentSettings } from "@/domain/mission-model";
 import type { MissionWorldModelSource } from "@/features/scene/mission-scene-types";
 import type { useMissionCommands } from "./use-mission-commands";
 import type { useStudioRouting } from "./use-studio-routing";
@@ -13,6 +14,7 @@ import StudioSceneViewport from "./studio-scene-viewport";
 
 interface StudioShellSceneViewportProps {
   mission: StudioMission;
+  windPreview: WindEnvironmentSettings | null;
   ui: ReturnType<typeof useStudioUiState>;
   drawing: ReturnType<typeof useDrawingSession>;
   routing: ReturnType<typeof useStudioRouting>;
@@ -27,6 +29,7 @@ interface StudioShellSceneViewportProps {
 
 export function StudioShellSceneViewport({
   mission,
+  windPreview,
   ui,
   drawing,
   routing,
@@ -54,6 +57,7 @@ export function StudioShellSceneViewport({
   return (
     <StudioSceneViewport
       mission={mission}
+      windPreview={windPreview}
       hideContextCards={ui.aiModelsOpen}
       sceneRef={sceneRef}
       sceneProps={{

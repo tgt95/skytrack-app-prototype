@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { isValidRing, type StudioMission } from "@/domain/mission-model";
+import { isValidRing, type StudioMission, type WindEnvironmentSettings } from "@/domain/mission-model";
 import type { SimEventItem } from "@/features/simulation/simulation";
 import type { useMissionCommands } from "./use-mission-commands";
 import type { useDrawingSession } from "./use-drawing-session";
@@ -104,6 +104,7 @@ type InspectorActions = Pick<
 
 interface StudioInspectorContainerProps {
   mission: StudioMission;
+  onWindPreviewChange: (value: WindEnvironmentSettings | null) => void;
   ui: InspectorUiState;
   drawing: InspectorDrawingState;
   simulation: InspectorSimulationState;
@@ -120,6 +121,7 @@ interface StudioInspectorContainerProps {
 
 export default function StudioInspectorContainer({
   mission,
+  onWindPreviewChange,
   ui,
   drawing,
   simulation,
@@ -189,6 +191,7 @@ export default function StudioInspectorContainer({
       }}
       design={{
         mission,
+        onWindPreviewChange,
         previewPositionRef: scene.previewPositionRef,
         previewCaptureRef: scene.previewCaptureRef,
         worldType: mission.worldType ?? "3D",
