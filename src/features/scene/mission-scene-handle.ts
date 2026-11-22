@@ -4,15 +4,22 @@ import { samplePlan, type SimPlan } from '@/features/simulation/simulation'
 import { enuToLngLat } from './mission-scene-helpers'
 import type { MissionSceneHandle } from './mission-scene-types'
 import { fitMission } from './scene-fit-mission'
+import { zoomSceneCameraSafely } from './scene-camera-zoom'
 
 type CesiumNS = typeof import('cesium')
 type MutableRef<T> = { current: T }
+type WorldTerrainTriangle = readonly [
+  import('cesium').Cartesian3,
+  import('cesium').Cartesian3,
+  import('cesium').Cartesian3,
+]
 
 interface MissionSceneHandleArgs {
   viewerRef: MutableRef<Viewer | null>
   cesiumRef: MutableRef<CesiumNS | null>
   fitRef: MutableRef<typeof fitMission>
   missionRef: MutableRef<StudioMission>
+  worldTerrainTrianglesRef: MutableRef<WorldTerrainTriangle[]>
   planRef: MutableRef<SimPlan | null>
   reducedRef: MutableRef<boolean>
   clockRef: { current: number }
@@ -26,7 +33,7 @@ interface MissionSceneHandleArgs {
   abortZdrag: () => void
 }
 
-export function createMissionSceneHandle({ viewerRef, cesiumRef, fitRef, missionRef, planRef, reducedRef, clockRef, topDownRef, zdragRef, wpDragRef, pendingDragRef, editControlsRef, abortPendingDrag, abortWpDrag, abortZdrag }: MissionSceneHandleArgs): MissionSceneHandle {
+export function createMissionSceneHandle({ viewerRef, cesiumRef, fitRef, missionRef, worldTerrainTrianglesRef, planRef, reducedRef, clockRef, topDownRef, zdragRef, wpDragRef, pendingDragRef, editControlsRef, abortPendingDrag, abortWpDrag, abortZdrag }: MissionSceneHandleArgs): MissionSceneHandle {
   return {
     getMissionScreenBounds: () => {
       const viewer = viewerRef.current
@@ -181,10 +188,16 @@ export function createMissionSceneHandle({ viewerRef, cesiumRef, fitRef, mission
     },
     zoomBy: (factor) => {
       const viewer = viewerRef.current
-      if (!viewer || viewer.isDestroyed()) return
+      const Cesium = cesiumRef.current
+      if (!viewer || !Cesium || viewer.isDestroyed()) return
       const dist = viewer.camera.positionCartographic?.height ?? 200
-      viewer.camera.zoomIn(dist * 0.25 * factor)
-      viewer.scene.requestRender()
+      zoomSceneCameraSafely({
+        viewer,
+        Cesium,
+        amountM: Math.abs(dist * 0.25 * factor),
+        zoomIn: factor > 0,
+        terrainTriangles: worldTerrainTrianglesRef.current,
+      })
     },
     snapTopDown: () => {
       topDownRef.current()

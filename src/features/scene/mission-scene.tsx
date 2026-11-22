@@ -35,6 +35,7 @@ import { useMissionSceneWorldLayers } from "./use-mission-scene-world-layers";
 import { MissionSceneWorldModelStatus } from "./mission-scene-world-model-status";
 import { MissionScaleIndicator } from "./mission-scale-indicator";
 import { mapRenderResolutionScale } from "./map-render-quality";
+import { zoomSceneCameraSafely } from "./scene-camera-zoom";
 import { useMissionDesignPreferenceRevision } from "./use-mission-design-preference-revision";
 import { readMissionDesignPreferences } from "@/shared/mission-design-preferences";
 
@@ -474,35 +475,17 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
                 viewer.scene.globe.ellipsoid,
               )
             : undefined;
-        if (isZoomIn) viewer.camera.zoomIn(amount);
-        else viewer.camera.zoomOut(amount);
-        if (anchor && preferences.zoomAnchor === "cursor") {
-          const after = viewer.camera.pickEllipsoid(
-            position,
-            viewer.scene.globe.ellipsoid,
-          );
-          if (after) {
-            const correction = Cesium.Cartesian3.subtract(
-              anchor,
-              after,
-              new Cesium.Cartesian3(),
-            );
-            const destination = Cesium.Cartesian3.add(
-              viewer.camera.positionWC,
-              correction,
-              new Cesium.Cartesian3(),
-            );
-            viewer.camera.setView({
-              destination,
-              orientation: {
-                heading: viewer.camera.heading,
-                pitch: viewer.camera.pitch,
-                roll: viewer.camera.roll,
-              },
-            });
-          }
-        }
-        viewer.scene.requestRender();
+        zoomSceneCameraSafely({
+          viewer,
+          Cesium,
+          amountM: amount,
+          zoomIn: isZoomIn,
+          anchorPosition:
+            anchor && preferences.zoomAnchor === "cursor"
+              ? position
+              : undefined,
+          terrainTriangles: worldTerrainTrianglesRef.current,
+        });
       };
       viewer.canvas.addEventListener("wheel", handleWheel, {
         capture: true,
@@ -550,6 +533,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
         cesiumRef,
         fitRef,
         missionRef,
+        worldTerrainTrianglesRef,
         planRef,
         reducedRef,
         clockRef,
