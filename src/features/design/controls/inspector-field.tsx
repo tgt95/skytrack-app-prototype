@@ -12,7 +12,7 @@ interface InspectorFieldProps {
 export function InspectorField({
   label,
   labelId,
-  labelClassName = "w-100/2 text-sm leading-normal font-medium text-muted-foreground",
+  labelClassName = "w-100/2 text-muted-foreground",
   className = "flex flex-row items-center gap-2",
   children,
 }: InspectorFieldProps) {

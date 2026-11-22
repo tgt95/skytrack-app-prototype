@@ -283,8 +283,8 @@ export function addRouteEntities({
       image: droneMarkerImage(
         safeColor(
           Cesium,
-          themeColor("--warning"),
-          "--warning",
+          themeColor("--primary"),
+          "--primary",
           1,
         ).toCssColorString(),
       ),

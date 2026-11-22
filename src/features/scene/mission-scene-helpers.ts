@@ -28,13 +28,12 @@ export { enuToLngLat, lngLatToEnu } from '@/domain/mission-model'
    scene background is black. Live Cesium theme switching is not wired yet.
    Documented vars (all present in
    skytrack-ui/dist-lib/styles.css :root): --muted (globe base and scene clear
-   color), --primary (route/markers/zones), --destructive (avoid
-   zones), --muted-foreground (grid), and --warning (vehicle marker; orange
-   fallback because the shared token is not exposed in this version).
+   color), --primary (route/markers/zones/vehicle accents), --destructive (avoid
+   zones), --muted-foreground (grid), and --warning (warning overlays).
    Owner-directed Planner-match exceptions: photo frustum cyan #68d7e2
    (Planner photoCamera) and hover emphasis red #ea4335
    (Planner footprintSelected). Existing camera footprint greens and the
-   orange/white high-visibility vehicle marker are intentional. */
+   dark vehicle marker with primary accents are intentional. */
 const SCENE_FALLBACKS = {
   '--muted': '#f5f6f8',
   '--primary': '#7357FF',
@@ -207,7 +206,7 @@ const droneMarkerCache = new Map<string, string>()
 export function droneMarkerImage(accentCss: string): string {
   const hit = droneMarkerCache.get(accentCss)
   if (hit) return hit
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="${accentCss}" stroke="#fff" stroke-width="3"/><g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M18 18l12 12M30 18L18 30"/><circle cx="16" cy="16" r="4"/><circle cx="32" cy="16" r="4"/><circle cx="16" cy="32" r="4"/><circle cx="32" cy="32" r="4"/></g><circle cx="24" cy="24" r="3" fill="#fff"/></svg>`
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#171923" stroke="${accentCss}" stroke-width="3"/><g fill="none" stroke="${accentCss}" stroke-width="3" stroke-linecap="round"><path d="M18 18l12 12M30 18L18 30"/><circle cx="16" cy="16" r="4"/><circle cx="32" cy="16" r="4"/><circle cx="16" cy="32" r="4"/><circle cx="32" cy="32" r="4"/></g><circle cx="24" cy="24" r="3" fill="${accentCss}"/></svg>`
   const image = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
   droneMarkerCache.set(accentCss, image)
   return image
