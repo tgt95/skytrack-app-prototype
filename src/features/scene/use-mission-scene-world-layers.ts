@@ -72,7 +72,7 @@ export function useMissionSceneWorldLayers({
       mission.worldType === "2D" && !isDarkBasemap;
     if (viewer.scene.skyBox) {
       viewer.scene.skyBox.show =
-        !(mission.worldType === "2D" && isDarkBasemap);
+        mission.worldType === "2D" && !isDarkBasemap;
     }
     viewer.scene.skyAtmosphere.hueShift = 0;
     viewer.scene.skyAtmosphere.saturationShift = isDarkBasemap ? -0.35 : 0;

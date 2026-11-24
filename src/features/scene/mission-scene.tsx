@@ -769,7 +769,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
         />
         {basemapTilesLoading && status === "ready" ? (
           <div
-            className="pointer-events-none absolute left-1/2 bottom-8 z-30 -translate-x-1/2 rounded-(--radius) border border-border bg-card/95 px-3 py-1.5 text-xs text-muted-foreground shadow-md"
+            className="pointer-events-none absolute left-1/2 bottom-1 z-30 -translate-x-1/2 rounded-(--radius) border border-border bg-card/95 px-3 py-1.5 text-xs text-muted-foreground shadow-md"
             role="status"
             aria-live="polite"
             data-testid="ms-basemap-loading"

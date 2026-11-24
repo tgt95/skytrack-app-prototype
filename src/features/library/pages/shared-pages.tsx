@@ -115,7 +115,7 @@ export function SharedProjectPage({
       }
     >
       <div
-        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-5"
         aria-label={`Missions in ${project.name}`}
       >
         {project.missions.map((mission) => (

@@ -51,7 +51,7 @@ export function HomePage({
           </div>
         </div>
         <div
-          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
+          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-5"
           role="list"
           aria-label="Recent missions"
         >
@@ -80,7 +80,7 @@ export function HomePage({
           </button>
         </div>
         <div
-          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
+          className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-5"
           role="list"
           aria-label="Mission templates preview"
         >
