@@ -29,6 +29,19 @@
         "worldId": "sample-world-tuan-workspace-leeville-pike-roof-assessment",
         "vehicle": "Mini-Pro",
         "droneId": "mini-pro-v6"
+      },
+      {
+        "id": "m-local-mwv1r10q-101",
+        "name": "Bitexco",
+        "editedAgo": "",
+        "starred": false,
+        "shared": false,
+        "viewOnly": false,
+        "world": "Blank space",
+        "worldType": "2D",
+        "vehicle": "Mini-Pro",
+        "droneId": "mini-pro-v6",
+        "basemapStyle": "basic"
       }
     ]
   },

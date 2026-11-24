@@ -14,13 +14,10 @@ import {
   DialogPortal,
   DialogTitle,
 } from "skytrack-ui/dialog";
-import {
-  FieldControl,
-  FieldLabel,
-  FieldRoot,
-} from "skytrack-ui/field";
+import { FieldControl, FieldLabel, FieldRoot } from "skytrack-ui/field";
 import {
   Select,
+  SelectIcon,
   SelectItem,
   SelectItemIndicator,
   SelectItemText,
@@ -77,7 +74,9 @@ export function MissionDialog({
             />
           ) : null}
           <DialogFooter className="flex-row flex-wrap items-center justify-end">
-            <DialogClose className="w-auto flex-[0_0_auto]" size="default">Cancel</DialogClose>
+            <DialogClose className="w-auto flex-[0_0_auto]" size="default">
+              Cancel
+            </DialogClose>
             <Button
               size="default"
               variant="default"
@@ -202,7 +201,9 @@ export function ProjectDialog({
             </FieldRoot>
           </div>
           <DialogFooter className="flex-row flex-wrap items-center justify-end">
-            <DialogClose className="w-auto flex-[0_0_auto]" size="default">Cancel</DialogClose>
+            <DialogClose className="w-auto flex-[0_0_auto]" size="default">
+              Cancel
+            </DialogClose>
             <Button
               size="default"
               variant="default"
@@ -241,6 +242,7 @@ export function CloneProjectPicker({
             <SelectValue placeholder="Select a project">
               {projects.find((p) => p.id === pid)?.name ?? ""}
             </SelectValue>
+            <SelectIcon />
           </SelectTrigger>
           <SelectPortal>
             <SelectPositioner>

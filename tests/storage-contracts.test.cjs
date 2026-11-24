@@ -109,6 +109,33 @@ test("versioned stores and preference/workspace records round-trip through their
       },
     );
 
+    const terrainLayer = {
+      sourceFileName: "survey-dem.tif",
+      center: { lat: 36.357, lon: 25.361 },
+      bbox: [25.36, 36.356, 25.362, 36.358],
+      widthM: 180,
+      gridSize: 2,
+      elevationsM: [1, 2, 3, 4],
+      baseElevationM: 1,
+      horizontalReference: "EPSG:4326",
+      verticalReference: "EGM2008/EPSG:3855",
+    };
+    const terrainMission = {
+      ...mission,
+      id: "terrain-reference-mission",
+      terrainLayer,
+    };
+    assert.equal(
+      library.saveProjects([{ ...project, missions: [terrainMission] }]),
+      true,
+    );
+    const reloadedTerrainMission = library
+      .loadProjects()
+      .find((item) => item.id === project.id)
+      ?.missions.find((item) => item.id === terrainMission.id);
+    assert.deepEqual(reloadedTerrainMission?.terrainLayer, terrainLayer);
+    assert.equal(library.saveProjects([project]), true);
+
     const profile = drone.newDroneProfile(
       "guardrail-drone",
       DEFAULT_WORKSPACE_ID,

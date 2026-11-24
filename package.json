@@ -17,10 +17,14 @@
     "ui:update": "node scripts/update-skytrack-ui.mjs"
   },
   "dependencies": {
+    "@ngageoint/geopackage": "^4.2.10",
     "@phosphor-icons/react": "^2.1.10",
     "cesium": "^1.119.0",
+    "geotiff": "^3.0.5",
+    "geotiff-geokeys-to-proj4": "^2026.11.15",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",
+    "proj4": "^2.23.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-markdown": "^10.1.0",

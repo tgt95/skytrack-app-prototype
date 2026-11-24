@@ -13,6 +13,11 @@ import projectsSeed from "./seeds/projects.json";
 import leevilleMissionSeed from "./seeds/missions/leeville-pike-flight.json";
 import leevilleFlight2MissionSeed from "./seeds/missions/leeville-pike-flight-2.json";
 import satoriniMissionSeed from "./seeds/missions/satorini-island-reconnaissance.json";
+import bitexcoMissionSeed from "./seeds/missions/bitexco-reconnaissance.json";
+import santoriniMapSceneSeed from "./seeds/map-data/santorini-map-scene.json";
+import santoriniTerrainSeed from "./seeds/map-data/santorini-terrain.json";
+import bitexcoMapSceneSeed from "./seeds/map-data/bitexco-map-scene.json";
+import bitexcoTerrainSeed from "./seeds/map-data/bitexco-terrain.json";
 import { ensureSeededMission } from "./ensure-seeded-mission";
 import templatesSeed from "./seeds/templates.json";
 import { getWorkspace } from "@/features/library/workspace/workspace-data.ts";
@@ -66,6 +71,7 @@ export const DB_KEY = STORAGE_KEYS.libraryDatabase;
 export const DB_VERSION = STORAGE_VERSIONS.libraryDatabase;
 export const STAKEHOLDER_DEMO_MISSION_ID = "m-local-mvrqcly0-101";
 export const SATORINI_SAMPLE_MISSION_ID = "m-local-mv909q3g-101";
+export const BITEXCO_SAMPLE_MISSION_ID = "m-local-mwv1r10q-101";
 const SAMPLE_SHARED_USERS = ["alex.chen@example.com", "sam.rivera@example.com"];
 
 interface DatabaseShape {
@@ -249,7 +255,9 @@ function isMissionTerrainLayer(value: unknown): value is MissionTerrainLayer {
     typeof terrain.baseElevationM === "number" &&
     Number.isFinite(terrain.baseElevationM) &&
     typeof terrain.horizontalReference === "string" &&
-    terrain.verticalReference === "unverified"
+    typeof terrain.verticalReference === "string" &&
+    terrain.verticalReference.trim().length > 0 &&
+    terrain.verticalReference.length <= 160
   );
 }
 
@@ -305,10 +313,90 @@ function seedProjects(): LibProject[] {
               missionData: JSON.stringify(leevilleFlight2MissionSeed),
             }
           : mission.id === SATORINI_SAMPLE_MISSION_ID
-            ? { ...mission, missionData: JSON.stringify(satoriniMissionSeed) }
-            : mission,
+            ? {
+                ...mission,
+                missionData: JSON.stringify(satoriniMissionSeed),
+                mapSceneLayer:
+                  santoriniMapSceneSeed as unknown as MissionMapSceneLayer,
+                terrainLayer: santoriniTerrainSeed as MissionTerrainLayer,
+              }
+            : mission.id === BITEXCO_SAMPLE_MISSION_ID
+              ? {
+                  ...mission,
+                  missionData: JSON.stringify(bitexcoMissionSeed),
+                  mapSceneLayer:
+                    bitexcoMapSceneSeed as unknown as MissionMapSceneLayer,
+                  terrainLayer: bitexcoTerrainSeed as MissionTerrainLayer,
+                }
+              : mission,
     ),
   }));
+}
+
+function alignSatoriniSeedMission(projects: LibProject[]): LibProject[] {
+  const record = findMissionRecord(projects, SATORINI_SAMPLE_MISSION_ID);
+  if (!record?.mission.missionData || !record.mission.mapSceneLayer)
+    return projects;
+
+  try {
+    const snapshot: unknown = JSON.parse(record.mission.missionData);
+    if (!isRecord(snapshot) || !isRecord(snapshot.origin)) return projects;
+    const origin = snapshot.origin;
+    const alreadyAtSample =
+      Math.abs(Number(origin.lat) - record.mission.mapSceneLayer.center.lat) <
+        0.000001 &&
+      Math.abs(Number(origin.lng) - record.mission.mapSceneLayer.center.lon) <
+        0.000001;
+    if (alreadyAtSample) return projects;
+    const hasLegacySeedOrigin =
+      Math.abs(Number(origin.lat) - 36.4071112) < 0.000001 &&
+      Math.abs(Number(origin.lng) - 25.4566637) < 0.000001;
+    if (!hasLegacySeedOrigin) return projects;
+
+    const center = Array.isArray(snapshot.areas)
+      ? snapshot.areas.find(isRecord)?.center
+      : null;
+    if (
+      !isRecord(center) ||
+      typeof center.x !== "number" ||
+      typeof center.y !== "number"
+    )
+      return projects;
+    const offsetX = center.x;
+    const offsetY = center.y;
+    const shiftCoordinates = (value: unknown): void => {
+      if (Array.isArray(value)) {
+        value.forEach(shiftCoordinates);
+        return;
+      }
+      if (!isRecord(value)) return;
+      if (typeof value.x === "number" && typeof value.y === "number") {
+        value.x = Math.round((value.x - offsetX) * 1000) / 1000;
+        value.y = Math.round((value.y - offsetY) * 1000) / 1000;
+      }
+      Object.values(value).forEach(shiftCoordinates);
+    };
+    shiftCoordinates(snapshot);
+    snapshot.origin = {
+      lat: record.mission.mapSceneLayer.center.lat,
+      lng: record.mission.mapSceneLayer.center.lon,
+      attribution: {
+        label: "© OpenStreetMap contributors",
+        href: "https://www.openstreetmap.org/copyright",
+      },
+    };
+    const missionData = JSON.stringify(snapshot);
+    return projects.map((project) => ({
+      ...project,
+      missions: project.missions.map((mission) =>
+        mission.id === SATORINI_SAMPLE_MISSION_ID
+          ? { ...mission, missionData }
+          : mission,
+      ),
+    }));
+  } catch {
+    return projects;
+  }
 }
 
 function ensureLeevilleFlight2Mission(projects: LibProject[]): LibProject[] {
@@ -492,15 +580,21 @@ export function loadProjects(): LibProject[] {
     if (raw) {
       const parsed: unknown = JSON.parse(raw) as unknown;
       if (isDatabase(parsed)) {
-        return ensureLeevilleFlight2Mission(
-          ensureSeededMission(
+        return alignSatoriniSeedMission(
+          ensureLeevilleFlight2Mission(
             ensureSeededMission(
-              normalizeProjects(parsed.projects),
+              ensureSeededMission(
+                ensureSeededMission(
+                  normalizeProjects(parsed.projects),
+                  seedProjects(),
+                  STAKEHOLDER_DEMO_MISSION_ID,
+                ),
+                seedProjects(),
+                SATORINI_SAMPLE_MISSION_ID,
+              ),
               seedProjects(),
-              STAKEHOLDER_DEMO_MISSION_ID,
+              BITEXCO_SAMPLE_MISSION_ID,
             ),
-            seedProjects(),
-            SATORINI_SAMPLE_MISSION_ID,
           ),
         );
       }

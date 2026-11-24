@@ -54,6 +54,43 @@ function geoJsonPreview(file: MapDataFileRecord | MapDataPreflight) {
   }
 }
 
+function sceneFootprintPreview(file: MapDataFileRecord | MapDataPreflight) {
+  try {
+    const data = JSON.parse(file.content) as {
+      scene?: {
+        buildings?: { polygons?: { outer?: Point[] }[] }[];
+      };
+    };
+    const rings = (data.scene?.buildings ?? []).flatMap((building) =>
+      (building.polygons ?? []).flatMap((polygon) =>
+        Array.isArray(polygon.outer) && polygon.outer.every(isPoint)
+          ? [polygon.outer]
+          : [],
+      ),
+    );
+    const points = rings.flat();
+    if (!points.length) return [];
+    const minX = Math.min(...points.map(([x]) => x));
+    const maxX = Math.max(...points.map(([x]) => x));
+    const minY = Math.min(...points.map(([, y]) => y));
+    const maxY = Math.max(...points.map(([, y]) => y));
+    const width = Math.max(maxX - minX, 0.001);
+    const height = Math.max(maxY - minY, 0.001);
+    const scale = Math.min(344 / width, 164 / height);
+    const offsetX = (360 - width * scale) / 2;
+    const offsetY = (180 - height * scale) / 2;
+    return rings.slice(0, 400).map((ring) =>
+      ring
+        .map(([x, y], index) =>
+          `${index === 0 ? "M" : "L"}${(offsetX + (x - minX) * scale).toFixed(2)} ${(offsetY + (maxY - y) * scale).toFixed(2)}`,
+        )
+        .join(" ") + " Z",
+    );
+  } catch {
+    return [];
+  }
+}
+
 function terrainGrid(file: MapDataFileRecord | MapDataPreflight) {
   try {
     const data = JSON.parse(file.content) as {
@@ -108,7 +145,8 @@ export function MapDataPreview({
   file: MapDataFileRecord | MapDataPreflight;
   className?: string;
 }) {
-  const paths = file.type === "boundary" ? geoJsonPreview(file) : null;
+  const footprints = file.type === "scene" ? sceneFootprintPreview(file) : [];
+  const paths = file.type === "boundary" ? geoJsonPreview(file) : footprints;
   const cells = file.type === "scene" ? terrainGrid(file) : null;
   return (
     <div className={`grid gap-2 ${className}`}>
@@ -118,7 +156,9 @@ export function MapDataPreview({
         aria-label={
           file.type === "boundary"
             ? `Boundary preview for ${file.name}`
-            : `Elevation grid preview for ${file.name}`
+            : footprints.length
+              ? `Building footprints preview for ${file.name}`
+              : `Elevation grid preview for ${file.name}`
         }
         className="h-40 w-full rounded-(--radius) border border-border bg-muted/30"
       >

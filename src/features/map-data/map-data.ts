@@ -5,6 +5,11 @@ import type {
   MissionMapTree,
   MissionTerrainLayer,
 } from "@/domain/mission-model";
+import {
+  normalizeGeoJSON,
+  normalizeGeoPackage,
+  normalizeGeoTIFF,
+} from "./map-data-standard";
 
 export type MapDataLayerType = "boundary" | "scene";
 export type MapTerrainLayer = MissionTerrainLayer;
@@ -371,8 +376,23 @@ function parseTerrain(
       isRecord(scene.reference) && typeof scene.reference.crs === "string"
         ? scene.reference.crs
         : "Not declared",
-    verticalReference: "unverified",
+    verticalReference:
+      typeof terrainRecord?.verticalReference === "string" &&
+      terrainRecord.verticalReference.trim()
+        ? terrainRecord.verticalReference.slice(0, 160)
+        : "unverified",
   };
+}
+
+export function parseMapTerrainLayer(
+  content: string,
+  sourceFileName: string,
+): MapTerrainLayer | null {
+  try {
+    return parseTerrain(JSON.parse(content) as unknown, sourceFileName);
+  } catch {
+    return null;
+  }
 }
 
 export async function inspectMapDataFile(
@@ -381,8 +401,34 @@ export async function inspectMapDataFile(
   if (file.size > MAX_MAP_DATA_FILE_BYTES) {
     throw new Error(`${file.name} exceeds the 25 MB per-file limit.`);
   }
-  if (!/\.(geojson|json)$/iu.test(file.name)) {
-    throw new Error(`${file.name} is not a supported GeoJSON or JSON file.`);
+  const extension = file.name.split(".").at(-1)?.toLowerCase();
+  if (extension === "tif" || extension === "tiff") {
+    const normalized = await normalizeGeoTIFF(file);
+    return inspectNormalizedScene(file, normalized);
+  }
+  if (extension === "gpkg") {
+    const normalized = await normalizeGeoPackage(file);
+    return inspectNormalizedScene(file, normalized);
+  }
+  if (extension === "geojson") {
+    const normalized = normalizeGeoJSON(await file.text(), file.name);
+    if (normalized.type === "boundary") {
+      return {
+        name: file.name,
+        type: "boundary",
+        size: file.size,
+        featureCount: normalized.featureCount,
+        bbox: normalized.bbox,
+        terrain: null,
+        content: normalized.content,
+      };
+    }
+    return inspectNormalizedScene(file, normalized);
+  }
+  if (extension !== "json") {
+    throw new Error(
+      `${file.name} is not a supported GeoJSON, GeoPackage, GeoTIFF or JSON file.`,
+    );
   }
   const content = await file.text();
   let parsed: unknown;
@@ -454,9 +500,65 @@ export async function inspectMapDataFile(
       content,
     };
   }
+  const sceneLayer = parseSceneLayer(parsed, file.name);
+  if (sceneLayer) {
+    const scene = (parsed as { scene?: Record<string, unknown> }).scene ?? {};
+    const count = (key: string) =>
+      Array.isArray(scene[key]) ? (scene[key] as unknown[]).length : 0;
+    const sceneSummary = {
+      buildings: sceneLayer.buildings.length,
+      roads: count("roads"),
+      water: count("water"),
+      trees: sceneLayer.trees?.length ?? 0,
+      hasTextureMetadata: Boolean(scene.texture || scene.textures),
+    };
+    return {
+      name: file.name,
+      type: "scene",
+      size: file.size,
+      featureCount:
+        sceneSummary.buildings +
+        sceneSummary.roads +
+        sceneSummary.water +
+        sceneSummary.trees,
+      bbox: sceneLayer.bbox,
+      terrain: null,
+      sceneLayer,
+      sceneSummary,
+      content,
+    };
+  }
   throw new Error(
-    `${file.name} is JSON, but has no supported MapSpace terrain grid or GeoJSON FeatureCollection.`,
+    `${file.name} is JSON, but has no supported elevation grid, map scene or GeoJSON FeatureCollection.`,
   );
+}
+
+function inspectNormalizedScene(
+  file: File,
+  normalized: {
+    content: string;
+    type: "boundary" | "scene";
+    featureCount: number;
+    bbox: [number, number, number, number] | null;
+    sceneSummary?: MapSceneContentSummary;
+  },
+): MapDataPreflight {
+  const terrain = parseTerrain(
+    JSON.parse(normalized.content) as unknown,
+    file.name,
+  );
+  const sceneLayer = parseMapSceneLayer(normalized.content, file.name);
+  return {
+    name: file.name,
+    type: normalized.type,
+    size: file.size,
+    featureCount: normalized.featureCount,
+    bbox: normalized.bbox,
+    terrain,
+    sceneLayer,
+    sceneSummary: normalized.sceneSummary,
+    content: normalized.content,
+  };
 }
 
 export async function loadBundledMapSpaceSample(): Promise<File[]> {

@@ -19,6 +19,7 @@ public/demo-assets/mapspace/
 ├── data/                           # Dữ liệu GIS mẫu & Ranh giới hành chính
 │   ├── sample-scene-*.json         # Scene Landmark 81, Bitexco, Cầu Rồng, Dinh Độc Lập, Nhà thờ Đức Bà, Tháp Rùa, Chùa Một Cột
 │   ├── world-boundaries.geojson    # Ranh giới quốc gia toàn cầu (GeoJSON)
+│   ├── santorini/                  # Reusable OSM building + GEDTM30 elevation import sample
 │   └── boundaries/                 # Toàn bộ 35 file GeoJSON phân định địa giới Việt Nam
 │       ├── vietnam-provinces.geojson # Ranh giới 34 Tỉnh/Thành phố trực thuộc TW
 │       ├── VN-01.geojson           # Ranh giới Quận/Huyện Hà Nội (126 đơn vị)
@@ -104,3 +105,12 @@ retrieved 2026-11-23. Credit: © OpenStreetMap contributors,
 
 No satellite raster is included in these new scenes. Their imagery field only
 indicates that imagery should come from the Mission Studio basemap control.
+
+## 6. Independent GIS import sample
+
+[`data/santorini/`](data/santorini/) contains a raw OpenStreetMap extract,
+derived GeoJSON and GeoPackage building features, and a clipped GEDTM30
+GeoTIFF elevation sample. Use these files to try the Step 2 map/elevation
+import flow. Their sources, licenses, metadata, and limits are documented in
+the subfolder README. This import sample is separate from the seven MapSpace
+scene JSON examples above.

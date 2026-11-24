@@ -39,7 +39,7 @@ export interface MissionTerrainLayer {
   sourceResolutionM?: number;
   sourceName?: string;
   horizontalReference: string;
-  verticalReference: "unverified";
+  verticalReference: string;
 }
 
 export interface MissionMapBuildingPolygon {

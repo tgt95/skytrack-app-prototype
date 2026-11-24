@@ -143,12 +143,12 @@ export function MapDataImportDrawer({
     setImportError("");
     try {
       await addFiles(await loadBundledMapSpaceSample());
-      setDatasetName((value) => value.trim() || "MapSpace demo scenes");
+      setDatasetName((value) => value.trim() || "Mission Studio map sample");
     } catch (error) {
       setFileError(
         error instanceof Error
           ? error.message
-          : "MapSpace sample could not be loaded.",
+          : "Sample map data could not be loaded.",
       );
     } finally {
       setLoading(false);
@@ -158,10 +158,19 @@ export function MapDataImportDrawer({
   const submit = async () => {
     const cleanName = datasetName.trim();
     const selected = files.filter((file) => file.included);
+    const hasMapFeatureLayer = selected.some(
+      (file) => file.type === "scene" && file.featureCount > 0,
+    );
     setNameError(cleanName ? "" : "Enter a World name.");
-    setFileError(selected.length ? "" : "Include at least one map layer.");
+    setFileError(
+      selected.length === 0
+        ? "Include at least one map layer."
+        : hasMapFeatureLayer
+          ? ""
+          : "Include at least one map feature file. Elevation can be added separately in Step 2.",
+    );
     setImportError("");
-    if (!cleanName || selected.length === 0) return;
+    if (!cleanName || selected.length === 0 || !hasMapFeatureLayer) return;
     setImporting(true);
     try {
       await onImport(
@@ -223,8 +232,9 @@ export function MapDataImportDrawer({
                   <div className="grid gap-1">
                     <DrawerTitle>Import map data</DrawerTitle>
                     <DrawerDescription>
-                      Add GeoJSON boundaries or a MapSpace scene with elevation
-                      data. Files stay in this browser.
+                      Add building context from GeoJSON or GeoPackage, with
+                      optional terrain from GeoTIFF or Cloud Optimized GeoTIFF.
+                      Files stay in this browser.
                     </DrawerDescription>
                   </div>
                   <Button
@@ -236,7 +246,7 @@ export function MapDataImportDrawer({
                     data-testid="ms-mapspace-sample"
                   >
                     <MapTrifoldIcon aria-hidden="true" />
-                    {loading ? "Loading sample…" : "Use MapSpace sample"}
+                    {loading ? "Loading sample…" : "Use sample map data"}
                   </Button>
                 </div>
               </div>
@@ -252,22 +262,21 @@ export function MapDataImportDrawer({
                     Source files
                   </h2>
                   <Dropzone
-                    accept=".geojson,.json,application/geo+json,application/json"
+                    accept=".geojson,.gpkg,.json,.tif,.tiff,application/geo+json,application/json,application/geopackage+sqlite3,image/tiff"
                     multiple
                     disabled={loading || importing || files.length >= 100}
                     buttonLabel="Choose files"
-                    hint="Drop GeoJSON or MapSpace scene JSON · up to 25 MB per file, 50 MB total, 100 files"
+                    hint="Drop GeoJSON, GeoPackage, or GeoTIFF files · up to 25 MB per file, 50 MB total, 100 files"
                     onFilesSelected={addFiles}
                     data-testid="ms-map-data-dropzone"
                   />
                   <FieldRoot>
                     <FieldDescription>
-                      Satellite imagery, when selected as the basemap, drapes
-                      over the terrain. This sample stores only an imagery
-                      reference; its raster is not bundled and does not texture
-                      buildings or trees. Scene buildings use extrusions and
-                      tree locations use simple 3D geometry. For a standalone
-                      GLB World, use Create Mission → World → 3D → Import world.
+                      Include at least one map feature file; add an elevation
+                      GeoTIFF in the same dataset or separately in Step 2.
+                      Buildings and trees appear as simplified 3D context. For a
+                      separate 3D model, use Create Mission → World → 3D →
+                      Import world.
                     </FieldDescription>
                   </FieldRoot>
                   <FieldRoot>
@@ -364,8 +373,10 @@ export function MapDataImportDrawer({
                                   </AttachmentTitle>
                                   <AttachmentDescription>
                                     {file.type === "boundary"
-                                      ? "Boundary layer"
-                                      : "Scene · elevation grid"}{" "}
+                                      ? "Map features"
+                                      : file.sceneSummary?.buildings
+                                        ? "Map features · 3D buildings"
+                                        : "Elevation grid"}{" "}
                                     ·{" "}
                                     {file.sceneSummary
                                       ? `${file.sceneSummary.buildings} buildings · ${file.sceneSummary.roads} roads · ${file.sceneSummary.water} water · ${file.sceneSummary.trees} trees · `
@@ -424,8 +435,10 @@ export function MapDataImportDrawer({
                         />
                         <span className="text-sm font-medium">
                           {previewFile.type === "boundary"
-                            ? "Administrative boundary"
-                            : "Elevation and scene"}
+                            ? "Map features"
+                            : previewFile.sceneSummary?.buildings
+                              ? "Building footprints"
+                              : "Elevation surface"}
                         </span>
                         {previewFile.terrain ? (
                           <Badge

@@ -4,5 +4,6 @@ These JSON files provide initial records for the browser-local Library stores. T
 
 - `projects.json` contains the initial projects and their mission card records.
 - `missions/` contains full mission snapshots referenced by seeded missions.
+- `map-data/` contains normalized building, tree, landmark, and terrain layers attached to the Bitexco and Santorini sample missions.
 - `templates.json` contains the initial mission templates.
 - `drones.json` is a static drone catalog fixture. The current workspace drone-profile store separately builds its seed profiles from workspace fixtures.

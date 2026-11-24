@@ -1,6 +1,7 @@
 import { FieldControl, FieldLabel, FieldRoot } from "skytrack-ui/field";
 import {
   Select,
+  SelectIcon,
   SelectItem,
   SelectItemIndicator,
   SelectItemText,
@@ -43,7 +44,7 @@ export function GeneralStep({
             onValueChange={(value) =>
               onTitleChange(typeof value === "string" ? value : "")
             }
-            placeholder="Enter text"
+            placeholder="Enter mission name"
             maxLength={120}
             aria-label="Mission name"
             autoFocus
@@ -66,6 +67,7 @@ export function GeneralStep({
                 {projects.find((project) => project.id === projectId)?.name ??
                   ""}
               </SelectValue>
+              <SelectIcon />
             </SelectTrigger>
             <SelectPortal>
               <SelectPositioner>

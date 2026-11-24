@@ -1,0 +1,1280 @@
+{
+  "bbox": [
+    106.70309166384365, 10.770515933237514, 106.70583493615635,
+    10.773210866762488
+  ],
+  "buildings": [
+    {
+      "heightLabel": "estimated",
+      "heightM": 45,
+      "id": "osm-way-187895161",
+      "name": "Prince Hotel Saigon",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [-33.76, 150.96],
+            [-74, 110.13],
+            [-51.57, 88.02],
+            [-11.33, 128.84],
+            [-33.76, 150.96]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 35,
+      "id": "osm-way-193142038",
+      "name": "Majestic Hotel",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [140.47, 175.61],
+            [181.04, 139.38],
+            [188.96, 131.46],
+            [194.81, 124.42],
+            [197.45, 120.9],
+            [198.2, 116.44],
+            [198.78, 110.05],
+            [195.03, 65.1],
+            [172.5, 67.08],
+            [174.01, 87.91],
+            [169.23, 88.5],
+            [170.52, 102.54],
+            [170.26, 105.66],
+            [169.37, 108.5],
+            [165.96, 112.88],
+            [158.83, 105.49],
+            [153.12, 110.49],
+            [149.3, 113.85],
+            [164.06, 129.91],
+            [128.69, 162.96],
+            [140.47, 175.61]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 75,
+      "id": "osm-way-258866010",
+      "name": "Bitexco Building",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [133.77, -5.04],
+            [117.93, -21.97],
+            [105.1, -9.99],
+            [109.68, -5.11],
+            [120.95, 6.95],
+            [133.77, -5.04]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 50,
+      "id": "osm-way-263502875",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [148.64, 114.5],
+            [131.97, 128.96],
+            [129.57, 126.18],
+            [106.85, 100.01],
+            [123.52, 85.55],
+            [148.64, 114.5]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 10,
+      "id": "osm-way-263502876",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [129.57, 126.18],
+            [120.02, 134.46],
+            [114.47, 128.05],
+            [99.87, 111.22],
+            [97.32, 108.29],
+            [106.85, 100.01],
+            [129.57, 126.18]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 35.2,
+      "id": "osm-way-263506615",
+      "name": "VietinBank",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [-153.31, -137.37],
+            [-145.37, -157.13],
+            [-126.48, -157.07],
+            [-117.2, -179.85],
+            [-98.81, -172.31],
+            [-110.5, -143.67],
+            [-116.41, -138.66],
+            [-153.31, -137.37]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 10,
+      "id": "osm-way-263640387",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [46.74, -35.85],
+            [3.37, -82.52],
+            [2.68, -84.97],
+            [3.48, -87.78],
+            [5.1, -89.59],
+            [7.68, -90.53],
+            [48.4, -92.03],
+            [39.82, -79.22],
+            [40.1, -66.61],
+            [50.26, -58.39],
+            [50.59, -46.92],
+            [50.96, -35.99],
+            [46.74, -35.85]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 50,
+      "id": "osm-way-263640388",
+      "name": "Empire Tower",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [61.45, -75.54],
+            [60.77, -92.53],
+            [48.4, -92.03],
+            [49.08, -75.04],
+            [61.45, -75.54]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 25,
+      "id": "osm-way-289926579",
+      "name": "Vosa Sai Gon",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [152.48, -46.94],
+            [116.27, -45.27],
+            [116.74, -33.51],
+            [138.64, -10.51],
+            [164.16, -34.72],
+            [152.48, -46.94]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 30,
+      "id": "osm-way-341508367",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [68.85, 192.16],
+            [91.11, 170.89],
+            [64.69, 143.11],
+            [42.38, 164.35],
+            [68.85, 192.16]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 75,
+      "id": "osm-way-402644448",
+      "name": "Harbourview Tower",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [83.33, 7.25],
+            [100.82, 25.85],
+            [120.95, 6.95],
+            [109.68, -5.11],
+            [99.06, 4.85],
+            [92.89, -1.73],
+            [83.33, 7.25]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 9.6,
+      "id": "osm-way-402644450",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [156.12, -43.28],
+            [174.07, -44.07],
+            [171.79, -96.06],
+            [136.17, -94.5],
+            [136.87, -78.58],
+            [154.53, -79.36],
+            [156.12, -43.28]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 10,
+      "id": "osm-way-402644465",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [87.64, 121.62],
+            [99.87, 111.22],
+            [114.47, 128.05],
+            [102.32, 138.47],
+            [99.52, 134.96],
+            [87.64, 121.62]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 10,
+      "id": "osm-way-402644467",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [75.91, 132.06],
+            [101.17, 160.41],
+            [107.83, 154.48],
+            [94.45, 139.47],
+            [99.52, 134.96],
+            [87.64, 121.62],
+            [75.91, 132.06]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 10,
+      "id": "osm-way-804047525",
+      "name": "Silverland Charner",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [-94.57, 47.72],
+            [-89.62, 37.21],
+            [-120.61, 22.59],
+            [-125.57, 33.1],
+            [-94.57, 47.72]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 10,
+      "id": "osm-way-804073935",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [110.2, -37.97],
+            [109.83, -48.89],
+            [50.59, -46.92],
+            [50.96, -35.99],
+            [110.2, -37.97]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 12.8,
+      "id": "osm-way-804073937",
+      "name": "Sanofi",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [109.87, -52.63],
+            [109.11, -76],
+            [108.54, -93.78],
+            [86.09, -93.05],
+            [86.66, -75.26],
+            [87.21, -58.22],
+            [91.36, -58.35],
+            [91.57, -52.04],
+            [109.87, -52.63]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 41.6,
+      "id": "osm-way-804073938",
+      "name": "Ng\u00e2n h\u00e0ng Nh\u00e0 n\u01b0\u1edbc Vi\u1ec7t Nam - CQ\u0110D ph\u00eda Nam",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [63.72, -60.07],
+            [62.87, -84.5],
+            [62.57, -92.64],
+            [79.93, -93.26],
+            [80.95, -64.82],
+            [77.69, -64.71],
+            [77.84, -60.57],
+            [69.36, -60.26],
+            [63.72, -60.07]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 10,
+      "id": "osm-way-804073939",
+      "name": "Cong Thanh Group",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [86.04, -12.16],
+            [85.37, -29.48],
+            [97.76, -29.96],
+            [98.42, -12.63],
+            [86.04, -12.16]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 10,
+      "id": "osm-way-804073946",
+      "name": "Kho b\u1ea1c Nh\u00e0 n\u01b0\u1edbc khu v\u1ef1c II",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [36.61, 81.1],
+            [2.32, 43.63],
+            [8.51, 37.96],
+            [43.96, 7.25],
+            [49.9, 1.8],
+            [83.41, 38.41],
+            [66.74, 53.66],
+            [67.41, 54.39],
+            [61.24, 60.15],
+            [55.64, 65.17],
+            [54.91, 64.37],
+            [36.61, 81.1]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 10,
+      "id": "osm-way-804073951",
+      "name": "Bitexco Financial Tower",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [3.2, -37.55],
+            [4.47, -36.11],
+            [9.53, -28.72],
+            [13.41, -22.12],
+            [20.01, -17.22],
+            [33.5, -10.05],
+            [36.57, -7.12],
+            [37.75, -4.63],
+            [38.48, -1.84],
+            [38.19, 1.83],
+            [37.75, 4.91],
+            [37.46, 7.1],
+            [0.94, 39.37],
+            [-4.2, 37.31],
+            [-12.41, 33.65],
+            [-33.55, 14.55],
+            [-35.15, 13.25],
+            [-36.74, 11.59],
+            [-37.83, 10.03],
+            [-38.34, 7.36],
+            [-38.54, 2.82],
+            [-38.19, -2.26],
+            [-37.94, -4.65],
+            [-37.29, -7.11],
+            [-36.44, -11.22],
+            [-34.51, -16.31],
+            [-30.85, -23.92],
+            [-28.19, -27.82],
+            [-24.77, -31.33],
+            [-21.9, -33.89],
+            [-19.58, -35.49],
+            [-16.86, -37.03],
+            [-14.91, -37.77],
+            [-13.06, -38.1],
+            [-5.66, -39.46],
+            [0.35, -39.1],
+            [3.2, -37.55]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 9.6,
+      "id": "osm-way-1027003696",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [118.75, -45.67],
+            [137.22, -46.34],
+            [135.68, -89.07],
+            [117.21, -88.4],
+            [118.75, -45.67]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 44.8,
+      "id": "osm-way-1150659802",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [63.72, -60.07],
+            [62.87, -84.5],
+            [68.5, -84.7],
+            [69.36, -60.26],
+            [63.72, -60.07]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 19.2,
+      "id": "osm-way-1150659804",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [87.21, -58.22],
+            [86.66, -75.26],
+            [109.11, -76],
+            [109.87, -52.63],
+            [91.57, -52.04],
+            [91.36, -58.35],
+            [87.21, -58.22]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 10,
+      "id": "osm-way-1150659813",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [83.33, 7.25],
+            [51.46, -28.05],
+            [85.37, -29.48],
+            [86.04, -12.16],
+            [92.89, -1.73],
+            [83.33, 7.25]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 10,
+      "id": "osm-way-1150659814",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [105.1, -9.99],
+            [102.48, -12.6],
+            [98.42, -12.63],
+            [97.76, -29.96],
+            [110.68, -30.35],
+            [117.93, -21.97],
+            [105.1, -9.99]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 16,
+      "id": "osm-way-1151414052",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [50.36, -147.09],
+            [33.92, -146.45],
+            [32.23, -147.01],
+            [30.89, -147.98],
+            [29.54, -149.98],
+            [29.01, -152.76],
+            [29.19, -154.73],
+            [39.95, -175.36],
+            [59.71, -166.27],
+            [50.36, -147.09]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 19.2,
+      "id": "osm-way-1151414053",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [48.54, -148.06],
+            [51.34, -153.89],
+            [42.1, -153.68],
+            [47.42, -165.01],
+            [55.04, -161.58],
+            [57.34, -166.35],
+            [40.53, -174.08],
+            [30.62, -155.11],
+            [30.17, -152.53],
+            [30.93, -150.16],
+            [32.37, -148.46],
+            [34.44, -147.68],
+            [48.54, -148.06]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 70,
+      "id": "osm-way-1217124525",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [118.97, -45.91],
+            [137, -46.57],
+            [136.51, -59.85],
+            [129.52, -59.59],
+            [128.98, -74.37],
+            [136.01, -74.63],
+            [135.48, -88.87],
+            [117.42, -88.2],
+            [118.97, -45.91]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 10,
+      "id": "osm-way-1527137541",
+      "name": "Saigon Garden",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [-72.15, 182.49],
+            [-91.9, 159.72],
+            [-75.59, 144.37],
+            [-54.54, 168.43],
+            [-72.15, 182.49]
+          ]
+        }
+      ]
+    },
+    {
+      "heightLabel": "estimated",
+      "heightM": 10,
+      "id": "osm-way-1573522491",
+      "name": "",
+      "polygons": [
+        {
+          "holes": [],
+          "outer": [
+            [14.84, 98.33],
+            [21.37, 92.46],
+            [12.61, 83.29],
+            [6.27, 89.15],
+            [14.84, 98.33]
+          ]
+        }
+      ]
+    }
+  ],
+  "center": {
+    "lat": 10.7718634,
+    "lon": 106.7044633
+  },
+  "coordinateFrame": "mission-enu",
+  "horizontalReference": "WGS84",
+  "landmarks": [
+    {
+      "attribution": "Bitexco Tower model from Sketchfab / 3D Warehouse; CC BY per the supplied MapSpace asset inventory.",
+      "baseElevationM": 3.74,
+      "heightM": 262,
+      "id": "bitexco",
+      "localModelPath": "/demo-assets/mapspace/models/bitexco.glb",
+      "name": "Bitexco Financial Tower",
+      "rotationDeg": 0,
+      "scale": 3.12,
+      "xM": 0,
+      "yM": 0
+    }
+  ],
+  "sourceFileName": "sample-scene-bitexco.json",
+  "trees": [
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-1",
+      "xM": 2.64,
+      "yM": -93.97
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-2",
+      "xM": -24.51,
+      "yM": -54.64
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-3",
+      "xM": -17.03,
+      "yM": -57.42
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-4",
+      "xM": 1.16,
+      "yM": -53.53
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-5",
+      "xM": -6.69,
+      "yM": -57.94
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-6",
+      "xM": 134.4,
+      "yM": -99.17
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-7",
+      "xM": 141.93,
+      "yM": -99.53
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-8",
+      "xM": 149.27,
+      "yM": -99.71
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-9",
+      "xM": 32.09,
+      "yM": -105.78
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-10",
+      "xM": 141.89,
+      "yM": -110.56
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-11",
+      "xM": 133.21,
+      "yM": -110.18
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-12",
+      "xM": 124.08,
+      "yM": -109.78
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-13",
+      "xM": 117.13,
+      "yM": -109.48
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-14",
+      "xM": 107.52,
+      "yM": -109.06
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-15",
+      "xM": 98.02,
+      "yM": -108.65
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-16",
+      "xM": 89.77,
+      "yM": -108.29
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-17",
+      "xM": 79.47,
+      "yM": -107.84
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-18",
+      "xM": 69.29,
+      "yM": -107.39
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-19",
+      "xM": 58.85,
+      "yM": -106.93
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-20",
+      "xM": 48.86,
+      "yM": -106.5
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-21",
+      "xM": 40.47,
+      "yM": -106.13
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-22",
+      "xM": 31.44,
+      "yM": -118.68
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-23",
+      "xM": 39.83,
+      "yM": -119.05
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-24",
+      "xM": 48.22,
+      "yM": -119.41
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-25",
+      "xM": 58.2,
+      "yM": -119.85
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-26",
+      "xM": 68.64,
+      "yM": -120.3
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-27",
+      "xM": 78.83,
+      "yM": -120.75
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-28",
+      "xM": 89.13,
+      "yM": -121.19
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-29",
+      "xM": 97.37,
+      "yM": -121.55
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-30",
+      "xM": 106.88,
+      "yM": -121.96
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-31",
+      "xM": 116.49,
+      "yM": -122.39
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-32",
+      "xM": 123.43,
+      "yM": -122.69
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-33",
+      "xM": 132.56,
+      "yM": -123.09
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-34",
+      "xM": 141.25,
+      "yM": -123.47
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-35",
+      "xM": 30.73,
+      "yM": -130.88
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-36",
+      "xM": 39.13,
+      "yM": -131.25
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-37",
+      "xM": 47.52,
+      "yM": -131.61
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-38",
+      "xM": 57.5,
+      "yM": -132.05
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-39",
+      "xM": 67.93,
+      "yM": -132.5
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-40",
+      "xM": 78.13,
+      "yM": -132.95
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-41",
+      "xM": 88.43,
+      "yM": -133.39
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-42",
+      "xM": 96.67,
+      "yM": -133.75
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-43",
+      "xM": 106.18,
+      "yM": -134.17
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-44",
+      "xM": 115.79,
+      "yM": -134.59
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-45",
+      "xM": 122.72,
+      "yM": -134.89
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-46",
+      "xM": 131.86,
+      "yM": -135.29
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-47",
+      "xM": 140.55,
+      "yM": -135.67
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-48",
+      "xM": -82.63,
+      "yM": -124.97
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-49",
+      "xM": -17.75,
+      "yM": -128.25
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-50",
+      "xM": -73.71,
+      "yM": -125.42
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-51",
+      "xM": -64.34,
+      "yM": -125.89
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-52",
+      "xM": -54.25,
+      "yM": -126.4
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-53",
+      "xM": -44.27,
+      "yM": -126.92
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-54",
+      "xM": -34.29,
+      "yM": -127.42
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-55",
+      "xM": -25.32,
+      "yM": -127.87
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-56",
+      "xM": -82.57,
+      "yM": -113.36
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-57",
+      "xM": -73.65,
+      "yM": -113.8
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-58",
+      "xM": -64.28,
+      "yM": -114.28
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-59",
+      "xM": -54.19,
+      "yM": -114.79
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-60",
+      "xM": -44.2,
+      "yM": -115.29
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-61",
+      "xM": -34.24,
+      "yM": -115.81
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-62",
+      "xM": -25.25,
+      "yM": -116.25
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-63",
+      "xM": -17.68,
+      "yM": -116.64
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-64",
+      "xM": -82.22,
+      "yM": -99.98
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-65",
+      "xM": -73.3,
+      "yM": -100.43
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-66",
+      "xM": -63.92,
+      "yM": -100.9
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-67",
+      "xM": -53.84,
+      "yM": -101.41
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-68",
+      "xM": -43.85,
+      "yM": -101.92
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-69",
+      "xM": -33.88,
+      "yM": -102.43
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-70",
+      "xM": -24.9,
+      "yM": -102.88
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-71",
+      "xM": -17.33,
+      "yM": -103.26
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-72",
+      "xM": -90.6,
+      "yM": -112.89
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-73",
+      "xM": -90.49,
+      "yM": -99.28
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-74",
+      "xM": -98.71,
+      "yM": -98.81
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-75",
+      "xM": -146.4,
+      "yM": -122.02
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-76",
+      "xM": -137.42,
+      "yM": -122.47
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-77",
+      "xM": -129.85,
+      "yM": -122.85
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-78",
+      "xM": -146.87,
+      "yM": -109.23
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-79",
+      "xM": -137.89,
+      "yM": -109.68
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-80",
+      "xM": -130.32,
+      "yM": -110.07
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-81",
+      "xM": -147.39,
+      "yM": -96.89
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-82",
+      "xM": -139.83,
+      "yM": -97.28
+    },
+    {
+      "canopyRadiusM": 2.5,
+      "heightM": 6,
+      "id": "tree-83",
+      "xM": -123.35,
+      "yM": -123.1
+    }
+  ],
+  "verticalReference": "unverified",
+  "widthM": 300
+}

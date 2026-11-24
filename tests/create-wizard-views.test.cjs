@@ -66,20 +66,27 @@ test("wizard step views preserve the labels, empty states, and test hooks", () =
 
 test("terrain Dropzone remains separate from the 3D World GLB picker", () => {
   const world = read("create-wizard/world-step.tsx");
+  const importDrawer = read("dialogs/map-data-import-drawer.tsx");
 
   assert.match(
     world,
     /import\s*\{\s*Dropzone\s*\}\s*from\s*["']skytrack-ui\/dropzone["']/,
   );
   assert.match(world, /data-testid=["']ms-wizard-filebtn["']/);
-  assert.match(world, /buttonLabel=["']Choose File["']/);
+  assert.match(world, /"Choose elevation file"/);
   assert.ok(world.includes("multiple={false}"));
   assert.match(
     world,
-    /onFilesSelected=\{\(files\)\s*=>\s*\{[\s\S]*?onTerrainFileSelect\(file\.name\)/,
+    /onFilesSelected=\{async \(files\) => \{[\s\S]*?inspectMapDataFile\(file\)[\s\S]*?parsed\.sceneLayer \?\? mapSceneLayer/,
   );
+  assert.ok(world.includes("resolveMapDataDatasetSelection"));
   assert.doesNotMatch(world, /terrainInputRef/);
   assert.match(world, /data-testid=["']ms-wizard-world-file-dropzone["']/);
   assert.match(world, /accept=["']\.glb,model\/gltf-binary["']/);
   assert.match(world, /await onImportWorld\(worldFile, cleanName\)/);
+  assert.match(
+    importDrawer,
+    /accept=["'][^"']*\.geojson[^"']*\.gpkg[^"']*\.tif[^"']*\.tiff/,
+  );
+  assert.match(importDrawer, /Include at least one map feature file/);
 });
