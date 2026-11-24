@@ -211,7 +211,7 @@ function StudioTopbar({
           data-testid="ms-top-actions"
         >
           <Button size="sm" variant="outline" onClick={onOpenEdit}>
-            <PencilSimpleIcon aria-hidden="true" /> Edit Mission
+            <PencilSimpleIcon aria-hidden="true" /> Edit
           </Button>
           <Button
             size="sm"
