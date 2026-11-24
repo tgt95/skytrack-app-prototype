@@ -49,6 +49,12 @@ export type {
   MissionAIWorkflow,
   MissionRouteMeta,
   MissionSequenceItem,
+  MissionTerrainLayer,
+  MissionMapBuilding,
+  MissionMapBuildingPolygon,
+  MissionMapLandmark,
+  MissionMapTree,
+  MissionMapSceneLayer,
   PolyZone,
   ReconFlightSettings,
   SafetyMode,
@@ -100,7 +106,7 @@ export {
   isAuthoredWaypoint,
   withAvoidDetours
 } from './avoid-detour'
-export { missionFromSnapshot, simGate, snapshotOf, validateMission } from './mission-validation'
+export { missionFromSnapshot, normalizeMissionMapSceneLayer, simGate, snapshotOf, validateMission } from './mission-validation'
 export { missionFromCode, missionToCode } from './mission-serialization'
 export { translateMissionGroup } from './mission-group-transform'
 export type { MissionGroupRef } from './mission-group-transform'

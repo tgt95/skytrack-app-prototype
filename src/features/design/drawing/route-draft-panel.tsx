@@ -40,11 +40,11 @@ export default function RouteDraftPanel({
         </h2>
       </header>
       <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto p-4">
-        <p className="m-0 text-sm text-(--muted-foreground) leading-[1.5]">
+        <p className="m-0 text-sm text-muted-foreground leading-[1.5]">
           Click the map to add waypoints. Add at least 2 to create the route.
         </p>
         <p
-          className="m-0 text-sm text-(--muted-foreground) leading-[1.5]"
+          className="m-0 text-sm text-muted-foreground leading-[1.5]"
           role="status"
           aria-live="polite"
           data-testid="ms-route-draft-count"

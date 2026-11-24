@@ -242,7 +242,7 @@ export function createEditGestures(deps: {
       // Background-only allowlist: grid, route line,
       // leg labels and the drawing plane. Every other mission entity
       // retains priority.
-      if (raw === 'ms-grid-x' || raw === 'ms-grid-y' || raw.startsWith('ms-transfer') || raw.startsWith('ms-world-terrain') || raw === 'ms-draw-plane' || raw.startsWith('ms-route-len-') || raw.startsWith('ms-route-insert-') || raw === 'ms-pending-line') return 'skip'
+      if (raw === 'ms-grid-x' || raw === 'ms-grid-y' || raw.startsWith('ms-transfer') || raw.startsWith('ms-world-terrain') || raw.startsWith('ms-world-map-') || raw === 'ms-draw-plane' || raw.startsWith('ms-route-len-') || raw.startsWith('ms-route-insert-') || raw === 'ms-pending-line') return 'skip'
       // Avoid height handles own their drag flow (they manage
       // enableInputs themselves); leave them fully untouched.
       if (avoidHandleId(raw)) return 'blocked'

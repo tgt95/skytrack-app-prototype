@@ -1,6 +1,5 @@
 /* Planner-style basemap preview grid for the Studio map pickers.
-   Satellite stays the Studio default; switching only swaps the active map
-   imagery and never touches camera, entities, or mission state. */
+   Basic uses OSM for MapSpace scenes; switching styles only swaps imagery. */
 
 import { Button } from "skytrack-ui/button";
 import { CheckboxRoot as Checkbox } from "skytrack-ui/checkbox";
@@ -15,8 +14,13 @@ export function BasemapPickerGrid({
   onChange: (style: MissionBasemapStyle) => void;
   testidPrefix: string;
 }) {
+  /* Old missions may still store the retired OpenStreetMap picker value. */
+  const selectedStyle = value === "openstreetmap" ? "basic" : value;
   const groups: { label: string; ids: MissionBasemapStyle[] }[] = [
-    { label: "Standard", ids: ["satellite", "basic", "light", "dark"] },
+    {
+      label: "Standard",
+      ids: ["satellite", "basic", "light", "dark"],
+    },
     { label: "More styles", ids: ["daybreak", "overcast"] },
   ];
   return (
@@ -36,15 +40,15 @@ export function BasemapPickerGrid({
                 <Button
                   key={id}
                   type="button"
-                  variant='outline'
+                  variant="outline"
                   // variant={value === id ? "secondary" : "outline"}
-                  aria-pressed={value === id}
+                  aria-pressed={selectedStyle === id}
                   data-testid={`${testidPrefix}-${id}`}
-                  className={`flex min-w-0 h-22.5 flex-col items-stretch justify-start gap-1 p-1.25 overflow-hidden text-xs  ${value === id ? "border-(--primary)" : "border-border"}`}
+                  className={`flex min-w-0 h-22.5 flex-col items-stretch justify-start gap-1 p-1.25 overflow-hidden text-xs  ${selectedStyle === id ? "border-(--primary)" : "border-border"}`}
                   onClick={() => onChange(id)}
                 >
                   <span
-                    className='relative block w-full h-13 overflow-hidden border border-border rounded-(--radius) bg-(--muted) [&_img]:block [&_img]:w-full [&_img]:h-full [&_img]:object-cover'
+                    className="relative block w-full h-13 overflow-hidden border border-border rounded-(--radius) bg-(--muted) [&_img]:block [&_img]:w-full [&_img]:h-full [&_img]:object-cover"
                     data-testid="ms-basemap-thumb"
                   >
                     <img
@@ -55,7 +59,7 @@ export function BasemapPickerGrid({
                         event.currentTarget.style.visibility = "hidden";
                       }}
                     />
-                    {value === id ? (
+                    {selectedStyle === id ? (
                       <Checkbox
                         checked
                         readOnly

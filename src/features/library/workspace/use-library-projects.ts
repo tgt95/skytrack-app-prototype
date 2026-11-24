@@ -320,6 +320,8 @@ export function useLibraryProjects({
       world: result.world,
       worldType: result.worldType,
       ...(result.worldId ? { worldId: result.worldId } : {}),
+      ...(result.terrainLayer ? { terrainLayer: result.terrainLayer } : {}),
+      ...(result.mapSceneLayer ? { mapSceneLayer: result.mapSceneLayer } : {}),
       vehicle: result.vehicle,
       droneId: result.droneId,
     };

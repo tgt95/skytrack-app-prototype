@@ -69,7 +69,7 @@ export function ReconSettingsPage({
         </div>
       </header>
       <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto p-4">
-        <p className="ms-hint m-0 text-sm text-(--muted-foreground) leading-[1.5]">
+        <p className="ms-hint m-0 text-sm text-muted-foreground leading-[1.5]">
           Configure capture settings for this mission.
         </p>
         <ReconnaissanceSettingsForm

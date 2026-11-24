@@ -22,7 +22,7 @@ export default function NotFoundPage({
           <h1 id="ms-not-found-title" className="h3 m-0">
             Page not found
           </h1>
-          <p className="m-0 text-(--muted-foreground)">
+          <p className="m-0 text-muted-foreground">
             We couldn’t find <code className="font-mono">{pathname}</code>. The
             address may be outdated or incorrect.
           </p>

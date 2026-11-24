@@ -34,6 +34,7 @@ import { MissionSceneStatus } from "./mission-scene-status";
 import { useMissionSceneWorldLayers } from "./use-mission-scene-world-layers";
 import { MissionSceneWorldModelStatus } from "./mission-scene-world-model-status";
 import { MissionScaleIndicator } from "./mission-scale-indicator";
+import { BASEMAPS } from "./basemaps";
 import { mapRenderResolutionScale } from "./map-render-quality";
 import { zoomSceneCameraSafely } from "./scene-camera-zoom";
 import { useMissionDesignPreferenceRevision } from "./use-mission-design-preference-revision";
@@ -426,6 +427,7 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
       }
     }, [hideHomeCursor, status, tool]);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [basemapTilesLoading, setBasemapTilesLoading] = useState(false);
     const [retryCount, setRetryCount] = useState(0);
     const [without3d, setWithout3d] = useState(false);
     const fitRef = useRef(fitMission);
@@ -439,6 +441,27 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
       fitRef,
       source: worldModel,
       basemap,
+      onBasemapLoadingChange: useCallback(
+        (loading: boolean) => {
+          setBasemapTilesLoading(loading);
+          const viewer = viewerRef.current;
+          if (
+            viewer &&
+            !viewer.isDestroyed() &&
+            mission.worldType === "2D" &&
+            (basemap === "basic" || basemap === "openstreetmap") &&
+            viewer.scene.skyBox
+          ) {
+            /* Avoid exposing Cesium's starfield before the first OSM tiles paint. */
+            window.requestAnimationFrame(() => {
+              if (viewer.isDestroyed() || !viewer.scene.skyBox) return;
+              viewer.scene.skyBox.show = !loading;
+              viewer.scene.requestRender();
+            });
+          }
+        },
+        [basemap, mission.worldType],
+      ),
     });
     useEffect(() => {
       const viewer = viewerRef.current;
@@ -744,6 +767,16 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
           onPointerMove={handleHomeCursorMove}
           onPointerLeave={hideHomeCursor}
         />
+        {basemapTilesLoading && status === "ready" ? (
+          <div
+            className="pointer-events-none absolute left-1/2 bottom-8 z-30 -translate-x-1/2 rounded-(--radius) border border-border bg-card/95 px-3 py-1.5 text-xs text-muted-foreground shadow-md"
+            role="status"
+            aria-live="polite"
+            data-testid="ms-basemap-loading"
+          >
+            Loading map imagery…
+          </div>
+        ) : null}
         {tool === "home" && status === "ready" ? (
           <div
             ref={homeCursorRef}
@@ -765,6 +798,28 @@ const MissionScene = forwardRef<MissionSceneHandle, MissionSceneProps>(
             cesium={cesiumRef.current}
             unitSystem={readMissionDesignPreferences().unitSystem}
           />
+        ) : null}
+        {status === "ready" &&
+        (mission.worldType === "2D" ||
+          (mission.world !== "Blank space" && !worldModelScene.active)) ? (
+          <a
+            className="pointer-events-auto absolute left-0 bottom-0 z-20 rounded-tr-(--radius) bg-card/90 px-1 py-0.25 backdrop-blur-xs text-[10px] leading-tight text-muted-foreground [text-decoration:none] hover:text-foreground hover:[text-decoration:underline]"
+            href={
+              mission.worldType === "2D" &&
+              (basemap === "openstreetmap" || basemap === "basic")
+                ? BASEMAPS[basemap].osmCreditHref
+                : BASEMAPS[basemap].creditHref
+            }
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`${BASEMAPS[basemap].label} basemap attribution`}
+            data-testid="ms-basemap-attribution"
+          >
+            {mission.worldType === "2D" &&
+            (basemap === "openstreetmap" || basemap === "basic")
+              ? BASEMAPS[basemap].osmCreditLabel
+              : BASEMAPS[basemap].creditLabel}
+          </a>
         ) : null}
         {status === "ready" && !without3d ? (
           <MissionCompassCube

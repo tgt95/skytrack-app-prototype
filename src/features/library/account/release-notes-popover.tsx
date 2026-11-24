@@ -134,7 +134,7 @@ export function ReleaseNotesPopover () {
                       />
                     </div>
                     <span className='min-w-0 flex-1'>
-                      <span className='mb-1 flex items-center gap-2 text-xs text-(--muted-foreground)'>
+                      <span className='mb-1 flex items-center gap-2 text-xs text-muted-foreground'>
                         <span>{release.date}</span>
                         {index === 0 ? (
                           <span className='rounded-(--radius) bg-(--accent) px-1.5 py-0.5 font-medium text-(--accent-foreground)'>
@@ -145,7 +145,7 @@ export function ReleaseNotesPopover () {
                       <span className='block text-sm font-medium leading-5'>
                         {release.title}
                       </span>
-                      <span className='mt-0.5 block text-sm text-(--muted-foreground)'>
+                      <span className='mt-0.5 block text-sm text-muted-foreground'>
                         {release.category}
                       </span>
                     </span>

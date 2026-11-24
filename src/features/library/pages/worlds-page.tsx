@@ -2,7 +2,12 @@ import { FolderOpenIcon, PlusIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Badge } from "skytrack-ui/badge";
 import { Button } from "skytrack-ui/button";
-import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "skytrack-ui/empty";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyTitle,
+} from "skytrack-ui/empty";
 import { PageHeader } from "skytrack-ui/page-header";
 import { WorldPreviewDialog } from "@/features/library/cards/world-preview-dialog";
 import { WorldThumbnail } from "@/features/library/cards/world-thumbnail";
@@ -56,12 +61,18 @@ export function WorldsPage({
           className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-4 pt-5"
           data-testid="ms-lib-page-header-row"
           title={
-            <span id="ms-lib-worlds-title" data-testid="ms-lib-page-header-copy">
+            <span
+              id="ms-lib-worlds-title"
+              data-testid="ms-lib-page-header-copy"
+            >
               Worlds
             </span>
           }
           toolbar={
-            <div className="inline-flex items-center justify-end gap-2 shrink-0" data-testid="ms-lib-page-header-actions">
+            <div
+              className="inline-flex items-center justify-end gap-2 shrink-0"
+              data-testid="ms-lib-page-header-actions"
+            >
               <Button size="default" variant="default" onClick={onCreate}>
                 <PlusIcon aria-hidden="true" /> Add World
               </Button>
@@ -71,8 +82,8 @@ export function WorldsPage({
       }
     >
       <div
-        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
-        aria-label={`${workspaceName} 3D Worlds`}
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-4 3xl:grid-cols-5"
+        aria-label={`${workspaceName} Worlds`}
       >
         {worlds.map((world) => (
           <LibraryCardFrame
@@ -105,10 +116,7 @@ export function WorldsPage({
             <span className="ms-lib-card-body flex flex-col gap-1 p-3 flex-1">
               <span className="text-sm font-medium">{world.name}</span>
               <span className="text-xs text-muted-foreground leading-[1.5]">
-                3D World ·{" "}
-                {world.location && world.location !== "Sample terrain"
-                  ? world.location
-                  : "Terrain ready"}
+                {`3D reconstruction · ${world.location && world.location !== "Sample terrain" ? world.location : "Survey data"}`}
               </span>
               {world.glbFileName ? (
                 <span className="text-xs text-muted-foreground leading-[1.5]">
@@ -150,7 +158,9 @@ export function WorldsPage({
           >
             No Worlds yet
           </EmptyTitle>
-          <EmptyDescription>Add a 3D reconstruction to this Workspace.</EmptyDescription>
+          <EmptyDescription>
+            Add a 3D reconstruction to this Workspace.
+          </EmptyDescription>
         </Empty>
       ) : null}
       <WorldPreviewDialog

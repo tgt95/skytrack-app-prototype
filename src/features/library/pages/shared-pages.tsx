@@ -23,7 +23,7 @@ export function SharedAccountsPage({
           data-testid="ms-lib-page-header-row"
         >
           <div className="min-w-0 bg-card px-6 pt-5" data-testid="ms-lib-page-header-context">
-            <button type="button" className="ms-lib-back inline-flex items-center gap-1.5 mb-0 py-1 px-0 [border:0] bg-transparent text-(--muted-foreground) text-[0.8125rem] cursor-pointer hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1" onClick={onBack}>
+            <button type="button" className="ms-lib-back inline-flex items-center gap-1.5 mb-0 py-1 px-0 [border:0] bg-transparent text-muted-foreground text-[0.8125rem] cursor-pointer hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1" onClick={onBack}>
               <ArrowLeftIcon aria-hidden="true" /> Back
             </button>
           </div>
@@ -36,7 +36,7 @@ export function SharedAccountsPage({
             }
           />
           <div className="px-6 pb-4" data-testid="ms-lib-page-header-description">
-            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
+            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-muted-foreground">
               {missionName} · {projectName}
             </p>
           </div>
@@ -89,7 +89,7 @@ export function SharedProjectPage({
           data-testid="ms-lib-page-header-row"
         >
           <div className="min-w-0 bg-card px-6 pt-5" data-testid="ms-lib-page-header-context">
-            <button type="button" className="ms-lib-back inline-flex items-center gap-1.5 mb-0 py-1 px-0 [border:0] bg-transparent text-(--muted-foreground) text-[0.8125rem] cursor-pointer hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1" onClick={onBack}>
+            <button type="button" className="ms-lib-back inline-flex items-center gap-1.5 mb-0 py-1 px-0 [border:0] bg-transparent text-muted-foreground text-[0.8125rem] cursor-pointer hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--sidebar-ring) focus-visible:outline-offset-1" onClick={onBack}>
               <ArrowLeftIcon aria-hidden="true" /> Shared with me
             </button>
           </div>
@@ -107,7 +107,7 @@ export function SharedProjectPage({
             }
           />
           <div className="px-6 pb-4" data-testid="ms-lib-page-header-description">
-            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-(--muted-foreground)">
+            <p className="ms-lib-sub mt-1 mx-0 mb-0 text-sm text-muted-foreground">
               Owned by {project.owner} · {project.workspace} · {project.sharedAgo}
             </p>
           </div>
@@ -151,7 +151,7 @@ export function SharedWithMePage({
       }
     >
       <div
-        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5"
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-4 3xl:grid-cols-5"
         aria-label="Projects shared with me"
       >
         {projects.map((project) => (

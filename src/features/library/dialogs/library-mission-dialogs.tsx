@@ -27,6 +27,8 @@ import type {
 } from "@/features/library/database/store";
 import type { WorkspaceDroneProfile } from "@/features/library/database/drone-store";
 import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
+import type { WorkspaceMapDatasetRecord } from "@/features/library/database/workspace-resources-store";
+import type { MapDataFileRecord } from "@/features/map-data/map-data";
 
 type MissionDlg = {
   mode: "rename";
@@ -61,6 +63,11 @@ export interface LibraryMissionSetupDialogsProps {
   wizardSeed: { projectId: string; title: string };
   drones: WorkspaceDroneProfile[];
   worlds: WorkspaceWorldRecord[];
+  mapDatasets: WorkspaceMapDatasetRecord[];
+  onImportMapData: (
+    name: string,
+    files: MapDataFileRecord[],
+  ) => Promise<WorkspaceMapDatasetRecord>;
   worldImport: {
     workspaceId: string;
     persistWorldProfile: (
@@ -86,6 +93,8 @@ export function LibraryMissionSetupDialogs({
   wizardSeed,
   drones,
   worlds,
+  mapDatasets,
+  onImportMapData,
   worldImport,
   submitWizard,
   projectDlg,
@@ -115,6 +124,8 @@ export function LibraryMissionSetupDialogs({
         initialTitle={wizardSeed.title}
         drones={drones}
         worlds={worlds}
+        mapDatasets={mapDatasets}
+        onImportMapData={onImportMapData}
         onImportWorld={importWorld}
         onClose={() => setWizardOpen(false)}
         onSubmit={submitWizard}

@@ -132,10 +132,10 @@ export default function RouteSequenceCard({
       labelId={`ms-speed-label-${route.id}`}
       // labelClassName={
       //   worldType === "2D"
-      //     ? "flex-1 min-w-0 text-xs leading-normal font-semibold text-(--muted-foreground)"
+      //     ? "flex-1 min-w-0 text-xs leading-normal font-semibold text-muted-foreground"
       //     : "min-w-0 text-xs leading-normal font-medium"
       // }
-      className="flex-row items-center justify-between gap-3 min-h-10.5 py-2 px-3 text-(--muted-foreground) text-xs font-semibold"
+      className="flex-row items-center justify-between gap-3 min-h-10.5 py-2 px-3 text-muted-foreground text-xs font-semibold"
     >
       <span className="flex shrink-0 items-center gap-1.5">
         <CompactAxisField
@@ -166,7 +166,7 @@ export default function RouteSequenceCard({
           }
         />
         <span
-          className=" text-xs text-(--muted-foreground)"
+          className=" text-xs text-muted-foreground"
           aria-hidden="true"
           data-testid="ms-unit"
         >
@@ -221,7 +221,7 @@ export default function RouteSequenceCard({
         <div className="border-b border-b-border">
           <InspectorField
             label="Reconnaissance flight"
-            className="flex-row items-center gap-3 min-h-10.5 pb-2 px-3 text-(--muted-foreground) text-xs font-semibold"
+            className="flex-row items-center gap-3 min-h-10.5 pb-2 px-3 text-muted-foreground text-xs font-semibold"
           >
             <Switch
               className="flex-[0_0_auto]"

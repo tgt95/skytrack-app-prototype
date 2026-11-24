@@ -167,7 +167,7 @@ export default function MissionPreview({
       </p>
 
       <p
-        className=" mt-1 mx-0 mb-0 text-(--muted-foreground) text-xs"
+        className=" mt-1 mx-0 mb-0 text-muted-foreground text-xs"
         data-testid="ms-preview-estimate"
       >
         For runnable missions, estimate follows the flight path from Home,
@@ -195,37 +195,37 @@ export default function MissionPreview({
             <thead>
               <tr>
                 <th
-                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
+                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-muted-foreground bg-(--muted)"
                   scope="col"
                 >
                   #
                 </th>
                 <th
-                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
+                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-muted-foreground bg-(--muted)"
                   scope="col"
                 >
                   X
                 </th>
                 <th
-                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
+                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-muted-foreground bg-(--muted)"
                   scope="col"
                 >
                   Y
                 </th>
                 <th
-                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
+                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-muted-foreground bg-(--muted)"
                   scope="col"
                 >
                   Z
                 </th>
                 <th
-                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
+                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-muted-foreground bg-(--muted)"
                   scope="col"
                 >
                   Action
                 </th>
                 <th
-                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-(--muted-foreground) bg-(--muted)"
+                  className="py-1.5 px-2.5 text-left border-b border-b-border whitespace-nowrap text-[0.6875rem] text-muted-foreground bg-(--muted)"
                   scope="col"
                 >
                   T+

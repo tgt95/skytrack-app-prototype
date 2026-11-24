@@ -191,7 +191,7 @@ export function WaypointRow(props: {
           type="button"
           variant="ghost"
           size="icon-xs"
-          className={`flex-[0_0_auto] self-center inline-flex items-center justify-center w-5.5 h-8.5 text-sm border border-transparent rounded-(--radius) bg-transparent text-(--muted-foreground) cursor-grab touch-none hover:bg-(--accent) hover:text-foreground focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1${grabbed ? " text-(--primary) cursor-grabbing" : ""}`}
+          className={`flex-[0_0_auto] self-center inline-flex items-center justify-center w-5.5 h-8.5 text-sm border border-transparent rounded-(--radius) bg-transparent text-muted-foreground cursor-grab touch-none hover:bg-(--accent) hover:text-foreground focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1${grabbed ? " text-(--primary) cursor-grabbing" : ""}`}
           disabled={generated}
           draggable={!generated}
           aria-label={
@@ -230,7 +230,7 @@ export function WaypointRow(props: {
           count={wp.seq}
           status="default"
           className="w-full"
-          // className="h-7 min-w-7.5 rounded-(--radius) px-1 text-xs font-semibold normal-case tracking-normal text-(--muted-foreground)"
+          // className="h-7 min-w-7.5 rounded-(--radius) px-1 text-xs font-semibold normal-case tracking-normal text-muted-foreground"
         />
       </button>
       <div

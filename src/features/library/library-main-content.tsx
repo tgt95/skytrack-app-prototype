@@ -12,7 +12,12 @@ import {
   DialogPortal,
   DialogTitle,
 } from "skytrack-ui/dialog";
-import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "skytrack-ui/empty";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyTitle,
+} from "skytrack-ui/empty";
 import { PageHeader } from "skytrack-ui/page-header";
 import type { LibMission, LibProject, LibTemplate } from "./database/store";
 import type { WorkspaceDroneProfile } from "./database/drone-store";
@@ -20,9 +25,7 @@ import type {
   WorkspaceAIModelRecord,
   WorkspaceWorldRecord,
 } from "./database/workspace-resources-store";
-import {
-  LibraryPageLayout,
-} from "./cards/library-presentation.tsx";
+import { LibraryPageLayout } from "./cards/library-presentation.tsx";
 import {
   TemplateAttribution,
   type SharedProject,
@@ -165,10 +168,11 @@ export default function LibraryMainContent({
   onSaveAIModel,
   onGoHome,
 }: LibraryMainContentProps) {
-  const [previewTemplateId, setPreviewTemplateId] = useState<string | null>(null);
-  const previewTemplate = templates.find(
-    (template) => template.id === previewTemplateId,
-  ) ?? null;
+  const [previewTemplateId, setPreviewTemplateId] = useState<string | null>(
+    null,
+  );
+  const previewTemplate =
+    templates.find((template) => template.id === previewTemplateId) ?? null;
   const label = sharedView
     ? "Shared accounts"
     : activeSharedProject
@@ -294,7 +298,10 @@ export default function LibraryMainContent({
               className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-4 pt-5"
               data-testid="ms-lib-page-header-row"
               title={
-                <span id="ms-lib-logs-title" data-testid="ms-lib-page-header-copy">
+                <span
+                  id="ms-lib-logs-title"
+                  data-testid="ms-lib-page-header-copy"
+                >
                   Logs
                 </span>
               }
@@ -326,14 +333,17 @@ export default function LibraryMainContent({
               className="sticky top-0 z-20 ms-lib-page-header flex flex-col gap-2 px-6 pb-4 pt-5"
               data-testid="ms-lib-page-header-row"
               title={
-                <span id="ms-lib-placeholder-title" data-testid="ms-lib-page-header-copy">
+                <span
+                  id="ms-lib-placeholder-title"
+                  data-testid="ms-lib-page-header-copy"
+                >
                   {section}
                 </span>
               }
             />
           }
         >
-          <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">
+          <p className="ms-hint m-0 text-xs text-muted-foreground leading-[1.5]">
             No {section.toLowerCase()} available.
           </p>
           <Button size="sm" variant="outline" onClick={onGoHome}>

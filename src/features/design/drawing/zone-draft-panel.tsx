@@ -79,7 +79,7 @@ export function ZoneDraftPanel({
         {kind === "area" ? (
           <>
             <p
-              className="ms-hint m-0 text-sm text-(--muted-foreground) leading-[1.5]"
+              className="ms-hint m-0 text-sm text-muted-foreground leading-[1.5]"
               role="status"
               aria-live="polite"
             >

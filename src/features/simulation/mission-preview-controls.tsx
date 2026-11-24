@@ -147,7 +147,7 @@ export default function MissionPreviewControls({
           </Select>
         </div>
         <span
-          className="ms-preview-time flex-[0_0_auto] text-xs text-(--muted-foreground) [font-variant-numeric:tabular-nums] whitespace-nowrap"
+          className="ms-preview-time flex-[0_0_auto] text-xs text-muted-foreground [font-variant-numeric:tabular-nums] whitespace-nowrap"
           data-testid="ms-preview-time"
         >
           {formattedTime} / {formattedDuration}

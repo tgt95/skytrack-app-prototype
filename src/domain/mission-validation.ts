@@ -6,6 +6,7 @@ import {
   type CameraActionKind,
   type EnuVec,
   type MissionArea,
+  type MissionMapSceneLayer,
   type MissionSequenceItem,
   type StudioMission,
   type ValidationIssue,
@@ -282,11 +283,163 @@ function isSnapshotMission(value: unknown): value is StudioMission {
       (!Array.isArray(value.aiWorkflows) || !value.aiWorkflows.every(isAIWorkflow))) return false
   if (value.areas !== undefined && (!Array.isArray(value.areas) || !value.areas.every(isZone))) return false
   if (value.avoids !== undefined && (!Array.isArray(value.avoids) || !value.avoids.every(isZone))) return false
+  if (value.mapSceneLayer !== undefined && !isMissionMapSceneLayer(value.mapSceneLayer)) return false
   return true
+}
+
+function isMissionMapSceneLayer(value: unknown): boolean {
+  if (!isRecord(value) || !isRecord(value.center)) return false
+  if (
+    typeof value.sourceFileName !== 'string' ||
+    value.coordinateFrame !== 'mission-enu' ||
+    !isFiniteNumber(value.center.lat) ||
+    !isFiniteNumber(value.center.lon) ||
+    Math.abs(value.center.lat) > 90 ||
+    Math.abs(value.center.lon) > 180 ||
+    !Array.isArray(value.bbox) ||
+    value.bbox.length !== 4 ||
+    !value.bbox.every(isFiniteNumber) ||
+    !isFiniteNumber(value.widthM) ||
+    value.widthM <= 0 ||
+    value.verticalReference !== 'unverified' ||
+    typeof value.horizontalReference !== 'string' ||
+    !Array.isArray(value.buildings) ||
+    value.buildings.length > 5000 ||
+    !Array.isArray(value.landmarks) ||
+    value.landmarks.length > 100 ||
+    (value.trees !== undefined &&
+      (!Array.isArray(value.trees) || value.trees.length > 2000)) ||
+    (value.buildings.length === 0 &&
+      value.landmarks.length === 0 &&
+      (!Array.isArray(value.trees) || value.trees.length === 0))
+  )
+    return false
+  const isRing = (ring: unknown) =>
+    Array.isArray(ring) &&
+    ring.length >= 4 &&
+    ring.every(
+      (point) =>
+        Array.isArray(point) &&
+        point.length === 2 &&
+        point.every(isFiniteNumber),
+    )
+  const validBuildings = value.buildings.every(
+    (building: unknown) =>
+      isRecord(building) &&
+      typeof building.id === 'string' &&
+      typeof building.name === 'string' &&
+      isFiniteNumber(building.heightM) &&
+      building.heightM > 0 &&
+      ['verified', 'estimated', 'review', 'unknown'].includes(
+        String(building.heightLabel),
+      ) &&
+      Array.isArray(building.polygons) &&
+      building.polygons.length > 0 &&
+      building.polygons.every(
+        (polygon: unknown) =>
+          isRecord(polygon) &&
+          isRing(polygon.outer) &&
+          Array.isArray(polygon.holes) &&
+          polygon.holes.every(isRing),
+      ),
+  )
+  const validLandmarks = value.landmarks.every(
+    (landmark: unknown) =>
+      isRecord(landmark) &&
+      typeof landmark.id === 'string' &&
+      typeof landmark.name === 'string' &&
+      [
+        'bitexco.glb',
+        'cau-rong.glb',
+        'chua-mot-cot.glb',
+        'dinh-doc-lap.glb',
+        'landmark-81.glb',
+        'nha-tho-duc-ba.glb',
+        'thap-rua.glb',
+      ].some(
+        (file) =>
+          landmark.localModelPath === `/demo-assets/mapspace/models/${file}`,
+      ) &&
+      isFiniteNumber(landmark.xM) &&
+      isFiniteNumber(landmark.yM) &&
+      isFiniteNumber(landmark.baseElevationM) &&
+      isFiniteNumber(landmark.rotationDeg) &&
+      isFiniteNumber(landmark.scale) &&
+      landmark.scale > 0 &&
+      isFiniteNumber(landmark.heightM) &&
+      landmark.heightM > 0 &&
+      (landmark.attribution === undefined ||
+        typeof landmark.attribution === 'string'),
+  )
+  const validTrees =
+    value.trees === undefined ||
+    value.trees.every(
+      (tree: unknown) =>
+        isRecord(tree) &&
+        typeof tree.id === 'string' &&
+        isFiniteNumber(tree.xM) &&
+        isFiniteNumber(tree.yM) &&
+        isFiniteNumber(tree.heightM) &&
+        tree.heightM > 0 &&
+        tree.heightM <= 80 &&
+        isFiniteNumber(tree.canopyRadiusM) &&
+        tree.canopyRadiusM > 0 &&
+        tree.canopyRadiusM <= 20,
+    )
+  return validBuildings && validLandmarks && validTrees
+}
+
+/**
+ * Older imported MapSpace snapshots stored the second footprint axis as
+ * south-positive Z. Current Mission geometry uses north-positive ENU Y.
+ */
+export function normalizeMissionMapSceneLayer(
+  value: unknown,
+): MissionMapSceneLayer | null {
+  if (!isRecord(value) || !Array.isArray(value.buildings)) return null
+  if (value.coordinateFrame === 'mission-enu') {
+    return value as unknown as MissionMapSceneLayer
+  }
+  if (value.coordinateFrame !== undefined) return null
+
+  const flipRing = (ring: unknown) =>
+    Array.isArray(ring)
+      ? ring.map((point) =>
+          Array.isArray(point) && point.length === 2 && isFiniteNumber(point[1])
+            ? [point[0], -point[1]]
+            : point,
+        )
+      : ring
+  const buildings = value.buildings.map((building) => {
+    if (!isRecord(building) || !Array.isArray(building.polygons))
+      return building
+    return {
+      ...building,
+      polygons: building.polygons.map((polygon) => {
+        if (!isRecord(polygon)) return polygon
+        return {
+          ...polygon,
+          outer: flipRing(polygon.outer),
+          holes: Array.isArray(polygon.holes)
+            ? polygon.holes.map(flipRing)
+            : polygon.holes,
+        }
+      }),
+    }
+  })
+  return {
+    ...value,
+    coordinateFrame: 'mission-enu',
+    buildings,
+  } as unknown as MissionMapSceneLayer
 }
 
 export function missionFromSnapshot(raw: string): StudioMission {
   const parsed: unknown = JSON.parse(raw) as unknown
+  if (isRecord(parsed) && parsed.mapSceneLayer !== undefined) {
+    const normalized = normalizeMissionMapSceneLayer(parsed.mapSceneLayer)
+    if (normalized) parsed.mapSceneLayer = normalized
+  }
   if (!isSnapshotMission(parsed)) {
     throw new TypeError('Saved mission data has an invalid shape.')
   }

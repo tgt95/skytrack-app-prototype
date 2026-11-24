@@ -151,7 +151,7 @@ export default function MissionPreviewMap({
         ) : null}
       </svg>
       <span
-        className=" absolute left-2.5 bottom-2 py-1 px-1.75 rounded-(--radius) bg-[color-mix(in_srgb,var(--card)_92%,transparent)] text-(--muted-foreground) text-[0.625rem]"
+        className=" absolute left-2.5 bottom-2 py-1 px-1.75 rounded-(--radius) bg-[color-mix(in_srgb,var(--card)_92%,transparent)] text-muted-foreground text-[0.625rem]"
         data-testid="ms-preview-map-caption"
       >
         Route overview · photo points highlighted

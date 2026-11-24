@@ -249,7 +249,7 @@ export function WorldProfileDialog({
                 <h2 className="heading m-0 text-sm font-semibold">
                   World details
                 </h2>
-                <p className="m-0 text-(--muted-foreground) text-xs leading-[1.5]">
+                <p className="m-0 text-muted-foreground text-xs leading-[1.5]">
                   Add the source mission and reconstruction reference for this
                   World.
                 </p>
@@ -430,7 +430,7 @@ export function WorldProfileDialog({
                     <FieldError match={true}>{fileError}</FieldError>
                   ) : null}
                 </FieldRoot>
-                <div className="ms-resource-note m-0 text-(--muted-foreground) text-xs leading-[1.5] col-span-full py-2.5 px-3 border border-border rounded-(--radius) bg-(--muted) ms-drone-form-wide col-span-full [@media_(max-width:_45rem)]:col-auto">
+                <div className="ms-resource-note m-0 text-muted-foreground text-xs leading-[1.5] col-span-full py-2.5 px-3 border border-border rounded-(--radius) bg-(--muted) ms-drone-form-wide col-span-full [@media_(max-width:_45rem)]:col-auto">
                   {mode === "create"
                     ? "The GLB file is stored in this browser. Source and reconstruction references remain text only."
                     : "Source and reconstruction references are saved as text only. The GLB file is stored in this browser."}
@@ -445,7 +445,7 @@ export function WorldProfileDialog({
             </section>
             {error ? (
               <p
-                className=" m-0 text-(--muted-foreground) text-xs leading-[1.5] text-(--destructive)"
+                className=" m-0 text-muted-foreground text-xs leading-[1.5] text-(--destructive)"
                 role="alert"
                 data-testid="ms-resource-error"
               >

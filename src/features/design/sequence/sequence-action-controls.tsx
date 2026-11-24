@@ -251,7 +251,7 @@ export function SequenceActionRow(props: {
           type="button"
           variant="ghost"
           size="icon-xs"
-          className={`flex-[0_0_auto] self-center inline-flex items-center justify-center w-5.5 h-8.5 text-sm border border-transparent rounded-(--radius) bg-transparent text-(--muted-foreground) cursor-grab touch-none hover:bg-(--accent) hover:text-foreground focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1${
+          className={`flex-[0_0_auto] self-center inline-flex items-center justify-center w-5.5 h-8.5 text-sm border border-transparent rounded-(--radius) bg-transparent text-muted-foreground cursor-grab touch-none hover:bg-(--accent) hover:text-foreground focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1${
             dragging ? " text-(--primary) cursor-grabbing" : ""
           }`}
           draggable
@@ -281,7 +281,7 @@ export function SequenceActionRow(props: {
       </span>
       {action.kind === "photo" ? (
         <label className="flex items-center gap-1 whitespace-nowrap">
-          <span className="text-(--muted-foreground)">Pitch</span>
+          <span className="text-muted-foreground">Pitch</span>
           <NumberField
             value={action.gimbalPitchDeg ?? inheritedPitch}
             min={-90}

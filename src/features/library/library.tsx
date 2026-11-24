@@ -60,10 +60,7 @@ import { SidebarProvider } from "skytrack-ui/sidebar";
 
 import { seedTemplates, type LibTemplate } from "./database/store";
 import { newDroneProfile } from "./database/drone-store";
-import {
-  newWorkspaceWorld,
-  selectableWorldsForWorkspace,
-} from "./database/workspace-resources-store";
+import { newWorkspaceWorld } from "./database/workspace-resources-store";
 import {
   getSharedProject,
   getWorkspace,
@@ -77,6 +74,7 @@ import LibrarySidebar from "./library-sidebar";
 import LibraryTopbar from "./library-topbar";
 import LibraryMainContent from "./library-main-content";
 import { useWorkspaceResources } from "./workspace/use-workspace-resources.ts";
+import { useMapDataImport } from "./use-map-data-import";
 import {
   createLibraryResourceEditorActions,
   useLibraryResourceEditors,
@@ -236,6 +234,7 @@ export default function StudioLibrary({
   const {
     workspaceDrones,
     workspaceWorlds,
+    workspaceMapDatasets,
     skytrackAIModels,
     workspaceAIModels,
     uploadedAIModels,
@@ -250,6 +249,7 @@ export default function StudioLibrary({
     saveDroneProfile: persistDroneProfile,
     deleteDroneProfile,
     saveWorldProfile: persistWorldProfile,
+    saveMapDataset: persistMapDataset,
     deleteWorldProfile,
     importAIModel: persistAIModel,
     deleteAIModel: persistAIModelRemoval,
@@ -265,6 +265,10 @@ export default function StudioLibrary({
     currentUserName: accountProfile.name,
     createId: nextId,
     onAnnounce,
+  });
+  const mapDataImport = useMapDataImport({
+    workspaceId: activeWorkspace.id,
+    persistMapDataset,
   });
   const activeProject = projectId
     ? (workspaceProjects.find((p) => p.id === projectId) ?? null)
@@ -497,7 +501,9 @@ export default function StudioLibrary({
           projects: workspaceProjects,
           wizardSeed,
           drones: workspaceDrones,
-          worlds: selectableWorldsForWorkspace(activeWorkspace.id),
+          worlds: workspaceWorlds,
+          mapDatasets: workspaceMapDatasets,
+          onImportMapData: mapDataImport.importDataset,
           worldImport: { workspaceId: activeWorkspace.id, persistWorldProfile },
           submitWizard,
           projectDlg,

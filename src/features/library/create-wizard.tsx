@@ -18,8 +18,16 @@ import {
 } from "skytrack-ui/dialog";
 import { Tabs, TabsList, TabsTab } from "skytrack-ui/tabs";
 import { WORLDS } from "@/domain/mission-model";
+import type { MissionMapSceneLayer } from "@/domain/mission-model";
+import type {
+  MapDataFileRecord,
+  MapTerrainLayer,
+} from "@/features/map-data/map-data";
 import type { WorkspaceDroneProfile } from "./database/drone-store";
-import type { WorkspaceWorldRecord } from "./database/workspace-resources-store";
+import type {
+  WorkspaceMapDatasetRecord,
+  WorkspaceWorldRecord,
+} from "./database/workspace-resources-store";
 import { DroneStep } from "./create-wizard/drone-step";
 import { GeneralStep } from "./create-wizard/general-step";
 import { WorldStep } from "./create-wizard/world-step";
@@ -32,6 +40,8 @@ export interface WizardResult {
   worldId?: string;
   vehicle: string;
   droneId: string;
+  terrainLayer?: MapTerrainLayer;
+  mapSceneLayer?: MissionMapSceneLayer;
 }
 
 const STEPS = ["General", "World", "Drone"] as const;
@@ -85,6 +95,8 @@ export default function CreateMissionWizard({
   projects,
   drones,
   worlds,
+  mapDatasets,
+  onImportMapData,
   initialProjectId,
   initialTitle,
   onImportWorld,
@@ -95,6 +107,11 @@ export default function CreateMissionWizard({
   projects: { id: string; name: string }[];
   drones: WorkspaceDroneProfile[];
   worlds: WorkspaceWorldRecord[];
+  mapDatasets: WorkspaceMapDatasetRecord[];
+  onImportMapData: (
+    name: string,
+    files: MapDataFileRecord[],
+  ) => Promise<WorkspaceMapDatasetRecord>;
   initialProjectId: string;
   initialTitle: string;
   onImportWorld: (
@@ -108,7 +125,11 @@ export default function CreateMissionWizard({
   const [title, setTitle] = useState(initialTitle);
   const [projectId, setProjectId] = useState(initialProjectId);
   const [worldType, setWorldType] = useState<"2D" | "3D">("2D");
-  const [terrainFile, setTerrainFile] = useState<string | null>(null);
+  const [terrainLayer, setTerrainLayer] = useState<MapTerrainLayer | null>(
+    null,
+  );
+  const [mapSceneLayer, setMapSceneLayer] =
+    useState<MissionMapSceneLayer | null>(null);
   const [importingWorld, setImportingWorld] = useState(false);
   const [worldImportMessage, setWorldImportMessage] = useState<string | null>(
     null,
@@ -176,6 +197,8 @@ export default function CreateMissionWizard({
       ...(worldType === "3D" && worldId ? { worldId } : {}),
       vehicle: selectedDrone.name,
       droneId: selectedDrone.id,
+      ...(worldType === "2D" && terrainLayer ? { terrainLayer } : {}),
+      ...(worldType === "2D" && mapSceneLayer ? { mapSceneLayer } : {}),
     });
   };
 
@@ -188,8 +211,11 @@ export default function CreateMissionWizard({
     >
       <DialogPortal>
         <DialogBackdrop />
-        <DialogPopup aria-label="Create mission">
-          <DialogHeader>
+        <DialogPopup
+          aria-label="Create mission"
+          className="flex max-h-[calc(100dvh-2rem)] flex-col overflow-hidden"
+        >
+          <DialogHeader className="shrink-0">
             <DialogTitle>Create mission</DialogTitle>
           </DialogHeader>
           <Tabs
@@ -204,9 +230,12 @@ export default function CreateMissionWizard({
                 setStep(nextStep as 1 | 2 | 3);
               }
             }}
+            className="flex min-h-0 flex-1 flex-col overflow-hidden"
             data-testid="ms-wizard-tabs"
           >
-            <Stepper step={step} />
+            <div className="shrink-0">
+              <Stepper step={step} />
+            </div>
             <GeneralStep
               title={title}
               onTitleChange={(value) => setTitle(value)}
@@ -224,8 +253,14 @@ export default function CreateMissionWizard({
               onImportWorld={importWorld}
               importingWorld={importingWorld}
               worldImportMessage={worldImportMessage}
-              terrainFile={terrainFile}
-              onTerrainFileSelect={setTerrainFile}
+              terrainLayer={terrainLayer}
+              mapSceneLayer={mapSceneLayer}
+              onMapDatasetSelect={(sceneLayer, terrain) => {
+                setMapSceneLayer(sceneLayer);
+                setTerrainLayer(terrain);
+              }}
+              mapDatasets={mapDatasets}
+              onImportMapData={onImportMapData}
             />
             <DroneStep
               drones={drones}
@@ -233,7 +268,10 @@ export default function CreateMissionWizard({
               onDroneSelect={setDroneId}
             />
           </Tabs>
-          <DialogFooter className="flex-row flex-wrap items-center justify-end" data-testid="ms-wizard-footer">
+          <DialogFooter
+            className="flex-row flex-wrap items-center justify-end shrink-0"
+            data-testid="ms-wizard-footer"
+          >
             <span
               className="mr-auto flex items-center gap-2"
               data-testid="ms-wizard-footer-start"
@@ -243,7 +281,8 @@ export default function CreateMissionWizard({
                   variant="secondary"
                   onClick={goBack}
                   aria-label={`Back to step ${step - 1}`}
-                  size="default">
+                  size="default"
+                >
                   <ArrowLeftIcon aria-hidden="true" /> Back
                 </Button>
               ) : null}
@@ -252,13 +291,16 @@ export default function CreateMissionWizard({
               className="flex items-center gap-2"
               data-testid="ms-wizard-footer-end"
             >
-              <DialogClose variant="secondary" size="default">Cancel</DialogClose>
+              <DialogClose variant="secondary" size="default">
+                Cancel
+              </DialogClose>
               {step < 3 ? (
                 <Button
                   variant="default"
                   disabled={step === 1 ? !canNext : !canLeaveWorld}
                   onClick={goNext}
-                  size="default">
+                  size="default"
+                >
                   Next
                 </Button>
               ) : (
@@ -266,7 +308,8 @@ export default function CreateMissionWizard({
                   variant="default"
                   disabled={!canNext || !selectedDrone}
                   onClick={doCreate}
-                  size="default">
+                  size="default"
+                >
                   Create mission
                 </Button>
               )}

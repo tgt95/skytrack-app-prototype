@@ -18,5 +18,5 @@ export const STORAGE_VERSIONS = {
   libraryDatabase: 1,
   droneProfiles: 2,
   legacyDroneProfiles: 1,
-  workspaceResources: 1
+  workspaceResources: 2
 } as const

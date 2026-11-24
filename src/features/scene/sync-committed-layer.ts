@@ -13,6 +13,7 @@ import { removeSceneEntitiesInLayer } from "./scene-entity-ownership";
 import { addAreaAndAvoidEntities } from "./sync-area-entities";
 import { addHomeConnectorEntities } from "./sync-home-entities";
 import { addRouteEntities } from "./sync-route-entities";
+import { syncMapSceneLayer } from "./sync-map-scene-layer";
 import {
   syncWorldTerrain,
   type WorldTerrainTriangle,
@@ -66,6 +67,7 @@ export function syncCommittedMissionEntities({
     mission,
     worldModelActive,
   );
+  syncMapSceneLayer(viewer, Cesium, mission);
   // Sample Facade context block removed (F007): grid, route, Areas,
   // Avoid zones and markers below are the only scene objects.
   addAreaAndAvoidEntities({ ...context, selection, showAreaSurface });

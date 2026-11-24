@@ -1,18 +1,27 @@
-import { useCallback, useEffect, useRef, type Dispatch, type SetStateAction } from 'react'
-import { missionOrigin, type StudioMission } from '@/domain/mission-model'
-import type { MissionSceneHandle, SceneReadiness } from '@/features/scene/mission-scene'
-import type { SimApi } from '@/features/simulation/simulation'
-import type { Stage } from './studio-map-overlays'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
+import { missionOrigin, type StudioMission } from "@/domain/mission-model";
+import type {
+  MissionSceneHandle,
+  SceneReadiness,
+} from "@/features/scene/mission-scene";
+import type { SimApi } from "@/features/simulation/simulation";
+import type { Stage } from "./studio-map-overlays";
 
 interface UseStudioSceneSessionArgs {
-  mission: StudioMission
-  gate: { ok: boolean; reason: string | null }
-  stage: Stage
-  sceneReadiness: SceneReadiness
-  setSceneReadiness: Dispatch<SetStateAction<SceneReadiness>>
-  setStage: Dispatch<SetStateAction<Stage>>
-  sim: Pick<SimApi, 'status' | 'abort'>
-  say: (message: string) => void
+  mission: StudioMission;
+  gate: { ok: boolean; reason: string | null };
+  stage: Stage;
+  sceneReadiness: SceneReadiness;
+  setSceneReadiness: Dispatch<SetStateAction<SceneReadiness>>;
+  setStage: Dispatch<SetStateAction<Stage>>;
+  sim: Pick<SimApi, "status" | "abort">;
+  say: (message: string) => void;
 }
 
 export function useStudioSceneSession({
@@ -23,45 +32,76 @@ export function useStudioSceneSession({
   setSceneReadiness,
   setStage,
   sim,
-  say
+  say,
 }: UseStudioSceneSessionArgs) {
-  const sceneRef = useRef<MissionSceneHandle>(null)
-  const synchronizedOriginRef = useRef(missionOrigin(mission))
-  const fittedMissionIdRef = useRef(mission.id)
-  const previewPositionRef = useRef<{ x: number; y: number; z: number } | null>(null)
-  const previewCaptureRef = useRef<string | null>(null)
-  const sceneReadinessRef = useRef<SceneReadiness>('loading')
-  const onSceneReadinessChange = useCallback((readiness: SceneReadiness) => {
-    sceneReadinessRef.current = readiness
-    setSceneReadiness(readiness)
-  }, [setSceneReadiness])
+  const sceneRef = useRef<MissionSceneHandle>(null);
+  const synchronizedOriginRef = useRef(missionOrigin(mission));
+  const fittedMissionIdRef = useRef(mission.id);
+  const fittedTerrainSourceRef = useRef<string | null>(null);
+  const previewPositionRef = useRef<{ x: number; y: number; z: number } | null>(
+    null,
+  );
+  const previewCaptureRef = useRef<string | null>(null);
+  const sceneReadinessRef = useRef<SceneReadiness>("loading");
+  const onSceneReadinessChange = useCallback(
+    (readiness: SceneReadiness) => {
+      sceneReadinessRef.current = readiness;
+      setSceneReadiness(readiness);
+    },
+    [setSceneReadiness],
+  );
 
   useEffect(() => {
-    if (sceneReadiness !== 'ready') return
-    const nextOrigin = missionOrigin(mission)
+    if (sceneReadiness !== "ready") return;
+    const nextOrigin = missionOrigin(mission);
+    const terrainSource = mission.terrainLayer?.sourceFileName ?? null;
+    const mapSource = mission.mapSceneLayer?.sourceFileName ?? null;
+    const sceneSource = `${terrainSource ?? ""}|${mapSource ?? ""}`;
     if (mission.id !== fittedMissionIdRef.current) {
-      fittedMissionIdRef.current = mission.id
-      synchronizedOriginRef.current = nextOrigin
-      sceneRef.current?.resetCamera()
-      return
+      fittedMissionIdRef.current = mission.id;
+      synchronizedOriginRef.current = nextOrigin;
+      fittedTerrainSourceRef.current = sceneSource;
+      sceneRef.current?.resetCamera();
+      return;
     }
-    if (mission.worldType !== '2D') return
-    const previousOrigin = synchronizedOriginRef.current
-    if (nextOrigin.lat === previousOrigin.lat && nextOrigin.lng === previousOrigin.lng) return
-    synchronizedOriginRef.current = nextOrigin
-    sceneRef.current?.flyToLocation({ latitude: nextOrigin.lat, longitude: nextOrigin.lng })
-  }, [mission, sceneReadiness])
+    if (sceneSource !== fittedTerrainSourceRef.current) {
+      fittedTerrainSourceRef.current = sceneSource;
+      if (terrainSource || mapSource) {
+        sceneRef.current?.resetCamera();
+        return;
+      }
+    }
+    if (mission.worldType !== "2D") return;
+    const previousOrigin = synchronizedOriginRef.current;
+    if (
+      nextOrigin.lat === previousOrigin.lat &&
+      nextOrigin.lng === previousOrigin.lng
+    )
+      return;
+    synchronizedOriginRef.current = nextOrigin;
+    sceneRef.current?.flyToLocation({
+      latitude: nextOrigin.lat,
+      longitude: nextOrigin.lng,
+    });
+  }, [mission, sceneReadiness]);
 
   useEffect(() => {
-    if (stage !== 'simulation' || sceneReadiness === 'loading' || gate.ok) return
-    if (sim.status === 'running' || sim.status === 'paused') sim.abort()
-    setStage('design')
+    if (stage !== "simulation" || sceneReadiness === "loading" || gate.ok)
+      return;
+    if (sim.status === "running" || sim.status === "paused") sim.abort();
+    setStage("design");
     say(
       gate.reason
         ? `Simulation locked. ${gate.reason}`
-        : 'Simulation stopped. 3D scene unavailable; retry 3D from Design.',
-    )
-  }, [gate, sceneReadiness, stage, sim, say, setStage])
+        : "Simulation stopped. 3D scene unavailable; retry 3D from Design.",
+    );
+  }, [gate, sceneReadiness, stage, sim, say, setStage]);
 
-  return { sceneRef, previewPositionRef, previewCaptureRef, sceneReadinessRef, onSceneReadinessChange }
+  return {
+    sceneRef,
+    previewPositionRef,
+    previewCaptureRef,
+    sceneReadinessRef,
+    onSceneReadinessChange,
+  };
 }

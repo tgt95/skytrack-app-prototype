@@ -10,6 +10,7 @@ import {
 import { flushSync } from "react-dom";
 import {
   missionFromSnapshot,
+  normalizeMissionMapSceneLayer,
   type SceneSelection,
   type SceneTool,
   type StudioMission,
@@ -222,6 +223,9 @@ export function useStudioRouting({
       snapshotWarning =
         " Saved mission data could not be read; a blank mission is open.";
     }
+    const mapSceneLayer = normalizeMissionMapSceneLayer(
+      record.mission.mapSceneLayer,
+    );
     restored = {
       ...restored,
       id: record.mission.id,
@@ -233,11 +237,33 @@ export function useStudioRouting({
       ...(record.mission.worldId ? { worldId: record.mission.worldId } : {}),
       ...(record.mission.vehicle ? { vehicle: record.mission.vehicle } : {}),
       ...(record.mission.droneId ? { droneId: record.mission.droneId } : {}),
+      ...(record.mission.terrainLayer
+        ? {
+            terrainLayer: record.mission.terrainLayer,
+            origin: {
+              ...restored.origin,
+              lat: record.mission.terrainLayer.center.lat,
+              lng: record.mission.terrainLayer.center.lon,
+            },
+          }
+        : {}),
+      ...(mapSceneLayer
+        ? {
+            mapSceneLayer,
+            origin: {
+              ...restored.origin,
+              lat: mapSceneLayer.center.lat,
+              lng: mapSceneLayer.center.lon,
+            },
+          }
+        : {}),
     };
 
     setLibraryEntry(entry);
     if (record.mission.basemapStyle) {
       setBasemapStyle(record.mission.basemapStyle);
+    } else if (mapSceneLayer) {
+      setBasemapStyle("basic");
     }
     setWorkspaceDroneProfiles(
       loadDroneProfiles().filter(

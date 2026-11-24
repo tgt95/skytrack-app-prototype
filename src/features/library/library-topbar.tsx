@@ -1,19 +1,19 @@
 import {
   CloudIcon,
   DiscordLogoIcon,
-  DownloadSimpleIcon,
-} from "@phosphor-icons/react";
-import { Button } from "skytrack-ui/button";
-import { SidebarTrigger } from "skytrack-ui/sidebar";
+  DownloadSimpleIcon
+} from '@phosphor-icons/react'
+import { Button } from 'skytrack-ui/button'
+import { SidebarTrigger } from 'skytrack-ui/sidebar'
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "skytrack-ui/breadcrumb";
-import { Tabs, TabsList, TabsTab } from "skytrack-ui/tabs";
+  BreadcrumbSeparator
+} from 'skytrack-ui/breadcrumb'
+import { Tabs, TabsList, TabsTab } from 'skytrack-ui/tabs'
 import {
   Tooltip,
   TooltipArrow,
@@ -21,8 +21,8 @@ import {
   TooltipPortal,
   TooltipPositioner,
   TooltipProvider,
-  TooltipTrigger,
-} from "skytrack-ui/tooltip";
+  TooltipTrigger
+} from 'skytrack-ui/tooltip'
 import {
   ToastClose,
   ToastContent,
@@ -31,31 +31,31 @@ import {
   ToastRoot,
   ToastTitle,
   ToastViewport,
-  useToastManager,
-} from "skytrack-ui/toast";
-import { Separator } from "skytrack-ui/separator";
-import skytrackLogoFull from "@/assets/skytrack-logo-full.svg?raw";
-import DevScenarioSlot from "@/features/dev-tools/dev-scenario-slot";
-import { DEV_SCENARIO_SLOTS } from "@/features/dev-tools/scenario-slots";
-import { libraryToastManager } from "./library-toast-manager";
+  useToastManager
+} from 'skytrack-ui/toast'
+import { Separator } from 'skytrack-ui/separator'
+import skytrackLogoFull from '@/assets/skytrack-logo-full.svg?raw'
+import DevScenarioSlot from '@/features/dev-tools/dev-scenario-slot'
+import { DEV_SCENARIO_SLOTS } from '@/features/dev-tools/scenario-slots'
+import { libraryToastManager } from './library-toast-manager'
 
-export { libraryToastManager } from "./library-toast-manager";
+export { libraryToastManager } from './library-toast-manager'
 
-function RunEnvironmentToastList() {
-  const { toasts } = useToastManager();
-  return toasts.map((toast) => (
+function RunEnvironmentToastList () {
+  const { toasts } = useToastManager()
+  return toasts.map(toast => (
     <ToastRoot key={toast.id} toast={toast}>
       <ToastContent>
-        <div className="min-w-0 flex-1">
+        <div className='min-w-0 flex-1'>
           <ToastTitle />
         </div>
-        <ToastClose size="icon" variant="ghost" aria-label="Dismiss toast" />
+        <ToastClose size='icon' variant='ghost' aria-label='Dismiss toast' />
       </ToastContent>
     </ToastRoot>
-  ));
+  ))
 }
 
-export default function LibraryTopbar({
+export default function LibraryTopbar ({
   runEnvironment,
   canUseCloudSIM,
   onEnvironmentChange,
@@ -64,78 +64,78 @@ export default function LibraryTopbar({
   projectName,
   templateName,
   onNavigateProjects,
-  onNavigateTemplates,
+  onNavigateTemplates
 }: {
-  runEnvironment: "local" | "cloud";
-  canUseCloudSIM: boolean;
-  onEnvironmentChange: (value: "local" | "cloud") => void;
-  onAnnounce: (message: string) => void;
-  onNavigate: (section: "home" | "download") => void;
-  projectName: string | null;
-  templateName: string | null;
-  onNavigateProjects: () => void;
-  onNavigateTemplates: () => void;
+  runEnvironment: 'local' | 'cloud'
+  canUseCloudSIM: boolean
+  onEnvironmentChange: (value: 'local' | 'cloud') => void
+  onAnnounce: (message: string) => void
+  onNavigate: (section: 'home' | 'download') => void
+  projectName: string | null
+  templateName: string | null
+  onNavigateProjects: () => void
+  onNavigateTemplates: () => void
 }) {
   const logoMark = (
     <span
-      className="inline-flex items-center gap-2"
-      aria-hidden="true"
+      className='inline-flex items-center gap-2'
+      aria-hidden='true'
       dangerouslySetInnerHTML={{ __html: skytrackLogoFull }}
     />
-  );
+  )
 
   return (
     <>
       <ToastProvider toastManager={libraryToastManager}>
         <ToastPortal>
-          <ToastViewport className="fixed bottom-4 left-4 right-auto mx-0 flex max-w-sm flex-col-reverse">
+          <ToastViewport className='fixed bottom-4 left-4 right-auto mx-0 flex max-w-sm flex-col-reverse'>
             <RunEnvironmentToastList />
           </ToastViewport>
         </ToastPortal>
       </ToastProvider>
       <header
-        className="sticky top-0 z-20 flex-[0_0_auto] flex items-center justify-between gap-3 min-h-12 py-2 px-3 border-b border-b-border bg-(--card) [@media_(max-width:_61.25rem)]:flex-wrap"
-        data-testid="ms-lib-top"
+        className='sticky top-0 z-20 flex-[0_0_auto] flex items-center justify-between gap-3 min-h-12 py-2 px-3 border-b border-b-border bg-(--card) [@media_(max-width:_61.25rem)]:flex-wrap'
+        data-testid='ms-lib-top'
       >
-        <SidebarTrigger className="md:hidden" />
+        <SidebarTrigger className='md:hidden' />
         {projectName || templateName ? (
           <Breadcrumb
-            className="min-w-0 flex-[1_1_auto] overflow-hidden text-sm"
-            aria-label="Breadcrumb"
+            className='min-w-0 flex-[1_1_auto] overflow-hidden text-sm'
+            aria-label='Breadcrumb'
           >
-            <BreadcrumbList className="m-0 min-w-0 list-none flex-nowrap gap-2 p-0 text-inherit">
-              <BreadcrumbItem className="shrink-0">
+            <BreadcrumbList className='m-0 min-w-0 list-none flex-nowrap gap-2 p-0 text-inherit'>
+              <BreadcrumbItem className='shrink-0'>
                 <BreadcrumbLink
-                  render={<button type="button" />}
-                  className="inline-flex items-center gap-2 rounded-(--radius) bg-transparent p-0 [border:0] [font:inherit] text-inherit focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 [&_svg]:block [&_svg]:h-6"
-                  aria-label="Go to Home"
-                  title="Go to Home"
-                  data-testid="ms-lib-logo-home"
-                  onClick={() => onNavigate("home")}
+                  render={<button type='button' />}
+                  className='inline-flex items-center gap-2 rounded-(--radius) bg-transparent p-0 [border:0] [font:inherit] text-inherit focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 [&_svg]:block [&_svg]:h-6 cursor-pointer'
+                  aria-label='Go to Home'
+                  title='Go to Home'
+                  data-testid='ms-lib-logo-home'
+                  onClick={() => onNavigate('home')}
                 >
                   {logoMark}
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="text-(--muted-foreground)" />
-              <BreadcrumbItem className="shrink-0">
+              <BreadcrumbSeparator className='text-muted-foreground' />
+              <BreadcrumbItem className='shrink-0'>
                 <BreadcrumbLink
-                  render={<button type="button" />}
-                  className="rounded-(--radius) p-0.5 text-(--muted-foreground) hover:text-(--foreground) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
+                  render={<button type='button' />}
+                  className='rounded-(--radius) p-0.5 text-muted-foreground hover:text-(--foreground) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 cursor-pointer'
                   data-testid={
                     projectName
-                      ? "ms-lib-project-breadcrumb-link"
-                      : "ms-lib-template-breadcrumb-link"
+                      ? 'ms-lib-project-breadcrumb-link'
+                      : 'ms-lib-template-breadcrumb-link'
                   }
                   onClick={
                     projectName ? onNavigateProjects : onNavigateTemplates
                   }
                 >
-                  {projectName ? "Projects" : "Mission templates"}
+                  {projectName ? 'Projects' : 'Mission templates'}
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="text-(--muted-foreground)" />
-              <BreadcrumbItem className="min-w-0">
-                <BreadcrumbPage className="block min-w-0 max-w-80 overflow-hidden text-ellipsis whitespace-nowrap font-semibold [@media_(max-width:_73.75rem)]:max-w-45">
+              <BreadcrumbSeparator className='text-muted-foreground' />
+              <BreadcrumbItem className='min-w-0'>
+                <BreadcrumbPage className='block min-w-0 max-w-80 overflow-hidden text-ellipsis whitespace-nowrap font-semibold [@media_(max-width:_73.75rem)]:max-w-45'>
                   {projectName ?? templateName}
                 </BreadcrumbPage>
               </BreadcrumbItem>
@@ -143,90 +143,90 @@ export default function LibraryTopbar({
           </Breadcrumb>
         ) : (
           <button
-            type="button"
-            className="inline-flex items-center gap-2 rounded-(--radius) bg-transparent p-0 [border:0] [font:inherit] font-bold text-sm text-inherit cursor-pointer [&_svg]:block [&_svg]:h-6 focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1"
-            aria-label="Go to Home"
-            title="Go to Home"
-            data-testid="ms-lib-logo-home"
-            onClick={() => onNavigate("home")}
+            type='button'
+            className='inline-flex items-center gap-2 rounded-(--radius) bg-transparent p-0 [border:0] [font:inherit] font-bold text-sm text-inherit cursor-pointer [&_svg]:block [&_svg]:h-6 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-1'
+            aria-label='Go to Home'
+            title='Go to Home'
+            data-testid='ms-lib-logo-home'
+            onClick={() => onNavigate('home')}
           >
             {logoMark}
           </button>
         )}
         <span
-          className=" flex items-center gap-2"
-          data-testid="ms-lib-top-actions"
+          className='flex items-center gap-2'
+          data-testid='ms-lib-top-actions'
         >
           <div
-            className=" inline-flex items-center gap-2"
-            data-testid="ms-run-environment"
+            className='inline-flex items-center gap-2'
+            data-testid='ms-run-environment'
           >
             <span
-              className=" text-(--muted-foreground) text-sm whitespace-nowrap"
-              data-testid="ms-run-environment-label"
+              className='text-muted-foreground text-sm whitespace-nowrap'
+              data-testid='ms-run-environment-label'
             >
               Environment:
             </span>
             <TooltipProvider>
               <Tabs
-                className="w-fit"
+                className='w-fit'
                 value={runEnvironment}
                 onValueChange={(value: unknown) => {
                   const next =
-                    value === "local"
-                      ? "local"
-                      : value === "cloud" && canUseCloudSIM
-                        ? "cloud"
-                        : null;
-                  if (!next || next === runEnvironment) return;
-                  onEnvironmentChange(next);
+                    value === 'local'
+                      ? 'local'
+                      : value === 'cloud' && canUseCloudSIM
+                      ? 'cloud'
+                      : null
+                  if (!next || next === runEnvironment) return
+                  onEnvironmentChange(next)
                   libraryToastManager.add({
                     title: `Switched to ${
-                      next === "local" ? "Local Docker" : "Cloud"
-                    }`,
-                  });
+                      next === 'local' ? 'Local Docker' : 'Cloud'
+                    }`
+                  })
                 }}
               >
-                <TabsList variant="filled" aria-label="Running environment">
+                <TabsList
+                  variant='filled'
+                  size='sm'
+                  aria-label='Running environment'
+                >
                   <Tooltip>
                     <TooltipTrigger
                       render={
-                        <TabsTab
-                          value="local"
-                          size="sm"
-                          aria-label="Local Docker"
-                        >
+                        <TabsTab value='local' aria-label='Local Docker'>
                           <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                            aria-hidden="true"
+                            xmlns='http://www.w3.org/2000/svg'
+                            width='16'
+                            height='16'
+                            viewBox='0 0 16 16'
+                            fill='none'
+                            aria-hidden='true'
                           >
-                            <circle cx="8" cy="8" r="7" fill="#1794D4" />
-                            <path d="M9 3.5H8V4.5H9V3.5Z" fill="white" />
-                            <path d="M5 5H6V6H5V5Z" fill="white" />
+                            <circle cx='8' cy='8' r='7' fill='#1794D4' />
+                            <path d='M9 3.5H8V4.5H9V3.5Z' fill='white' />
+                            <path d='M5 5H6V6H5V5Z' fill='white' />
                             <path
-                              d="M3.00077 8.4707C3.08622 9.92135 3.95013 12 6.99999 12C10.4 12 11.9167 9.50001 12.25 8.25001C12.6667 8.25001 13.6 8.00001 14 7.00001C13.75 6.75 12.75 6.75 12.25 7.00001C12.25 6.60001 12 5.75 11.5 5.5C11.1667 5.83333 10.65 6.7 11.25 7.5C11 7.99999 10.3334 8 10 8H3.47145C3.20671 8 2.98521 8.20642 3.00077 8.4707Z"
-                              fill="white"
+                              d='M3.00077 8.4707C3.08622 9.92135 3.95013 12 6.99999 12C10.4 12 11.9167 9.50001 12.25 8.25001C12.6667 8.25001 13.6 8.00001 14 7.00001C13.75 6.75 12.75 6.75 12.25 7.00001C12.25 6.60001 12 5.75 11.5 5.5C11.1667 5.83333 10.65 6.7 11.25 7.5C11 7.99999 10.3334 8 10 8H3.47145C3.20671 8 2.98521 8.20642 3.00077 8.4707Z'
+                              fill='white'
                             />
-                            <path d="M4.5 6.5H3.5V7.5H4.5V6.5Z" fill="white" />
-                            <path d="M5 6.5H6V7.5H5V6.5Z" fill="white" />
-                            <path d="M7.5 6.5H6.5V7.5H7.5V6.5Z" fill="white" />
-                            <path d="M8 6.5H9V7.5H8V6.5Z" fill="white" />
+                            <path d='M4.5 6.5H3.5V7.5H4.5V6.5Z' fill='white' />
+                            <path d='M5 6.5H6V7.5H5V6.5Z' fill='white' />
+                            <path d='M7.5 6.5H6.5V7.5H7.5V6.5Z' fill='white' />
+                            <path d='M8 6.5H9V7.5H8V6.5Z' fill='white' />
                             <path
-                              d="M10.5 6.5H9.5V7.5H10.5V6.5Z"
-                              fill="white"
+                              d='M10.5 6.5H9.5V7.5H10.5V6.5Z'
+                              fill='white'
                             />
-                            <path d="M7.5 5H6.5V6H7.5V5Z" fill="white" />
-                            <path d="M8 5H9V6H8V5Z" fill="white" />
+                            <path d='M7.5 5H6.5V6H7.5V5Z' fill='white' />
+                            <path d='M8 5H9V6H8V5Z' fill='white' />
                           </svg>
                         </TabsTab>
                       }
                     />
                     <TooltipPortal>
-                      <TooltipPositioner side="bottom" sideOffset={8}>
+                      <TooltipPositioner side='bottom' sideOffset={8}>
                         <TooltipPopup>
                           <TooltipArrow />
                           Uses your computer’s local CPU and memory. Requires
@@ -239,8 +239,8 @@ export default function LibraryTopbar({
                     {canUseCloudSIM ? (
                       <TooltipTrigger
                         render={
-                          <TabsTab value="cloud" size="sm" aria-label="Cloud">
-                            <CloudIcon aria-hidden="true" size={16} />
+                          <TabsTab value='cloud' aria-label='Cloud'>
+                            <CloudIcon aria-hidden='true' />
                           </TabsTab>
                         }
                       />
@@ -248,27 +248,22 @@ export default function LibraryTopbar({
                       <TooltipTrigger
                         render={
                           <span
-                            className="inline-flex h-full"
+                            className='inline-flex h-full'
                             tabIndex={0}
-                            aria-label="Cloud SIM access required"
+                            aria-label='Cloud SIM access required'
                           />
                         }
                       >
-                        <TabsTab
-                          value="cloud"
-                          size="sm"
-                          aria-label="Cloud"
-                          disabled
-                        >
-                          <CloudIcon aria-hidden="true" size={16} />
+                        <TabsTab value='cloud' aria-label='Cloud' disabled>
+                          <CloudIcon aria-hidden='true' />
                         </TabsTab>
                       </TooltipTrigger>
                     )}
                     <TooltipPortal>
-                      <TooltipPositioner side="bottom" sideOffset={8}>
+                      <TooltipPositioner side='bottom' sideOffset={8}>
                         <TooltipPopup>
                           <TooltipArrow />
-                          {!canUseCloudSIM ? "Cloud SIM access required. " : ""}
+                          {!canUseCloudSIM ? 'Cloud SIM access required. ' : ''}
                           Runs remotely via cloud infrastructure. Requires an
                           active internet connection.
                         </TooltipPopup>
@@ -281,8 +276,8 @@ export default function LibraryTopbar({
           </div>
 
           <Separator
-            orientation="vertical"
-            className="mx-1.5 h-auto self-stretch"
+            orientation='vertical'
+            className='mx-1.5 h-auto self-stretch'
           />
 
           <DevScenarioSlot
@@ -291,33 +286,33 @@ export default function LibraryTopbar({
           />
 
           <Button
-            size="sm"
-            variant="outline"
-            data-testid="ms-lib-download-app"
-            title="Download"
-            onClick={() => onNavigate("download")}
+            size='sm'
+            variant='outline'
+            data-testid='ms-lib-download-app'
+            title='Download'
+            onClick={() => onNavigate('download')}
           >
-            <DownloadSimpleIcon aria-hidden="true" /> Download app
+            <DownloadSimpleIcon aria-hidden='true' /> Download app
           </Button>
 
           <Tooltip>
-            <TooltipTrigger render={<span className="inline-flex" />}>
+            <TooltipTrigger render={<span className='inline-flex' />}>
               <Button
-                size="icon-sm"
-                variant="outline"
-                data-testid="ms-lib-discord"
-                title="Join Discord"
-                onClick={() => onAnnounce("Discord community")}
+                size='icon-sm'
+                variant='outline'
+                data-testid='ms-lib-discord'
+                title='Join Discord'
+                onClick={() => onAnnounce('Discord community')}
               >
                 <DiscordLogoIcon
-                  weight="fill"
-                  aria-hidden="true"
-                  fill="#5865F2"
+                  weight='fill'
+                  aria-hidden='true'
+                  fill='#5865F2'
                 />
               </Button>
             </TooltipTrigger>
             <TooltipPortal>
-              <TooltipPositioner side="bottom" sideOffset={8}>
+              <TooltipPositioner side='bottom' sideOffset={8}>
                 <TooltipPopup>
                   <TooltipArrow />
                   Join Discord
@@ -326,7 +321,7 @@ export default function LibraryTopbar({
             </TooltipPortal>
           </Tooltip>
         </span>
-      </header>{" "}
+      </header>{' '}
     </>
-  );
+  )
 }

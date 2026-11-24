@@ -45,7 +45,7 @@ export function DronePlatformSection({
           >
             Platform
           </h2>
-          <p className="m-0 text-(--muted-foreground) text-xs leading-[1.5]">
+          <p className="m-0 text-muted-foreground text-xs leading-[1.5]">
             Leave details blank when they have not been confirmed.
           </p>
         </div>
@@ -126,7 +126,7 @@ export function DronePlatformSection({
           >
             Frame &amp; fit
           </h2>
-          <p className="m-0 text-(--muted-foreground) text-xs leading-[1.5]">
+          <p className="m-0 text-muted-foreground text-xs leading-[1.5]">
             Record dimensions for reference. The profile does not validate
             component compatibility.
           </p>

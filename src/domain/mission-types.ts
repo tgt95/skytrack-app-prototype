@@ -27,6 +27,70 @@ export interface GeoAttribution {
   href: string;
 }
 
+/** Elevation grid used to shape the globe inside its georeferenced coverage. */
+export interface MissionTerrainLayer {
+  sourceFileName: string;
+  center: { lat: number; lon: number };
+  bbox: [west: number, south: number, east: number, north: number];
+  widthM: number;
+  gridSize: number;
+  elevationsM: number[];
+  baseElevationM: number;
+  sourceResolutionM?: number;
+  sourceName?: string;
+  horizontalReference: string;
+  verticalReference: "unverified";
+}
+
+export interface MissionMapBuildingPolygon {
+  outer: [number, number][];
+  holes: [number, number][][];
+}
+
+/** Display-only building footprints extruded from a georeferenced scene file. */
+export interface MissionMapBuilding {
+  id: string;
+  name: string;
+  heightM: number;
+  heightLabel: "verified" | "estimated" | "review" | "unknown";
+  polygons: MissionMapBuildingPolygon[];
+}
+
+export interface MissionMapLandmark {
+  id: string;
+  name: string;
+  localModelPath: string;
+  xM: number;
+  yM: number;
+  baseElevationM: number;
+  rotationDeg: number;
+  scale: number;
+  heightM: number;
+  attribution?: string;
+}
+
+/** Lightweight, display-only tree geometry parsed from a georeferenced scene. */
+export interface MissionMapTree {
+  id: string;
+  xM: number;
+  yM: number;
+  heightM: number;
+  canopyRadiusM: number;
+}
+
+export interface MissionMapSceneLayer {
+  sourceFileName: string;
+  coordinateFrame: "mission-enu";
+  center: { lat: number; lon: number };
+  bbox: [west: number, south: number, east: number, north: number];
+  widthM: number;
+  horizontalReference: string;
+  verticalReference: "unverified";
+  buildings: MissionMapBuilding[];
+  landmarks: MissionMapLandmark[];
+  trees?: MissionMapTree[];
+}
+
 /** Legacy fixed demo site (Redlands, California). Default origin for missions without one. */
 export const DEFAULT_MISSION_ORIGIN: GeoOrigin = {
   lat: 34.0511,
@@ -212,6 +276,10 @@ export interface StudioMission {
       `DEFAULT_MISSION_ORIGIN` (legacy missions). Local x/y stay unchanged
       when this moves; only geodetic placement moves. */
   origin?: GeoOrigin;
+  /** Optional terrain display layer; it does not alter mission altitude calculations. */
+  terrainLayer?: MissionTerrainLayer;
+  /** Optional scene buildings; geometry and estimated heights are display-only. */
+  mapSceneLayer?: MissionMapSceneLayer;
 }
 
 export type SafetyMode = "obstacle" | "privacy" | "off";
@@ -262,12 +330,19 @@ export function windEnvironmentOf(
   return mission.windEnvironment ?? DEFAULT_WIND_ENVIRONMENT;
 }
 
-export function normalizeWindEnvironment(value: unknown): WindEnvironmentSettings {
+export function normalizeWindEnvironment(
+  value: unknown,
+): WindEnvironmentSettings {
   if (typeof value !== "object" || value === null) {
     return { ...DEFAULT_WIND_ENVIRONMENT };
   }
   const raw = value as Partial<WindEnvironmentSettings>;
-  const bounded = (candidate: unknown, fallback: number, min: number, max: number) =>
+  const bounded = (
+    candidate: unknown,
+    fallback: number,
+    min: number,
+    max: number,
+  ) =>
     typeof candidate === "number" && Number.isFinite(candidate)
       ? Math.min(max, Math.max(min, candidate))
       : fallback;
@@ -276,8 +351,18 @@ export function normalizeWindEnvironment(value: unknown): WindEnvironmentSetting
     controlBy: raw.controlBy === "force" ? "force" : "equivalent-speed",
     forceN: bounded(raw.forceN, DEFAULT_WIND_ENVIRONMENT.forceN, 0, 20),
     speedMS: bounded(raw.speedMS, DEFAULT_WIND_ENVIRONMENT.speedMS, 0, 20),
-    azimuthDeg: bounded(raw.azimuthDeg, DEFAULT_WIND_ENVIRONMENT.azimuthDeg, 0, 360),
-    elevationDeg: bounded(raw.elevationDeg, DEFAULT_WIND_ENVIRONMENT.elevationDeg, -90, 90),
+    azimuthDeg: bounded(
+      raw.azimuthDeg,
+      DEFAULT_WIND_ENVIRONMENT.azimuthDeg,
+      0,
+      360,
+    ),
+    elevationDeg: bounded(
+      raw.elevationDeg,
+      DEFAULT_WIND_ENVIRONMENT.elevationDeg,
+      -90,
+      90,
+    ),
   };
 }
 

@@ -136,7 +136,7 @@ export default function CodeInspectorPanel({
               />
               {jsonError ? (
                 <p
-                  className="ms-issue m-0 text-xs leading-[1.5] border border-border rounded-(--radius) py-1.5 px-2 bg-(--card) [&.is-error]:border-(--destructive) [&.is-error]:text-(--destructive) [&.is-warning]:border-(--border) [&.is-warning]:text-(--muted-foreground) [&.is-ok]:border-(--primary) is-error"
+                  className="ms-issue m-0 text-xs leading-[1.5] border border-border rounded-(--radius) py-1.5 px-2 bg-(--card) [&.is-error]:border-(--destructive) [&.is-error]:text-(--destructive) [&.is-warning]:border-(--border) [&.is-warning]:text-muted-foreground [&.is-ok]:border-(--primary) is-error"
                   role="alert"
                   id="ms-json-error"
                 >
@@ -162,7 +162,7 @@ export default function CodeInspectorPanel({
                 </Button>
               </div>
               <p
-                className="ms-python-limit m-0 py-1.75 px-2.5 border-t border-t-border text-(--muted-foreground) text-[0.6875rem] leading-[1.4]"
+                className="ms-python-limit m-0 py-1.75 px-2.5 border-t border-t-border text-muted-foreground text-[0.6875rem] leading-[1.4]"
                 id="ms-json-hint"
               >
                 Mission JSON round-trips the visual mission, including generated
@@ -174,7 +174,7 @@ export default function CodeInspectorPanel({
           ) : (
             <>
               <PythonEditor value={codeDraft} onChange={onCodeDraftChange} />
-              {/* <p className="ms-python-limit m-0 py-1.75 px-2.5 border-t border-t-border text-(--muted-foreground) text-[0.6875rem] leading-[1.4]" id="ms-code-limit">
+              {/* <p className="ms-python-limit m-0 py-1.75 px-2.5 border-t border-t-border text-muted-foreground text-[0.6875rem] leading-[1.4]" id="ms-code-limit">
               Local draft only. Python does not execute or update the visual
               route. Mission save does not include this draft.
             </p> */}

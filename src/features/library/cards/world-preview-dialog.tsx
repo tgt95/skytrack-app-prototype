@@ -43,14 +43,23 @@ export function WorldPreviewDialog({
           <DialogHeader>
             <DialogTitle className="heading">{world.name}</DialogTitle>
             <DialogDescription>
-              3D World{world.location ? ` · ${world.location}` : ""}
+              {`3D reconstruction${world.location ? ` · ${world.location}` : ""}`}
             </DialogDescription>
           </DialogHeader>
           <div className="ms-world-preview-layout grid min-h-0 grid-cols-[minmax(0,1fr)_minmax(12rem,15rem)] gap-4 overflow-y-auto [@media_(max-width:_48rem)]:grid-cols-1">
-            <WorldModelViewer
-              assetId={world.glbAssetId}
-              worldName={world.name}
-            />
+            <div className="grid min-w-0 content-start gap-4">
+              {world.glbAssetId ? (
+                <WorldModelViewer
+                  assetId={world.glbAssetId}
+                  worldName={world.name}
+                />
+              ) : null}
+              {!world.glbAssetId ? (
+                <div className="flex min-h-72 items-center justify-center rounded-(--radius) border border-border bg-muted/30 p-6 text-center text-sm text-muted-foreground">
+                  No reconstruction model is attached to this World.
+                </div>
+              ) : null}
+            </div>
             <aside className="ms-world-preview-details min-w-0 border-l border-border pl-4 [@media_(max-width:_48rem)]:border-l-0 [@media_(max-width:_48rem)]:border-t [@media_(max-width:_48rem)]:border-border [@media_(max-width:_48rem)]:pt-3 [@media_(max-width:_48rem)]:pl-0">
               <h2 className="heading m-0 text-sm font-semibold">
                 World details

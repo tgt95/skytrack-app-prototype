@@ -201,7 +201,7 @@ export default function AddressSearchControls({
           data-testid="ms-address-suggestions"
         >
           {addressSuggestionBusy ? (
-            <div className="ms-address-suggestions-status py-2 px-2.5 text-(--muted-foreground) text-xs" role="status">
+            <div className="ms-address-suggestions-status py-2 px-2.5 text-muted-foreground text-xs" role="status">
               Searching places…
             </div>
           ) : null}
@@ -230,12 +230,12 @@ export default function AddressSearchControls({
           ) : addressSuggestionResolvedQuery === addressQuery.trim() &&
             addressQuery.trim().length >= 3 &&
             !addressSuggestionBusy ? (
-            <div className="ms-address-suggestions-status py-2 px-2.5 text-(--muted-foreground) text-xs">
+            <div className="ms-address-suggestions-status py-2 px-2.5 text-muted-foreground text-xs">
               No matching places.
             </div>
           ) : null}
           <div
-            className=" flex flex-col gap-0.75 py-1.5 px-2.5 border-t border-t-border text-(--muted-foreground) text-[0.625rem] leading-[1.35]"
+            className=" flex flex-col gap-0.75 py-1.5 px-2.5 border-t border-t-border text-muted-foreground text-[0.625rem] leading-[1.35]"
             aria-label="Search attribution"
           >
             {addressCredits.map((credit, index) => (
@@ -256,7 +256,7 @@ export default function AddressSearchControls({
         <div className="ms-address-search-pop absolute right-0 bottom-[calc(100%+0.375rem)] z-7 flex flex-col items-end gap-1 w-[min(19.375rem,100%)] max-w-full pointer-events-auto">
           {addressSearchStatus ? (
             <span
-              className=" max-w-[min(19.375rem,100%)] py-0.75 px-1.75 border border-border rounded-(--radius) bg-(--card) text-(--muted-foreground) text-[0.6875rem] leading-[1.35] text-right [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] in-[.ms-address-search-pop]:max-w-full"
+              className=" max-w-[min(19.375rem,100%)] py-0.75 px-1.75 border border-border rounded-(--radius) bg-(--card) text-muted-foreground text-[0.6875rem] leading-[1.35] text-right [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] in-[.ms-address-search-pop]:max-w-full"
               role="status"
               data-testid="ms-address-search-status"
             >
@@ -266,7 +266,7 @@ export default function AddressSearchControls({
           {addressCredits.map((credit, index) => (
             <a
               key={`${credit.href}-${index}`}
-              className=" max-w-[min(19.375rem,100%)] py-0.75 px-1.75 border border-border rounded-(--radius) bg-(--card) text-(--muted-foreground) text-[0.6875rem] leading-[1.35] text-right [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] in-[.ms-address-search-pop]:max-w-full [text-decoration:none] [&:hover]:text-foreground [&:hover]:[text-decoration:underline]"
+              className=" max-w-[min(19.375rem,100%)] py-0.75 px-1.75 border border-border rounded-(--radius) bg-(--card) text-muted-foreground text-[0.6875rem] leading-[1.35] text-right [box-shadow:0_0.0625rem_0.25rem_color-mix(in_srgb,var(--foreground)_12%,transparent)] in-[.ms-address-search-pop]:max-w-full [text-decoration:none] [&:hover]:text-foreground [&:hover]:[text-decoration:underline]"
               href={credit.href}
               target="_blank"
               rel="noreferrer"

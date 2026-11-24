@@ -1,4 +1,7 @@
-import { DEFAULT_WORKSPACE_ID, WORKSPACES } from "@/features/library/workspace/workspace-data.ts";
+import {
+  DEFAULT_WORKSPACE_ID,
+  WORKSPACES,
+} from "@/features/library/workspace/workspace-data.ts";
 import { STORAGE_KEYS, STORAGE_VERSIONS } from "@/shared/storage-keys";
 import {
   bundledSampleWorlds,
@@ -28,6 +31,18 @@ export interface WorkspaceWorldRecord {
   glbFileSize?: number;
 }
 
+export interface WorkspaceMapDatasetRecord {
+  id: string;
+  workspaceId: string;
+  name: string;
+  status: ResourceStatus;
+  /** IndexedDB relationship for imported GeoJSON and MapSpace scene data. */
+  mapDataAssetId?: string;
+  mapDataFileCount?: number;
+  mapDataFeatureCount?: number;
+  mapDataHasTerrain?: boolean;
+}
+
 export interface WorkspaceAIModelRecord {
   id: string;
   workspaceId: string;
@@ -48,8 +63,9 @@ export interface WorkspaceAIModelRecord {
 }
 
 export interface WorkspaceResourceState {
-  version: 1;
+  version: 2;
   worlds: WorkspaceWorldRecord[];
+  mapDatasets: WorkspaceMapDatasetRecord[];
   aiModels: WorkspaceAIModelRecord[];
   personalAIModelSampleSeeded?: boolean;
 }
@@ -278,7 +294,13 @@ function seedState(): WorkspaceResourceState {
       },
     ),
   );
-  return { version: 1, worlds, aiModels, personalAIModelSampleSeeded: true };
+  return {
+    version: STORAGE_VERSIONS.workspaceResources,
+    worlds,
+    mapDatasets: [],
+    aiModels,
+    personalAIModelSampleSeeded: true,
+  };
 }
 
 function isWorld(value: unknown): value is WorkspaceWorldRecord {
@@ -297,9 +319,91 @@ function isWorld(value: unknown): value is WorkspaceWorldRecord {
     typeof world.reconstructionReference === "string" &&
     typeof world.note === "string" &&
     (world.glbAssetId === undefined || typeof world.glbAssetId === "string") &&
-    (world.glbFileName === undefined || typeof world.glbFileName === "string") &&
+    (world.glbFileName === undefined ||
+      typeof world.glbFileName === "string") &&
     (world.glbFileSize === undefined || typeof world.glbFileSize === "number")
   );
+}
+
+function isMapDataset(value: unknown): value is WorkspaceMapDatasetRecord {
+  if (!value || typeof value !== "object") return false;
+  const dataset = value as Partial<WorkspaceMapDatasetRecord>;
+  return (
+    typeof dataset.id === "string" &&
+    typeof dataset.workspaceId === "string" &&
+    typeof dataset.name === "string" &&
+    statuses.includes(dataset.status as ResourceStatus) &&
+    typeof dataset.mapDataAssetId === "string" &&
+    (dataset.mapDataFileCount === undefined ||
+      typeof dataset.mapDataFileCount === "number") &&
+    (dataset.mapDataFeatureCount === undefined ||
+      typeof dataset.mapDataFeatureCount === "number") &&
+    (dataset.mapDataHasTerrain === undefined ||
+      typeof dataset.mapDataHasTerrain === "boolean")
+  );
+}
+
+type LegacyMapDataWorld = WorkspaceWorldRecord & {
+  mapDataAssetId?: string;
+  mapDataFileCount?: number;
+  mapDataFeatureCount?: number;
+  mapDataHasTerrain?: boolean;
+};
+
+function migrateMapDataWorlds(
+  state: WorkspaceResourceState,
+  sourceWorlds: readonly LegacyMapDataWorld[] = state.worlds,
+): WorkspaceResourceState {
+  const mapDatasets = new Map(state.mapDatasets.map((item) => [item.id, item]));
+  const worlds: WorkspaceWorldRecord[] = [];
+  let changed = false;
+
+  for (const world of sourceWorlds) {
+    if (!world.mapDataAssetId) {
+      const existingDataset = mapDatasets.get(world.id);
+      const isLegacyDatasetShell =
+        existingDataset &&
+        !world.glbAssetId &&
+        (world.id.startsWith("world-map-data-") ||
+          world.note === "Imported map data");
+      if (isLegacyDatasetShell) {
+        changed = true;
+        continue;
+      }
+      worlds.push(world);
+      continue;
+    }
+
+    mapDatasets.set(world.id, {
+      id: world.id,
+      workspaceId: world.workspaceId,
+      name: world.name,
+      status: world.status,
+      mapDataAssetId: world.mapDataAssetId,
+      ...(world.mapDataFileCount !== undefined
+        ? { mapDataFileCount: world.mapDataFileCount }
+        : {}),
+      ...(world.mapDataFeatureCount !== undefined
+        ? { mapDataFeatureCount: world.mapDataFeatureCount }
+        : {}),
+      ...(world.mapDataHasTerrain !== undefined
+        ? { mapDataHasTerrain: world.mapDataHasTerrain }
+        : {}),
+    });
+    const {
+      mapDataAssetId: _mapDataAssetId,
+      mapDataFileCount: _mapDataFileCount,
+      mapDataFeatureCount: _mapDataFeatureCount,
+      mapDataHasTerrain: _mapDataHasTerrain,
+      ...worldRecord
+    } = world;
+    if (world.glbAssetId) worlds.push(worldRecord);
+    changed = true;
+  }
+
+  return changed
+    ? { ...state, worlds, mapDatasets: [...mapDatasets.values()] }
+    : state;
 }
 
 function isAIModel(value: unknown): value is WorkspaceAIModelRecord {
@@ -339,9 +443,20 @@ export function loadWorkspaceResources(): WorkspaceResourceState {
   try {
     const raw = localStorage.getItem(WORKSPACE_RESOURCES_STORAGE_KEY);
     if (raw) {
-      const parsed = JSON.parse(raw) as Partial<WorkspaceResourceState>;
+      const parsed = JSON.parse(raw) as Omit<
+        Partial<WorkspaceResourceState>,
+        "version"
+      > & { version?: number };
+      const validPayloadVersion =
+        parsed.version === 1 ||
+        parsed.version === STORAGE_VERSIONS.workspaceResources;
+      const validDatasets =
+        parsed.version === 1 ||
+        (Array.isArray(parsed.mapDatasets) &&
+          parsed.mapDatasets.every(isMapDataset));
       if (
-        parsed.version === STORAGE_VERSIONS.workspaceResources &&
+        validPayloadVersion &&
+        validDatasets &&
         Array.isArray(parsed.worlds) &&
         parsed.worlds.every(isWorld) &&
         Array.isArray(parsed.aiModels) &&
@@ -364,13 +479,22 @@ export function loadWorkspaceResources(): WorkspaceResourceState {
         const state = {
           version: STORAGE_VERSIONS.workspaceResources,
           worlds: parsed.worlds,
+          mapDatasets: parsed.mapDatasets ?? [],
           aiModels,
           personalAIModelSampleSeeded:
             parsed.personalAIModelSampleSeeded === true,
         };
-        const migratedWorlds = migrateLegacySampleWorlds(state) ?? state;
+        const migratedMapData = migrateMapDataWorlds(
+          state,
+          parsed.worlds as LegacyMapDataWorld[],
+        );
+        const migratedWorlds =
+          migrateLegacySampleWorlds(migratedMapData) ?? migratedMapData;
         const migrated = appendBundledAIModelSamples(migratedWorlds);
-        if (migrated !== state) {
+        if (
+          parsed.version !== STORAGE_VERSIONS.workspaceResources ||
+          migrated !== state
+        ) {
           saveWorkspaceResources(migrated);
           return migrated;
         }

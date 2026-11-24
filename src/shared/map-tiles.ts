@@ -5,6 +5,7 @@ export interface MapTileOrigin {
 
 export type MissionBasemapStyle =
   | "satellite"
+  | "openstreetmap"
   | "basic"
   | "light"
   | "dark"
@@ -14,6 +15,11 @@ export type MissionBasemapStyle =
 export const SATELLITE_TILE_TEMPLATE =
   "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
 export const SATELLITE_TILE_ATTRIBUTION = "Tiles © Esri and its contributors";
+
+export const OPENSTREETMAP_TILE_TEMPLATE =
+  "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+export const OPENSTREETMAP_TILE_ATTRIBUTION =
+  '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>';
 
 export function satelliteTileUrl(origin: MapTileOrigin, zoom = 17): string {
   const safeZoom = Math.min(19, Math.max(0, Math.round(zoom)));

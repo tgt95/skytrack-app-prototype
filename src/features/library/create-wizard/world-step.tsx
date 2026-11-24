@@ -19,6 +19,18 @@ import {
 } from "skytrack-ui/dialog";
 import { Dropzone } from "skytrack-ui/dropzone";
 import { RadioGroup, RadioRoot } from "skytrack-ui/radio";
+import {
+  Select,
+  SelectItem,
+  SelectItemIndicator,
+  SelectItemText,
+  SelectList,
+  SelectPopup,
+  SelectPortal,
+  SelectPositioner,
+  SelectTrigger,
+  SelectValue,
+} from "skytrack-ui/select";
 import { RequiredMarker } from "@/ui/components/required-marker";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "skytrack-ui/tabs";
 import {
@@ -28,7 +40,20 @@ import {
   FieldLabel,
   FieldRoot,
 } from "skytrack-ui/field";
-import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
+import type {
+  WorkspaceMapDatasetRecord,
+  WorkspaceWorldRecord,
+} from "@/features/library/database/workspace-resources-store";
+import { loadMapDataAsset } from "@/features/library/database/world-map-data-store";
+import { MapDataImportDrawer } from "@/features/library/dialogs/map-data-import-drawer";
+import type { MapTerrainLayer } from "@/features/map-data/map-data";
+import type { MapDataFileRecord } from "@/features/map-data/map-data";
+import {
+  inspectMapDataFile,
+  parseMapSceneLayer,
+} from "@/features/map-data/map-data";
+import type { MissionMapSceneLayer } from "@/domain/mission-model";
+import { TerrainLayerPreview } from "@/features/map-data/map-data-preview";
 
 type WorldType = "2D" | "3D";
 
@@ -41,8 +66,17 @@ type WorldStepProps = {
   onImportWorld: (file: File, worldName: string) => Promise<void>;
   importingWorld: boolean;
   worldImportMessage: string | null;
-  terrainFile: string | null;
-  onTerrainFileSelect: (fileName: string) => void;
+  terrainLayer: MapTerrainLayer | null;
+  mapSceneLayer: MissionMapSceneLayer | null;
+  onMapDatasetSelect: (
+    layer: MissionMapSceneLayer | null,
+    terrain: MapTerrainLayer | null,
+  ) => void;
+  mapDatasets: WorkspaceMapDatasetRecord[];
+  onImportMapData: (
+    name: string,
+    files: MapDataFileRecord[],
+  ) => Promise<WorkspaceMapDatasetRecord>;
 };
 
 function fileNameAsWorldName(fileName: string) {
@@ -50,6 +84,27 @@ function fileNameAsWorldName(fileName: string) {
     .replace(/\.glb$/iu, "")
     .replace(/[_-]+/gu, " ")
     .trim();
+}
+
+function mapSceneLabel(file: MapDataFileRecord) {
+  try {
+    const value = JSON.parse(file.content) as {
+      scene?: {
+        name?: string;
+        locality?: string;
+        landmarks?: { name?: string }[];
+      };
+    };
+    const name = value.scene?.name ?? value.scene?.landmarks?.[0]?.name;
+    if (name) {
+      return `${name}${
+        value.scene?.locality ? ` · ${value.scene.locality}` : ""
+      }`;
+    }
+  } catch {
+    // Use the filename for older scene records without display metadata.
+  }
+  return file.name;
 }
 
 export function WorldStep({
@@ -61,8 +116,11 @@ export function WorldStep({
   onImportWorld,
   importingWorld,
   worldImportMessage,
-  terrainFile,
-  onTerrainFileSelect,
+  terrainLayer,
+  mapSceneLayer,
+  onMapDatasetSelect,
+  mapDatasets,
+  onImportMapData,
 }: WorldStepProps) {
   const [importOpen, setImportOpen] = useState(false);
   const [worldName, setWorldName] = useState("");
@@ -71,6 +129,104 @@ export function WorldStep({
   const [fileError, setFileError] = useState("");
   const [importError, setImportError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [terrainError, setTerrainError] = useState("");
+  const [terrainFileName, setTerrainFileName] = useState("");
+  const [mapDatasetId, setMapDatasetId] = useState("");
+  const [mapDataImportOpen, setMapDataImportOpen] = useState(false);
+  const [mapSceneFiles, setMapSceneFiles] = useState<MapDataFileRecord[]>([]);
+  const [selectedMapSceneId, setSelectedMapSceneId] = useState("");
+  const [mapDatasetError, setMapDatasetError] = useState("");
+  const [loadingMapDataset, setLoadingMapDataset] = useState(false);
+
+  const selectMapDataset = async (
+    datasetId: string,
+    datasetOverride?: WorkspaceMapDatasetRecord,
+  ) => {
+    setMapDatasetId(datasetId);
+    setMapDatasetError("");
+    if (!datasetId) {
+      onMapDatasetSelect(null, null);
+      setMapSceneFiles([]);
+      setSelectedMapSceneId("");
+      setTerrainFileName("");
+      return;
+    }
+    setMapSceneFiles([]);
+    setSelectedMapSceneId("");
+    const dataset =
+      datasetOverride ?? mapDatasets.find((item) => item.id === datasetId);
+    if (!dataset?.mapDataAssetId) return;
+    setLoadingMapDataset(true);
+    try {
+      const asset = await loadMapDataAsset(dataset.mapDataAssetId);
+      const sceneFiles = (asset?.files ?? []).filter(
+        (item) => item.type === "scene",
+      );
+      const sceneFile = sceneFiles.find((item) =>
+        parseMapSceneLayer(item.content, item.name),
+      );
+      if (!sceneFile)
+        throw new Error("This dataset has no usable MapSpace scene layer.");
+      const layer = parseMapSceneLayer(sceneFile.content, sceneFile.name);
+      if (!layer)
+        throw new Error(
+          "This scene has no supported building, tree or landmark geometry.",
+        );
+      const parsed = await inspectMapDataFile(
+        new File([sceneFile.content], sceneFile.name, {
+          type: "application/json",
+        }),
+      );
+      onMapDatasetSelect(layer, parsed.terrain);
+      setMapSceneFiles(sceneFiles);
+      setSelectedMapSceneId(sceneFile.id);
+      setTerrainFileName("");
+    } catch (error) {
+      setMapDatasetId("");
+      setMapSceneFiles([]);
+      setSelectedMapSceneId("");
+      onMapDatasetSelect(null, null);
+      setMapDatasetError(
+        error instanceof Error
+          ? error.message
+          : "Map data could not be loaded.",
+      );
+    } finally {
+      setLoadingMapDataset(false);
+    }
+  };
+
+  const importMapData = async (name: string, files: MapDataFileRecord[]) => {
+    const dataset = await onImportMapData(name, files);
+    await selectMapDataset(dataset.id, dataset);
+    return dataset;
+  };
+
+  const selectMapScene = async (sceneId: string) => {
+    setSelectedMapSceneId(sceneId);
+    const sceneFile = mapSceneFiles.find((item) => item.id === sceneId);
+    if (!sceneFile) return;
+    setMapDatasetError("");
+    setLoadingMapDataset(true);
+    try {
+      const layer = parseMapSceneLayer(sceneFile.content, sceneFile.name);
+      if (!layer) throw new Error("This scene has no supported map geometry.");
+      const parsed = await inspectMapDataFile(
+        new File([sceneFile.content], sceneFile.name, {
+          type: "application/json",
+        }),
+      );
+      onMapDatasetSelect(layer, parsed.terrain);
+    } catch (error) {
+      setMapDatasetError(
+        error instanceof Error
+          ? error.message
+          : "Map scene could not be loaded.",
+      );
+    } finally {
+      setLoadingMapDataset(false);
+    }
+  };
 
   const openImport = () => {
     setWorldName("");
@@ -119,7 +275,10 @@ export function WorldStep({
 
   return (
     <>
-      <TabsPanel value="2">
+      <TabsPanel
+        value="2"
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+      >
         <FieldRoot name={worldType}>
           <FieldLabel id="ms-wizard-worldtype-label">World type</FieldLabel>
           <Tabs
@@ -185,7 +344,7 @@ export function WorldStep({
                         </AttachmentMedia>
                         <AttachmentContent className="gap-1">
                           <AttachmentTitle>{world.name}</AttachmentTitle>
-                          <AttachmentDescription className="w-fit rounded-(--radius-sm) bg-muted px-2 py-0.5 font-semibold">
+                          <AttachmentDescription className="w-fit rounded-(--radius) bg-muted px-2 py-0.5 font-semibold">
                             {world.status}
                           </AttachmentDescription>
                         </AttachmentContent>
@@ -222,26 +381,253 @@ export function WorldStep({
             </TabsPanel>
           </Tabs>
         </FieldRoot>
-        {worldType === "2D" ? (
-          <FieldRoot name={worldType} data-testid="ms-wizard-dropzone">
-            <FieldLabel id="ms-wizard-terrain-label">
-              Terrain layer (Optional)
-            </FieldLabel>
-            <Dropzone
-              className="w-full"
-              data-testid="ms-wizard-filebtn"
-              aria-labelledby="ms-wizard-terrain-label"
-              hint={terrainFile ?? "Choose a file or drag it here to upload."}
-              buttonLabel="Choose File"
-              multiple={false}
-              onFilesSelected={(files) => {
-                const file = files[0];
-                if (file) onTerrainFileSelect(file.name);
-              }}
-            />
-          </FieldRoot>
-        ) : null}
+        <div className="flex flex-col gap-4">
+          {worldType === "2D" ? (
+            <FieldRoot>
+              <div className="flex items-center justify-between gap-3">
+                <FieldLabel id="ms-wizard-mapdata-label">
+                  Map data (Optional)
+                </FieldLabel>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="link"
+                  onClick={() => setMapDataImportOpen(true)}
+                  data-testid="ms-wizard-import-map-data"
+                >
+                  Import map data
+                </Button>
+              </div>
+              <RadioGroup
+                value={mapDatasetId || "none"}
+                onValueChange={(value: unknown) =>
+                  void selectMapDataset(
+                    String(value) === "none" ? "" : String(value),
+                  )
+                }
+                aria-labelledby="ms-wizard-mapdata-label"
+                className="w-full"
+              >
+                <label className="block w-full cursor-pointer">
+                  <Attachment
+                    data-selected={!mapDatasetId}
+                    className="w-full gap-2.5 px-3 py-2.5 transition-colors hover:border-primary/60 data-[selected=true]:border-primary has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring"
+                  >
+                    <AttachmentContent className="gap-1">
+                      <AttachmentTitle>No map dataset</AttachmentTitle>
+                      <AttachmentDescription>
+                        Start with a basemap
+                      </AttachmentDescription>
+                    </AttachmentContent>
+                    <RadioRoot value="none" aria-label="No map dataset" />
+                  </Attachment>
+                </label>
+                {mapDatasets.map((dataset) => (
+                  <label
+                    key={dataset.id}
+                    className="block w-full cursor-pointer"
+                  >
+                    <Attachment
+                      data-selected={dataset.id === mapDatasetId}
+                      className="w-full gap-2.5 px-3 py-2.5 transition-colors hover:border-primary/60 data-[selected=true]:border-primary has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring"
+                    >
+                      <AttachmentContent className="gap-1">
+                        <AttachmentTitle>{dataset.name}</AttachmentTitle>
+                        <AttachmentDescription>
+                          {dataset.mapDataFeatureCount ?? 0} features
+                          {dataset.mapDataHasTerrain
+                            ? " · elevation data included"
+                            : ""}
+                        </AttachmentDescription>
+                      </AttachmentContent>
+                      <RadioRoot
+                        value={dataset.id}
+                        aria-label={`${dataset.name} map dataset`}
+                      />
+                    </Attachment>
+                  </label>
+                ))}
+              </RadioGroup>
+              <FieldDescription>
+                Saved map data adds building footprints, trees and landmark
+                models, then centers the mission on its scene coverage. The
+                matching OpenStreetMap basemap is selected by default. Choose
+                Satellite in the map controls to view aerial imagery; the
+                sample's image link is metadata only.
+              </FieldDescription>
+              {loadingMapDataset ? (
+                <FieldDescription role="status">
+                  Loading map data…
+                </FieldDescription>
+              ) : null}
+              {mapSceneFiles.length > 1 ? (
+                <FieldRoot name="mission-map-scene">
+                  <FieldLabel id="ms-wizard-map-scene-label">
+                    Scene in this dataset
+                  </FieldLabel>
+                  <Select
+                    value={selectedMapSceneId}
+                    onValueChange={(value) =>
+                      void selectMapScene(String(value))
+                    }
+                  >
+                    <SelectTrigger aria-labelledby="ms-wizard-map-scene-label">
+                      <SelectValue placeholder="Choose a scene">
+                        {mapSceneFiles.find(
+                          (item) => item.id === selectedMapSceneId,
+                        )
+                          ? mapSceneLabel(
+                              mapSceneFiles.find(
+                                (item) => item.id === selectedMapSceneId,
+                              )!,
+                            )
+                          : ""}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectPortal>
+                      <SelectPositioner>
+                        <SelectPopup>
+                          <SelectList>
+                            {mapSceneFiles.map((item) => (
+                              <SelectItem key={item.id} value={item.id}>
+                                <SelectItemIndicator />
+                                <SelectItemText>
+                                  {mapSceneLabel(item)}
+                                </SelectItemText>
+                              </SelectItem>
+                            ))}
+                          </SelectList>
+                        </SelectPopup>
+                      </SelectPositioner>
+                    </SelectPortal>
+                  </Select>
+                </FieldRoot>
+              ) : null}
+              {mapDatasetError ? (
+                <FieldError match={true} role="alert">
+                  {mapDatasetError}
+                </FieldError>
+              ) : null}
+              {mapSceneLayer ? (
+                <FieldDescription role="status">
+                  {mapSceneLayer.buildings.length} building footprints ·{" "}
+                  {(mapSceneLayer.trees ?? []).length} trees ·{" "}
+                  {mapSceneLayer.landmarks.length} 3D landmark models · height
+                  and vertical references unverified
+                </FieldDescription>
+              ) : null}
+              {mapDatasets.length === 0 ? (
+                <FieldDescription>
+                  Import a map dataset to add local building, tree and elevation
+                  layers.
+                </FieldDescription>
+              ) : null}
+            </FieldRoot>
+          ) : null}
+          {worldType === "2D" ? (
+            <FieldRoot
+              name={worldType}
+              invalid={Boolean(terrainError)}
+              data-testid="ms-wizard-dropzone"
+            >
+              <FieldLabel id="ms-wizard-terrain-label">
+                Elevation data (Optional)
+              </FieldLabel>
+              <Dropzone
+                className="w-full"
+                data-testid="ms-wizard-filebtn"
+                aria-labelledby="ms-wizard-terrain-label"
+                accept=".json,application/json"
+                hint={
+                  terrainFileName ||
+                  "Choose a MapSpace scene JSON with an elevation grid."
+                }
+                buttonLabel="Choose JSON"
+                multiple={false}
+                onFilesSelected={async (files) => {
+                  const file = files[0];
+                  if (!file) return;
+                  try {
+                    const parsed = await inspectMapDataFile(file);
+                    if (!parsed.terrain) {
+                      throw new Error(
+                        "This file does not contain a supported elevation grid.",
+                      );
+                    }
+                    setMapDatasetId("");
+                    onMapDatasetSelect(
+                      parsed.sceneLayer ?? null,
+                      parsed.terrain,
+                    );
+                    setTerrainFileName(file.name);
+                    setTerrainError("");
+                  } catch (error) {
+                    setMapDatasetId("");
+                    onMapDatasetSelect(null, null);
+                    setTerrainFileName("");
+                    setTerrainError(
+                      error instanceof Error
+                        ? error.message
+                        : "Elevation data could not be read.",
+                    );
+                  }
+                }}
+              />
+              <FieldDescription>
+                Supported: MapSpace scene JSON. The map surface follows its
+                elevation grid within coverage and stays flat outside it; the
+                vertical datum is unverified, so this is visual context rather
+                than terrain-follow planning data.
+              </FieldDescription>
+              {terrainError ? (
+                <FieldError match={true} role="alert">
+                  {terrainError}
+                </FieldError>
+              ) : null}
+              {terrainLayer ? (
+                <div
+                  className="grid gap-2"
+                  role="status"
+                  aria-label="Elevation data preview"
+                >
+                  <TerrainLayerPreview terrain={terrainLayer} />
+                  <FieldDescription>
+                    {terrainLayer.gridSize} × {terrainLayer.gridSize} samples ·{" "}
+                    {terrainLayer.widthM} m coverage ·{" "}
+                    {(
+                      terrainLayer.widthM /
+                      (terrainLayer.gridSize - 1)
+                    ).toFixed(1)}{" "}
+                    m sample spacing ·{" "}
+                    {terrainLayer.elevationsM
+                      .reduce(
+                        (minimum, value) => Math.min(minimum, value),
+                        Number.POSITIVE_INFINITY,
+                      )
+                      .toFixed(2)}{" "}
+                    to{" "}
+                    {terrainLayer.elevationsM
+                      .reduce(
+                        (maximum, value) => Math.max(maximum, value),
+                        Number.NEGATIVE_INFINITY,
+                      )
+                      .toFixed(2)}{" "}
+                    m relative elevation. This grid shapes the map surface
+                    inside its coverage. Vertical datum is unverified; this grid
+                    is not qualified for terrain-follow planning.
+                  </FieldDescription>
+                </div>
+              ) : null}
+            </FieldRoot>
+          ) : null}
+        </div>
       </TabsPanel>
+
+      <MapDataImportDrawer
+        open={mapDataImportOpen}
+        onOpenChange={setMapDataImportOpen}
+        onImport={importMapData}
+      />
 
       <Dialog
         open={importOpen}
@@ -343,7 +729,8 @@ export function WorldStep({
                 variant="secondary"
                 disabled={submitting}
                 onClick={() => setImportOpen(false)}
-                size="default">
+                size="default"
+              >
                 Cancel
               </Button>
               <Button
@@ -352,7 +739,8 @@ export function WorldStep({
                 disabled={submitting}
                 onClick={() => void submitImport()}
                 data-testid="ms-wizard-import-world-submit"
-                size="default">
+                size="default"
+              >
                 {submitting ? "Importing…" : "Import world"}
               </Button>
             </DialogFooter>

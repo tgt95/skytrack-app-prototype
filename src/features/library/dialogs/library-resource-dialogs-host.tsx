@@ -203,7 +203,7 @@ export function LibraryResourceDeleteDialogs ({
                   {deleteDroneReferences.map(reference => (
                     <li key={`${reference.project}-${reference.mission}`}>
                       <strong>{reference.mission}</strong>
-                      <span className='ml-1.5 text-(--muted-foreground)'>
+                      <span className='ml-1.5 text-muted-foreground'>
                         {reference.project}
                       </span>
                     </li>
@@ -264,7 +264,7 @@ export function LibraryResourceDeleteDialogs ({
                   {deleteWorldReferences.map(reference => (
                     <li key={`${reference.project}-${reference.mission}`}>
                       <strong>{reference.mission}</strong>
-                      <span className='ml-1.5 text-(--muted-foreground)'>
+                      <span className='ml-1.5 text-muted-foreground'>
                         {reference.project}
                       </span>
                     </li>
@@ -272,7 +272,7 @@ export function LibraryResourceDeleteDialogs ({
                 </ul>
               </div>
             ) : (
-              <p className='ms-resource-note m-0 text-(--muted-foreground) text-xs leading-[1.5] col-span-full py-2.5 px-3 border border-border rounded-(--radius) bg-(--muted)'>
+              <p className='ms-resource-note m-0 text-muted-foreground text-xs leading-[1.5] col-span-full py-2.5 px-3 border border-border rounded-(--radius) bg-(--muted)'>
                 This removes the World record. Any source and reconstruction
                 references stored here will also be removed.
               </p>
@@ -330,7 +330,7 @@ export function LibraryResourceDeleteDialogs ({
                   {deleteModelReferences.map(reference => (
                     <li key={`${reference.project}-${reference.mission}`}>
                       <strong>{reference.mission}</strong>
-                      <span className='ml-1.5 text-(--muted-foreground)'>
+                      <span className='ml-1.5 text-muted-foreground'>
                         {reference.project}
                       </span>
                     </li>

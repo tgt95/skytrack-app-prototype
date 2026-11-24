@@ -83,7 +83,7 @@ function StudioTopbar({
               </BreadcrumbLink>
             </SkyTooltip>
           </BreadcrumbItem>
-          <BreadcrumbSeparator className="ms-crumb-separator text-(--muted-foreground)" />
+          <BreadcrumbSeparator className="ms-crumb-separator text-muted-foreground" />
           {reportSubpageOpen ? (
             <>
               <BreadcrumbItem className="shrink-0">
@@ -114,13 +114,13 @@ function StudioTopbar({
                   </MenuPortal>
                 </Menu>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="ms-crumb-separator text-(--muted-foreground)" />
+              <BreadcrumbSeparator className="ms-crumb-separator text-muted-foreground" />
               <BreadcrumbItem>
                 <BreadcrumbLink
                   render={
                     <button
                       type="button"
-                      className="ms-crumb-btn bg-transparent [border:0] [font:inherit] cursor-pointer rounded-(--radius) hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 ms-crumb-dim text-(--muted-foreground)"
+                      className="ms-crumb-btn bg-transparent [border:0] [font:inherit] cursor-pointer rounded-(--radius) hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 ms-crumb-dim text-muted-foreground"
                     />
                   }
                   data-testid="ms-crumb-reports"
@@ -133,7 +133,7 @@ function StudioTopbar({
                   Mission Reports
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="ms-crumb-separator text-(--muted-foreground)" />
+              <BreadcrumbSeparator className="ms-crumb-separator text-muted-foreground" />
               <BreadcrumbItem className="min-w-0">
                 <BreadcrumbPage className="ms-crumb-name font-semibold overflow-hidden text-ellipsis whitespace-nowrap max-w-80 [@media_(max-width:_73.75rem)]:max-w-45">
                   Mission Insights
@@ -147,7 +147,7 @@ function StudioTopbar({
                   render={
                     <button
                       type="button"
-                      className="ms-crumb-btn bg-transparent [border:0] [font:inherit] cursor-pointer rounded-(--radius) hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 ms-crumb-dim text-(--muted-foreground)"
+                      className="ms-crumb-btn bg-transparent [border:0] [font:inherit] cursor-pointer rounded-(--radius) hover:text-(--primary) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 ms-crumb-dim text-muted-foreground"
                     />
                   }
                   data-testid="ms-crumb-project"
@@ -158,7 +158,7 @@ function StudioTopbar({
                   {libraryEntry.project}
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="ms-crumb-separator text-(--muted-foreground)" />
+              <BreadcrumbSeparator className="ms-crumb-separator text-muted-foreground" />
               <BreadcrumbItem className="min-w-0">
                 <BreadcrumbPage className="ms-crumb-name font-semibold overflow-hidden text-ellipsis whitespace-nowrap max-w-80 [@media_(max-width:_73.75rem)]:max-w-45">
                   {libraryEntry.mission}
@@ -168,11 +168,11 @@ function StudioTopbar({
           ) : (
             <>
               <BreadcrumbItem>
-                <span className="ms-crumb-dim text-(--muted-foreground)">
+                <span className="ms-crumb-dim text-muted-foreground">
                   Missions
                 </span>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="ms-crumb-separator text-(--muted-foreground)" />
+              <BreadcrumbSeparator className="ms-crumb-separator text-muted-foreground" />
               <BreadcrumbItem className="min-w-0">
                 <BreadcrumbPage className="ms-crumb-name font-semibold overflow-hidden text-ellipsis whitespace-nowrap max-w-80 [@media_(max-width:_73.75rem)]:max-w-45">
                   {missionName}

@@ -11,6 +11,7 @@ import {
   saveWorkspaceResources,
   type WorkspaceAIModelRecord,
   type WorkspaceResourceState,
+  type WorkspaceMapDatasetRecord,
   type WorkspaceWorldRecord,
 } from "@/features/library/database/workspace-resources-store";
 import { DEFAULT_WORKSPACE_ID } from "./workspace-data.ts";
@@ -69,6 +70,13 @@ export function useWorkspaceResources({
       ),
     [resourceState.worlds, workspaceId],
   );
+  const workspaceMapDatasets = useMemo(
+    () =>
+      resourceState.mapDatasets.filter(
+        (dataset) => dataset.workspaceId === workspaceId,
+      ),
+    [resourceState.mapDatasets, workspaceId],
+  );
   const skytrackAIModels = useMemo(
     () =>
       resourceState.aiModels.filter(
@@ -115,11 +123,17 @@ export function useWorkspaceResources({
 
   const droneToDelete =
     droneProfiles.find((profile) => profile.id === deleteDroneId) ?? null;
-  const deleteDroneReferences = findDroneMissionReferences(projects, droneToDelete);
+  const deleteDroneReferences = findDroneMissionReferences(
+    projects,
+    droneToDelete,
+  );
 
   const worldToDelete =
     workspaceWorlds.find((world) => world.id === deleteWorldId) ?? null;
-  const deleteWorldReferences = findWorldMissionReferences(projects, worldToDelete);
+  const deleteWorldReferences = findWorldMissionReferences(
+    projects,
+    worldToDelete,
+  );
   const modelToDelete =
     resourceState.aiModels.find(
       (model) =>
@@ -224,6 +238,27 @@ export function useWorkspaceResources({
     return true;
   };
 
+  const saveMapDataset = (dataset: WorkspaceMapDatasetRecord) => {
+    const nextDataset = { ...dataset, workspaceId };
+    const existing = resourceStateRef.current.mapDatasets.some(
+      (item) => item.id === nextDataset.id,
+    );
+    const nextMapDatasets = existing
+      ? resourceStateRef.current.mapDatasets.map((item) =>
+          item.id === nextDataset.id ? nextDataset : item,
+        )
+      : [...resourceStateRef.current.mapDatasets, nextDataset];
+    if (
+      !commitResourceState({
+        ...resourceStateRef.current,
+        mapDatasets: nextMapDatasets,
+      })
+    )
+      return false;
+    onAnnounce(`${nextDataset.name} added to ${workspaceName} map data.`);
+    return true;
+  };
+
   const deleteWorldProfile = (id: string) => {
     if (deleteWorldReferences.length > 0) return false;
     const worldToRemove = resourceStateRef.current.worlds.find(
@@ -291,12 +326,15 @@ export function useWorkspaceResources({
   };
 
   const deleteAIModel = (id: string) => {
-    const target = resourceStateRef.current.aiModels.find((model) => model.id === id);
+    const target = resourceStateRef.current.aiModels.find(
+      (model) => model.id === id,
+    );
     if (
       !target ||
       target.workspaceId !== workspaceId ||
       !canManageAIModel(target, canEditSharedModels, currentUserName)
-    ) return false;
+    )
+      return false;
     const nextModels = resourceStateRef.current.aiModels.filter(
       (model) => model.id !== id,
     );
@@ -318,7 +356,10 @@ export function useWorkspaceResources({
     const target = resourceStateRef.current.aiModels.find(
       (model) => model.id === id && model.workspaceId === workspaceId,
     );
-    if (!target || !canManageAIModel(target, canEditSharedModels, currentUserName))
+    if (
+      !target ||
+      !canManageAIModel(target, canEditSharedModels, currentUserName)
+    )
       return false;
     const normalizedName = details.name.trim();
     if (!normalizedName) return false;
@@ -334,10 +375,19 @@ export function useWorkspaceResources({
     }
     const nextModels = resourceStateRef.current.aiModels.map((model) =>
       model.id === id
-        ? { ...model, name: normalizedName, description: details.description.trim() }
+        ? {
+            ...model,
+            name: normalizedName,
+            description: details.description.trim(),
+          }
         : model,
     );
-    if (!commitResourceState({ ...resourceStateRef.current, aiModels: nextModels }))
+    if (
+      !commitResourceState({
+        ...resourceStateRef.current,
+        aiModels: nextModels,
+      })
+    )
       return false;
     onAnnounce(`${normalizedName} updated.`);
     return true;
@@ -346,6 +396,7 @@ export function useWorkspaceResources({
   return {
     workspaceDrones,
     workspaceWorlds,
+    workspaceMapDatasets,
     workspaceAIModels,
     skytrackAIModels,
     uploadedAIModels,
@@ -360,6 +411,7 @@ export function useWorkspaceResources({
     saveDroneProfile,
     deleteDroneProfile,
     saveWorldProfile,
+    saveMapDataset,
     deleteWorldProfile,
     importAIModel,
     deleteAIModel,

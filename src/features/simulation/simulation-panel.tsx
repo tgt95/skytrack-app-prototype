@@ -238,7 +238,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
                         unitSystem,
                       )}`}
                     >
-                      <span className="ms-event-t flex-[0_0_auto] [font-variant-numeric:tabular-nums] text-(--muted-foreground)">{ev.t.toFixed(1)}s</span>
+                      <span className="ms-event-t flex-[0_0_auto] [font-variant-numeric:tabular-nums] text-muted-foreground">{ev.t.toFixed(1)}s</span>
                       <span>{formatMeasurementText(ev.label, unitSystem)}</span>
                     </button>
                   </li>
@@ -261,7 +261,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
                 >
                   {log.map((line, i) => (
                     <li key={i} data-testid="ms-console-line">
-                      <span className="ms-event-t flex-[0_0_auto] [font-variant-numeric:tabular-nums] text-(--muted-foreground)">[{line.t.toFixed(1)}s]</span>{" "}
+                      <span className="ms-event-t flex-[0_0_auto] [font-variant-numeric:tabular-nums] text-muted-foreground">[{line.t.toFixed(1)}s]</span>{" "}
                       {line.text}
                     </li>
                   ))}
@@ -273,13 +273,13 @@ export default function SimulationPanel(props: SimulationPanelProps) {
       )}
 
       {plan && gateReason ? (
-        <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]" role="status">
+        <p className="ms-hint m-0 text-xs text-muted-foreground leading-[1.5]" role="status">
           {gateReason}
         </p>
       ) : null}
 
       {status === "completed" ? (
-        <p className="ms-issue m-0 text-xs leading-[1.5] border border-border rounded-(--radius) py-1.5 px-2 bg-(--card) [&.is-error]:border-(--destructive) [&.is-error]:text-(--destructive) [&.is-warning]:border-(--border) [&.is-warning]:text-(--muted-foreground) [&.is-ok]:border-(--primary) is-ok" role="status">
+        <p className="ms-issue m-0 text-xs leading-[1.5] border border-border rounded-(--radius) py-1.5 px-2 bg-(--card) [&.is-error]:border-(--destructive) [&.is-error]:text-(--destructive) [&.is-warning]:border-(--border) [&.is-warning]:text-muted-foreground [&.is-ok]:border-(--primary) is-ok" role="status">
           Mission run completed. Restart to replay.{" "}
           {autoRestartIn !== null ? (
             <>
@@ -297,7 +297,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
         </p>
       ) : null}
       {status === "failed" ? (
-        <p className="ms-issue m-0 text-xs leading-[1.5] border border-border rounded-(--radius) py-1.5 px-2 bg-(--card) [&.is-error]:border-(--destructive) [&.is-error]:text-(--destructive) [&.is-warning]:border-(--border) [&.is-warning]:text-(--muted-foreground) [&.is-ok]:border-(--primary) is-error" role="alert">
+        <p className="ms-issue m-0 text-xs leading-[1.5] border border-border rounded-(--radius) py-1.5 px-2 bg-(--card) [&.is-error]:border-(--destructive) [&.is-error]:text-(--destructive) [&.is-warning]:border-(--border) [&.is-warning]:text-muted-foreground [&.is-ok]:border-(--primary) is-error" role="alert">
           Run failed — design preserved. Adjust settings or Restart.{" "}
           {autoRestartIn !== null ? (
             <>
@@ -315,7 +315,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
         </p>
       ) : null}
       {status === "aborted" ? (
-        <p className="ms-issue m-0 text-xs leading-[1.5] border border-border rounded-(--radius) py-1.5 px-2 bg-(--card) [&.is-error]:border-(--destructive) [&.is-error]:text-(--destructive) [&.is-warning]:border-(--border) [&.is-warning]:text-(--muted-foreground) [&.is-ok]:border-(--primary) is-warning" role="status">
+        <p className="ms-issue m-0 text-xs leading-[1.5] border border-border rounded-(--radius) py-1.5 px-2 bg-(--card) [&.is-error]:border-(--destructive) [&.is-error]:text-(--destructive) [&.is-warning]:border-(--border) [&.is-warning]:text-muted-foreground [&.is-ok]:border-(--primary) is-warning" role="status">
           Run aborted by operator — not completed. Restart to replay.
         </p>
       ) : null}

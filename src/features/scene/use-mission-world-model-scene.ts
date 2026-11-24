@@ -25,13 +25,20 @@ export function useMissionWorldModelScene({
   fitRef: MutableRefObject<typeof fitMission>;
   source?: MissionWorldModelSource;
 }) {
+  /* A selected/imported 3D World GLB must not suppress the globe or imagery
+     in 2D photogrammetry missions. The mission's visible World is Blank space
+     there, even if its persisted record still references an old GLB asset. */
+  const sceneSource =
+    mission.worldType === "3D" && mission.world !== "Blank space"
+      ? source
+      : undefined;
   const model = useWorldModelScene({
     viewerRef,
     cesiumRef,
     status,
     origin: missionOrigin(mission),
     missionRef,
-    source,
+    source: sceneSource,
   });
   const worldViewRef = useRef({
     world: mission.world,

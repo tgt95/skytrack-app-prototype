@@ -253,10 +253,10 @@ export function NotificationsPage() {
                               />
                             ) : null}
                           </span>
-                          <span className="mt-1 block text-sm text-(--muted-foreground)">
+                          <span className="mt-1 block text-sm text-muted-foreground">
                             {item.description}
                           </span>
-                          <span className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-(--muted-foreground)">
+                          <span className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
                             <span>{item.actor}</span>
                             <span aria-hidden="true">·</span>
                             <span>{item.time}</span>
@@ -275,7 +275,7 @@ export function NotificationsPage() {
           </div>
         )}
 
-        <div className="border-t border-(--border) pt-4 text-xs text-(--muted-foreground)">
+        <div className="border-t border-(--border) pt-4 text-xs text-muted-foreground">
           <span>
             Workspace alerts include members, resources, and Cloud SIM access.
           </span>

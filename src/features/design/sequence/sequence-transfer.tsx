@@ -44,14 +44,14 @@ export function TransferRow({
         Go to the next {transfer.toType}
       </span>
       <span
-        className="flex-[0_0_auto] text-[0.6875rem] text-(--muted-foreground) [font-variant-numeric:tabular-nums]"
+        className="flex-[0_0_auto] text-[0.6875rem] text-muted-foreground [font-variant-numeric:tabular-nums]"
         data-testid="ms-seq-dist"
       >
         {distance}
         {transfer.hasDetour ? " · detour" : ""}
       </span>
       {transfer.errorMessage ? (
-        <span className="m-0 text-xs leading-[1.5] border border-(--border) rounded-(--radius) py-1.5 px-2 bg-(--card) text-(--muted-foreground)">
+        <span className="m-0 text-xs leading-[1.5] border border-(--border) rounded-(--radius) py-1.5 px-2 bg-(--card) text-muted-foreground">
           {formatMeasurementText(transfer.errorMessage, unitSystem)}
         </span>
       ) : null}

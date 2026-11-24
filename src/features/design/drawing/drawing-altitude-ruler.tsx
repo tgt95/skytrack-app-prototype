@@ -179,7 +179,7 @@ export function DrawingAltitudeRuler({
               onKeyDown={onInputKeyDown}
             />
             <span
-              className=" flex-[0_0_auto] text-[0.6875rem] font-semibold text-(--muted-foreground)"
+              className=" flex-[0_0_auto] text-[0.6875rem] font-semibold text-muted-foreground"
               aria-hidden="true"
               data-testid="ms-alt-unit"
             >

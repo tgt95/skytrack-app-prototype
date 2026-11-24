@@ -54,7 +54,7 @@ export function DroneComponentRow({
       key={component.id}
     >
       <span
-        className=" flex items-center h-9 text-(--muted-foreground) text-[0.6875rem] [font-variant-numeric:tabular-nums] [@media_(max-width:_45rem)]:row-[1/span_3] [@media_(max-width:_45rem)]:items-start [@media_(max-width:_45rem)]:pt-7"
+        className=" flex items-center h-9 text-muted-foreground text-[0.6875rem] [font-variant-numeric:tabular-nums] [@media_(max-width:_45rem)]:row-[1/span_3] [@media_(max-width:_45rem)]:items-start [@media_(max-width:_45rem)]:pt-7"
         aria-hidden="true"
         data-testid="ms-drone-component-index"
       >
@@ -132,7 +132,7 @@ export function DroneComponentRow({
         className=" col-span-full border-t border-t-border pt-2"
         data-testid="ms-drone-component-details"
       >
-        <summary className="w-fit text-(--muted-foreground) text-xs cursor-pointer">
+        <summary className="w-fit text-muted-foreground text-xs cursor-pointer">
           Specifications &amp; source
         </summary>
         <div
@@ -204,7 +204,7 @@ export function DroneComponentRow({
               <h3 className="sub-heading mt-0 mx-0 mb-0.75 text-xs">
                 Key specifications
               </h3>
-              <p className="max-w-140 m-0 text-(--muted-foreground) text-[0.6875rem] leading-[1.45]">
+              <p className="max-w-140 m-0 text-muted-foreground text-[0.6875rem] leading-[1.45]">
                 Examples: battery chemistry, cell count, capacity, voltage,
                 connector; motor size and KV; ESC current and firmware;
                 propeller diameter, pitch, and blade count.
@@ -220,7 +220,7 @@ export function DroneComponentRow({
             </Button>
           </div>
           {component.specifications.length === 0 ? (
-            <p className="ms-drone-empty-components m-0 text-(--muted-foreground) text-xs leading-[1.5]">
+            <p className="ms-drone-empty-components m-0 text-muted-foreground text-xs leading-[1.5]">
               No specifications added.
             </p>
           ) : (

@@ -165,6 +165,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
   const basemapDirty = useStudioBasemapState({
     active: section !== "library",
     hasSavedMission: libraryEntry !== null,
+    hasMapSceneLayer: Boolean(mission.mapSceneLayer),
     themePreference: accountSettings.themePreference,
     savedBasemapStyle: libraryEntry?.basemapStyle,
     basemapStyle: uiState.basemapStyle,
@@ -280,7 +281,11 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
 
   useEffect(() => {
     if (tool === "area")
-      setDraftAreaSettings({ lineSpacingM: accountSettings.missionDesignPreferences.areaLineSpacingM, orientationDeg: 0, paddingM: 0 });
+      setDraftAreaSettings({
+        lineSpacingM: accountSettings.missionDesignPreferences.areaLineSpacingM,
+        orientationDeg: 0,
+        paddingM: 0,
+      });
     if (tool === "avoid")
       setDraftAvoidSettings({ type: "obstacle", heightM: 15, clearanceM: 2 });
     if (
@@ -290,7 +295,12 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
       cancelPanelPreview();
       setDetailEditActive(false);
     }
-  }, [accountSettings.missionDesignPreferences.areaLineSpacingM, cancelPanelPreview, stage, tool]);
+  }, [
+    accountSettings.missionDesignPreferences.areaLineSpacingM,
+    cancelPanelPreview,
+    stage,
+    tool,
+  ]);
 
   const studioActions = useStudioActions({
     mission,
@@ -468,7 +478,9 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
         onClose={() => accountSettings.setAccountPanel(null)}
         onSaveProfile={accountSettings.updateAccountProfile}
         onChangeNotifications={accountSettings.updateNotificationPreferences}
-        onChangeMissionDesignPreferences={accountSettings.updateMissionDesignPreferences}
+        onChangeMissionDesignPreferences={
+          accountSettings.updateMissionDesignPreferences
+        }
         onLogout={onLogout}
       />
       <ImportAIModelDialog

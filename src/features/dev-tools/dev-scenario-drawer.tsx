@@ -70,7 +70,7 @@ export default function DevScenarioDrawer() {
       </label>
 
       <div
-        className="text-(--muted-foreground) flex-none text-xs"
+        className="text-muted-foreground flex-none text-xs"
         aria-live="polite"
       >
         {scenarios.length} {scenarios.length === 1 ? "scenario" : "scenarios"}
@@ -95,7 +95,7 @@ export default function DevScenarioDrawer() {
                 <span className="text-foreground font-medium">
                   {scenario.name}
                 </span>
-                <span className="text-(--muted-foreground) text-[0.8125rem] leading-[1.4]">
+                <span className="text-muted-foreground text-[0.8125rem] leading-[1.4]">
                   {scenario.description}
                 </span>
               </div>
@@ -114,7 +114,7 @@ export default function DevScenarioDrawer() {
         })}
 
         {scenarios.length === 0 && (
-          <p className="text-(--muted-foreground) py-4" role="status">
+          <p className="text-muted-foreground py-4" role="status">
             No matching scenarios.
           </p>
         )}

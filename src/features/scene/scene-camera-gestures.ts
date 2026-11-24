@@ -102,15 +102,16 @@ export function installCameraGestures(deps: {
   }
   const resolvePivot = (forSnap: boolean): import('cesium').Cartesian3 => {
     // Stable pivot: the mission centroid. A raw screen-center pick goes
-    // arbitrarily far on grazing rays (near-horizontal views), which
-    // used to throw snaps/orbits off the mission. For drags the screen
-    // pick is honored only while it stays near the mission.
+    // arbitrarily far on grazing rays (near-horizontal views), which can
+    // throw snaps/orbits off populated missions. Empty missions have no
+    // geometry to constrain the pick, so orbit stays anchored to the view.
     const snap = missionRef.current
     const pts = snap.waypoints.map((w) => ({ x: w.x, y: w.y }))
     for (const a of snap.areas) for (const p of a.points) pts.push(p)
     for (const a of snap.avoids) for (const p of a.points) pts.push(p)
-    // Legacy spawn only centers the pivot when no sequence geometry
-    // exists (T-021 AC11: mission starts at waypoint 1).
+    const hasMissionGeometry = pts.length > 0
+    // Compass snaps remain Home-centered when no sequence geometry exists
+    // (T-021 AC11). Orbit drags use the current view center in that case.
     if (pts.length === 0) pts.push({ x: snap.spawn.x, y: snap.spawn.y })
     let x = 0
     let y = 0
@@ -125,6 +126,20 @@ export function installCameraGestures(deps: {
     const g = enuToLngLat(x, y, missionOrigin(missionRef.current))
     const home = Cesium.Cartesian3.fromDegrees(g.lng, g.lat, 0)
     if (forSnap) return home
+    const fallbackPivot = () => {
+      if (hasMissionGeometry) return home
+      const viewDistance = Math.max(cam.range, 150)
+      const viewTarget = Cesium.Cartesian3.multiplyByScalar(
+        viewer.camera.directionWC,
+        viewDistance,
+        new Cesium.Cartesian3(),
+      )
+      return Cesium.Cartesian3.add(
+        viewer.camera.positionWC,
+        viewTarget,
+        new Cesium.Cartesian3(),
+      )
+    }
     const rect = viewer.canvas.getBoundingClientRect()
     const center = new Cesium.Cartesian2(Math.max(rect.width / 2, 1), Math.max(rect.height / 2, 1))
     const ray = viewer.camera.getPickRay(center)
@@ -132,17 +147,17 @@ export function installCameraGestures(deps: {
       const hit = viewer.scene.globe.pick(ray, viewer.scene)
       if (hit && Number.isFinite(hit.x)) {
         const limit = Math.max(150, cam.range * 0.75)
-        if (Cesium.Cartesian3.distance(hit, home) <= limit) return hit
+        if (!hasMissionGeometry || Cesium.Cartesian3.distance(hit, home) <= limit) return hit
         return home
       }
     }
     const ellipsoid = viewer.camera.pickEllipsoid(center, viewer.scene.globe.ellipsoid)
     if (ellipsoid && Number.isFinite(ellipsoid.x)) {
       const limit = Math.max(150, cam.range * 0.75)
-      if (Cesium.Cartesian3.distance(ellipsoid, home) <= limit) return ellipsoid
+      if (!hasMissionGeometry || Cesium.Cartesian3.distance(ellipsoid, home) <= limit) return ellipsoid
       return home
     }
-    return home
+    return fallbackPivot()
   }
   const orbitSensitivity = () => (2 * Math.PI) / Math.max(viewer.canvas.clientHeight, 1)
   const applyLook = () => {

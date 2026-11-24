@@ -86,7 +86,7 @@ export function AIModelCardContent({
       <div className="flex min-w-0 flex-col">
         <div className="flex min-w-0 items-center gap-3 p-3">
           {showThumbnail ? (
-            <span className="flex aspect-video h-11.5 flex-none items-center justify-center overflow-hidden rounded-(--radius) bg-(--muted) text-(--muted-foreground)">
+            <span className="flex aspect-video h-11.5 flex-none items-center justify-center overflow-hidden rounded-(--radius) bg-(--muted) text-muted-foreground">
               {thumbnailContent}
             </span>
           ) : null}
@@ -119,7 +119,7 @@ export function AIModelCardContent({
   return (
     <>
       {showThumbnail ? (
-        <span className="ms-lib-resource-icon relative flex items-center justify-center w-full aspect-video border-b border-b-border bg-(--muted) text-(--muted-foreground) overflow-hidden">
+        <span className="ms-lib-resource-icon relative flex items-center justify-center w-full aspect-video border-b border-b-border bg-(--muted) text-muted-foreground overflow-hidden">
           {thumbnail ? (
             <img
               src={thumbnail}

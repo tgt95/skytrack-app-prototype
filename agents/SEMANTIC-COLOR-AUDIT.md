@@ -9,7 +9,7 @@
 | Readiness count | SkyTrack UI `Badge status='secondary'` | `src/features/studio/report-table.tsx:380-384` |
 | Preview disclosure | SkyTrack UI `Alert variant='info'` | `src/features/studio/report-table.tsx:367-374` |
 | Section surface and borders | `bg-(--card)` and `border-border` | `src/features/studio/report-table.tsx:258-260` |
-| Main and secondary text | `text-(--foreground)` and `text-(--muted-foreground)` | `src/features/studio/report-table.tsx:284,362,421` |
+| Main and secondary text | `text-(--foreground)` and `text-muted-foreground` | `src/features/studio/report-table.tsx:284,362,421` |
 | Comparison-table borders | `border-border` | `src/features/studio/report-table.tsx:461,475` |
 
 No raw palette class represents status meaning. PASS and status values remain explicitly illustrative in the detail disclosure and are not verified operational results.

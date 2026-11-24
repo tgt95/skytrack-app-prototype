@@ -56,7 +56,7 @@ export default function StudioStatusFooter({
 
   return (
     <footer
-      className=" flex-[0_0_auto] flex items-center justify-between gap-2.5 py-1 px-3 border-t border-t-border bg-(--card) text-xs text-(--muted-foreground)"
+      className=" flex-[0_0_auto] flex items-center justify-between gap-2.5 py-1 px-3 border-t border-t-border bg-(--card) text-xs text-muted-foreground"
       data-testid="ms-status"
     >
       <span

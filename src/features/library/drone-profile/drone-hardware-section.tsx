@@ -46,7 +46,7 @@ export function DroneHardwareSection({
           >
             Hardware components
           </h2>
-          <p className="m-0 text-(--muted-foreground) text-xs leading-[1.5]">
+          <p className="m-0 text-muted-foreground text-xs leading-[1.5]">
             Track subsystem, part identity, specifications, installation state,
             and source. Unknown details stay blank.
           </p>
@@ -56,7 +56,7 @@ export function DroneHardwareSection({
         </Button>
       </div>
       {components.length === 0 ? (
-        <p className="ms-drone-empty-components m-0 text-(--muted-foreground) text-xs leading-[1.5]">
+        <p className="ms-drone-empty-components m-0 text-muted-foreground text-xs leading-[1.5]">
           No hardware components added.
         </p>
       ) : (

@@ -26,7 +26,7 @@ export function MissionSceneStatus({
         aria-label="3D scene loading"
       >
         <p className="ms-scene-overlay-title m-0 text-sm font-semibold">Loading 3D scene…</p>
-        <p className="ms-scene-overlay-sub mt-0 mx-0 mb-2 text-xs text-(--muted-foreground) max-w-105">Loading mission scene.</p>
+        <p className="ms-scene-overlay-sub mt-0 mx-0 mb-2 text-xs text-muted-foreground max-w-105">Loading mission scene.</p>
       </div>
     );
   }
@@ -39,7 +39,7 @@ export function MissionSceneStatus({
         data-testid="ms-scene-error"
       >
         <p className="ms-scene-overlay-title m-0 text-sm font-semibold">3D scene unavailable</p>
-        <p className="ms-scene-overlay-sub mt-0 mx-0 mb-2 text-xs text-(--muted-foreground) max-w-105">
+        <p className="ms-scene-overlay-sub mt-0 mx-0 mb-2 text-xs text-muted-foreground max-w-105">
           {errorMessage ?? "Renderer failed to start."}
         </p>
         <div
@@ -65,7 +65,7 @@ export function MissionSceneStatus({
   if (without3d && status !== "ready") {
     return (
       <div
-        className=" absolute left-3 bottom-3 flex items-center gap-1 text-xs text-(--muted-foreground) bg-(--card) border border-border rounded-(--radius) py-1 px-2"
+        className=" absolute left-3 bottom-3 flex items-center gap-1 text-xs text-muted-foreground bg-(--card) border border-border rounded-(--radius) py-1 px-2"
         role="status"
         data-testid="ms-scene-fallback"
       >

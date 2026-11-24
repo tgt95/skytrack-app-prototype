@@ -199,7 +199,7 @@ export function AccountMenuDialogs ({
                 <FieldRoot name='account-email'>
                   <FieldLabel>Email</FieldLabel>
                   <FieldControl
-                    className=' bg-(--muted) text-(--muted-foreground) cursor-default'
+                    className=' bg-(--muted) text-muted-foreground cursor-default'
                     aria-label='Email'
                     value={profile.email}
                     readOnly
@@ -214,7 +214,7 @@ export function AccountMenuDialogs ({
                 data-testid='ms-lib-account-settings-content'
               >
                 <div
-                  className=' flex items-center justify-between gap-3 min-h-11 border-b border-b-border text-(--muted-foreground) text-[0.8125rem]'
+                  className=' flex items-center justify-between gap-3 min-h-11 border-b border-b-border text-muted-foreground text-[0.8125rem]'
                   data-testid='ms-lib-account-status-row'
                 >
                   <span>Account status</span>
@@ -302,7 +302,7 @@ export function AccountMenuDialogs ({
                     <strong className='overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold'>
                       {profile.name}
                     </strong>
-                    <span className='overflow-hidden text-ellipsis whitespace-nowrap text-(--muted-foreground) text-xs'>
+                    <span className='overflow-hidden text-ellipsis whitespace-nowrap text-muted-foreground text-xs'>
                       {profile.email}
                     </span>
                   </span>
@@ -333,7 +333,7 @@ export function AccountMenuDialogs ({
                     <strong className='font-semibold'>
                       You’ll return to sign in
                     </strong>
-                    <p className='mt-1 mx-0 mb-0 text-(--muted-foreground) leading-[1.5]'>
+                    <p className='mt-1 mx-0 mb-0 text-muted-foreground leading-[1.5]'>
                       Saved projects and missions stay in this browser. Unsaved
                       changes in this session will be discarded.
                     </p>
@@ -386,7 +386,7 @@ export function AccountMenuDialogs ({
 function AccountDetail ({ label, value }: { label: string; value: string }) {
   return (
     <div
-      className=' flex items-center justify-between gap-3 min-h-11 border-b border-b-border text-(--muted-foreground) text-[0.8125rem]'
+      className=' flex items-center justify-between gap-3 min-h-11 border-b border-b-border text-muted-foreground text-[0.8125rem]'
       data-testid='ms-lib-account-detail'
     >
       <span>{label}</span>

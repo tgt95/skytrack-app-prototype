@@ -187,7 +187,7 @@ function ReconSlider({
           {marks.map((mark, index) => (
             <span
               key={mark}
-              className={`absolute left-(--ms-recon-mark-position) text-[0.6875rem] text-(--muted-foreground) whitespace-nowrap [font-variant-numeric:tabular-nums] ${index === 0 ? "transform-none" : index === marks.length - 1 ? "transform-[translateX(-100%)]" : "transform-[translateX(-50%)]"}`}
+              className={`absolute left-(--ms-recon-mark-position) text-[0.6875rem] text-muted-foreground whitespace-nowrap [font-variant-numeric:tabular-nums] ${index === 0 ? "transform-none" : index === marks.length - 1 ? "transform-[translateX(-100%)]" : "transform-[translateX(-50%)]"}`}
               style={
                 {
                   "--ms-recon-mark-position": `${toPct(mark)}%`,
@@ -201,7 +201,7 @@ function ReconSlider({
       ) : null}
       {hint ? (
         <p
-          className=" m-0 text-(--muted-foreground) text-xs leading-[1.6]"
+          className=" m-0 text-muted-foreground text-xs leading-[1.6]"
           data-testid="ms-recon-slider-hint"
         >
           {hint}
@@ -237,7 +237,7 @@ export function ReconnaissanceSettingsForm({
   return (
     <div data-testid="ms-recon-form">
       {altitudeReference === "AGL" ? (
-        <p className="ms-hint m-0 text-xs text-(--muted-foreground) leading-[1.5]">
+        <p className="ms-hint m-0 text-xs text-muted-foreground leading-[1.5]">
           Altitude AGL uses a flat z=0 reference plane; terrain is not modeled.
         </p>
       ) : null}
@@ -317,7 +317,7 @@ export function ReconnaissanceSettingsForm({
 
         {showFlightPattern ? (
           <div
-            className=" grid gap-1.25 text-(--muted-foreground) text-xs"
+            className=" grid gap-1.25 text-muted-foreground text-xs"
             data-testid="ms-recon-form-field"
           >
             <span
@@ -357,7 +357,7 @@ export function ReconnaissanceSettingsForm({
       </div>
 
       {showFlightPattern ? (
-        <p className="ms-recon-form-help text-(--muted-foreground) text-[0.6875rem]">
+        <p className="ms-recon-form-help text-muted-foreground text-[0.6875rem]">
           For Area scans, Front overlap sets photo spacing and Side overlap sets
           lane spacing using the camera footprint.
         </p>
@@ -381,7 +381,7 @@ export function ReconnaissanceSettingsForm({
           data-testid="ms-recon-form-toggle-copy"
         >
           <span className="ms-recon-form-label">Terrain awareness</span>
-          <span className="ms-recon-form-help text-(--muted-foreground) text-[0.6875rem]">
+          <span className="ms-recon-form-help text-muted-foreground text-[0.6875rem]">
             Adjust the route to follow changes in terrain elevation.
           </span>
         </span>

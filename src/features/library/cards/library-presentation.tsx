@@ -136,6 +136,7 @@ export function LibraryCardFrame({
                 type="button"
                 variant="outline"
                 size="icon-sm"
+                className="bg-(--card) dark:bg-(--card) dark:hover:bg-(--card)"
                 data-testid={testId ? `${testId}-star` : undefined}
                 aria-label={`${starred ? "Unstar" : "Star"} ${label}`}
                 aria-pressed={starred}
@@ -156,7 +157,12 @@ export function LibraryCardFrame({
                   aria-label={`More actions for ${label}`}
                   data-testid={testId ? `${testId}-more` : undefined}
                   render={
-                    <Button type="button" variant="outline" size="icon-sm" />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon-sm"
+                      className="bg-(--card) dark:bg-(--card) dark:hover:bg-(--card)"
+                    />
                   }
                 >
                   <DotsThreeIcon aria-hidden="true" />

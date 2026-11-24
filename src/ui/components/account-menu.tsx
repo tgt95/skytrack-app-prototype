@@ -104,7 +104,7 @@ export function AccountMenu({
                 <strong className="overflow-hidden text-base font-semibold text-ellipsis whitespace-nowrap">
                   {profile.name}
                 </strong>
-                <span className="overflow-hidden text-(--muted-foreground) text-sm text-ellipsis whitespace-nowrap">
+                <span className="overflow-hidden text-muted-foreground text-sm text-ellipsis whitespace-nowrap">
                   {profile.email}
                 </span>
               </span>
