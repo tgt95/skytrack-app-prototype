@@ -6,10 +6,15 @@ import {
   type LibraryCardAction,
 } from "./library-presentation.tsx";
 import { getTemplateThumbnail } from "./template-thumbnails.ts";
+import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import skytrackLogo from "@/assets/skytrack-logo.svg";
-import type { LibProject, LibTemplate } from "@/features/library/database/store";
+import type {
+  LibProject,
+  LibTemplate,
+} from "@/features/library/database/store";
 import { SHARED_PROJECTS } from "@/features/library/workspace/workspace-data.ts";
 import { getNameInitials } from "@/shared/name-initials";
+import { CompactTimestamp } from "./compact-timestamp.tsx";
 
 export {
   MissionCard,
@@ -109,9 +114,7 @@ export function TemplateCard({
         <span className="text-sm text-muted-foreground leading-[1.5]">
           {template.desc}
         </span>
-        {hideMeta ? null : (
-          <TemplateAttribution byline={template.byline} />
-        )}
+        {hideMeta ? null : <TemplateAttribution byline={template.byline} />}
       </span>
     </LibraryCardFrame>
   );
@@ -160,7 +163,7 @@ export function SharedProjectCard({
     >
       <button
         type="button"
-        className="ms-lib-thumb relative flex items-center justify-center aspect-4/3 overflow-hidden text-muted-foreground bg-(--background) bg-[repeating-linear-gradient(to_right,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem),repeating-linear-gradient(to_bottom,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem)] border-b border-b-border [&.is-template]:bg-none [&.is-project]:bg-none [&.is-project]:bg-(--muted) [&.tint-0]:bg-[color-mix(in_srgb,var(--primary)_26%,var(--card))] [&.tint-2]:bg-(--muted) [&.tint-4]:bg-[color-mix(in_srgb,var(--primary)_10%,var(--card))] [&.tint-5]:bg-[color-mix(in_srgb,var(--primary)_32%,var(--muted))] [&.is-learn]:bg-none [&.is-learn]:text-(--primary) is-project"
+        className="ms-lib-thumb relative flex items-center justify-center aspect-4/3 overflow-hidden text-muted-foreground bg-(--background) bg-[repeating-linear-gradient(to_right,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem),repeating-linear-gradient(to_bottom,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem)] border-b border-b-border [&.is-template]:bg-none [&.is-project]:bg-none [&.is-project]:bg-(--muted) [&.tint-0]:bg-[color-mix(in_srgb,var(--primary)_26%,var(--card))] [&.tint-2]:bg-(--muted) [&.tint-4]:bg-[color-mix(in_srgb,var(--primary)_10%,var(--card))] [&.tint-5]:bg-[color-mix(in_srgb,var(--primary)_32%,var(--muted))] [&.is-learn]:bg-none [&.is-learn]:text-(--primary) is-project cursor-pointer"
         data-testid={`ms-lib-shared-project-${project.id}-open`}
         aria-label={`Open shared project ${project.name}`}
         onClick={onOpen}
@@ -177,35 +180,31 @@ export function SharedProjectCard({
             {project.missions.length} mission
             {project.missions.length === 1 ? "" : "s"}
           </span>
-          <span
-            className="text-muted-foreground text-[0.6875rem]"
-            data-testid="ms-lib-shared-context"
-          >
-            {project.missions
-              .map((mission) => `${mission.worldType} · ${mission.world}`)
-              .join(" / ")}
-          </span>
         </div>
         <div className="mt-auto flex items-center justify-between gap-2 pt-3">
           <span
             className="inline-flex min-w-0 items-center gap-1.5 text-sm text-muted-foreground"
             data-testid="ms-lib-shared-owner"
           >
-            <Avatar
-              aria-hidden="true"
-              className="size-6 shrink-0"
-            >
-              <AvatarFallback>
-                {project.ownerInitials ?? getNameInitials(project.owner)}
-              </AvatarFallback>
-            </Avatar>
-            <span className="truncate">
-              {project.owner} · {project.workspace}
-            </span>
+            <SkyTooltip>
+              <span
+                role="img"
+                aria-label={`${project.owner} from ${project.workspace}`}
+                title={`${project.owner} from ${project.workspace}`}
+                tabIndex={0}
+                className="inline-flex shrink-0"
+              >
+                <Avatar aria-hidden="true" className="size-6 shrink-0">
+                  <AvatarFallback>
+                    {project.ownerInitials?.slice(0, 1) ||
+                      getNameInitials(project.owner, 1)}
+                  </AvatarFallback>
+                </Avatar>
+              </span>
+            </SkyTooltip>
+            <span className="truncate">{project.owner}</span>
           </span>
-          <span className="whitespace-nowrap text-right text-sm text-muted-foreground">
-            {project.sharedAgo}
-          </span>
+          <CompactTimestamp updatedAt={project.sharedAt} />
         </div>
       </div>
     </LibraryCardFrame>

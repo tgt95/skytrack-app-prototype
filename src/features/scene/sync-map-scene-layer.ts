@@ -1,7 +1,7 @@
 import type { Viewer } from "cesium";
 import type { StudioMission } from "@/domain/mission-model";
 import { missionOrigin } from "@/domain/mission-model";
-import { enuToLngLat, safeColor, themeColor } from "./mission-scene-helpers";
+import { enuToLngLat, safeColor } from "./mission-scene-helpers";
 
 type CesiumNS = typeof import("cesium");
 
@@ -19,28 +19,21 @@ export function syncMapSceneLayer(
     111_320 *
     Math.cos((origin.lat * Math.PI) / 180);
   const centerY = (layer.center.lat - origin.lat) * 111_320;
-  const roofColor = safeColor(
-    Cesium,
-    themeColor("--primary"),
-    "--primary",
-    0.88,
-  );
-  const wallColor = safeColor(
-    Cesium,
-    themeColor("--primary"),
-    "--primary",
-    0.32,
-  );
-  const outlineColor = safeColor(
-    Cesium,
-    themeColor("--muted-foreground"),
-    "--muted-foreground",
-    0.8,
-  );
+  const roofColor = Cesium.Color.fromCssColorString("#f4f5f6");
+  const wallColor = Cesium.Color.fromCssColorString("#dfe2e5");
+  const outlineColor = Cesium.Color.fromCssColorString("#c5cacf");
   const treeTrunkColor = safeColor(Cesium, "#76563a", "--muted-foreground", 1);
   const treeCanopyColors = ["#578b48", "#689b50", "#477b43"].map((color) =>
     safeColor(Cesium, color, "--primary", 1),
   );
+
+  if (layer.buildings.length > 0) {
+    viewer.shadows = true;
+    viewer.terrainShadows = Cesium.ShadowMode.RECEIVE_ONLY;
+    viewer.shadowMap.softShadows = true;
+    viewer.shadowMap.darkness = 0.28;
+    viewer.shadowMap.size = 2048;
+  }
 
   layer.buildings.forEach((building, buildingIndex) => {
     building.polygons.forEach((polygon, polygonIndex) => {
@@ -57,8 +50,10 @@ export function syncMapSceneLayer(
       );
       const height = Math.min(1000, Math.max(2, building.heightM));
       const id = building.id.replace(/[^a-z0-9_-]/giu, "-").slice(0, 80);
+      const buildingEntityId =
+        `ms-world-map-building-${buildingIndex}-${id}-${polygonIndex}`;
       viewer.entities.add({
-        id: `ms-world-map-building-${buildingIndex}-${id}-${polygonIndex}`,
+        id: buildingEntityId,
         name: building.name || "Imported map building",
         description: `${height.toFixed(1)} m ${building.heightLabel} building height. Display context only; vertical reference is unverified.`,
         polygon: {
@@ -68,17 +63,24 @@ export function syncMapSceneLayer(
           extrudedHeight: height,
           extrudedHeightReference: Cesium.HeightReference.RELATIVE_TO_GROUND,
           material: wallColor,
-          closeTop: true,
+          closeTop: false,
           closeBottom: true,
+          outline: false,
+          shadows: Cesium.ShadowMode.ENABLED,
+        },
+      });
+      viewer.entities.add({
+        id: `${buildingEntityId}-roof`,
+        name: building.name || "Imported map building roof",
+        polygon: {
+          hierarchy,
+          height,
+          heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND,
+          material: roofColor,
           outline: true,
           outlineColor,
           outlineWidth: 1,
-        },
-        polyline: {
-          positions: coordinates(polygon.outer),
-          width: 1,
-          material: roofColor,
-          clampToGround: true,
+          shadows: Cesium.ShadowMode.ENABLED,
         },
       });
     });

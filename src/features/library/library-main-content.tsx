@@ -101,7 +101,6 @@ interface LibraryMainContentProps {
   onRenameProject: (project: LibProject) => void;
   onDeleteProject: (project: LibProject) => void;
   onOpenSharedAccounts: (missionId: string | null) => void;
-  onOpenSharedProject: (projectId: string | null) => void;
   onUseTemplate: (template: LibTemplate) => void;
   onCreateWorld: () => void;
   onEditWorld: (world: WorkspaceWorldRecord) => void;
@@ -155,7 +154,6 @@ export default function LibraryMainContent({
   onRenameProject,
   onDeleteProject,
   onOpenSharedAccounts,
-  onOpenSharedProject,
   onUseTemplate,
   onCreateWorld,
   onEditWorld,
@@ -200,7 +198,6 @@ export default function LibraryMainContent({
       ) : activeSharedProject ? (
         <SharedProjectPage
           project={activeSharedProject}
-          onBack={() => onOpenSharedProject(null)}
           renderMission={renderSharedMission}
         />
       ) : activeProject ? (

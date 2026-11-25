@@ -13,10 +13,13 @@ import projectsSeed from "./seeds/projects.json";
 import leevilleMissionSeed from "./seeds/missions/leeville-pike-flight.json";
 import satoriniMissionSeed from "./seeds/missions/satorini-island-reconnaissance.json";
 import bitexcoMissionSeed from "./seeds/missions/bitexco-reconnaissance.json";
+import thanhAnMissionSeed from "./seeds/missions/thanh-an-dau-tieng.json";
 import santoriniMapSceneSeed from "./seeds/map-data/santorini-map-scene.json";
 import santoriniTerrainSeed from "./seeds/map-data/santorini-terrain.json";
 import bitexcoMapSceneSeed from "./seeds/map-data/bitexco-map-scene.json";
 import bitexcoTerrainSeed from "./seeds/map-data/bitexco-terrain.json";
+import thanhAnMapSceneSeed from "./seeds/map-data/thanh-an-dau-tieng-map-scene.json";
+import thanhAnTerrainSeed from "./seeds/map-data/thanh-an-dau-tieng-terrain.json";
 import { ensureSeededMission } from "./ensure-seeded-mission";
 import templatesSeed from "./seeds/templates.json";
 import { getWorkspace } from "@/features/library/workspace/workspace-data.ts";
@@ -361,28 +364,36 @@ function seedProjects(): LibProject[] {
   return (projectsSeed as LibProject[]).map((project) => ({
     ...project,
     missions: project.missions.map((mission) =>
-      mission.id === "m-local-mwgqzezc-101"
+      mission.id === "m-local-mww4lv4v-101"
         ? {
             ...mission,
-            missionData: JSON.stringify(leevilleMissionSeed),
+            missionData: JSON.stringify(thanhAnMissionSeed),
+            mapSceneLayer:
+              thanhAnMapSceneSeed as unknown as MissionMapSceneLayer,
+            terrainLayer: thanhAnTerrainSeed as MissionTerrainLayer,
           }
-        : mission.id === SATORINI_SAMPLE_MISSION_ID
+        : mission.id === "m-local-mwgqzezc-101"
           ? {
               ...mission,
-              missionData: JSON.stringify(satoriniMissionSeed),
-              mapSceneLayer:
-                santoriniMapSceneSeed as unknown as MissionMapSceneLayer,
-              terrainLayer: santoriniTerrainSeed as MissionTerrainLayer,
+              missionData: JSON.stringify(leevilleMissionSeed),
             }
-          : mission.id === BITEXCO_SAMPLE_MISSION_ID
+          : mission.id === SATORINI_SAMPLE_MISSION_ID
             ? {
                 ...mission,
-                missionData: JSON.stringify(bitexcoMissionSeed),
+                missionData: JSON.stringify(satoriniMissionSeed),
                 mapSceneLayer:
-                  bitexcoMapSceneSeed as unknown as MissionMapSceneLayer,
-                terrainLayer: bitexcoTerrainSeed as MissionTerrainLayer,
+                  santoriniMapSceneSeed as unknown as MissionMapSceneLayer,
+                terrainLayer: santoriniTerrainSeed as MissionTerrainLayer,
               }
-            : mission,
+            : mission.id === BITEXCO_SAMPLE_MISSION_ID
+              ? {
+                  ...mission,
+                  missionData: JSON.stringify(bitexcoMissionSeed),
+                  mapSceneLayer:
+                    bitexcoMapSceneSeed as unknown as MissionMapSceneLayer,
+                  terrainLayer: bitexcoTerrainSeed as MissionTerrainLayer,
+                }
+              : mission,
     ),
   }));
 }
@@ -644,7 +655,11 @@ export function loadProjects(): LibProject[] {
           ensureLeevilleMission(
             ensureSeededMission(
               ensureSeededMission(
-                normalizeProjects(sourceProjects),
+                ensureSeededMission(
+                  normalizeProjects(sourceProjects),
+                  seedProjects(),
+                  "m-local-mww4lv4v-101",
+                ),
                 seedProjects(),
                 SATORINI_SAMPLE_MISSION_ID,
               ),

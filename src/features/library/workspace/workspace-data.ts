@@ -38,6 +38,7 @@ export interface SharedProjectFixture {
   ownerInitials: string
   workspace: string
   sharedAgo: string
+  sharedAt: string
   missions: SharedMissionFixture[]
 }
 
@@ -80,6 +81,7 @@ export const SHARED_PROJECTS: SharedProjectFixture[] = [
     ownerInitials: 'MN',
     workspace: 'Coastal survey',
     sharedAgo: 'Shared yesterday',
+    sharedAt: '2026-11-24T17:51:00.000Z',
     missions: [
       { id: 'harbor-orthomosaic', name: 'Harbor orthomosaic', worldType: '2D', world: 'Blank space', updatedAt: '2026-11-25T15:02:00.000Z' }
     ]
@@ -91,6 +93,7 @@ export const SHARED_PROJECTS: SharedProjectFixture[] = [
     ownerInitials: 'MT',
     workspace: 'Engineering operations',
     sharedAgo: 'Shared 3 days ago',
+    sharedAt: '2026-11-22T17:51:00.000Z',
     missions: [
       { id: 'north-bridge-model', name: 'North bridge model', worldType: '3D', world: 'North bridge world', updatedAt: '2026-11-24T17:02:00.000Z' }
     ]

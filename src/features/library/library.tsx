@@ -382,11 +382,13 @@ export default function StudioLibrary({
           onNavigate={goto}
           projectName={activeProject?.name ?? null}
           templateName={activeTemplate?.title ?? null}
+          sharedProjectName={activeSharedProject?.name ?? null}
           onNavigateProjects={() => onNavigate("projects", null)}
           onNavigateTemplates={() => {
             onOpenTemplate(null);
             goto("templates");
           }}
+          onNavigateShared={() => onNavigate("shared", null)}
         />
 
         <div
@@ -460,7 +462,6 @@ export default function StudioLibrary({
               })
             }
             onOpenSharedAccounts={onOpenSharedAccounts}
-            onOpenSharedProject={onOpenSharedProject}
             onUseTemplate={useTemplate}
             onCreateWorld={() =>
               setWorldEditor({

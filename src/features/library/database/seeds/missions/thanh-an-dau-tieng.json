@@ -1,0 +1,32 @@
+{
+  "id": "m-local-mww4lv4v-101",
+  "name": "Thanh An, Dầu Tiếng",
+  "world": "Blank space",
+  "worldType": "2D",
+  "vehicle": "Mini-Pro",
+  "spawn": {
+    "x": 0,
+    "y": -18
+  },
+  "takeoffAltM": 12,
+  "targetSpeedMS": 2,
+  "returnHomeOnEnd": true,
+  "cameraSafetyCheck": true,
+  "windEnvironment": {
+    "enabled": false,
+    "controlBy": "equivalent-speed",
+    "forceN": 0.5,
+    "speedMS": 6,
+    "azimuthDeg": 270,
+    "elevationDeg": 0
+  },
+  "routes": [],
+  "waypoints": [],
+  "areas": [],
+  "avoids": [],
+  "droneId": "mini-pro-v6",
+  "origin": {
+    "lat": 11.427537015010401,
+    "lng": 106.53005304457749
+  }
+}

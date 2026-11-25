@@ -63,8 +63,10 @@ export default function LibraryTopbar ({
   onNavigate,
   projectName,
   templateName,
+  sharedProjectName,
   onNavigateProjects,
-  onNavigateTemplates
+  onNavigateTemplates,
+  onNavigateShared
 }: {
   runEnvironment: 'local' | 'cloud'
   canUseCloudSIM: boolean
@@ -73,9 +75,28 @@ export default function LibraryTopbar ({
   onNavigate: (section: 'home' | 'download') => void
   projectName: string | null
   templateName: string | null
+  sharedProjectName: string | null
   onNavigateProjects: () => void
   onNavigateTemplates: () => void
+  onNavigateShared: () => void
 }) {
+  const detailName = projectName ?? templateName ?? sharedProjectName
+  const breadcrumbTestId = sharedProjectName
+    ? 'ms-lib-shared-project-breadcrumb'
+    : undefined
+  let parentLabel = 'Shared with me'
+  let parentTestId = 'ms-lib-shared-project-breadcrumb-link'
+  let onNavigateParent = onNavigateShared
+  if (projectName) {
+    parentLabel = 'Projects'
+    parentTestId = 'ms-lib-project-breadcrumb-link'
+    onNavigateParent = onNavigateProjects
+  } else if (templateName) {
+    parentLabel = 'Mission templates'
+    parentTestId = 'ms-lib-template-breadcrumb-link'
+    onNavigateParent = onNavigateTemplates
+  }
+
   const logoMark = (
     <span
       className='inline-flex items-center gap-2'
@@ -98,10 +119,11 @@ export default function LibraryTopbar ({
         data-testid='ms-lib-top'
       >
         <SidebarTrigger className='md:hidden' />
-        {projectName || templateName ? (
+        {detailName ? (
           <Breadcrumb
             className='min-w-0 flex-[1_1_auto] overflow-hidden text-sm'
             aria-label='Breadcrumb'
+            data-testid={breadcrumbTestId}
           >
             <BreadcrumbList className='m-0 min-w-0 list-none flex-nowrap gap-2 p-0 text-inherit'>
               <BreadcrumbItem className='shrink-0'>
@@ -121,22 +143,16 @@ export default function LibraryTopbar ({
                 <BreadcrumbLink
                   render={<button type='button' />}
                   className='rounded-(--radius) p-0.5 text-muted-foreground hover:text-(--foreground) focus-visible:outline-2 focus-visible:outline-(--primary) focus-visible:outline-offset-1 cursor-pointer'
-                  data-testid={
-                    projectName
-                      ? 'ms-lib-project-breadcrumb-link'
-                      : 'ms-lib-template-breadcrumb-link'
-                  }
-                  onClick={
-                    projectName ? onNavigateProjects : onNavigateTemplates
-                  }
+                  data-testid={parentTestId}
+                  onClick={onNavigateParent}
                 >
-                  {projectName ? 'Projects' : 'Mission templates'}
+                  {parentLabel}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className='text-muted-foreground' />
               <BreadcrumbItem className='min-w-0'>
                 <BreadcrumbPage className='block min-w-0 max-w-80 overflow-hidden text-ellipsis whitespace-nowrap font-semibold [@media_(max-width:_73.75rem)]:max-w-45'>
-                  {projectName ?? templateName}
+                  {detailName}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>

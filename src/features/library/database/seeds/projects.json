@@ -18,8 +18,20 @@
         "droneId": "mini-pro-v6"
       },
       {
+        "id": "m-local-mww4lv4v-101",
+        "name": "Thanh An, Dầu Tiếng",
+        "updatedAt": "2026-11-26T00:00:00.000Z",
+        "starred": false,
+        "shared": false,
+        "viewOnly": false,
+        "world": "Blank space",
+        "worldType": "2D",
+        "vehicle": "Mini-Pro",
+        "droneId": "mini-pro-v6"
+      },
+      {
         "id": "m-local-mwv1r10q-101",
-        "name": "Bitexco",
+        "name": "Bitexco Building Flight",
         "updatedAt": "2026-11-24T17:02:00.000Z",
         "starred": false,
         "shared": false,

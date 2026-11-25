@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   FolderSimpleIcon,
   GitMergeIcon,
@@ -15,6 +14,7 @@ import {
 import { SkyTooltip } from "@/ui/components/sky-tooltip";
 import MissionThumbnail from "./mission-thumbnail.tsx";
 import MissionMapThumbnail from "./mission-map-thumbnail.tsx";
+import { CompactTimestamp } from "./compact-timestamp.tsx";
 import type { LibMission } from "@/features/library/database/store";
 import type { SharedMissionFixture } from "@/features/library/workspace/workspace-data.ts";
 import type { MapTileOrigin } from "@/shared/map-tiles";
@@ -173,27 +173,6 @@ function MissionCardOwner({ username }: { username: string }) {
   );
 }
 
-function formatCompactUpdatedAt(value: string | null, now: number): string {
-  if (!value) return "—";
-  const timestamp = Date.parse(value);
-  if (!Number.isFinite(timestamp)) return "—";
-
-  const elapsed = Math.max(0, now - timestamp);
-  if (elapsed < 60_000) return "Now";
-  if (elapsed < 3_600_000) return `${Math.floor(elapsed / 60_000)}m`;
-  if (elapsed < 86_400_000) return `${Math.floor(elapsed / 3_600_000)}h`;
-  if (elapsed < 7 * 86_400_000) return `${Math.floor(elapsed / 86_400_000)}d`;
-
-  return new Intl.DateTimeFormat(undefined, {
-    month: "short",
-    day: "numeric",
-    year:
-      timestamp < new Date(now).setFullYear(new Date(now).getFullYear() - 1)
-        ? "numeric"
-        : undefined,
-  }).format(timestamp);
-}
-
 function MissionCardFooter({
   username,
   updatedAt,
@@ -201,32 +180,10 @@ function MissionCardFooter({
   username: string;
   updatedAt: string | null;
 }) {
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    const interval = window.setInterval(() => setNow(Date.now()), 60_000);
-    return () => window.clearInterval(interval);
-  }, []);
-  const timestamp = updatedAt ? Date.parse(updatedAt) : Number.NaN;
-  const fullDate = Number.isFinite(timestamp)
-    ? new Intl.DateTimeFormat(undefined, {
-        dateStyle: "medium",
-        timeStyle: "short",
-      }).format(timestamp)
-    : "Edit time unavailable";
-
   return (
     <div className="mt-auto flex items-center justify-between gap-2 pt-3">
       <MissionCardOwner username={username} />
-      <time
-        dateTime={
-          Number.isFinite(timestamp) ? (updatedAt ?? undefined) : undefined
-        }
-        aria-label={fullDate}
-        title={fullDate}
-        className="whitespace-nowrap text-right text-sm text-muted-foreground"
-      >
-        {formatCompactUpdatedAt(updatedAt, now)}
-      </time>
+      <CompactTimestamp updatedAt={updatedAt} />
     </div>
   );
 }
