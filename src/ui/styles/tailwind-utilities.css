@@ -5,10 +5,13 @@
 @import "tailwindcss/utilities.css" layer(utilities) source("../../");
 
 @theme inline {
-  --font-heading: 'Host Grotesk Variable', 'Host Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-heading:
+    "Host Grotesk Variable", "Host Grotesk", ui-sans-serif, system-ui,
+    sans-serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono:
-    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -59,6 +62,10 @@
   --animate-ms-login-hover: ms-login-hover 4s ease-in-out infinite;
   --animate-ms-route-fade-in: ms-route-fade-in 160ms ease-out both;
   --animate-ms-route-fade-out: ms-route-fade-out 160ms ease-out both;
+  --animate-ms-update-title-slide-left: ms-update-title-slide-left 420ms
+    cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-ms-update-title-slide-left-loop: ms-update-title-slide-left-loop
+    3.2s cubic-bezier(0.22, 1, 0.36, 1) infinite both;
 
   @keyframes ms-login-hover {
     0%,
@@ -90,8 +97,35 @@
       opacity: 0;
     }
   }
+
+  @keyframes ms-update-title-slide-left {
+    from {
+      opacity: 0;
+      transform: translate3d(1.25rem, 0, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes ms-update-title-slide-left-loop {
+    0%,
+    9% {
+      opacity: 0;
+      transform: translate3d(1.25rem, 0, 0);
+    }
+
+    18%,
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
 }
 
-.cesium-credit-wrapper, .cesium-credit-expand-link {
+.cesium-credit-wrapper,
+.cesium-credit-expand-link {
   display: none !important;
 }

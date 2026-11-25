@@ -1,4 +1,5 @@
 import restartToUpdateScenario from "./scenarios/restart-to-update/definition";
+import restartToUpdateMajorScenario from "./scenarios/restart-to-update-major/definition";
 import cloudSimAccessScenario from "./scenarios/cloud-sim-access/definition";
 import type { DevScenarioDefinition } from "./types";
 
@@ -19,5 +20,6 @@ function registerScenarios(
 
 export const DEV_SCENARIOS = registerScenarios([
   restartToUpdateScenario,
+  restartToUpdateMajorScenario,
   cloudSimAccessScenario,
 ]);

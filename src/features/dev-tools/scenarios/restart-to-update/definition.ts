@@ -5,9 +5,9 @@ import RestartToUpdateAction from "./action";
 
 const restartToUpdateScenario = {
   id: DEV_SCENARIO_IDS.restartToUpdate,
-  name: "Restart to update",
+  name: "Restart to update · Minor",
   description: "Show the restart action in the Library top bar.",
-  keywords: ["update", "restart", "button"],
+  keywords: ["update", "restart", "button", "minor"],
   slot: DEV_SCENARIO_SLOTS.libraryTopbarActions,
   action: RestartToUpdateAction,
 } satisfies DevScenarioDefinition;

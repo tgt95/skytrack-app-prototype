@@ -357,7 +357,7 @@ export function ReconnaissanceSettingsForm({
       </div>
 
       {showFlightPattern ? (
-        <p className="ms-recon-form-help text-muted-foreground text-[0.6875rem]">
+        <p className="ms-recon-form-help text-muted-foreground text-xs">
           For Area scans, Front overlap sets photo spacing and Side overlap sets
           lane spacing using the camera footprint.
         </p>
@@ -381,7 +381,7 @@ export function ReconnaissanceSettingsForm({
           data-testid="ms-recon-form-toggle-copy"
         >
           <span className="ms-recon-form-label">Terrain awareness</span>
-          <span className="ms-recon-form-help text-muted-foreground text-[0.6875rem]">
+          <span className="ms-recon-form-help text-muted-foreground text-sm">
             Adjust the route to follow changes in terrain elevation.
           </span>
         </span>

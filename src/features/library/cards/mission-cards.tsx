@@ -1,4 +1,5 @@
 import {
+  FolderSimpleIcon,
   GitMergeIcon,
   HandIcon,
   ImagesIcon,
@@ -159,7 +160,11 @@ function MissionCardSummary({
 function MissionCardOwner({ username }: { username: string }) {
   return (
     <div className="inline-flex items-center gap-1.5">
-      <Avatar aria-hidden="true" className="size-6" data-testid="ms-lib-card-owner">
+      <Avatar
+        aria-hidden="true"
+        className="size-6"
+        data-testid="ms-lib-card-owner"
+      >
         <AvatarFallback>{getNameInitials(username)}</AvatarFallback>
       </Avatar>
       <span className="text-sm text-muted-foreground">{username}</span>
@@ -241,10 +246,7 @@ function MissionCardCore({
   onToggleStar?: () => void;
   onOpen?: () => void;
 }) {
-  const title =
-    variant === "recent" && projectName
-      ? `${projectName} | ${mission.name}`
-      : mission.name;
+  const title = mission.name;
   const thumbnail =
     mission.worldType === "2D" ? (
       <MissionMapThumbnail
@@ -268,6 +270,15 @@ function MissionCardCore({
           ) : null}
         </div>
         {variant !== "shared" ? <MissionCardSummary mission={mission} /> : null}
+        {variant === "recent" && projectName ? (
+          <div
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground"
+            data-testid="ms-lib-card-project"
+          >
+            <FolderSimpleIcon aria-hidden="true" className="size-4" />
+            <span>{projectName}</span>
+          </div>
+        ) : null}
       </div>
       <MissionCardFooter username={username} editedAgo={mission.editedAgo} />
     </div>
@@ -280,7 +291,10 @@ function MissionCardCore({
         className="ms-lib-card relative flex flex-col w-full p-0 border border-border rounded-(--radius) bg-card text-foreground text-left cursor-pointer overflow-hidden hover:border-primary focus-visible:outline-2 focus-visible:outline-sidebar-ring focus-visible:outline-offset-1 [&.is-readonly]:cursor-default is-readonly"
         aria-label={mission.name}
       >
-        <span className="ms-lib-thumb relative flex items-center justify-center aspect-4/3 overflow-hidden text-muted-foreground bg-background bg-[repeating-linear-gradient(to_right,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem),repeating-linear-gradient(to_bottom,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem)] border-b border-b-border [&.is-template]:bg-none [&.is-project]:bg-none [&.is-project]:bg-(--muted) [&.tint-0]:bg-[color-mix(in_srgb,var(--primary)_26%,var(--card))] [&.tint-2]:bg-(--muted) [&.tint-4]:bg-[color-mix(in_srgb,var(--primary)_10%,var(--card))] [&.tint-5]:bg-[color-mix(in_srgb,var(--primary)_32%,var(--muted))] [&.is-learn]:bg-none [&.is-learn]:text-(--primary) is-mission" aria-hidden="true">
+        <span
+          className="ms-lib-thumb relative flex items-center justify-center aspect-4/3 overflow-hidden text-muted-foreground bg-background bg-[repeating-linear-gradient(to_right,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem),repeating-linear-gradient(to_bottom,color-mix(in_srgb,var(--border)_55%,transparent)_0_0.0625rem,transparent_0_0.0625rem_1.75rem)] border-b border-b-border [&.is-template]:bg-none [&.is-project]:bg-none [&.is-project]:bg-(--muted) [&.tint-0]:bg-[color-mix(in_srgb,var(--primary)_26%,var(--card))] [&.tint-2]:bg-(--muted) [&.tint-4]:bg-[color-mix(in_srgb,var(--primary)_10%,var(--card))] [&.tint-5]:bg-[color-mix(in_srgb,var(--primary)_32%,var(--muted))] [&.is-learn]:bg-none [&.is-learn]:text-(--primary) is-mission"
+          aria-hidden="true"
+        >
           {thumbnail}
           {worldBadge}
         </span>

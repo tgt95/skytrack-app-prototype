@@ -1,16 +1,20 @@
 # Santorini GIS import sample
 
-Small open-data files for trying the Mission Studio map-data importer. Select one vector file and the elevation TIFF together to create a dataset with both map context and terrain.
+Small open-data files for trying the Mission Studio map-data importer. The building files describe objects above the ground; the elevation TIFF describes the ground surface.
 
-## Files
+## Files and roles
 
-- `santorini-buildings.geojson` — six building footprints in WGS 84 GeoJSON.
-- `santorini-buildings.gpkg` — the same six building footprints in GeoPackage.
-- `gedtm30-santorini-window.tif` — 360 × 360 pixel GeoTIFF clip, EPSG:4326, with EGM2008 vertical reference (EPSG:3855), 0.1 scale, and `-2147483648` NoData.
-- `santorini-osm-map.osm` — source OpenStreetMap XML extract for the building footprints.
-- `prepare-import-samples.py` — rebuilds the GeoJSON and GeoPackage from the XML extract.
+- `santorini-buildings.gpkg` — six building footprints in a GeoPackage. Choose this as the vector map file when testing the importer.
+- `santorini-buildings.geojson` — the same six footprints in GeoJSON. This is an alternative to the GeoPackage; choose one vector file, not both.
+- `gedtm30-santorini-window.tif` — a 360 × 360 GeoTIFF elevation clip. Choose this with either vector file to add terrain relief. It uses EPSG:4326 horizontally and EGM2008 vertical reference (EPSG:3855), with 0.1 scale and `-2147483648` NoData.
+- `santorini-osm-map.osm` — the source OpenStreetMap XML extract used to derive the building footprints. It preserves the raw source data; it is not the vector file to select in this import flow.
+- `prepare-import-samples.py` — rebuilds the GeoJSON and GeoPackage from the OSM extract. This is a maintenance script, not an import file.
 
-The Satorini sample mission uses normalized seed records derived from this
+## Import pair
+
+Select either `santorini-buildings.gpkg` or `santorini-buildings.geojson`, together with `gedtm30-santorini-window.tif`. The vector file provides building footprints; the TIFF provides ground elevation. The OSM extract and Python script are for source traceability and rebuilding the vector samples.
+
+The Santorini sample mission uses normalized seed records derived from this
 GeoPackage and GeoTIFF at
 `src/features/library/database/seeds/map-data/`. The source GeoPackage and
 GeoTIFF remain the files to choose when testing the import flow.

@@ -9,6 +9,7 @@ import {
 
 export const DEV_SCENARIO_IDS = {
   restartToUpdate: "restart-to-update",
+  restartToUpdateMajor: "restart-to-update-major",
   cloudSimAccessNotGranted: "cloud-sim-access-not-granted",
 } as const;
 
@@ -39,8 +40,16 @@ export function DevScenarioProvider({
         if (currentIds.has(scenarioId) === isEnabled) return currentIds;
 
         const nextIds = new Set(currentIds);
-        if (isEnabled) nextIds.add(scenarioId);
-        else nextIds.delete(scenarioId);
+        if (isEnabled) {
+          if (scenarioId === DEV_SCENARIO_IDS.restartToUpdate) {
+            nextIds.delete(DEV_SCENARIO_IDS.restartToUpdateMajor);
+          } else if (scenarioId === DEV_SCENARIO_IDS.restartToUpdateMajor) {
+            nextIds.delete(DEV_SCENARIO_IDS.restartToUpdate);
+          }
+          nextIds.add(scenarioId);
+        } else {
+          nextIds.delete(scenarioId);
+        }
         return nextIds;
       });
     },

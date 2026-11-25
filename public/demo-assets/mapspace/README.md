@@ -106,11 +106,12 @@ retrieved 2026-11-23. Credit: © OpenStreetMap contributors,
 No satellite raster is included in these new scenes. Their imagery field only
 indicates that imagery should come from the Mission Studio basemap control.
 
-## 6. Independent GIS import sample
+## 6. Independent GIS import samples
 
 [`data/santorini/`](data/santorini/) contains a raw OpenStreetMap extract,
 derived GeoJSON and GeoPackage building features, and a clipped GEDTM30
-GeoTIFF elevation sample. Use these files to try the Step 2 map/elevation
-import flow. Their sources, licenses, metadata, and limits are documented in
-the subfolder README. This import sample is separate from the seven MapSpace
-scene JSON examples above.
+GeoTIFF elevation sample. [`data/dau-tieng-minh-thanh/`](data/dau-tieng-minh-thanh/)
+contains Microsoft's Vietnam building-footprint tile and a clipped GEDTM30
+GeoTIFF for Minh Thạnh, Dầu Tiếng. Use each folder's README to choose the
+supported files and review source, license, and coverage notes. These import
+samples are separate from the seven MapSpace scene JSON examples above.

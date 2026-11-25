@@ -154,7 +154,7 @@ export default function MissionPreview({
       />
 
       <p
-        className=" m-0 p-3 border border-border rounded-(--radius) bg-(--card) text-sm"
+        className=" m-0 p-3 border border-border rounded-(--radius) bg-card text-sm"
         aria-live="polite"
         data-testid="ms-preview-current-event"
       >
@@ -167,7 +167,7 @@ export default function MissionPreview({
       </p>
 
       <p
-        className=" mt-1 mx-0 mb-0 text-muted-foreground text-xs"
+        className="mt-1 mx-0 mb-0 text-muted-foreground text-sm"
         data-testid="ms-preview-estimate"
       >
         For runnable missions, estimate follows the flight path from Home,
@@ -179,7 +179,7 @@ export default function MissionPreview({
       <div className="flex flex-col gap-2">
         <div className="flex justify-between gap-2">
           <div className="font-medium">Waypoints in flight order</div>
-          <Badge className="rounded-(--radius)"
+          <Badge
             count={`${preview.rows.length} waypoint${preview.rows.length === 1 ? "" : "s"}`}
             status="outline"
           />
