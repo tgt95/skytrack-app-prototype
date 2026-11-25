@@ -68,7 +68,7 @@ export function ProjectsPage ({
       }
     >
       <div
-        className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-5'
+        className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5'
         aria-label={`${workspaceName} Projects`}
       >
         {projects.map(project => (
@@ -168,7 +168,7 @@ export function ProjectDetailPage ({
         </Empty>
       ) : (
         <div
-          className='grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-4 3xl:grid-cols-5'
+          className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5'
           aria-label='Missions in this project'
         >
           {project.missions.map(mission => (
