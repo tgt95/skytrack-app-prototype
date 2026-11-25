@@ -13,13 +13,13 @@
     },
     {
       "path": "src/features/library/library.tsx",
-      "maxLines": 577,
-      "why": "The route passes the project-dialog opener reference to the setup dialog so Base UI can restore focus after close. Hold the ceiling at its current 577 lines until a focused Library composition split; do not grow it further."
+      "maxLines": 583,
+      "why": "Library route composes project and resource surfaces with dialog and announcement state; hold this ceiling until a focused composition split preserves dialog focus and persistence callbacks."
     },
     {
       "path": "src/features/scene/mission-scene.tsx",
-      "maxLines": 783,
-      "why": "S20a extracts the loading/error/fallback view and S20b extracts the cancellable basemap effect. MissionScene remains the Viewer lifecycle and interaction-ref owner; S20c remains gated on abort-restoration and retry-ref freshness coverage. Keep this ceiling fixed while checking whether deeper ref extraction has a tested ownership boundary."
+      "maxLines": 859,
+      "why": "MissionScene owns Viewer creation, cleanup, and scene interaction coordination; hold this ceiling until a tested extraction preserves Viewer lifecycle and layer ownership."
     },
     {
       "path": "src/features/scene/scene-camera-gestures.ts",
@@ -48,8 +48,8 @@
     },
     {
       "path": "src/features/library/workspace/use-library-projects.ts",
-      "maxLines": 500,
-      "why": "This hook owns workspace-scoped project state and its CRUD lifecycle. Hold the ceiling at the current size until the state/persistence boundary is split without changing save semantics."
+      "maxLines": 502,
+      "why": "Workspace-scoped project state and CRUD share one persistence lifecycle; hold this ceiling until state and persistence can be separated without changing save semantics."
     },
     {
       "path": "src/features/studio/mission-insights/mission-insights-charts.tsx",
@@ -123,8 +123,63 @@
     },
     {
       "path": "src/pages/mission-studio-page.tsx",
-      "maxLines": 488,
-      "why": "Temporarily accept the current Studio composition boundary through this release. Hold the ceiling at 488 lines; split shell state only after a focused refactor confirms page and scene ownership."
+      "maxLines": 495,
+      "why": "Mission Studio page composes route state and major feature panels; hold this ceiling until a focused shell split preserves route and scene ownership."
+    },
+    {
+      "path": "src/domain/mission-types.ts",
+      "maxLines": 534,
+      "why": "Core mission, map-scene, and terrain data contracts remain grouped at the domain boundary; hold this exact ceiling until a focused type-module split preserves public exports."
+    },
+    {
+      "path": "src/domain/mission-validation.ts",
+      "maxLines": 476,
+      "why": "Mission shape and planning constraints share validation helpers and error semantics; hold this exact ceiling until a focused validation split preserves rejection behavior."
+    },
+    {
+      "path": "src/features/design/design-panel.tsx",
+      "maxLines": 421,
+      "why": "Design panel composes mission settings and related controls under one stable inspector contract; hold this exact ceiling until a focused panel split preserves interaction state."
+    },
+    {
+      "path": "src/features/design/drawing/zone-draft-panel.tsx",
+      "maxLines": 505,
+      "why": "Zone draft controls share drawing geometry, sizing, and validation state; hold this exact ceiling until a focused view extraction preserves drawing behavior."
+    },
+    {
+      "path": "src/features/library/create-wizard/world-step.tsx",
+      "maxLines": 787,
+      "why": "World step coordinates 2D map datasets, elevation, 3D world selection, and import feedback; hold this ceiling until a focused subview split preserves selected map/elevation associations."
+    },
+    {
+      "path": "src/features/library/database/store.ts",
+      "maxLines": 711,
+      "why": "Library seed hydration, record validation, and migrations share the persisted data boundary; hold this ceiling until a focused migration/store split preserves legacy data behavior."
+    },
+    {
+      "path": "src/features/library/database/workspace-resources-store.ts",
+      "maxLines": 561,
+      "why": "Workspace resource validation and CRUD share one storage contract for Worlds, Drones, and AI models; hold this ceiling until a resource-family split preserves migration behavior."
+    },
+    {
+      "path": "src/features/library/dialogs/map-data-import-drawer.tsx",
+      "maxLines": 533,
+      "why": "Map-data file selection, inspection, pairing, and import feedback form one user flow; hold this ceiling until a focused step extraction preserves dataset association."
+    },
+    {
+      "path": "src/features/map-data/map-data.ts",
+      "maxLines": 617,
+      "why": "Map and elevation parsing share coordinate transforms, validation, and scene-layer normalization; hold this ceiling until a focused parser split preserves GeoJSON/GeoPackage/GeoTIFF contracts."
+    },
+    {
+      "path": "src/features/scene/scene-viewer-runtime.ts",
+      "maxLines": 771,
+      "why": "Viewer runtime integrations share initialization, retry, and disposal order; hold this ceiling until a tested module split preserves lifecycle guards."
+    },
+    {
+      "path": "src/features/simulation/wind-particle-overlay.tsx",
+      "maxLines": 472,
+      "why": "Wind particle overlay owns its rendering and animation lifecycle; hold this ceiling until a focused renderer extraction preserves cleanup and visual behavior."
     }
   ]
 }

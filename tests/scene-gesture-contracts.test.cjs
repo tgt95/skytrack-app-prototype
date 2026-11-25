@@ -541,6 +541,7 @@ function createHarness (options = {}) {
       isMounted: () => true,
       dragState,
       canvasPositionFromClient: (clientX, clientY) => cartesian2At(clientX, clientY),
+      toolRef: state.toolRef,
       missionRef: state.missionRef,
       reducedRef: { current: true },
       gestureModeRef: { current: 'none' },

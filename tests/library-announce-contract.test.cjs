@@ -149,7 +149,7 @@ test("Library source has one status region and keeps account flow feedback", () 
     "create-wizard/world-step.tsx",
   );
   const worldStepSource = fs.readFileSync(worldStepPath, "utf8");
-  assert.equal(jsxStatusElements(worldStepPath).length, 2);
+  assert.equal(jsxStatusElements(worldStepPath).length, 6);
   assert.match(
     worldStepSource,
     /importingWorld \? \([\s\S]*?<FieldDescription role=["']status["']>/,
@@ -157,6 +157,22 @@ test("Library source has one status region and keeps account flow feedback", () 
   assert.match(
     worldStepSource,
     /worldImportMessage \? \([\s\S]*?<FieldDescription role=["']status["']>/,
+  );
+  assert.match(
+    worldStepSource,
+    /loadingMapDataset \? \([\s\S]*?<FieldDescription role=["']status["']>/,
+  );
+  assert.match(
+    worldStepSource,
+    /mapSceneLayer \? \([\s\S]*?<FieldDescription role=["']status["']>/,
+  );
+  assert.match(
+    worldStepSource,
+    /selectedDatasetTerrain \? \([\s\S]*?<FieldDescription role=["']status["']>/,
+  );
+  assert.match(
+    worldStepSource,
+    /terrainLayer \? \([\s\S]*?role=["']status["'][\s\S]*?aria-label="Elevation data preview"/,
   );
 
   const librarySource = fs.readFileSync(
