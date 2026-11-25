@@ -34,8 +34,8 @@ const simulationReports: SimulationReport[] = [
   {
     id: "sim_leeville_pike_flight_2",
     missionId: "m-local-mwgqzezc-101",
-    runName: "Sim run - Leeville Pike Flight 2",
-    project: "Leeville Pike Flight 2",
+    runName: "Sim run - Leeville Pike Flight",
+    project: "Leeville Pike Flight",
     world: "Leeville Pike roof assessment",
     type: "Simulation",
     status: "Succeeded",

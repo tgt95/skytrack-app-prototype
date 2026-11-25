@@ -37,7 +37,7 @@ export function WorldPreviewDialog({
       <DialogPortal>
         <DialogBackdrop />
         <DialogPopup
-          className="ms-world-preview-dialog flex w-[min(96vw,68rem)] max-w-none max-h-[min(92dvh,52rem)] flex-col overflow-hidden"
+          className="ms-world-preview-dialog flex w-[min(calc(100vw-1rem),80rem)] max-w-none sm:max-w-[80rem] max-h-[min(92dvh,52rem)] flex-col overflow-hidden"
           aria-label={`Preview ${world.name}`}
         >
           <DialogHeader>
@@ -46,7 +46,7 @@ export function WorldPreviewDialog({
               {`3D reconstruction${world.location ? ` · ${world.location}` : ""}`}
             </DialogDescription>
           </DialogHeader>
-          <div className="ms-world-preview-layout grid min-h-0 grid-cols-[minmax(0,1fr)_minmax(12rem,15rem)] gap-4 overflow-y-auto [@media_(max-width:_48rem)]:grid-cols-1">
+          <div className="ms-world-preview-layout grid min-h-0 grid-cols-[minmax(0,1fr)_15rem] gap-4 overflow-y-auto [@media_(max-width:_48rem)]:grid-cols-1">
             <div className="grid min-w-0 content-start gap-4">
               {world.glbAssetId ? (
                 <WorldModelViewer
@@ -61,9 +61,9 @@ export function WorldPreviewDialog({
               ) : null}
             </div>
             <aside className="ms-world-preview-details min-w-0 border-l border-border pl-4 [@media_(max-width:_48rem)]:border-l-0 [@media_(max-width:_48rem)]:border-t [@media_(max-width:_48rem)]:border-border [@media_(max-width:_48rem)]:pt-3 [@media_(max-width:_48rem)]:pl-0">
-              <h2 className="heading m-0 text-sm font-semibold">
+              <div className="h6">
                 World details
-              </h2>
+              </div>
               <dl className="ms-world-preview-meta mt-3 mb-0 grid gap-3 [&_div]:min-w-0 [&_dt]:text-xs [&_dt]:text-muted-foreground [&_dd]:mt-0.5 [&_dd]:mb-0 [&_dd]:break-words [&_dd]:text-sm [&_dd]:text-foreground">
                 <div>
                   <dt>Location</dt>

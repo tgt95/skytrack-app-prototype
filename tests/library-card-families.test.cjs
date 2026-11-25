@@ -54,7 +54,7 @@ function missionCard(missionData, worldType = "2D") {
   return {
     id: "card-mission",
     name: "Card mission",
-    editedAgo: "Edited 2 hours ago",
+    updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
     starred: true,
     shared: false,
     viewOnly: false,
@@ -203,7 +203,7 @@ test("Recent and Shared mission variants retain titles, read-only state, and fal
   assert.match(recent, /Coastal mapping \| Card mission/);
   assert.doesNotMatch(recent, /data-testid="ms-lib-card-summary"/);
   assert.match(recent, /data-testid="ms-lib-card-owner"/);
-  assert.match(recent, /2h ago/);
+  assert.match(recent, /2h/);
 
   const shared = renderToStaticMarkup(
     React.createElement(missionCards.SharedMissionCard, {
@@ -212,7 +212,7 @@ test("Recent and Shared mission variants retain titles, read-only state, and fal
         name: "Harbor orthomosaic",
         worldType: "2D",
         world: "Blank space",
-        editedAgo: "Edited yesterday",
+        updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
       },
       ownerName: "Maya Nguyen",
     }),

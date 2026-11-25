@@ -5,22 +5,9 @@
     "workspaceId": "tuan-workspace",
     "missions": [
       {
-        "id": "m-local-mvrqcly0-101",
-        "name": "Leeville Pike Flight",
-        "editedAgo": "Edited just now",
-        "starred": false,
-        "shared": false,
-        "viewOnly": false,
-        "world": "Leeville Pike roof assessment",
-        "worldType": "3D",
-        "worldId": "sample-world-tuan-workspace-leeville-pike-roof-assessment",
-        "vehicle": "Mini-Pro",
-        "droneId": "mini-pro-v6"
-      },
-      {
         "id": "m-local-mwgqzezc-101",
-        "name": "Leeville Pike Flight 2",
-        "editedAgo": "Edited just now",
+        "name": "Leeville Pike Flight",
+        "updatedAt": "2026-11-25T15:02:00.000Z",
         "starred": false,
         "shared": false,
         "viewOnly": false,
@@ -33,7 +20,7 @@
       {
         "id": "m-local-mwv1r10q-101",
         "name": "Bitexco",
-        "editedAgo": "",
+        "updatedAt": "2026-11-24T17:02:00.000Z",
         "starred": false,
         "shared": false,
         "viewOnly": false,
@@ -53,7 +40,7 @@
       {
         "id": "m-local-mv909q3g-101",
         "name": "Satorini Island Reconnaissance flight",
-        "editedAgo": "",
+        "updatedAt": "2026-11-22T17:02:00.000Z",
         "starred": false,
         "shared": false,
         "viewOnly": false,

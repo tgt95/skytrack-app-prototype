@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   FolderSimpleIcon,
   GitMergeIcon,
@@ -36,7 +37,7 @@ import {
 interface MissionCardRecord {
   id: string;
   name: string;
-  editedAgo: string;
+  updatedAt: string | null;
   worldType?: "2D" | "3D";
   world?: string;
   worldId?: string;
@@ -172,42 +173,60 @@ function MissionCardOwner({ username }: { username: string }) {
   );
 }
 
-function formatCompactEditedAgo(value: string): string {
-  const normalized = value.trim().replace(/^Edited\s+/u, "");
-  if (/^just now$/iu.test(normalized)) return "Now";
-  if (/^yesterday$/iu.test(normalized)) return "1d ago";
+function formatCompactUpdatedAt(value: string | null, now: number): string {
+  if (!value) return "—";
+  const timestamp = Date.parse(value);
+  if (!Number.isFinite(timestamp)) return "—";
 
-  const match = normalized.match(/^(\d+)\s+(minute|hour|day)s?\s+ago$/iu);
-  if (!match) return normalized;
+  const elapsed = Math.max(0, now - timestamp);
+  if (elapsed < 60_000) return "Now";
+  if (elapsed < 3_600_000) return `${Math.floor(elapsed / 60_000)}m`;
+  if (elapsed < 86_400_000) return `${Math.floor(elapsed / 3_600_000)}h`;
+  if (elapsed < 7 * 86_400_000) return `${Math.floor(elapsed / 86_400_000)}d`;
 
-  const [, amount, unit] = match;
-  const suffix = unit.toLowerCase().startsWith("minute")
-    ? "m"
-    : unit.toLowerCase().startsWith("hour")
-      ? "h"
-      : "d";
-  return `${amount}${suffix} ago`;
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric",
+    year:
+      timestamp < new Date(now).setFullYear(new Date(now).getFullYear() - 1)
+        ? "numeric"
+        : undefined,
+  }).format(timestamp);
 }
 
 function MissionCardFooter({
   username,
-  editedAgo,
+  updatedAt,
 }: {
   username: string;
-  editedAgo: string;
+  updatedAt: string | null;
 }) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const interval = window.setInterval(() => setNow(Date.now()), 60_000);
+    return () => window.clearInterval(interval);
+  }, []);
+  const timestamp = updatedAt ? Date.parse(updatedAt) : Number.NaN;
+  const fullDate = Number.isFinite(timestamp)
+    ? new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(timestamp)
+    : "Edit time unavailable";
+
   return (
     <div className="mt-auto flex items-center justify-between gap-2 pt-3">
       <MissionCardOwner username={username} />
-      {editedAgo ? (
-        <time
-          aria-label={editedAgo}
-          title={editedAgo}
-          className="whitespace-nowrap text-right text-sm text-muted-foreground"
-        >
-          {formatCompactEditedAgo(editedAgo)}
-        </time>
-      ) : null}
+      <time
+        dateTime={
+          Number.isFinite(timestamp) ? (updatedAt ?? undefined) : undefined
+        }
+        aria-label={fullDate}
+        title={fullDate}
+        className="whitespace-nowrap text-right text-sm text-muted-foreground"
+      >
+        {formatCompactUpdatedAt(updatedAt, now)}
+      </time>
     </div>
   );
 }
@@ -230,21 +249,25 @@ function MissionCardCore({
   mission,
   username,
   projectName,
+  projectHref,
   worldAssetId,
   testId,
   actions = [],
   onToggleStar,
   onOpen,
+  onOpenProject,
 }: {
   variant: MissionCardVariant;
   mission: MissionCardRecord;
   username: string;
   projectName?: string;
+  projectHref?: string;
   worldAssetId?: string;
   testId?: string;
   actions?: LibraryCardAction[];
   onToggleStar?: () => void;
   onOpen?: () => void;
+  onOpenProject?: () => void;
 }) {
   const title = mission.name;
   const thumbnail =
@@ -271,16 +294,32 @@ function MissionCardCore({
         </div>
         {variant !== "shared" ? <MissionCardSummary mission={mission} /> : null}
         {variant === "recent" && projectName ? (
-          <div
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground"
+          <a
+            href={projectHref}
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground hover:underline"
             data-testid="ms-lib-card-project"
+            aria-label={`Open project ${projectName}`}
+            onClick={(event) => {
+              event.stopPropagation();
+              if (
+                event.metaKey ||
+                event.ctrlKey ||
+                event.shiftKey ||
+                event.altKey ||
+                event.button !== 0
+              ) {
+                return;
+              }
+              event.preventDefault();
+              onOpenProject?.();
+            }}
           >
             <FolderSimpleIcon aria-hidden="true" className="size-4" />
-            <span>{projectName}</span>
-          </div>
+            {projectName}
+          </a>
         ) : null}
       </div>
-      <MissionCardFooter username={username} editedAgo={mission.editedAgo} />
+      <MissionCardFooter username={username} updatedAt={mission.updatedAt} />
     </div>
   );
 
@@ -363,6 +402,7 @@ export function MissionCard({
 
 export function RecentMissionCard({
   projectName,
+  projectHref,
   mission,
   worldAssetId,
   username,
@@ -370,8 +410,10 @@ export function RecentMissionCard({
   actions,
   onToggleStar,
   onOpen,
+  onOpenProject,
 }: {
   projectName: string;
+  projectHref: string;
   mission: LibMission;
   worldAssetId?: string;
   username: string;
@@ -379,6 +421,7 @@ export function RecentMissionCard({
   actions: LibraryCardAction[];
   onToggleStar?: () => void;
   onOpen: () => void;
+  onOpenProject: () => void;
 }) {
   return (
     <MissionCardCore
@@ -387,10 +430,12 @@ export function RecentMissionCard({
       worldAssetId={worldAssetId}
       username={username}
       projectName={projectName}
+      projectHref={projectHref}
       testId={testId}
       actions={actions}
       onToggleStar={onToggleStar}
       onOpen={onOpen}
+      onOpenProject={onOpenProject}
     />
   );
 }

@@ -15,7 +15,7 @@ export const STORAGE_KEYS = {
 
 export const STORAGE_VERSIONS = {
   missionDesignPreferences: 1,
-  libraryDatabase: 1,
+  libraryDatabase: 2,
   droneProfiles: 2,
   legacyDroneProfiles: 1,
   workspaceResources: 2

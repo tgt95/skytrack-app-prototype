@@ -247,17 +247,7 @@ export default function LibraryMainContent({
           onDelete={onDeleteDrone}
         />
       ) : section === "starred" ? (
-        <StarredPage
-          missions={starredMissions}
-          renderMission={(entry, testId) =>
-            renderMissionCard(
-              entry.projectId,
-              entry.project,
-              entry.mission,
-              testId,
-            )
-          }
-        />
+        <StarredPage missions={starredMissions} renderMission={renderRecent} />
       ) : section === "shared" ? (
         <SharedWithMePage
           projects={sharedProjects}

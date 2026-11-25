@@ -59,7 +59,7 @@ test('mission snapshots reject malformed roots, coordinate arrays, and actions',
 test('Library load accepts legacy metadata and rejects invalid metadata and DB versions', () => {
   const { DB_KEY, DB_VERSION, loadProjects } = require('../src/features/library/database/store.ts')
   const legacy = {
-    version: DB_VERSION,
+    version: 1,
     projects: [{ id: 'legacy-project', name: 'Legacy project', missions: [{
       id: 'legacy-mission', name: 'Legacy mission', editedAgo: 'Yesterday',
       starred: false, shared: false, viewOnly: false,
@@ -73,6 +73,7 @@ test('Library load accepts legacy metadata and rejects invalid metadata and DB v
     assert.equal(loaded[0].workspaceId, 'tuan-workspace')
     assert.equal(loaded[0].missions[0].world, 'Blank space')
     assert.equal(loaded[0].missions[0].vehicle, 'Legacy drone')
+      assert.equal(loaded[0].missions[0].updatedAt, null)
   })
 
   const invalid = structuredClone(legacy)

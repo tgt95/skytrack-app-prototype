@@ -14,13 +14,13 @@ const previewDir = path.join(
   "../src/features/library/database/worlds/previews",
 );
 
-test("p1 seeds the restorable Leeville Pike stakeholder mission", () => {
+test("p1 seeds the restorable Leeville Pike mission", () => {
   const project = projects.find((item) => item.id === "p1");
   assert.ok(project, "the p1 project seed exists");
   assert.equal(project.name, "Tuan's project");
 
   const missionRecord = project.missions.find(
-    (item) => item.id === "m-local-mvrqcly0-101",
+    (item) => item.id === "m-local-mwgqzezc-101",
   );
   assert.ok(missionRecord, "the Leeville Pike mission record exists");
   const mission = missionFromSnapshot(JSON.stringify(leevilleMission));
@@ -30,7 +30,7 @@ test("p1 seeds the restorable Leeville Pike stakeholder mission", () => {
   assert.equal(mission.waypoints.length, 26);
   assert.equal(mission.areas.length, 2);
   assert.equal(mission.avoids.length, 1);
-  assert.equal(mission.aiWorkflows.length, 1);
+  assert.equal(mission.aiWorkflows.length, 2);
   assert.equal(
     resolveMissionWorldAssetId(mission, [
       {

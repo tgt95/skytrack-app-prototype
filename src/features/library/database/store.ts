@@ -11,7 +11,6 @@
 
 import projectsSeed from "./seeds/projects.json";
 import leevilleMissionSeed from "./seeds/missions/leeville-pike-flight.json";
-import leevilleFlight2MissionSeed from "./seeds/missions/leeville-pike-flight-2.json";
 import satoriniMissionSeed from "./seeds/missions/satorini-island-reconnaissance.json";
 import bitexcoMissionSeed from "./seeds/missions/bitexco-reconnaissance.json";
 import santoriniMapSceneSeed from "./seeds/map-data/santorini-map-scene.json";
@@ -31,7 +30,7 @@ import type {
 export interface LibMission {
   id: string;
   name: string;
-  editedAgo: string;
+  updatedAt: string | null;
   starred: boolean;
   shared: boolean;
   viewOnly: boolean;
@@ -69,7 +68,6 @@ export interface LibTemplate {
 
 export const DB_KEY = STORAGE_KEYS.libraryDatabase;
 export const DB_VERSION = STORAGE_VERSIONS.libraryDatabase;
-export const STAKEHOLDER_DEMO_MISSION_ID = "m-local-mvrqcly0-101";
 export const SATORINI_SAMPLE_MISSION_ID = "m-local-mv909q3g-101";
 export const BITEXCO_SAMPLE_MISSION_ID = "m-local-mwv1r10q-101";
 const SAMPLE_SHARED_USERS = ["alex.chen@example.com", "sam.rivera@example.com"];
@@ -79,14 +77,22 @@ interface DatabaseShape {
   projects: LibProject[];
 }
 
-function isMission(value: unknown): value is LibMission {
-  const m = value as Partial<LibMission>;
+type LegacyLibMission = Omit<LibMission, "updatedAt"> & { editedAgo: string };
+type LegacyLibProject = Omit<LibProject, "missions"> & {
+  missions: LegacyLibMission[];
+};
+
+interface LegacyDatabaseShape {
+  version: 1;
+  projects: LegacyLibProject[];
+}
+
+function isMissionFields(value: unknown): value is Record<string, unknown> {
+  if (!isRecord(value)) return false;
+  const m = value;
   return (
-    typeof m === "object" &&
-    m !== null &&
     typeof m.id === "string" &&
     typeof m.name === "string" &&
-    typeof m.editedAgo === "string" &&
     typeof m.starred === "boolean" &&
     typeof m.shared === "boolean" &&
     typeof m.viewOnly === "boolean" &&
@@ -108,19 +114,35 @@ function isMission(value: unknown): value is LibMission {
     (m.worldId === undefined ||
       (typeof m.worldId === "string" && m.worldId.length <= 128)) &&
     (m.basemapStyle === undefined ||
-      [
-        "satellite",
-        "openstreetmap",
-        "basic",
-        "light",
-        "dark",
-        "daybreak",
-        "overcast",
-      ].includes(m.basemapStyle)) &&
+      (typeof m.basemapStyle === "string" &&
+        [
+          "satellite",
+          "openstreetmap",
+          "basic",
+          "light",
+          "dark",
+          "daybreak",
+          "overcast",
+        ].includes(m.basemapStyle))) &&
     (m.missionData === undefined || typeof m.missionData === "string") &&
     (m.terrainLayer === undefined || isMissionTerrainLayer(m.terrainLayer)) &&
     (m.mapSceneLayer === undefined || isMissionMapSceneLayer(m.mapSceneLayer))
   );
+}
+
+function isValidTimestamp(value: unknown): value is string {
+  return typeof value === "string" && Number.isFinite(Date.parse(value));
+}
+
+function isMission(value: unknown): value is LibMission {
+  return (
+    isMissionFields(value) &&
+    (value.updatedAt === null || isValidTimestamp(value.updatedAt))
+  );
+}
+
+function isLegacyMission(value: unknown): value is LegacyLibMission {
+  return isMissionFields(value) && typeof value.editedAgo === "string";
 }
 
 function isMissionMapSceneLayer(value: unknown): value is MissionMapSceneLayer {
@@ -287,6 +309,40 @@ function isDatabase(value: unknown): value is DatabaseShape {
   );
 }
 
+function isLegacyProject(value: unknown): value is LegacyLibProject {
+  const project = value as Partial<LegacyLibProject>;
+  return (
+    typeof project === "object" &&
+    project !== null &&
+    typeof project.id === "string" &&
+    typeof project.name === "string" &&
+    (project.workspaceId === undefined ||
+      typeof project.workspaceId === "string") &&
+    Array.isArray(project.missions) &&
+    project.missions.every(isLegacyMission)
+  );
+}
+
+function isLegacyDatabase(value: unknown): value is LegacyDatabaseShape {
+  return (
+    isRecord(value) &&
+    value.version === 1 &&
+    Array.isArray(value.projects) &&
+    value.projects.every(isLegacyProject)
+  );
+}
+
+function migrateLegacyProjects(projects: LegacyLibProject[]): LibProject[] {
+  return projects.map((project) => ({
+    ...project,
+    missions: project.missions.map((legacyMission) => {
+      const { editedAgo, ...mission } = legacyMission;
+      void editedAgo;
+      return { ...mission, updatedAt: null };
+    }),
+  }));
+}
+
 function parseSnapshotMetadata(
   raw: string | undefined,
 ): Record<string, unknown> | null {
@@ -305,30 +361,28 @@ function seedProjects(): LibProject[] {
   return (projectsSeed as LibProject[]).map((project) => ({
     ...project,
     missions: project.missions.map((mission) =>
-      mission.id === STAKEHOLDER_DEMO_MISSION_ID
-        ? { ...mission, missionData: JSON.stringify(leevilleMissionSeed) }
-        : mission.id === "m-local-mwgqzezc-101"
+      mission.id === "m-local-mwgqzezc-101"
+        ? {
+            ...mission,
+            missionData: JSON.stringify(leevilleMissionSeed),
+          }
+        : mission.id === SATORINI_SAMPLE_MISSION_ID
           ? {
               ...mission,
-              missionData: JSON.stringify(leevilleFlight2MissionSeed),
+              missionData: JSON.stringify(satoriniMissionSeed),
+              mapSceneLayer:
+                santoriniMapSceneSeed as unknown as MissionMapSceneLayer,
+              terrainLayer: santoriniTerrainSeed as MissionTerrainLayer,
             }
-          : mission.id === SATORINI_SAMPLE_MISSION_ID
+          : mission.id === BITEXCO_SAMPLE_MISSION_ID
             ? {
                 ...mission,
-                missionData: JSON.stringify(satoriniMissionSeed),
+                missionData: JSON.stringify(bitexcoMissionSeed),
                 mapSceneLayer:
-                  santoriniMapSceneSeed as unknown as MissionMapSceneLayer,
-                terrainLayer: santoriniTerrainSeed as MissionTerrainLayer,
+                  bitexcoMapSceneSeed as unknown as MissionMapSceneLayer,
+                terrainLayer: bitexcoTerrainSeed as MissionTerrainLayer,
               }
-            : mission.id === BITEXCO_SAMPLE_MISSION_ID
-              ? {
-                  ...mission,
-                  missionData: JSON.stringify(bitexcoMissionSeed),
-                  mapSceneLayer:
-                    bitexcoMapSceneSeed as unknown as MissionMapSceneLayer,
-                  terrainLayer: bitexcoTerrainSeed as MissionTerrainLayer,
-                }
-              : mission,
+            : mission,
     ),
   }));
 }
@@ -399,7 +453,7 @@ function alignSatoriniSeedMission(projects: LibProject[]): LibProject[] {
   }
 }
 
-function ensureLeevilleFlight2Mission(projects: LibProject[]): LibProject[] {
+function ensureLeevilleMission(projects: LibProject[]): LibProject[] {
   const seedProject = seedProjects().find((project) =>
     project.missions.some((mission) => mission.id === "m-local-mwgqzezc-101"),
   );
@@ -546,13 +600,15 @@ function normalizeProjects(projects: LibProject[]): LibProject[] {
         },
         {},
       );
+      const cleanMission = { ...mission } as LibMission & {
+        editedAgo?: string;
+      };
+      delete cleanMission.editedAgo;
       return {
-        ...mission,
-        editedAgo:
-          mission.id === SATORINI_SAMPLE_MISSION_ID &&
-          mission.editedAgo === "Sample mission"
-            ? ""
-            : mission.editedAgo,
+        ...cleanMission,
+        updatedAt: isValidTimestamp(mission.updatedAt)
+          ? mission.updatedAt
+          : null,
         shared:
           mission.sharedWith === undefined
             ? mission.shared || sharedWith.length > 0
@@ -579,16 +635,16 @@ export function loadProjects(): LibProject[] {
     const raw = localStorage.getItem(DB_KEY);
     if (raw) {
       const parsed: unknown = JSON.parse(raw) as unknown;
-      if (isDatabase(parsed)) {
-        return alignSatoriniSeedMission(
-          ensureLeevilleFlight2Mission(
+      if (isDatabase(parsed) || isLegacyDatabase(parsed)) {
+        const migrated = isLegacyDatabase(parsed);
+        const sourceProjects = migrated
+          ? migrateLegacyProjects(parsed.projects)
+          : parsed.projects;
+        const hydratedProjects = alignSatoriniSeedMission(
+          ensureLeevilleMission(
             ensureSeededMission(
               ensureSeededMission(
-                ensureSeededMission(
-                  normalizeProjects(parsed.projects),
-                  seedProjects(),
-                  STAKEHOLDER_DEMO_MISSION_ID,
-                ),
+                normalizeProjects(sourceProjects),
                 seedProjects(),
                 SATORINI_SAMPLE_MISSION_ID,
               ),
@@ -597,6 +653,8 @@ export function loadProjects(): LibProject[] {
             ),
           ),
         );
+        if (migrated) saveProjects(hydratedProjects);
+        return hydratedProjects;
       }
     }
   } catch {
@@ -657,7 +715,7 @@ export function saveMissionSnapshot(
         ...mission,
         ...metadata,
         missionData,
-        editedAgo: "Edited just now",
+        updatedAt: new Date().toISOString(),
       };
     }),
   }));

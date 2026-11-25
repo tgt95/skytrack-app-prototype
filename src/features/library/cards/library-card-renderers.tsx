@@ -1,5 +1,9 @@
 import { type ReactNode } from "react";
-import type { LibMission, LibProject, LibTemplate } from "@/features/library/database/store";
+import type {
+  LibMission,
+  LibProject,
+  LibTemplate,
+} from "@/features/library/database/store";
 import type { WorkspaceWorldRecord } from "@/features/library/database/workspace-resources-store";
 import {
   MissionCard,
@@ -15,6 +19,7 @@ import {
 } from "./library-cards.tsx";
 import { type LibraryCardAction } from "./library-presentation.tsx";
 import { resolveMissionWorldAssetId } from "./mission-world-asset.ts";
+import { missionStudioRoutePath } from "@/features/library/router";
 
 interface LibraryCardRenderersOptions {
   username: string;
@@ -215,6 +220,10 @@ export function useLibraryCardRenderers({
   ): ReactNode => (
     <RecentMissionCard
       projectName={projectName}
+      projectHref={missionStudioRoutePath(
+        { kind: "library", section: "projects", projectId },
+        import.meta.env.BASE_URL,
+      )}
       mission={mission}
       worldAssetId={worldAssetForMission(mission)}
       username={username}
@@ -224,6 +233,7 @@ export function useLibraryCardRenderers({
         mission.viewOnly ? undefined : () => toggleStar(projectId, mission.id)
       }
       onOpen={() => openMission(projectId, projectName, mission.id)}
+      onOpenProject={() => openProject(projectId)}
     />
   );
 

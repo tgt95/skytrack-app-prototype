@@ -324,7 +324,7 @@ export function sampleForRun(
       vehicle: "Mini-Pro",
       source: "SkyTrack Mission Studio",
       missionLogicFile: "mission.json",
-      missionLogicDescription: "Simulated from Leeville Pike Flight 2",
+      missionLogicDescription: "Simulated from Leeville Pike Flight",
       outcomeTitle: "Mission completed",
       outcome: "All 26 waypoints reached · landed at pad",
       evidenceCompleteness: {

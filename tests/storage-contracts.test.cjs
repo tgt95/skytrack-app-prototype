@@ -20,7 +20,7 @@ test("browser storage keys and versioned payloads remain explicit compatibility 
   });
   assert.deepEqual(STORAGE_VERSIONS, {
     missionDesignPreferences: 1,
-    libraryDatabase: 1,
+    libraryDatabase: 2,
     droneProfiles: 2,
     legacyDroneProfiles: 1,
     workspaceResources: 2,
@@ -68,7 +68,7 @@ test("versioned stores and preference/workspace records round-trip through their
     const mission = {
       id: "guardrail-mission",
       name: "Contract mission",
-      editedAgo: "Just now",
+      updatedAt: "2026-11-26T00:00:00.000Z",
       starred: false,
       shared: false,
       viewOnly: false,

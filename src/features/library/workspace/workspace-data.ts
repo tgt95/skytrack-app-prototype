@@ -28,7 +28,7 @@ export interface SharedMissionFixture {
   name: string
   worldType: '2D' | '3D'
   world: string
-  editedAgo: string
+  updatedAt: string
 }
 
 export interface SharedProjectFixture {
@@ -81,7 +81,7 @@ export const SHARED_PROJECTS: SharedProjectFixture[] = [
     workspace: 'Coastal survey',
     sharedAgo: 'Shared yesterday',
     missions: [
-      { id: 'harbor-orthomosaic', name: 'Harbor orthomosaic', worldType: '2D', world: 'Blank space', editedAgo: 'Edited 2 hours ago' }
+      { id: 'harbor-orthomosaic', name: 'Harbor orthomosaic', worldType: '2D', world: 'Blank space', updatedAt: '2026-11-25T15:02:00.000Z' }
     ]
   },
   {
@@ -92,7 +92,7 @@ export const SHARED_PROJECTS: SharedProjectFixture[] = [
     workspace: 'Engineering operations',
     sharedAgo: 'Shared 3 days ago',
     missions: [
-      { id: 'north-bridge-model', name: 'North bridge model', worldType: '3D', world: 'North bridge world', editedAgo: 'Edited yesterday' }
+      { id: 'north-bridge-model', name: 'North bridge model', worldType: '3D', world: 'North bridge world', updatedAt: '2026-11-24T17:02:00.000Z' }
     ]
   }
 ]

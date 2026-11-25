@@ -153,7 +153,7 @@ export function AIModelsPage({
               <TabsTab value="members">
                 Members ({workspaceModels.length})
               </TabsTab>
-              <TabsTab value="me">My models ({uploadedModels.length})</TabsTab>
+              <TabsTab value="me">Me ({uploadedModels.length})</TabsTab>
             </TabsList>
           </PageHeader>
         }

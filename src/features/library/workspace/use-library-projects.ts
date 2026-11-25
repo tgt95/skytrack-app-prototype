@@ -198,7 +198,11 @@ export function useLibraryProjects({
               ...project,
               missions: project.missions.map((mission) =>
                 mission.id === missionDlg.missionId
-                  ? { ...mission, name: title }
+                  ? {
+                      ...mission,
+                      name: title,
+                      updatedAt: new Date().toISOString(),
+                    }
                   : mission,
               ),
             },
@@ -291,7 +295,7 @@ export function useLibraryProjects({
         copyId,
         copyName,
       ),
-      editedAgo: "Edited just now",
+      updatedAt: new Date().toISOString(),
       starred: false,
       shared: false,
     };
@@ -313,7 +317,7 @@ export function useLibraryProjects({
     const fresh: LibMission = {
       id: nextId("m"),
       name: result.title,
-      editedAgo: "Edited just now",
+      updatedAt: new Date().toISOString(),
       starred: false,
       shared: false,
       viewOnly: false,
