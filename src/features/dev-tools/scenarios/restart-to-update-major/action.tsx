@@ -269,7 +269,7 @@ export default function RestartToUpdateMajorAction({
           </div>
           <p
             aria-live="polite"
-            className="mt-2 text-sm text-muted-foreground"
+            className="mt-2 text-base text-muted-foreground"
             id="major-update-description"
           >
             {description}
