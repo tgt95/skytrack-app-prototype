@@ -22,12 +22,14 @@ export function optionalNumber(value: string): number | null {
 }
 
 export function TextField({
+  id,
   label,
   value,
   placeholder,
   onChange,
   type = "text",
 }: {
+  id?: string;
   label: string;
   value: string;
   placeholder?: string;
@@ -35,9 +37,10 @@ export function TextField({
   type?: string;
 }) {
   return (
-    <FieldRoot className="ms-field flex flex-col gap-1">
-      <FieldLabel>{label}</FieldLabel>
+    <FieldRoot orientation="vertical" className="ms-field flex flex-col gap-1">
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
       <FieldControl
+        id={id}
         type={type}
         value={value}
         onValueChange={(next: unknown) => onChange(String(next))}
@@ -62,7 +65,7 @@ export function SelectField<T extends string>({
   onChange: (value: T) => void;
 }) {
   return (
-    <FieldRoot className="ms-field flex flex-col gap-1">
+    <FieldRoot orientation="vertical" className="ms-field flex flex-col gap-1">
       <FieldLabel>{label}</FieldLabel>
       <Select<T>
         items={options.map((option) => ({

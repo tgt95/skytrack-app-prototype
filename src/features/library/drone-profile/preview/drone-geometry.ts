@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
-import type { DroneGeometry } from "@/domain/drone-geometry";
+import { getDronePayloads, type DroneGeometry } from "@/domain/drone-geometry";
 
 const steel = new THREE.MeshStandardMaterial({
   color: "#c7c9ce",
@@ -187,7 +187,6 @@ export function createDroneGeometry(profile: DroneGeometry) {
     gearY,
     gearZ,
     skidSpacing,
-    payload,
   } = profile;
   const shellDepth = Math.max(0.03, bodyY * 0.92);
   const shellWidth = Math.max(0.03, bodyX * 0.92);
@@ -281,7 +280,7 @@ export function createDroneGeometry(profile: DroneGeometry) {
     }
   }
 
-  if (payload) {
+  for (const payload of getDronePayloads(profile)) {
     addBox(
       group,
       [payload.boxX, payload.boxZ, payload.boxY],
@@ -298,11 +297,12 @@ export function createDroneGeometry(profile: DroneGeometry) {
       ),
       darkRubber,
     );
-    lens.rotation.x = Math.PI / 2;
+    // The camera front faces the drone's +X direction.
+    lens.rotation.z = -Math.PI / 2;
     lens.position.set(
-      payload.positionX,
-      payload.positionZ - payload.boxZ * 0.22,
-      payload.positionY + payload.boxY * 0.53,
+      payload.positionX + payload.boxX * 0.53,
+      payload.positionZ,
+      payload.positionY,
     );
     group.add(lens);
   }

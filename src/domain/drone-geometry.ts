@@ -14,6 +14,9 @@ export interface DroneGeometry {
   gearZ: number;
   skidSpacing: number;
   payload: {
+    id?: string;
+    name?: string;
+    description?: string;
     massKg: number;
     boxX: number;
     boxY: number;
@@ -21,6 +24,16 @@ export interface DroneGeometry {
     positionX: number;
     positionY: number;
     positionZ: number;
+  } | null;
+  additionalPayloads?: Array<NonNullable<DroneGeometry["payload"]>>;
+  advancedMotor?: {
+    enabled: boolean;
+    fixedMotorMassKg: number;
+    rotatingMassKg: number;
+    rotorInertiaKgM2: number;
+    motorSpinUpS: number;
+    motorSpinDownS: number;
+    reactionTorquePerThrust: number;
   } | null;
 }
 
@@ -40,9 +53,33 @@ export const DEFAULT_DRONE_GEOMETRY: DroneGeometry = {
   gearZ: 0.02,
   skidSpacing: 0.24,
   payload: null,
+  additionalPayloads: [],
+  advancedMotor: null,
 };
 
-export type DroneGeometryKey = Exclude<keyof DroneGeometry, "payload">;
+export type DronePayloadGeometry = NonNullable<DroneGeometry["payload"]>;
+
+export function getDronePayloads(
+  geometry: DroneGeometry,
+): DronePayloadGeometry[] {
+  return [
+    ...(geometry.payload ? [geometry.payload] : []),
+    ...(geometry.additionalPayloads ?? []),
+  ];
+}
+
+export function withDronePayloads(
+  geometry: DroneGeometry,
+  payloads: DronePayloadGeometry[],
+): DroneGeometry {
+  const [payload = null, ...additionalPayloads] = payloads;
+  return { ...geometry, payload, additionalPayloads };
+}
+
+export type DroneGeometryKey = Exclude<
+  keyof DroneGeometry,
+  "payload" | "additionalPayloads" | "advancedMotor"
+>;
 export type DronePayloadGeometryKey = keyof NonNullable<
   DroneGeometry["payload"]
 >;
@@ -117,7 +154,10 @@ export const DRONE_GEOMETRY_FIELDS: Record<
 
 export type DroneGeometryErrors = Partial<
   Record<
-    DroneGeometryKey | "rotorClearance" | `payload.${DronePayloadGeometryKey}`,
+    | DroneGeometryKey
+    | "rotorClearance"
+    | "advancedMotor"
+    | `payload.${number}.${DronePayloadGeometryKey}`,
     string
   >
 >;
@@ -133,20 +173,43 @@ export function isDroneGeometry(value: unknown): value is DroneGeometry {
     )
   )
     return false;
-  if (geometry.payload === null) return true;
-  if (!geometry.payload || typeof geometry.payload !== "object") return false;
-  return [
-    "massKg",
-    "boxX",
-    "boxY",
-    "boxZ",
-    "positionX",
-    "positionY",
-    "positionZ",
-  ].every((key) => {
-    const field = geometry.payload?.[key as DronePayloadGeometryKey];
-    return typeof field === "number" && Number.isFinite(field);
-  });
+  const isPayload = (payload: unknown) => {
+    if (!payload || typeof payload !== "object") return false;
+    const candidate = payload as Partial<DronePayloadGeometry>;
+    return [
+      "massKg",
+      "boxX",
+      "boxY",
+      "boxZ",
+      "positionX",
+      "positionY",
+      "positionZ",
+    ].every((key) => {
+      const field = candidate[key as DronePayloadGeometryKey];
+      return typeof field === "number" && Number.isFinite(field);
+    });
+  };
+  if (geometry.payload !== null && !isPayload(geometry.payload)) return false;
+  if (
+    geometry.additionalPayloads !== undefined &&
+    (!Array.isArray(geometry.additionalPayloads) ||
+      !geometry.additionalPayloads.every(isPayload))
+  )
+    return false;
+  const motor = geometry.advancedMotor;
+  return (
+    motor === undefined ||
+    motor === null ||
+    (typeof motor.enabled === "boolean" &&
+      [
+        motor.fixedMotorMassKg,
+        motor.rotatingMassKg,
+        motor.rotorInertiaKgM2,
+        motor.motorSpinUpS,
+        motor.motorSpinDownS,
+        motor.reactionTorquePerThrust,
+      ].every((value) => typeof value === "number" && Number.isFinite(value)))
+  );
 }
 
 export function validateDroneGeometry(
@@ -174,13 +237,20 @@ export function validateDroneGeometry(
   if (Math.abs(geometry.rotorZ) < minimumRotorZ) {
     errors.rotorClearance = `Rotor plane must be at least ${minimumRotorZ.toFixed(3)} m above or below the body datum.`;
   }
-  if (geometry.payload) {
+  for (const [index, payload] of getDronePayloads(geometry).entries()) {
     for (const key of ["massKg", "boxX", "boxY", "boxZ"] as const) {
-      if (
-        !Number.isFinite(geometry.payload[key]) ||
-        geometry.payload[key] <= 0
-      ) {
-        errors[`payload.${key}`] = "Enter a value greater than 0.";
+      if (!Number.isFinite(payload[key]) || payload[key] <= 0) {
+        errors[`payload.${index}.${key}`] = "Enter a value greater than 0.";
+      }
+    }
+  }
+  if (geometry.advancedMotor?.enabled) {
+    for (const value of Object.values(geometry.advancedMotor).filter(
+      (value): value is number => typeof value === "number",
+    )) {
+      if (!Number.isFinite(value) || value < 0) {
+        errors.advancedMotor = "Enter valid non-negative motor values.";
+        break;
       }
     }
   }
@@ -188,7 +258,10 @@ export function validateDroneGeometry(
 }
 
 export function droneGeometryMass(geometry: DroneGeometry): number {
-  return geometry.baseMassKg + (geometry.payload?.massKg ?? 0);
+  return (
+    geometry.baseMassKg +
+    getDronePayloads(geometry).reduce((sum, payload) => sum + payload.massKg, 0)
+  );
 }
 
 export function droneGeometryThrustRatio(geometry: DroneGeometry): number {

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "skytrack-ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "skytrack-ui/card";
 import { PageHeader } from "skytrack-ui/page-header";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "skytrack-ui/tabs";
 import { LibraryPageLayout } from "@/features/library/cards/library-presentation";
@@ -8,40 +7,50 @@ import {
   DEFAULT_DRONE_GEOMETRY,
   droneGeometryMass,
   droneGeometryThrustRatio,
+  getDronePayloads,
   validateDroneGeometry,
+  withDronePayloads,
   type DroneGeometry,
 } from "@/domain/drone-geometry";
 import {
-  newDroneHardwareComponent,
-  type DroneHardwareComponent,
-  type DroneHardwareSpecification,
-  type WorkspaceDroneProfile,
-} from "@/features/library/database/drone-store";
-import { DronePerformanceSourceSection } from "./drone-performance-source-section";
-import { DronePlatformSection } from "./drone-platform-section";
-import { DroneHardwareSection } from "./drone-hardware-section";
-import { DroneGeometryFields } from "./drone-geometry-fields";
-import { DronePreview } from "./preview/drone-preview";
+  DEFAULT_DRONE_ONBOARDING_DATA,
+  type DroneOnboardingData,
+  type DroneSensorProfile,
+} from "@/domain/drone-onboarding";
+import { type WorkspaceDroneProfile } from "@/features/library/database/drone-store";
+import {
+  DroneGeometryFields,
+  DronePayloadFields,
+} from "./drone-geometry-fields";
+import { DroneOnboardingFields } from "./drone-onboarding-fields";
+import { DronePreviewPanel } from "./drone-preview-panel";
+import {
+  DroneFlightTuningFields,
+  DroneManualPidFields,
+} from "./drone-tuning-fields";
 
-type EditorTab = "geometry" | "profile" | "components";
+type EditorTab =
+  | "geometry"
+  | "payloads"
+  | "calibration"
+  | "appearance"
+  | "flight-tuning"
+  | "manual-pid";
+const EDITOR_TABS: readonly EditorTab[] = [
+  "geometry",
+  "payloads",
+  "calibration",
+  "appearance",
+  "flight-tuning",
+  "manual-pid",
+];
 
-function StatTile({ label, value }: { label: string; value: string }) {
-  return (
-    <Card as="div" size="sm">
-      <CardContent className="flex flex-col gap-1">
-        <span className="text-muted-foreground">{label}</span>
-        <strong>{value}</strong>
-      </CardContent>
-    </Card>
-  );
+function isEditorTab(value: string): value is EditorTab {
+  return EDITOR_TABS.includes(value as EditorTab);
 }
 
-function componentId(): string {
-  return `component-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
-}
-
-function specificationId(): string {
-  return `spec-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+function onboardingRecordId(prefix: string): string {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
 export default function DroneProfileEditorPage({
@@ -82,12 +91,29 @@ export default function DroneProfileEditorPage({
   const geometryValid = Object.keys(geometryErrors).length === 0;
   const previewGeometry = geometryValid ? geometry : lastValidGeometry;
   const massKg = droneGeometryMass(previewGeometry);
+  const payloadMassKg = getDronePayloads(previewGeometry).reduce(
+    (sum, payload) => sum + payload.massKg,
+    0,
+  );
   const thrustRatio = droneGeometryThrustRatio(previewGeometry);
 
   if (!draft) return null;
 
   const patchDraft = (patch: Partial<WorkspaceDroneProfile>) =>
     setDraft((current) => (current ? { ...current, ...patch } : current));
+  const patchOnboarding = (patch: Partial<DroneOnboardingData>) =>
+    setDraft((current) =>
+      current
+        ? {
+            ...current,
+            onboarding: {
+              ...DEFAULT_DRONE_ONBOARDING_DATA,
+              ...current.onboarding,
+              ...patch,
+            },
+          }
+        : current,
+    );
   const patchGeometry = (patch: Partial<DroneGeometry>) => {
     const next = { ...geometry, ...patch };
     setGeometry(next);
@@ -95,111 +121,41 @@ export default function DroneProfileEditorPage({
       setLastValidGeometry(next);
     setFormError("");
   };
-  const patchComponent = (
-    id: string,
-    patch: Partial<DroneHardwareComponent>,
-  ) => {
+  const addSensor = () => {
+    const defaultSensor = DEFAULT_DRONE_ONBOARDING_DATA.sensors[0];
+    if (!defaultSensor) return;
+    const sensor = {
+      ...defaultSensor,
+      id: onboardingRecordId("sensor"),
+    };
     setDraft((current) =>
       current
         ? {
             ...current,
-            components: current.components.map((item) =>
-              item.id === id ? { ...item, ...patch } : item,
-            ),
+            onboarding: {
+              ...DEFAULT_DRONE_ONBOARDING_DATA,
+              ...current.onboarding,
+              sensors: [...(current.onboarding?.sensors ?? []), sensor],
+            },
           }
         : current,
     );
   };
-  const addComponent = () => {
-    setDraft((current) =>
-      current
-        ? {
-            ...current,
-            components: [
-              ...current.components,
-              newDroneHardwareComponent(componentId()),
-            ],
-          }
-        : current,
-    );
-  };
-  const removeComponent = (id: string) => {
-    setDraft((current) =>
-      current
-        ? {
-            ...current,
-            components: current.components.filter((item) => item.id !== id),
-          }
-        : current,
-    );
-  };
-  const patchSpecification = (
-    componentIdValue: string,
-    id: string,
-    patch: Partial<DroneHardwareSpecification>,
-  ) => {
-    setDraft((current) =>
-      current
-        ? {
-            ...current,
-            components: current.components.map((item) =>
-              item.id === componentIdValue
-                ? {
-                    ...item,
-                    specifications: item.specifications.map((specification) =>
-                      specification.id === id
-                        ? { ...specification, ...patch }
-                        : specification,
-                    ),
-                  }
-                : item,
-            ),
-          }
-        : current,
-    );
-  };
-  const addSpecification = (componentIdValue: string) => {
-    setDraft((current) =>
-      current
-        ? {
-            ...current,
-            components: current.components.map((item) =>
-              item.id === componentIdValue
-                ? {
-                    ...item,
-                    specifications: [
-                      ...item.specifications,
-                      { id: specificationId(), label: "", value: "" },
-                    ],
-                  }
-                : item,
-            ),
-          }
-        : current,
-    );
-  };
-  const removeSpecification = (componentIdValue: string, id: string) => {
-    setDraft((current) =>
-      current
-        ? {
-            ...current,
-            components: current.components.map((item) =>
-              item.id === componentIdValue
-                ? {
-                    ...item,
-                    specifications: item.specifications.filter(
-                      (specification) => specification.id !== id,
-                    ),
-                  }
-                : item,
-            ),
-          }
-        : current,
-    );
-  };
+  const removeSensor = (id: string) =>
+    patchOnboarding({
+      sensors: (draft.onboarding?.sensors ?? []).filter(
+        (sensor) => sensor.id !== id,
+      ),
+    });
+  const patchSensor = (sensor: DroneSensorProfile) =>
+    patchOnboarding({
+      sensors: (draft.onboarding?.sensors ?? []).map((current) =>
+        current.id === sensor.id ? sensor : current,
+      ),
+    });
   const submit = () => {
     if (!draft.name.trim()) {
-      setTab("profile");
+      setTab("geometry");
       setFormError("Enter a drone name before saving.");
       window.requestAnimationFrame(() =>
         document.querySelector<HTMLInputElement>("#ms-drone-name")?.focus(),
@@ -207,14 +163,23 @@ export default function DroneProfileEditorPage({
       return;
     }
     if (!geometryValid) {
-      setTab("geometry");
+      const hasPayloadErrors = Object.keys(geometryErrors).some((key) =>
+        key.startsWith("payload."),
+      );
+      setTab(hasPayloadErrors ? "payloads" : "geometry");
       setFormError("Fix the highlighted geometry fields before saving.");
       window.requestAnimationFrame(() =>
         document.querySelector<HTMLElement>("[aria-invalid='true']")?.focus(),
       );
       return;
     }
-    onSave({ ...draft, name: draft.name.trim(), geometry });
+    onSave({
+      ...draft,
+      name: draft.name.trim(),
+      profileCode: draft.profileCode?.trim() ?? "",
+      geometry,
+      onboarding: draft.onboarding ?? DEFAULT_DRONE_ONBOARDING_DATA,
+    });
   };
 
   const pageTitle =
@@ -223,7 +188,10 @@ export default function DroneProfileEditorPage({
   return (
     <Tabs
       value={tab}
-      onValueChange={(value) => setTab(String(value) as EditorTab)}
+      onValueChange={(value) => {
+        const nextTab = String(value);
+        if (isEditorTab(nextTab)) setTab(nextTab);
+      }}
       className="w-full max-w-none gap-0"
     >
       <LibraryPageLayout
@@ -266,10 +234,11 @@ export default function DroneProfileEditorPage({
           >
             <TabsList aria-label="Drone editor sections" className="border-0">
               <TabsTab value="geometry">Geometry</TabsTab>
-              <TabsTab value="profile">Profile &amp; performance</TabsTab>
-              <TabsTab value="components">
-                Hardware components ({draft.components.length})
-              </TabsTab>
+              <TabsTab value="payloads">Payloads &amp; sensors</TabsTab>
+              <TabsTab value="calibration">Calibration</TabsTab>
+              <TabsTab value="appearance">Appearance</TabsTab>
+              <TabsTab value="flight-tuning">Flight tuning</TabsTab>
+              <TabsTab value="manual-pid">Manual PID</TabsTab>
             </TabsList>
           </PageHeader>
         }
@@ -278,112 +247,115 @@ export default function DroneProfileEditorPage({
           <TabsPanel value="geometry" className="flex flex-col gap-4">
             <DroneGeometryFields
               geometry={geometry}
+              displayName={draft.name}
+              profileCode={draft.profileCode ?? ""}
               errors={geometryErrors}
               onPatch={patchGeometry}
+              onPatchProfile={patchDraft}
+            />
+          </TabsPanel>
+          <TabsPanel value="payloads" className="flex flex-col gap-4">
+            <DronePayloadFields
+              geometry={geometry}
+              errors={geometryErrors}
               onAddPayload={() =>
-                patchGeometry({
-                  payload: {
-                    massKg: 0.2,
-                    boxX: 0.1,
-                    boxY: 0.08,
-                    boxZ: 0.055,
-                    positionX: 0,
-                    positionY: 0,
-                    positionZ: -0.08,
-                  },
-                })
+                patchGeometry(
+                  withDronePayloads(geometry, [
+                    ...getDronePayloads(geometry),
+                    {
+                      id: onboardingRecordId("payload"),
+                      name: `Payload ${getDronePayloads(geometry).length + 1}`,
+                      description: "",
+                      massKg: 0.2,
+                      boxX: 0.1,
+                      boxY: 0.08,
+                      boxZ: 0.055,
+                      positionX: 0,
+                      positionY: 0,
+                      positionZ: -0.08,
+                    },
+                  ]),
+                )
               }
-              onRemovePayload={() => patchGeometry({ payload: null })}
+              onRemovePayload={(index) =>
+                patchGeometry(
+                  withDronePayloads(
+                    geometry,
+                    getDronePayloads(geometry).filter(
+                      (_payload, payloadIndex) => payloadIndex !== index,
+                    ),
+                  ),
+                )
+              }
+              onPatchPayload={(index, patch) =>
+                patchGeometry(
+                  withDronePayloads(
+                    geometry,
+                    getDronePayloads(geometry).map((payload, payloadIndex) =>
+                      payloadIndex === index
+                        ? { ...payload, ...patch }
+                        : payload,
+                    ),
+                  ),
+                )
+              }
+            />
+            <DroneOnboardingFields
+              section="sensors"
+              data={draft.onboarding ?? DEFAULT_DRONE_ONBOARDING_DATA}
+              totalMassKg={massKg}
+              onPatch={patchOnboarding}
+              onAddSensor={addSensor}
+              onRemoveSensor={removeSensor}
+              onPatchSensor={patchSensor}
             />
           </TabsPanel>
-          <TabsPanel value="profile" className="flex flex-col gap-6">
-            <DronePlatformSection profile={draft} onPatch={patchDraft} />
-            <DronePerformanceSourceSection
-              profile={draft}
-              onPatch={patchDraft}
+          <TabsPanel value="calibration" className="flex flex-col gap-4">
+            <DroneOnboardingFields
+              section="calibration"
+              data={draft.onboarding ?? DEFAULT_DRONE_ONBOARDING_DATA}
+              totalMassKg={massKg}
+              onPatch={patchOnboarding}
+              onAddSensor={addSensor}
+              onRemoveSensor={removeSensor}
+              onPatchSensor={patchSensor}
             />
           </TabsPanel>
-          <TabsPanel value="components" className="flex flex-col gap-4">
-            <DroneHardwareSection
-              components={draft.components}
-              onAddComponent={addComponent}
-              onRemoveComponent={removeComponent}
-              onPatchComponent={patchComponent}
-              onAddSpecification={addSpecification}
-              onPatchSpecification={patchSpecification}
-              onRemoveSpecification={removeSpecification}
+          <TabsPanel value="appearance" className="flex flex-col gap-4">
+            <DroneOnboardingFields
+              section="appearance"
+              data={draft.onboarding ?? DEFAULT_DRONE_ONBOARDING_DATA}
+              totalMassKg={massKg}
+              onPatch={patchOnboarding}
+              onAddSensor={addSensor}
+              onRemoveSensor={removeSensor}
+              onPatchSensor={patchSensor}
+            />
+          </TabsPanel>
+          <TabsPanel value="flight-tuning" className="flex flex-col gap-4">
+            <DroneFlightTuningFields />
+          </TabsPanel>
+          <TabsPanel value="manual-pid" className="flex flex-col gap-4">
+            <DroneManualPidFields
+              gains={
+                draft.onboarding?.manualPid ??
+                DEFAULT_DRONE_ONBOARDING_DATA.manualPid
+              }
+              onChange={(manualPid) => patchOnboarding({ manualPid })}
             />
           </TabsPanel>
         </div>
-        <aside
-          className="order-first min-w-0 xl:order-none xl:col-start-2 xl:row-start-1 xl:sticky xl:top-32 xl:self-start"
-          aria-label="Live drone preview"
-        >
-          <Card as="section">
-            <CardHeader className="flex flex-row items-center justify-between gap-4">
-              <CardTitle as="h2">3D preview</CardTitle>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setView("isometric");
-                  setResetKey((key) => key + 1);
-                }}
-              >
-                Reset view
-              </Button>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-              <div className="relative aspect-video min-h-72 overflow-hidden rounded-(--radius) border border-border bg-muted">
-                <DronePreview
-                  profile={previewGeometry}
-                  viewMode={view}
-                  resetKey={resetKey}
-                />
-                {!geometryValid && (
-                  <div
-                    className="absolute bottom-14 right-4 rounded-(--radius) border border-warning bg-background/90 px-2 py-1 text-sm text-warning"
-                    role="status"
-                  >
-                    Preview shows last valid geometry
-                  </div>
-                )}
-                <Tabs
-                  value={view}
-                  onValueChange={(value) =>
-                    setView(String(value) as typeof view)
-                  }
-                  className="absolute bottom-2 left-2 w-fit gap-0"
-                >
-                  <TabsList variant="filled" aria-label="Preview view">
-                    <TabsTab value="isometric">Isometric</TabsTab>
-                    <TabsTab value="top">Top</TabsTab>
-                    <TabsTab value="front">Front</TabsTab>
-                  </TabsList>
-                </Tabs>
-              </div>
-              <p className="m-0 text-muted-foreground">
-                Drag to orbit · Shift/Command/Control-drag to pan · Alt-drag to
-                adjust pitch · Scroll to zoom
-              </p>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <StatTile
-                  label="Total mass"
-                  value={`${massKg.toFixed(2)} kg`}
-                />
-                <StatTile
-                  label="Thrust / weight"
-                  value={`${thrustRatio.toFixed(2)}×`}
-                />
-                <StatTile
-                  label="Thrust reserve"
-                  value={`${Math.max(0, Math.min(100, (1 - 1 / thrustRatio) * 100)).toFixed(0)}%`}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </aside>
+        <DronePreviewPanel
+          geometry={previewGeometry}
+          geometryValid={geometryValid}
+          massKg={massKg}
+          payloadMassKg={payloadMassKg}
+          thrustRatio={thrustRatio}
+          view={view}
+          setView={setView}
+          resetKey={resetKey}
+          setResetKey={setResetKey}
+        />
       </LibraryPageLayout>
     </Tabs>
   );
