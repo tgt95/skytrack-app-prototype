@@ -39,7 +39,7 @@ export interface DroneGeometry {
 
 export const DEFAULT_DRONE_GEOMETRY: DroneGeometry = {
   baseMassKg: 2,
-  bodyX: 0.26,
+  bodyX: 0.18,
   bodyY: 0.18,
   bodyZ: 0.1,
   hubX: 0.22,

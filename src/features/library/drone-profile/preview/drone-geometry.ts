@@ -3,17 +3,17 @@ import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.j
 import { getDronePayloads, type DroneGeometry } from "@/domain/drone-geometry";
 
 const steel = new THREE.MeshStandardMaterial({
-  color: "#b5b9bb",
+  color: "#d4d8da",
   metalness: 0,
   roughness: 0.9,
 });
 const shell = new THREE.MeshStandardMaterial({
-  color: "#c9ccce",
+  color: "#f4f6f7",
   metalness: 0,
   roughness: 0.92,
 });
 const frameDetail = new THREE.MeshStandardMaterial({
-  color: "#a3a7a9",
+  color: "#c4c9cc",
   metalness: 0,
   roughness: 0.9,
 });
@@ -23,17 +23,17 @@ const darkRubber = new THREE.MeshStandardMaterial({
   roughness: 0.86,
 });
 const rotorMaterial = new THREE.MeshStandardMaterial({
-  color: "#e1e3e4",
+  color: "#f8f9fa",
   metalness: 0,
   roughness: 0.92,
 });
 const payloadMaterial = new THREE.MeshStandardMaterial({
-  color: "#c2c6c8",
+  color: "#e3e7e9",
   metalness: 0,
   roughness: 0.92,
 });
 const rotorGuideMaterial = new THREE.MeshBasicMaterial({
-  color: "#9a9da0",
+  color: "#b0b6ba",
   transparent: true,
   opacity: 0.18,
   side: THREE.DoubleSide,
@@ -41,12 +41,12 @@ const rotorGuideMaterial = new THREE.MeshBasicMaterial({
 });
 
 export function setDroneGeometryTheme(isDark: boolean) {
-  shell.color.set(isDark ? "#aeb1b3" : "#c9ccce");
-  steel.color.set(isDark ? "#94989b" : "#b5b9bb");
-  frameDetail.color.set(isDark ? "#7d8285" : "#a3a7a9");
-  rotorMaterial.color.set(isDark ? "#cacdce" : "#e1e3e4");
-  payloadMaterial.color.set(isDark ? "#a6aaac" : "#c2c6c8");
-  rotorGuideMaterial.color.set(isDark ? "#8a8d90" : "#9a9da0");
+  shell.color.set(isDark ? "#d9dddf" : "#f4f6f7");
+  steel.color.set(isDark ? "#b9bec1" : "#d4d8da");
+  frameDetail.color.set(isDark ? "#a6abae" : "#c4c9cc");
+  rotorMaterial.color.set(isDark ? "#eff2f3" : "#f8f9fa");
+  payloadMaterial.color.set(isDark ? "#d0d4d6" : "#e3e7e9");
+  rotorGuideMaterial.color.set(isDark ? "#888d91" : "#b0b6ba");
 }
 
 function roundedBox(
@@ -119,6 +119,7 @@ function addRotor(
 ) {
   const motorRadius = Math.max(0.018, diameter * 0.13);
   const motorHeight = rotorMotorHeight(diameter);
+  const propellerBladeLength = diameter * 0.94;
   const motorPodHeight = motorHeight * 1.3;
   const motorDatumY = rotorPlaneY - motorHeight * 0.52;
   const can = new THREE.Mesh(
@@ -155,7 +156,7 @@ function addRotor(
   for (const direction of [0, Math.PI]) {
     const blade = new THREE.Mesh(
       roundedBox(
-        diameter * 0.49,
+        propellerBladeLength,
         0.006,
         Math.max(0.009, diameter * 0.055),
         0.0025,

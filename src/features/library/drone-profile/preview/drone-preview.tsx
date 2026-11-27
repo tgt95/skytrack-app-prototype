@@ -64,7 +64,7 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
     const host = hostRef.current;
     if (!host) return;
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#37393c");
+    scene.background = new THREE.Color("#33373a");
     const camera = new THREE.PerspectiveCamera(34, 1, 0.01, 100);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -91,7 +91,7 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
     rim.position.set(2.2, 1.4, -1.5);
     scene.add(rim);
 
-    const grid = new THREE.GridHelper(2.2, 22, "#55575a", "#45474a");
+    const grid = new THREE.GridHelper(2.2, 22, "#595c5f", "#494c50");
     grid.position.y = -0.22;
     if (Array.isArray(grid.material))
       grid.material.forEach((material) => {
@@ -107,17 +107,17 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
     const applyTheme = () => {
       const isDark = document.documentElement.classList.contains("dark");
       if (scene.background instanceof THREE.Color)
-        scene.background.set(isDark ? "#37393c" : "#f0f0f0");
+        scene.background.set(isDark ? "#33373a" : "#e3e7e9");
       hemisphere.color.set("#f7f7f7");
-      hemisphere.groundColor.set(isDark ? "#424447" : "#898c8f");
+      hemisphere.groundColor.set(isDark ? "#3e4245" : "#969da1");
       hemisphere.intensity = isDark ? 1.8 : 1.45;
       key.intensity = isDark ? 2.6 : 1.8;
       renderer.toneMappingExposure = isDark ? 0.96 : 0.88;
       rim.intensity = isDark ? 0.42 : 0.22;
       rim.color.set(isDark ? "#eceeef" : "#f5f6f6");
       if (Array.isArray(grid.material)) {
-        grid.material[0]?.color.set(isDark ? "#55575a" : "#cdd0d2");
-        grid.material[1]?.color.set(isDark ? "#45474a" : "#dcdee0");
+        grid.material[0]?.color.set(isDark ? "#595c5f" : "#c7cdd1");
+        grid.material[1]?.color.set(isDark ? "#494c50" : "#d7dcdf");
         grid.material.forEach((material) => {
           material.opacity = isDark ? 0.22 : 0.12;
         });
