@@ -1,7 +1,11 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import type { DroneGeometry } from "@/domain/drone-geometry";
-import { createDroneGeometry, disposeGroup } from "./drone-geometry";
+import {
+  createDroneGeometry,
+  disposeGroup,
+  setDroneGeometryTheme,
+} from "./drone-geometry";
 
 type ViewMode = "isometric" | "top" | "front";
 
@@ -60,7 +64,7 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
     const host = hostRef.current;
     if (!host) return;
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#11131a");
+    scene.background = new THREE.Color("#37393c");
     const camera = new THREE.PerspectiveCamera(34, 1, 0.01, 100);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -68,7 +72,7 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
     renderer.shadowMap.type = THREE.PCFShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.08;
+    renderer.toneMappingExposure = 0.96;
     renderer.domElement.setAttribute(
       "aria-label",
       "Interactive three-dimensional drone preview",
@@ -76,52 +80,99 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
     renderer.domElement.setAttribute("role", "img");
     host.appendChild(renderer.domElement);
 
-    scene.add(new THREE.HemisphereLight("#d7e0ff", "#30323a", 2.05));
-    const key = new THREE.DirectionalLight("#ffffff", 3.1);
+    const hemisphere = new THREE.HemisphereLight("#f7f7f7", "#444649", 1.8);
+    scene.add(hemisphere);
+    const key = new THREE.DirectionalLight("#f7f7f7", 2.6);
     key.position.set(-1.5, 2.7, 2.2);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
     scene.add(key);
-    const rim = new THREE.DirectionalLight("#8072ff", 1.4);
+    const rim = new THREE.DirectionalLight("#eceeef", 0.42);
     rim.position.set(2.2, 1.4, -1.5);
     scene.add(rim);
 
-    const grid = new THREE.GridHelper(2.2, 22, "#414357", "#292c39");
+    const grid = new THREE.GridHelper(2.2, 22, "#55575a", "#45474a");
     grid.position.y = -0.22;
     if (Array.isArray(grid.material))
       grid.material.forEach((material) => {
         material.transparent = true;
-        material.opacity = 0.54;
+        material.opacity = 0.38;
       });
     else {
       grid.material.transparent = true;
-      grid.material.opacity = 0.54;
+      grid.material.opacity = 0.38;
     }
     scene.add(grid);
 
+    const applyTheme = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      if (scene.background instanceof THREE.Color)
+        scene.background.set(isDark ? "#37393c" : "#f0f0f0");
+      hemisphere.color.set("#f7f7f7");
+      hemisphere.groundColor.set(isDark ? "#424447" : "#898c8f");
+      hemisphere.intensity = isDark ? 1.8 : 1.45;
+      key.intensity = isDark ? 2.6 : 1.8;
+      renderer.toneMappingExposure = isDark ? 0.96 : 0.88;
+      rim.intensity = isDark ? 0.42 : 0.22;
+      rim.color.set(isDark ? "#eceeef" : "#f5f6f6");
+      if (Array.isArray(grid.material)) {
+        grid.material[0]?.color.set(isDark ? "#55575a" : "#cdd0d2");
+        grid.material[1]?.color.set(isDark ? "#45474a" : "#dcdee0");
+        grid.material.forEach((material) => {
+          material.opacity = isDark ? 0.22 : 0.12;
+        });
+      }
+      setDroneGeometryTheme(isDark);
+    };
+    applyTheme();
+    const themeObserver = new MutationObserver(applyTheme);
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
     const axes = new THREE.Group();
+    const axisHeadMaterials: THREE.MeshBasicMaterial[] = [];
+    const axisLength = 0.35;
+    const arrowHeadLength = 0.028;
     const axisDefinitions = [
-      { end: new THREE.Vector3(0.35, 0, 0), color: "#ff545f" },
-      { end: new THREE.Vector3(0, 0.35, 0), color: "#4388ff" },
-      { end: new THREE.Vector3(0, 0, 0.35), color: "#3bd0ad" },
+      { direction: new THREE.Vector3(1, 0, 0), color: "#ed2d4f" },
+      { direction: new THREE.Vector3(0, 1, 0), color: "#1bc877" },
+      { direction: new THREE.Vector3(0, 0, 1), color: "#3478ed" },
     ];
     for (const axis of axisDefinitions) {
       const geometry = new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector3(),
-        axis.end,
+        axis.direction.clone().multiplyScalar(axisLength - arrowHeadLength),
       ]);
-      axes.add(
-        new THREE.Line(
-          geometry,
-          new THREE.LineBasicMaterial({ color: axis.color }),
-        ),
+      const line = new THREE.Line(
+        geometry,
+        new THREE.LineBasicMaterial({
+          color: axis.color,
+          depthTest: true,
+          depthWrite: false,
+        }),
       );
-      const dot = new THREE.Mesh(
-        new THREE.SphereGeometry(0.007, 8, 6),
-        new THREE.MeshBasicMaterial({ color: axis.color }),
+      line.renderOrder = 10;
+      const arrowMaterial = new THREE.MeshBasicMaterial({
+        color: axis.color,
+        depthTest: true,
+        depthWrite: false,
+      });
+      axisHeadMaterials.push(arrowMaterial);
+      const arrowHead = new THREE.Mesh(
+        new THREE.ConeGeometry(0.008, arrowHeadLength, 12, 1),
+        arrowMaterial,
       );
-      dot.position.copy(axis.end);
-      axes.add(dot);
+      arrowHead.position
+        .copy(axis.direction)
+        .multiplyScalar(axisLength - arrowHeadLength / 2);
+      arrowHead.quaternion.setFromUnitVectors(
+        new THREE.Vector3(0, 1, 0),
+        axis.direction,
+      );
+      arrowHead.renderOrder = 10;
+      axes.add(line, arrowHead);
     }
     scene.add(axes);
 
@@ -162,6 +213,7 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
+      themeObserver.disconnect();
       renderer.dispose();
       const generatedModel = modelRef.current?.children[0];
       if (generatedModel instanceof THREE.Group) disposeGroup(generatedModel);
@@ -176,6 +228,7 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
           }
         }
       });
+      axisHeadMaterials.forEach((material) => material.dispose());
       renderer.domElement.remove();
       sceneRef.current = null;
       rendererRef.current = null;

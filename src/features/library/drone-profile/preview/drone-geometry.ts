@@ -3,40 +3,51 @@ import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.j
 import { getDronePayloads, type DroneGeometry } from "@/domain/drone-geometry";
 
 const steel = new THREE.MeshStandardMaterial({
-  color: "#c7c9ce",
-  metalness: 0.68,
-  roughness: 0.3,
+  color: "#b5b9bb",
+  metalness: 0,
+  roughness: 0.9,
 });
 const shell = new THREE.MeshStandardMaterial({
-  color: "#777a82",
-  metalness: 0.65,
-  roughness: 0.32,
+  color: "#c9ccce",
+  metalness: 0,
+  roughness: 0.92,
 });
-const graphite = new THREE.MeshStandardMaterial({
-  color: "#282b32",
-  metalness: 0.62,
-  roughness: 0.3,
+const frameDetail = new THREE.MeshStandardMaterial({
+  color: "#a3a7a9",
+  metalness: 0,
+  roughness: 0.9,
 });
 const darkRubber = new THREE.MeshStandardMaterial({
-  color: "#17191e",
-  metalness: 0.2,
-  roughness: 0.72,
-});
-const gold = new THREE.MeshStandardMaterial({
-  color: "#d7a92b",
-  metalness: 0.72,
-  roughness: 0.26,
+  color: "#303235",
+  metalness: 0.02,
+  roughness: 0.86,
 });
 const rotorMaterial = new THREE.MeshStandardMaterial({
-  color: "#9fa4ad",
-  metalness: 0.55,
-  roughness: 0.36,
+  color: "#e1e3e4",
+  metalness: 0,
+  roughness: 0.92,
 });
 const payloadMaterial = new THREE.MeshStandardMaterial({
-  color: "#424854",
-  metalness: 0.58,
-  roughness: 0.36,
+  color: "#c2c6c8",
+  metalness: 0,
+  roughness: 0.92,
 });
+const rotorGuideMaterial = new THREE.MeshBasicMaterial({
+  color: "#9a9da0",
+  transparent: true,
+  opacity: 0.18,
+  side: THREE.DoubleSide,
+  depthWrite: false,
+});
+
+export function setDroneGeometryTheme(isDark: boolean) {
+  shell.color.set(isDark ? "#aeb1b3" : "#c9ccce");
+  steel.color.set(isDark ? "#94989b" : "#b5b9bb");
+  frameDetail.color.set(isDark ? "#7d8285" : "#a3a7a9");
+  rotorMaterial.color.set(isDark ? "#cacdce" : "#e1e3e4");
+  payloadMaterial.color.set(isDark ? "#a6aaac" : "#c2c6c8");
+  rotorGuideMaterial.color.set(isDark ? "#8a8d90" : "#9a9da0");
+}
 
 function roundedBox(
   sizeX: number,
@@ -58,7 +69,7 @@ function addBox(
   size: [number, number, number],
   pos: [number, number, number],
   material: THREE.Material,
-  radius = 0.004,
+  radius = 0.0015,
 ) {
   const mesh = new THREE.Mesh(
     roundedBox(size[0], size[1], size[2], radius),
@@ -81,7 +92,7 @@ function addBeam(
 ) {
   const delta = new THREE.Vector3().subVectors(end, start);
   const mesh = new THREE.Mesh(
-    roundedBox(width, delta.length(), height, Math.min(width, height) * 0.42),
+    roundedBox(width, delta.length(), height, Math.min(width, height) * 0.32),
     material,
   );
   mesh.position.copy(start).add(end).multiplyScalar(0.5);
@@ -108,17 +119,18 @@ function addRotor(
 ) {
   const motorRadius = Math.max(0.018, diameter * 0.13);
   const motorHeight = rotorMotorHeight(diameter);
+  const motorPodHeight = motorHeight * 1.3;
   const motorDatumY = rotorPlaneY - motorHeight * 0.52;
   const can = new THREE.Mesh(
     new THREE.CylinderGeometry(
       motorRadius,
       motorRadius * 1.08,
-      motorHeight,
+      motorPodHeight,
       24,
     ),
-    graphite,
+    frameDetail,
   );
-  can.position.set(x, motorDatumY - motorHeight * 0.18, z);
+  can.position.set(x, motorDatumY - motorHeight * 0.33, z);
   can.castShadow = true;
   group.add(can);
   const cap = new THREE.Mesh(
@@ -128,19 +140,14 @@ function addRotor(
       motorHeight * 0.24,
       24,
     ),
-    gold,
+    shell,
   );
   cap.position.set(x, motorDatumY + motorHeight * 0.4, z);
   group.add(cap);
   const propY = rotorPlaneY;
   const ring = new THREE.Mesh(
     new THREE.RingGeometry(diameter * 0.455, diameter * 0.48, 56),
-    new THREE.MeshBasicMaterial({
-      color: "#8a75ff",
-      transparent: true,
-      opacity: 0.48,
-      side: THREE.DoubleSide,
-    }),
+    rotorGuideMaterial,
   );
   ring.rotation.x = -Math.PI / 2;
   ring.position.set(x, propY, z);
@@ -151,7 +158,7 @@ function addRotor(
         diameter * 0.49,
         0.006,
         Math.max(0.009, diameter * 0.055),
-        0.004,
+        0.0025,
       ),
       rotorMaterial,
     );
@@ -197,14 +204,14 @@ export function createDroneGeometry(profile: DroneGeometry) {
     [bodyX, bodyZ, bodyY],
     [0, 0, 0],
     shell,
-    Math.min(bodyX, bodyY, bodyZ) * 0.16,
+    Math.min(bodyX, bodyY, bodyZ) * 0.05,
   );
   addBox(
     group,
     [shellWidth * 0.7, Math.max(0.014, bodyZ * 0.18), shellDepth * 0.66],
     [0, bodyZ * 0.5 + bodyZ * 0.09, 0],
-    graphite,
-    Math.min(shellWidth, shellDepth) * 0.12,
+    frameDetail,
+    Math.min(shellWidth, shellDepth) * 0.04,
   );
 
   const corners = [
@@ -240,7 +247,7 @@ export function createDroneGeometry(profile: DroneGeometry) {
         0.012,
         20,
       ),
-      gold,
+      frameDetail,
     );
     band.position.copy(start).addScaledVector(armDirection, 0.42);
     band.quaternion.setFromUnitVectors(
@@ -262,8 +269,8 @@ export function createDroneGeometry(profile: DroneGeometry) {
       group,
       [gearX, gearZ, gearY],
       [0, skidVertical, z],
-      graphite,
-      Math.min(gearY, gearZ) * 0.2,
+      frameDetail,
+      Math.min(gearY, gearZ) * 0.06,
     );
     const xFoot = Math.min(gearX * 0.34, bodyX * 0.38);
     const supportWidth = Math.max(0.012, gearY * 0.72);
@@ -286,7 +293,7 @@ export function createDroneGeometry(profile: DroneGeometry) {
       [payload.boxX, payload.boxZ, payload.boxY],
       [payload.positionX, payload.positionZ, payload.positionY],
       payloadMaterial,
-      Math.min(payload.boxX, payload.boxY, payload.boxZ) * 0.1,
+      Math.min(payload.boxX, payload.boxY, payload.boxZ) * 0.035,
     );
     const lens = new THREE.Mesh(
       new THREE.CylinderGeometry(
@@ -326,11 +333,11 @@ export function disposeGroup(group: THREE.Group) {
         ![
           steel,
           shell,
-          graphite,
+          frameDetail,
           darkRubber,
-          gold,
           rotorMaterial,
           payloadMaterial,
+          rotorGuideMaterial,
         ].includes(object.material as THREE.MeshStandardMaterial)
       )
         object.material.dispose();
