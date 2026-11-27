@@ -55,23 +55,21 @@
    mock) and sidebar brand (full SkyTrack logo).
    Share-role and copy-link feedback uses the Library toast manager and live region. */
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SidebarProvider } from "skytrack-ui/sidebar";
 
 import { seedTemplates, type LibTemplate } from "./database/store";
-import { newDroneProfile } from "./database/drone-store";
 import { newWorkspaceWorld } from "./database/workspace-resources-store";
 import {
   getSharedProject,
   getWorkspace,
   readActiveWorkspaceId,
-  saveActiveWorkspaceId,
   SHARED_PROJECTS,
 } from "./workspace/workspace-data.ts";
 import LibraryDialogsHost from "./dialogs/library-dialogs-host.tsx";
 import LibraryAnnounceRegion from "./library-announce-region";
 import LibrarySidebar from "./library-sidebar";
-import LibraryTopbar from "./library-topbar";
+import LibraryTopbar, { droneEditorBreadcrumbName } from "./library-topbar";
 import LibraryMainContent from "./library-main-content";
 import { useWorkspaceResources } from "./workspace/use-workspace-resources.ts";
 import { useMapDataImport } from "./use-map-data-import";
@@ -80,6 +78,11 @@ import {
   useLibraryResourceEditors,
 } from "./workspace/use-library-resource-editors.ts";
 import { useLibraryProjects } from "./workspace/use-library-projects.ts";
+import { useDroneProfileRoute } from "./workspace/use-drone-profile-route.ts";
+import {
+  useLibraryNavigationActions,
+  type LibraryNavigate,
+} from "./workspace/use-library-navigation-actions.ts";
 import { useLibraryAccountSettings } from "./account/use-library-account-settings.ts";
 import { useLibraryCardRenderers } from "./cards/library-card-renderers.tsx";
 import {
@@ -95,6 +98,7 @@ import type {
   LibraryEntry,
   LibrarySection,
 } from "./library-types";
+import type { DroneProfileEditorRoute } from "./router";
 
 export type { LibraryEntry, LibrarySection } from "./library-types";
 
@@ -115,6 +119,7 @@ export default function StudioLibrary({
   templateId,
   sharedMissionId,
   sharedProjectId,
+  droneEditorRoute,
   onNavigate,
   onOpenTemplate,
   onOpenSharedAccounts,
@@ -129,7 +134,8 @@ export default function StudioLibrary({
   templateId: string | null;
   sharedMissionId: string | null;
   sharedProjectId: string | null;
-  onNavigate: (next: LibrarySection, nextProjectId: string | null) => void;
+  droneEditorRoute: DroneProfileEditorRoute | null;
+  onNavigate: LibraryNavigate;
   onOpenTemplate: (templateId: string | null) => void;
   onOpenSharedAccounts: (missionId: string | null) => void;
   onOpenSharedProject: (projectId: string | null) => void;
@@ -292,18 +298,27 @@ export default function StudioLibrary({
         mission: sharedMissionRecord.mission.name,
       }
     : null;
-  const goto = (next: LibrarySection) => {
-    onNavigate(next, null);
-    onAnnounce(`${next === "home" ? "Home" : next} opened.`);
-  };
+  const { goto, switchWorkspace, useTemplate } = useLibraryNavigationActions({
+    onNavigate,
+    onAnnounce,
+    setActiveWorkspaceId,
+    workspaceProjects,
+    openCreateWizard,
+    onOpenTemplate,
+  });
 
-  const switchWorkspace = (id: string) => {
-    const nextWorkspace = getWorkspace(id);
-    setActiveWorkspaceId(nextWorkspace.id);
-    saveActiveWorkspaceId(nextWorkspace.id);
-    onNavigate("projects", null);
-    onAnnounce(`${nextWorkspace.name} selected. Workspace resources updated.`);
-  };
+  const createDroneId = useCallback(() => nextId("drone"), []);
+  useDroneProfileRoute({
+    route: droneEditorRoute,
+    editor: droneEditor,
+    setEditor: setDroneEditor,
+    workspaceId: activeWorkspace.id,
+    profiles: workspaceDrones,
+    createId: createDroneId,
+    onNavigate: () => onNavigate("drones", null),
+    onAnnounce,
+  });
+  const closeDroneEditor = () => onNavigate("drones", null);
 
   const {
     saveDroneProfile,
@@ -327,7 +342,7 @@ export default function StudioLibrary({
     removeWorldProfile: deleteWorldProfile,
     persistAIModel,
     removeAIModel: persistAIModelRemoval,
-    closeDroneEditor: () => setDroneEditor(null),
+    closeDroneEditor: closeDroneEditor,
     closeWorldEditor: () => setWorldEditor(null),
     clearDeleteDroneId: () => setDeleteDroneId(null),
     clearDeleteWorldId: () => setDeleteWorldId(null),
@@ -356,17 +371,6 @@ export default function StudioLibrary({
     setCloneTarget,
     onOpenSharedProject,
   });
-  const useTemplate = (t: LibTemplate) => {
-    const target = workspaceProjects[0];
-    if (!target) {
-      onAnnounce("Create a project first.");
-      return;
-    }
-    onOpenTemplate(null);
-    openCreateWizard(target.id, t.title);
-    onAnnounce(`${t.title} added to ${target.name}.`);
-  };
-
   return (
     <div
       className="h-full min-h-0 flex-[1_1_auto] flex flex-col overflow-hidden bg-(--background) text-foreground"
@@ -383,12 +387,8 @@ export default function StudioLibrary({
           projectName={activeProject?.name ?? null}
           templateName={activeTemplate?.title ?? null}
           sharedProjectName={activeSharedProject?.name ?? null}
-          onNavigateProjects={() => onNavigate("projects", null)}
-          onNavigateTemplates={() => {
-            onOpenTemplate(null);
-            goto("templates");
-          }}
-          onNavigateShared={() => onNavigate("shared", null)}
+          droneEditorName={droneEditorBreadcrumbName(droneEditor)}
+          onOpenTemplates={() => onOpenTemplate(null)}
         />
 
         <div
@@ -396,6 +396,7 @@ export default function StudioLibrary({
           data-testid="ms-lib-body"
         >
           <LibrarySidebar
+            hidden={Boolean(droneEditor)}
             section={section}
             hasStarredMissions={starredMissions.length > 0}
             isSharedAccountsDetail={sharedView !== null}
@@ -420,6 +421,11 @@ export default function StudioLibrary({
             workspaceProjects={workspaceProjects}
             workspaceWorlds={workspaceWorlds}
             workspaceDrones={workspaceDrones}
+            droneProfileEditor={{
+              editor: droneEditor,
+              onCancel: closeDroneEditor,
+              onSave: saveDroneProfile,
+            }}
             skytrackAIModels={skytrackAIModels}
             workspaceAIModels={workspaceAIModels}
             uploadedAIModels={uploadedAIModels}
@@ -473,14 +479,9 @@ export default function StudioLibrary({
               setWorldEditor({ mode: "edit", profile: world })
             }
             onDeleteWorld={setDeleteWorldId}
-            onCreateDrone={() =>
-              setDroneEditor({
-                mode: "create",
-                profile: newDroneProfile(nextId("drone"), activeWorkspace.id),
-              })
-            }
+            onCreateDrone={() => onNavigate("drones", null, { mode: "create" })}
             onEditDrone={(drone) =>
-              setDroneEditor({ mode: "edit", profile: drone })
+              onNavigate("drones", null, { mode: "edit", droneId: drone.id })
             }
             onDeleteDrone={setDeleteDroneId}
             onImportAIModel={() => setImportModelOpen(true)}
@@ -513,9 +514,6 @@ export default function StudioLibrary({
           submitProjectDlg,
         }}
         resourceEditors={{
-          droneEditor,
-          setDroneEditor,
-          saveDroneProfile,
           worldEditor,
           setWorldEditor,
           sourceMissions,

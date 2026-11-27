@@ -40,6 +40,7 @@ const NAV_MAIN: NavItem[] = [
 const LEARN_URL = "https://getskytrack.com/help/category/get-builders-insights";
 
 export default function LibrarySidebar({
+  hidden = false,
   section,
   hasStarredMissions,
   isSharedAccountsDetail,
@@ -52,6 +53,7 @@ export default function LibrarySidebar({
   onOpenAccountPanel,
   onUpdateThemePreference,
 }: {
+  hidden?: boolean;
   section: LibrarySection;
   hasStarredMissions: boolean;
   isSharedAccountsDetail: boolean;
@@ -64,6 +66,8 @@ export default function LibrarySidebar({
   onOpenAccountPanel: (panel: AccountMenuPanel) => void;
   onUpdateThemePreference: (preference: "light" | "dark" | "system") => void;
 }) {
+  if (hidden) return null;
+
   const renderNavItem = (item: NavItem) => {
     const Icon = item.icon;
     const active = section === item.id && !isSharedAccountsDetail;
@@ -120,6 +124,7 @@ export default function LibrarySidebar({
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
+                nativeButton={false}
                 render={
                   <a
                     href={LEARN_URL}

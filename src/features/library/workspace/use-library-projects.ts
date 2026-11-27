@@ -23,13 +23,9 @@ interface UseLibraryProjectsOptions {
   onOpenMission: (entry: LibraryEntry) => void;
   onAnnounce: (text: string) => void;
 }
-
 let localId = 100;
-const nextId = (prefix: string) => {
-  localId += 1;
-  return `${prefix}-local-${Date.now().toString(36)}-${localId}`;
-};
-
+const nextId = (prefix: string) =>
+  `${prefix}-local-${Date.now().toString(36)}-${++localId}`;
 export function useLibraryProjects({
   activeWorkspaceId,
   projectId,

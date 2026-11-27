@@ -414,8 +414,7 @@ export default function MissionStudio({ onLogout }: { onLogout: () => void }) {
       <>
         <StudioLibraryRoute
           announce={announce}
-          section={libNav.section}
-          projectId={libNav.projectId}
+          {...libNav}
           templateId={
             route.kind === "library" ? (route.templateId ?? null) : null
           }

@@ -39,6 +39,10 @@ import {
 import { parseMissionViewSearch } from "./mission-view-url";
 import type { AppTab } from "./studio-left-rail";
 import type { MissionBasemapStyle } from "@/shared/map-tiles";
+import {
+  createLibraryNavigate,
+  libraryRouteState,
+} from "./library-route-navigation";
 
 const PAGE_TITLES: Record<LibrarySection, string> = {
   home: "Home",
@@ -111,10 +115,7 @@ export function useStudioRouting({
     useState<WorkspaceDroneProfile[]>(loadDroneProfiles);
   const section: "studio" | "library" =
     route.kind === "mission" ? "studio" : "library";
-  const libNav =
-    route.kind === "library"
-      ? { section: route.section, projectId: route.projectId ?? null }
-      : { section: "home" as LibrarySection, projectId: null };
+  const libNav = libraryRouteState(route);
 
   const updateRoute = useCallback(
     (
@@ -136,7 +137,6 @@ export function useStudioRouting({
     },
     [],
   );
-
   const navigateRoute = useCallback(
     (nextRoute: MissionStudioRoute, replace = false) => {
       const nextPath = missionStudioRoutePath(
@@ -152,7 +152,7 @@ export function useStudioRouting({
 
       updateRoute(nextRoute, updateHistory, pathChanged && !replace);
     },
-    [],
+    [updateRoute],
   );
 
   useEffect(() => {
@@ -380,15 +380,9 @@ export function useStudioRouting({
     },
     [navigateRoute],
   );
-  const onLibraryNavigate = useCallback(
-    (section: LibrarySection, projectId: string | null) => {
-      navigateRoute({
-        kind: "library",
-        section,
-        ...(projectId ? { projectId } : {}),
-      });
-    },
-    [navigateRoute],
+  const onLibraryNavigate = useMemo(
+    () => createLibraryNavigate(route, navigateRoute),
+    [navigateRoute, route],
   );
   const onOpenTemplate = useCallback(
     (templateId: string | null) => {

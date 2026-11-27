@@ -1,5 +1,9 @@
 import type { LibrarySection } from './library'
 
+export type DroneProfileEditorRoute =
+  | { mode: 'create' }
+  | { mode: 'edit'; droneId: string }
+
 export type MissionStudioRoute =
   | {
       kind: 'library'
@@ -8,6 +12,7 @@ export type MissionStudioRoute =
       templateId?: string
       sharedMissionId?: string
       sharedProjectId?: string
+      droneEditor?: DroneProfileEditorRoute
     }
   | { kind: 'mission'; missionId: string }
   | { kind: 'not-found'; pathname: string }
@@ -53,6 +58,12 @@ export function parseMissionStudioRoute(pathname: string, basePath = '/'): Missi
   }
   if (first === 'recent' && !second) return { kind: 'library', section: 'recent' }
   if (first === 'worlds' && !second) return { kind: 'library', section: 'worlds' }
+  if (first === 'drones' && second === 'new' && !third && segments.length === 2) {
+    return { kind: 'library', section: 'drones', droneEditor: { mode: 'create' } }
+  }
+  if (first === 'drones' && second && third === 'edit' && segments.length === 3) {
+    return { kind: 'library', section: 'drones', droneEditor: { mode: 'edit', droneId: second } }
+  }
   if (first === 'drones' && !second) return { kind: 'library', section: 'drones' }
   if (first === 'notifications' && !second) return { kind: 'library', section: 'notifications' }
   if (first === 'download' && !second) return { kind: 'library', section: 'download' }
@@ -84,6 +95,8 @@ export function missionStudioRoutePath(route: MissionStudioRoute, basePath = '/'
   if (route.kind === 'mission') return addBasePath(`/mission/${encodeURIComponent(route.missionId)}`, basePath)
   if (route.sharedMissionId) return addBasePath(`/shared-accounts/${encodeURIComponent(route.sharedMissionId)}`, basePath)
   if (route.sharedProjectId) return addBasePath(`/shared-projects/${encodeURIComponent(route.sharedProjectId)}`, basePath)
+  if (route.droneEditor?.mode === 'create') return addBasePath('/drones/new', basePath)
+  if (route.droneEditor?.mode === 'edit') return addBasePath(`/drones/${encodeURIComponent(route.droneEditor.droneId)}/edit`, basePath)
   if (route.templateId) return addBasePath(`/template/${encodeURIComponent(route.templateId)}`, basePath)
   if (route.section === 'projects' && route.projectId) {
     return addBasePath(`/projects/${encodeURIComponent(route.projectId)}`, basePath)

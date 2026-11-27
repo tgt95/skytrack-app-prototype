@@ -21,6 +21,8 @@ import {
 import { PageHeader } from "skytrack-ui/page-header";
 import type { LibMission, LibProject, LibTemplate } from "./database/store";
 import type { WorkspaceDroneProfile } from "./database/drone-store";
+import type { LibraryResourceEditor } from "./workspace/use-library-resource-editors";
+import type { LibraryNavigate } from "./workspace/use-library-navigation-actions";
 import type {
   WorkspaceAIModelRecord,
   WorkspaceWorldRecord,
@@ -42,14 +44,11 @@ import {
   SharedProjectPage,
   SharedWithMePage,
 } from "./pages/shared-pages";
-import {
-  AIModelsPage,
-  DronesPage,
-  WorldsPage,
-} from "./workspace-resource-pages";
+import { AIModelsPage, WorldsPage } from "./workspace-resource-pages";
 import { ProjectDetailPage, ProjectsPage } from "./project-pages";
 import DownloadPage from "./pages/download-page";
 import LearnPage from "./pages/learn-page";
+import { DronesRoutePage } from "./pages/drones-route-page";
 import type { AIModelCategory, LibrarySection } from "./library-types";
 
 type MissionEntry = { projectId: string; project: string; mission: LibMission };
@@ -65,6 +64,11 @@ interface LibraryMainContentProps {
   workspaceProjects: LibProject[];
   workspaceWorlds: WorkspaceWorldRecord[];
   workspaceDrones: WorkspaceDroneProfile[];
+  droneProfileEditor: {
+    editor: LibraryResourceEditor<WorkspaceDroneProfile>;
+    onCancel: () => void;
+    onSave: (profile: WorkspaceDroneProfile) => void;
+  };
   skytrackAIModels: WorkspaceAIModelRecord[];
   workspaceAIModels: WorkspaceAIModelRecord[];
   uploadedAIModels: WorkspaceAIModelRecord[];
@@ -95,7 +99,7 @@ interface LibraryMainContentProps {
   ) => ReactNode;
   renderSharedProject: (project: SharedProject) => ReactNode;
   renderSharedMission: (mission: SharedMission, ownerName: string) => ReactNode;
-  onNavigate: (section: LibrarySection, projectId: string | null) => void;
+  onNavigate: LibraryNavigate;
   onCreateMission: (projectId?: string, title?: string) => void;
   onCreateProject: () => void;
   onRenameProject: (project: LibProject) => void;
@@ -128,6 +132,7 @@ export default function LibraryMainContent({
   workspaceProjects,
   workspaceWorlds,
   workspaceDrones,
+  droneProfileEditor,
   skytrackAIModels,
   workspaceAIModels,
   uploadedAIModels,
@@ -177,9 +182,11 @@ export default function LibraryMainContent({
       ? "Shared project detail"
       : activeProject
         ? "Project detail"
-        : section === "home"
-          ? "Home"
-          : "Library";
+        : droneProfileEditor.editor
+          ? "Drone editor"
+          : section === "home"
+            ? "Home"
+            : "Library";
 
   return (
     <section
@@ -237,11 +244,14 @@ export default function LibraryMainContent({
           onDelete={onDeleteWorld}
         />
       ) : section === "drones" ? (
-        <DronesPage
+        <DronesRoutePage
           drones={workspaceDrones}
+          editor={droneProfileEditor.editor}
           onCreate={onCreateDrone}
           onEdit={onEditDrone}
           onDelete={onDeleteDrone}
+          onCancel={droneProfileEditor.onCancel}
+          onSave={droneProfileEditor.onSave}
         />
       ) : section === "starred" ? (
         <StarredPage missions={starredMissions} renderMission={renderRecent} />

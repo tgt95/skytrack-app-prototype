@@ -1,5 +1,6 @@
 import { DEFAULT_WORKSPACE_ID, WORKSPACES } from '@/features/library/workspace/workspace-data.ts'
 import { STORAGE_KEYS, STORAGE_VERSIONS } from '@/shared/storage-keys'
+import { DEFAULT_DRONE_GEOMETRY, isDroneGeometry, validateDroneGeometry, type DroneGeometry } from '@/domain/drone-geometry'
 
 export type DroneFirmwareFamily = 'PX4' | 'ArduPilot' | 'DJI' | 'Other' | 'Unspecified'
 
@@ -85,6 +86,7 @@ export interface WorkspaceDroneProfile {
   referenceBuildNote: string
   legacyLabels: string[]
   components: DroneHardwareComponent[]
+  geometry?: DroneGeometry
 }
 
 export const DRONE_DB_KEY = STORAGE_KEYS.droneProfiles
@@ -252,7 +254,8 @@ function blankProfileFromFixture(
     maxPayloadKg: null,
     referenceBuildNote: '',
     legacyLabels,
-    components: []
+    components: [],
+    geometry: { ...DEFAULT_DRONE_GEOMETRY }
   }
 }
 
@@ -354,6 +357,17 @@ function isProfile(value: unknown): value is WorkspaceDroneProfile {
     Array.isArray(profile.components) && profile.components.every(isComponent)
 }
 
+function withGeometryDefaults(profiles: WorkspaceDroneProfile[]): WorkspaceDroneProfile[] {
+  return profiles.map((profile) => {
+    const geometry = profile.geometry
+    const valid = isDroneGeometry(geometry) && Object.keys(validateDroneGeometry(geometry)).length === 0
+    return {
+      ...profile,
+      geometry: valid ? { ...DEFAULT_DRONE_GEOMETRY, ...geometry } : { ...DEFAULT_DRONE_GEOMETRY },
+    }
+  })
+}
+
 function isLegacyComponent(value: unknown): value is LegacyDroneHardwareComponent {
   if (typeof value !== 'object' || value === null) return false
   const item = value as Partial<LegacyDroneHardwareComponent>
@@ -430,7 +444,7 @@ export function loadDroneProfiles(): WorkspaceDroneProfile[] {
     if (currentRaw) {
       const current = JSON.parse(currentRaw) as Partial<DroneDatabaseShape>
       if (current.version === DRONE_DB_VERSION && Array.isArray(current.profiles) && current.profiles.every(isProfile)) {
-        return normalizeDemoDroneCopy(current.profiles)
+        return normalizeDemoDroneCopy(withGeometryDefaults(current.profiles))
       }
     }
 
@@ -438,7 +452,7 @@ export function loadDroneProfiles(): WorkspaceDroneProfile[] {
     if (!legacyRaw) return seeded
     const legacy = JSON.parse(legacyRaw) as { version?: unknown; profiles?: unknown }
     if (legacy.version !== 1 || !Array.isArray(legacy.profiles) || !legacy.profiles.every(isLegacyProfile)) return seeded
-    const migrated = normalizeDemoDroneCopy(legacy.profiles.map(migrateLegacyProfile))
+    const migrated = normalizeDemoDroneCopy(withGeometryDefaults(legacy.profiles.map(migrateLegacyProfile)))
     saveDroneProfiles(migrated)
     return migrated
   } catch {

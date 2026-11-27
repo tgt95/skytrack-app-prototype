@@ -7,10 +7,11 @@ export interface StudioLibraryRouteProps {
   announce: string;
   section: LibrarySection;
   projectId: string | null;
+  droneEditorRoute: { mode: "create" } | { mode: "edit"; droneId: string } | null;
   templateId: string | null;
   sharedMissionId: string | null;
   sharedProjectId: string | null;
-  onNavigate: (section: LibrarySection, projectId: string | null) => void;
+  onNavigate: (section: LibrarySection, projectId: string | null, droneEditor?: { mode: "create" } | { mode: "edit"; droneId: string }) => void;
   onOpenTemplate: (templateId: string | null) => void;
   onOpenSharedAccounts: (missionId: string | null) => void;
   onOpenSharedProject: (projectId: string | null) => void;
@@ -23,6 +24,7 @@ export default function StudioLibraryRoute({
   announce,
   section,
   projectId,
+  droneEditorRoute,
   templateId,
   sharedMissionId,
   sharedProjectId,
@@ -40,6 +42,7 @@ export default function StudioLibraryRoute({
         announce={announce}
         section={section}
         projectId={projectId}
+        droneEditorRoute={droneEditorRoute}
         templateId={templateId}
         sharedMissionId={sharedMissionId}
         sharedProjectId={sharedProjectId}

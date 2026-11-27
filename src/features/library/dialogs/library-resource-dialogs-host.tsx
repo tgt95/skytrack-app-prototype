@@ -12,7 +12,6 @@ import {
   DialogPortal,
   DialogTitle
 } from 'skytrack-ui/dialog'
-import DroneProfileDialog from '@/features/library/drone-profile-dialog'
 import { WorldProfileDialog } from './workspace-resource-dialogs.tsx'
 import { ImportAIModelDialog } from './import-ai-model-dialog.tsx'
 import {
@@ -29,9 +28,6 @@ type ProfileEditor<T> = { mode: 'create' | 'edit'; profile: T } | null
 type MissionReference = { project: string; mission: string }
 
 export interface LibraryResourceEditorDialogsProps {
-  droneEditor: ProfileEditor<WorkspaceDroneProfile>
-  setDroneEditor: (next: ProfileEditor<WorkspaceDroneProfile>) => void
-  saveDroneProfile: (profile: WorkspaceDroneProfile) => void
   worldEditor: ProfileEditor<WorkspaceWorldRecord>
   setWorldEditor: (next: ProfileEditor<WorkspaceWorldRecord>) => void
   sourceMissions: { id: string; projectName: string; missionName: string }[]
@@ -56,9 +52,6 @@ export interface LibraryResourceEditorDialogsProps {
 }
 
 export function LibraryResourceEditorDialogs ({
-  droneEditor,
-  setDroneEditor,
-  saveDroneProfile,
   worldEditor,
   setWorldEditor,
   sourceMissions,
@@ -103,13 +96,6 @@ export function LibraryResourceEditorDialogs ({
 
   return (
     <>
-      <DroneProfileDialog
-        open={droneEditor !== null}
-        mode={droneEditor?.mode ?? 'create'}
-        profile={droneEditor?.profile ?? null}
-        onClose={() => setDroneEditor(null)}
-        onSave={saveDroneProfile}
-      />
       <WorldProfileDialog
         open={worldEditor !== null}
         mode={worldEditor?.mode ?? 'create'}
