@@ -150,7 +150,7 @@ export function DroneManualPidFields ({
                 <div className='text-base font-medium text-foreground'>
                   {group.label}
                 </div>
-                <div className='grid grid-cols-2 gap-3'>
+                <div className='grid grid-cols-1 gap-3'>
                   {group.fields.map(field => (
                     <GainField
                       key={field.key}
