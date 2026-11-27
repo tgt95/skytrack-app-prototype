@@ -3,17 +3,17 @@ import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.j
 import { getDronePayloads, type DroneGeometry } from "@/domain/drone-geometry";
 
 const steel = new THREE.MeshStandardMaterial({
-  color: "#d4d8da",
+  color: "#f4f5f6",
   metalness: 0,
   roughness: 0.9,
 });
 const shell = new THREE.MeshStandardMaterial({
-  color: "#f4f6f7",
+  color: "#ffffff",
   metalness: 0,
   roughness: 0.92,
 });
 const frameDetail = new THREE.MeshStandardMaterial({
-  color: "#c4c9cc",
+  color: "#dfe2e5",
   metalness: 0,
   roughness: 0.9,
 });
@@ -23,12 +23,12 @@ const darkRubber = new THREE.MeshStandardMaterial({
   roughness: 0.86,
 });
 const rotorMaterial = new THREE.MeshStandardMaterial({
-  color: "#f8f9fa",
+  color: "#ffffff",
   metalness: 0,
   roughness: 0.92,
 });
 const payloadMaterial = new THREE.MeshStandardMaterial({
-  color: "#e3e7e9",
+  color: "#f4f5f6",
   metalness: 0,
   roughness: 0.92,
 });
@@ -41,11 +41,11 @@ const rotorGuideMaterial = new THREE.MeshBasicMaterial({
 });
 
 export function setDroneGeometryTheme(isDark: boolean) {
-  shell.color.set(isDark ? "#d9dddf" : "#f4f6f7");
-  steel.color.set(isDark ? "#b9bec1" : "#d4d8da");
-  frameDetail.color.set(isDark ? "#a6abae" : "#c4c9cc");
-  rotorMaterial.color.set(isDark ? "#eff2f3" : "#f8f9fa");
-  payloadMaterial.color.set(isDark ? "#d0d4d6" : "#e3e7e9");
+  shell.color.set(isDark ? "#f4f5f6" : "#ffffff");
+  steel.color.set(isDark ? "#dfe2e5" : "#f4f5f6");
+  frameDetail.color.set(isDark ? "#c5cacf" : "#dfe2e5");
+  rotorMaterial.color.set("#ffffff");
+  payloadMaterial.color.set(isDark ? "#dfe2e5" : "#f4f5f6");
   rotorGuideMaterial.color.set(isDark ? "#888d91" : "#b0b6ba");
 }
 
@@ -60,7 +60,7 @@ function roundedBox(
     sizeY,
     sizeZ,
     3,
-    Math.max(0.001, Math.min(radius, sizeX * 0.45, sizeY * 0.45, sizeZ * 0.45)),
+    Math.max(0.001, Math.min(radius, sizeX * 0.15, sizeY * 0.15, sizeZ * 0.15)),
   );
 }
 

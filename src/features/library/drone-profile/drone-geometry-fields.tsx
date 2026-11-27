@@ -1,4 +1,4 @@
-import { PlusIcon } from "@phosphor-icons/react";
+import { TrashIcon, PlusIcon } from "@phosphor-icons/react";
 import { Button } from "skytrack-ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "skytrack-ui/card";
 import { FieldError, FieldLabel, FieldRoot } from "skytrack-ui/field";
@@ -39,21 +39,19 @@ function GeometryField({
 }) {
   return (
     <FieldRoot orientation="vertical" invalid={Boolean(error)}>
-      <FieldLabel htmlFor={id} className="text-muted-foreground">
-        {label}
-      </FieldLabel>
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
       <NumberField
         className="w-full"
         value={Number.isFinite(value) ? value : null}
         onValueChange={(next) => onChange(next ?? Number.NaN)}
         step={step}
       >
-        <NumberFieldGroup className="w-full border border-input bg-background shadow-xs focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-destructive/20">
+        <NumberFieldGroup className="w-full">
           <NumberFieldInput
             id={id}
             aria-invalid={Boolean(error)}
             aria-describedby={error ? `${id}-error` : undefined}
-            className="w-full min-w-0 flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0"
+            className="w-full min-w-0 flex-1"
           />
           <InputAdornment
             position="end"
@@ -292,19 +290,19 @@ export function DronePayloadFields({
             {payloads.map((payload, index) => (
               <section
                 key={payload.id ?? `payload-${index}`}
-                className="grid gap-4"
+                className="grid gap-4 p-4 bg-muted rounded-(--radius)"
               >
                 <div className="flex items-center justify-between gap-4">
-                  <strong>
+                  <div className="text-base font-medium text-foreground">
                     {payload.name?.trim() || `Payload ${index + 1}`}
-                  </strong>
+                  </div>
                   <Button
                     type="button"
-                    variant="ghost"
-                    size="sm"
+                    variant="outline"
+                    size="icon-sm"
                     onClick={() => onRemovePayload(index)}
                   >
-                    Remove payload
+                    <TrashIcon />
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -366,12 +364,12 @@ export function DronePayloadFields({
                 </div>
               </section>
             ))}
-            <Button type="button" variant="secondary" onClick={onAddPayload}>
+            <Button type="button" variant="outline" onClick={onAddPayload}>
               <PlusIcon aria-hidden="true" /> Add fixed payload (+0.2 kg total)
             </Button>
           </div>
         ) : (
-          <Button type="button" variant="secondary" onClick={onAddPayload}>
+          <Button type="button" variant="outline" onClick={onAddPayload}>
             <PlusIcon aria-hidden="true" /> Add fixed payload (+0.2 kg total)
           </Button>
         )}

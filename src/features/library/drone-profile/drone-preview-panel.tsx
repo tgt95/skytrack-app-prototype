@@ -1,18 +1,20 @@
-import { ArrowCounterClockwiseIcon } from "@phosphor-icons/react"
-import { Button } from 'skytrack-ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from 'skytrack-ui/card'
-import { Tabs, TabsList, TabsTab } from 'skytrack-ui/tabs'
+import { ArrowCounterClockwiseIcon } from '@phosphor-icons/react'
+import { Card, CardContent } from 'skytrack-ui/card'
+import {
+  Toolbar,
+  ToolbarButton,
+  ToolbarGroup,
+  ToolbarSeparator
+} from 'skytrack-ui/toolbar'
 import type { DroneGeometry } from '@/domain/drone-geometry'
 import { DronePreview } from './preview/drone-preview'
 
 function StatTile ({ label, value }: { label: string; value: string }) {
   return (
-    <Card as='div' size='sm'>
-      <CardContent className='flex flex-col gap-1'>
-        <span className='text-muted-foreground'>{label}</span>
-        <strong>{value}</strong>
-      </CardContent>
-    </Card>
+    <div className='flex flex-col not-last:border-r not-last:border-border px-3 first:pl-0 last:pr-0'>
+      <span className='text-sm text-muted-foreground'>{label}</span>
+      <div className='h4 tabular-nums'>{value}</div>
+    </div>
   )
 }
 
@@ -42,37 +44,9 @@ export function DronePreviewPanel ({
       className='order-first min-w-0 xl:order-none xl:col-start-2 xl:row-start-1 xl:sticky xl:top-32 xl:self-start'
       aria-label='Live drone preview'
     >
-      <Card as='section'>
-        <CardHeader className='flex flex-row items-center justify-between gap-4'>
-          <CardTitle as='h2'>3D preview</CardTitle>
-          <div className='flex flex-row gap-2'>
-            <Tabs
-              value={view}
-              onValueChange={value => setView(String(value) as typeof view)}
-              className='w-fit'
-            >
-              <TabsList variant='filled' aria-label='Preview view'>
-                <TabsTab value='isometric'>Isometric</TabsTab>
-                <TabsTab value='top'>Top</TabsTab>
-                <TabsTab value='front'>Front</TabsTab>
-              </TabsList>
-            </Tabs>
-            <Button
-              type='button'
-              variant='outline'
-              size='icon'
-              onClick={() => {
-                setView('isometric')
-                setResetKey(key => key + 1)
-              }}
-            >
-              <ArrowCounterClockwiseIcon />
-              {/* Reset view */}
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent className='flex flex-col gap-4'>
-          <div className='relative aspect-video min-h-72 overflow-hidden rounded-(--radius) border border-border bg-muted'>
+      <Card as='section' className='p-0'>
+        <CardContent className='flex flex-col'>
+          <div className='relative aspect-video min-h-72 overflow-hidden rounded-(--radius) border-b border-border bg-muted'>
             <DronePreview
               profile={geometry}
               viewMode={view}
@@ -86,28 +60,68 @@ export function DronePreviewPanel ({
                 Preview shows last valid geometry
               </div>
             )}
+            <Toolbar
+              aria-label='Drone preview controls'
+              className='absolute top-2 right-2'
+            >
+              <ToolbarGroup aria-label='Preview view'>
+                {(['isometric', 'top', 'front'] as const).map(preset => (
+                  <ToolbarButton
+                    key={preset}
+                    type='button'
+                    onClick={() => {
+                      setView(preset)
+                      setResetKey(key => key + 1)
+                    }}
+                  >
+                    {preset === 'isometric'
+                      ? 'Isometric'
+                      : preset === 'top'
+                      ? 'Top'
+                      : 'Front'}
+                  </ToolbarButton>
+                ))}
+              </ToolbarGroup>
+              <ToolbarSeparator />
+              <ToolbarGroup>
+                <ToolbarButton
+                  type='button'
+                  size='icon'
+                  aria-label='Reset view'
+                  title='Reset view'
+                  onClick={() => {
+                    setView('isometric')
+                    setResetKey(key => key + 1)
+                  }}
+                >
+                  <ArrowCounterClockwiseIcon aria-hidden='true' />
+                </ToolbarButton>
+              </ToolbarGroup>
+            </Toolbar>
           </div>
-          <p className='m-0 text-muted-foreground'>
+          {/* <div className='px-4 pt-2 text-x text-muted-foreground'>
             Drag to orbit · Shift/Command/Control-drag to pan · Alt-drag to
             adjust pitch · Scroll to zoom
-          </p>
-          <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4'>
-            <StatTile label='Total mass' value={`${massKg.toFixed(2)} kg`} />
-            <StatTile
-              label='Payload mass'
-              value={`${payloadMassKg.toFixed(2)} kg`}
-            />
-            <StatTile
-              label='Thrust / weight'
-              value={`${thrustRatio.toFixed(2)}×`}
-            />
-            <StatTile
-              label='Thrust reserve'
-              value={`${Math.max(
-                0,
-                Math.min(100, (1 - 1 / thrustRatio) * 100)
-              ).toFixed(0)}%`}
-            />
+          </div> */}
+          <div className='flex flex-col gap-4 px-6 py-4'>
+            <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4'>
+              <StatTile label='Total mass' value={`${massKg.toFixed(2)} kg`} />
+              <StatTile
+                label='Payload mass'
+                value={`${payloadMassKg.toFixed(2)} kg`}
+              />
+              <StatTile
+                label='Thrust / weight'
+                value={`${thrustRatio.toFixed(2)}×`}
+              />
+              <StatTile
+                label='Thrust reserve'
+                value={`${Math.max(
+                  0,
+                  Math.min(100, (1 - 1 / thrustRatio) * 100)
+                ).toFixed(0)}%`}
+              />
+            </div>
           </div>
         </CardContent>
       </Card>

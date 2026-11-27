@@ -196,7 +196,7 @@ export default function DroneProfileEditorPage({
     >
       <LibraryPageLayout
         titleId="ms-drone-editor-title"
-        sectionClassName="grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(24rem,1fr)]"
+        sectionClassName="grid min-w-0 grid-cols-1 gap-6 bg-(--canvas) xl:grid-cols-[minmax(0,1fr)_minmax(24rem,0.8fr)]"
         header={
           <PageHeader
             className="sticky top-0 z-20 p-6 pb-0"

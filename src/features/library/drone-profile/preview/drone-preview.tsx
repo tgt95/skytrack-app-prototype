@@ -28,6 +28,8 @@ type PointerState = {
   targetZ: number;
 };
 
+const DEFAULT_CAMERA_RADIUS = 1.5;
+
 function setViewAngles(controls: PointerState, viewMode: ViewMode) {
   if (viewMode === "isometric") {
     controls.theta = Math.PI * 0.23;
@@ -54,7 +56,7 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
     dragMode: "orbit" as "orbit" | "pan" | "pitch",
     theta: Math.PI * 0.23,
     phi: 0.76,
-    radius: 1.18,
+    radius: DEFAULT_CAMERA_RADIUS,
     targetX: 0,
     targetY: 0,
     targetZ: 0,
@@ -63,6 +65,15 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      pointerRef.current.radius = THREE.MathUtils.clamp(
+        pointerRef.current.radius + event.deltaY * 0.001,
+        0.75,
+        3.2,
+      );
+    };
+    host.addEventListener("wheel", handleWheel, { passive: false });
     const scene = new THREE.Scene();
     scene.background = new THREE.Color("#33373a");
     const camera = new THREE.PerspectiveCamera(34, 1, 0.01, 100);
@@ -93,35 +104,34 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
 
     const grid = new THREE.GridHelper(2.2, 22, "#595c5f", "#494c50");
     grid.position.y = -0.22;
-    if (Array.isArray(grid.material))
-      grid.material.forEach((material) => {
-        material.transparent = true;
-        material.opacity = 0.38;
-      });
-    else {
-      grid.material.transparent = true;
-      grid.material.opacity = 0.38;
-    }
     scene.add(grid);
 
     const applyTheme = () => {
       const isDark = document.documentElement.classList.contains("dark");
       if (scene.background instanceof THREE.Color)
-        scene.background.set(isDark ? "#33373a" : "#e3e7e9");
+        scene.background.set(isDark ? "#33373a" : "#ffffff");
       hemisphere.color.set("#f7f7f7");
       hemisphere.groundColor.set(isDark ? "#3e4245" : "#969da1");
-      hemisphere.intensity = isDark ? 1.8 : 1.45;
-      key.intensity = isDark ? 2.6 : 1.8;
-      renderer.toneMappingExposure = isDark ? 0.96 : 0.88;
+      hemisphere.intensity = isDark ? 1.8 : 1.65;
+      key.intensity = isDark ? 2.6 : 2.05;
+      renderer.toneMappingExposure = isDark ? 0.96 : 1.1;
       rim.intensity = isDark ? 0.42 : 0.22;
       rim.color.set(isDark ? "#eceeef" : "#f5f6f6");
-      if (Array.isArray(grid.material)) {
-        grid.material[0]?.color.set(isDark ? "#595c5f" : "#c7cdd1");
-        grid.material[1]?.color.set(isDark ? "#494c50" : "#d7dcdf");
-        grid.material.forEach((material) => {
-          material.opacity = isDark ? 0.22 : 0.12;
-        });
+      const gridColors = grid.geometry.getAttribute("color");
+      const centerLineColor = new THREE.Color(isDark ? "#595c5f" : "#9e9e9e");
+      const minorLineColor = new THREE.Color(isDark ? "#494c50" : "#9e9e9e");
+      const centerDivision = 11;
+      for (let vertex = 0; vertex < gridColors.count; vertex += 1) {
+        const color =
+          Math.floor(vertex / 4) === centerDivision
+            ? centerLineColor
+            : minorLineColor;
+        gridColors.setXYZ(vertex, color.r, color.g, color.b);
       }
+      gridColors.needsUpdate = true;
+      grid.material.transparent = true;
+      grid.material.opacity = isDark ? 0.22 : 0.14;
+      grid.material.depthWrite = false;
       setDroneGeometryTheme(isDark);
     };
     applyTheme();
@@ -214,6 +224,7 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
       cancelAnimationFrame(frame);
       observer.disconnect();
       themeObserver.disconnect();
+      host.removeEventListener("wheel", handleWheel);
       renderer.dispose();
       const generatedModel = modelRef.current?.children[0];
       if (generatedModel instanceof THREE.Group) disposeGroup(generatedModel);
@@ -254,7 +265,7 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
 
   useEffect(() => {
     const controls = pointerRef.current;
-    controls.radius = 1.18;
+    controls.radius = DEFAULT_CAMERA_RADIUS;
     controls.targetX = 0;
     controls.targetY = 0;
     controls.targetZ = 0;
@@ -320,23 +331,14 @@ export function DronePreview({ profile, viewMode, resetKey }: Props) {
     if (event.currentTarget.hasPointerCapture(event.pointerId))
       event.currentTarget.releasePointerCapture(event.pointerId);
   };
-  const onWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-    pointerRef.current.radius = THREE.MathUtils.clamp(
-      pointerRef.current.radius + event.deltaY * 0.001,
-      0.75,
-      3.2,
-    );
-  };
-
   return (
     <div
-      className="h-full min-h-72 w-full touch-none cursor-grab active:cursor-grabbing [&_canvas]:block [&_canvas]:size-full"
+      className="h-full min-h-72 w-full touch-none overscroll-contain cursor-grab active:cursor-grabbing [&_canvas]:block [&_canvas]:size-full"
       ref={hostRef}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
-      onWheel={onWheel}
       aria-label="Drone preview. Drag to orbit, Shift, Command, or Control-drag to pan, Alt-drag to adjust pitch, and scroll to zoom."
     />
   );
