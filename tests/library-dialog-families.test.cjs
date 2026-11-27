@@ -61,7 +61,7 @@ test("dialog host composes narrow families in the retained dialog order", () => 
   }
 });
 
-test("dialog families keep their own dialogs and do not import the host", () => {
+test("dialog families keep their own dialogs and drone profiles use a route editor", () => {
   const mission = readDialogSource("library-mission-dialogs.tsx");
   const resources = readDialogSource("library-resource-dialogs-host.tsx");
 
@@ -74,7 +74,7 @@ test("dialog families keep their own dialogs and do not import the host", () => 
   assert.match(mission, /Delete Project\?/);
   assert.doesNotMatch(mission, /library-dialogs-host/);
 
-  assert.match(resources, /DroneProfileDialog/);
+  assert.doesNotMatch(resources, /DroneProfileDialog/);
   assert.match(resources, /WorldProfileDialog/);
   assert.match(resources, /ImportAIModelDialog/);
   assert.match(resources, /Delete drone profile\?/);
@@ -82,4 +82,10 @@ test("dialog families keep their own dialogs and do not import the host", () => 
   assert.match(resources, /Remove AI model\?/);
   assert.match(resources, /Model is used in missions/);
   assert.doesNotMatch(resources, /library-dialogs-host/);
+
+  const droneEditor = fs.readFileSync(
+    path.join(libraryDirectory, "drone-profile/drone-profile-editor-page.tsx"),
+    "utf8",
+  );
+  assert.match(droneEditor, /function DroneProfileEditorPage/);
 });

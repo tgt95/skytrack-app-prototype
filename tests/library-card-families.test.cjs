@@ -8,7 +8,11 @@ const ts = require("typescript");
 
 const resolveFilename = Module._resolveFilename;
 Module._resolveFilename = function (request, ...args) {
-  return resolveFilename.call(this, request.replace(/\?(?:raw|url)$/, ""), ...args);
+  return resolveFilename.call(
+    this,
+    request.replace(/\?(?:raw|url)$/, ""),
+    ...args,
+  );
 };
 
 const loadModule = Module._load;
@@ -186,7 +190,7 @@ test("mission summaries use rounded route length when no Area exists", () => {
   assert.doesNotMatch(markup, /square meters/);
 });
 
-test("Recent and Shared mission variants retain titles, read-only state, and fallback", () => {
+test("Recent and Shared mission variants retain titles, project links, read-only state, and fallback", () => {
   const mission = missionCard("not a mission snapshot");
   delete mission.missionData;
 
@@ -200,7 +204,9 @@ test("Recent and Shared mission variants retain titles, read-only state, and fal
       onOpen: () => {},
     }),
   );
-  assert.match(recent, /Coastal mapping \| Card mission/);
+  assert.match(recent, /aria-label="Open project Coastal mapping"/);
+  assert.match(recent, /Coastal mapping/);
+  assert.match(recent, /Card mission/);
   assert.doesNotMatch(recent, /data-testid="ms-lib-card-summary"/);
   assert.match(recent, /data-testid="ms-lib-card-owner"/);
   assert.match(recent, /2h/);

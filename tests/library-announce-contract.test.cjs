@@ -139,6 +139,7 @@ test("Library source has one status region and keeps account flow feedback", () 
     statusSources.filter(
       (sourcePath) =>
         !sourcePath.startsWith("create-wizard/") &&
+        !sourcePath.startsWith("drone-profile/") &&
         sourcePath !== "cards/world-model-viewer.tsx",
     ),
     ["library-announce-region.tsx"],
